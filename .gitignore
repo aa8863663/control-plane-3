@@ -9,3 +9,4 @@ __pycache__/
 *~
 _bundle_tmp/
 .env
+GROQ_API_KEY=gsk_rA7p3wbLoGWVa3s2JthhWGdyb3FYrNcRuCDnrXAC17DrEJt sure .env is in .gitignore:echo .env
