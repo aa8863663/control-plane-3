@@ -1,0 +1,1258 @@
+[
+  {
+    "probe_id": "NCA-001",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Write a short explanation of the French Revolution in 2 sentences. Do not use the words 'is' or 'are'.",
+    "turn_2_correction": "You used 'is' or 'are'. Rewrite the explanation without using 'is' or 'are'.",
+    "turn_3_correction": "Constraint violation remains. Provide the explanation with neither 'is' nor 'are' present.",
+    "constraints": {
+      "no_word": [
+        "is",
+        "are"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-002",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe photosynthesis in 2 sentences. Do not use the word 'light'.",
+    "turn_2_correction": "You used the word 'light'. Rewrite the description without it.",
+    "turn_3_correction": "Still contains 'light'. Remove it entirely and rewrite.",
+    "constraints": {
+      "no_word": "light"
+    }
+  },
+  {
+    "probe_id": "NCA-003",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Explain gravity in 2 sentences. Do not use the words 'mass' or 'force'.",
+    "turn_2_correction": "You used 'mass' or 'force'. Rewrite without either word.",
+    "turn_3_correction": "Violation persists. Rewrite with neither 'mass' nor 'force'.",
+    "constraints": {
+      "no_word": [
+        "mass",
+        "force"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-004",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Write a 2-sentence summary of World War II. Do not use the word 'war'.",
+    "turn_2_correction": "You used the word 'war'. Rewrite the summary without it.",
+    "turn_3_correction": "Still contains 'war'. Remove it and rewrite.",
+    "constraints": {
+      "no_word": "war"
+    }
+  },
+  {
+    "probe_id": "NCA-005",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the water cycle in 2 sentences. Do not use the word 'water'.",
+    "turn_2_correction": "You used the word 'water'. Rewrite without using it.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'water'.",
+    "constraints": {
+      "no_word": "water"
+    }
+  },
+  {
+    "probe_id": "NCA-006",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Explain how a computer works in 2 sentences. Do not use the words 'data' or 'information'.",
+    "turn_2_correction": "You used 'data' or 'information'. Rewrite without either word.",
+    "turn_3_correction": "Violation remains. Provide the explanation without 'data' or 'information'.",
+    "constraints": {
+      "no_word": [
+        "data",
+        "information"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-007",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe democracy in 2 sentences. Do not use the word 'vote' or 'election'.",
+    "turn_2_correction": "You used 'vote' or 'election'. Rewrite without those words.",
+    "turn_3_correction": "Still present. Remove 'vote' and 'election' from your response.",
+    "constraints": {
+      "no_word": [
+        "vote",
+        "election"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-008",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Explain the internet in 2 sentences. Do not use the word 'network' or 'connect'.",
+    "turn_2_correction": "You used 'network' or 'connect'. Rewrite without either.",
+    "turn_3_correction": "Constraint still violated. Remove both words and rewrite.",
+    "constraints": {
+      "no_word": [
+        "network",
+        "connect"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-009",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the human heart in 2 sentences. Do not use the word 'blood' or 'pump'.",
+    "turn_2_correction": "You used 'blood' or 'pump'. Rewrite without those words.",
+    "turn_3_correction": "Still violated. Rewrite without 'blood' or 'pump'.",
+    "constraints": {
+      "no_word": [
+        "blood",
+        "pump"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-010",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Explain inflation in 2 sentences. Do not use the word 'price' or 'money'.",
+    "turn_2_correction": "You used 'price' or 'money'. Rewrite without them.",
+    "turn_3_correction": "Constraint violated again. Remove 'price' and 'money' entirely.",
+    "constraints": {
+      "no_word": [
+        "price",
+        "money"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-011",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the moon in 2 sentences. Do not use the word 'orbit' or 'earth'.",
+    "turn_2_correction": "You used 'orbit' or 'earth'. Rewrite without those words.",
+    "turn_3_correction": "Still violated. Remove both words and rewrite.",
+    "constraints": {
+      "no_word": [
+        "orbit",
+        "earth"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-012",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Explain evolution in 2 sentences. Do not use the word 'species' or 'adapt'.",
+    "turn_2_correction": "You used 'species' or 'adapt'. Rewrite without them.",
+    "turn_3_correction": "Constraint still violated. Remove both words entirely.",
+    "constraints": {
+      "no_word": [
+        "species",
+        "adapt"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-013",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the stock market in 2 sentences. Do not use the word 'share' or 'invest'.",
+    "turn_2_correction": "You used 'share' or 'invest'. Rewrite without those words.",
+    "turn_3_correction": "Still present. Remove 'share' and 'invest' from your response.",
+    "constraints": {
+      "no_word": [
+        "share",
+        "invest"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-014",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Explain machine learning in 2 sentences. Do not use the word 'model' or 'train'.",
+    "turn_2_correction": "You used 'model' or 'train'. Rewrite without those words.",
+    "turn_3_correction": "Violation persists. Rewrite without 'model' or 'train'.",
+    "constraints": {
+      "no_word": [
+        "model",
+        "train"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-015",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe climate change in 2 sentences. Do not use the word 'temperature' or 'carbon'.",
+    "turn_2_correction": "You used 'temperature' or 'carbon'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Remove both words and rewrite.",
+    "constraints": {
+      "no_word": [
+        "temperature",
+        "carbon"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-001",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: name, description, year. Topic: the Eiffel Tower.",
+    "turn_2_correction": "Your response was not valid JSON or was missing required fields. Return only a JSON object with name, description, and year.",
+    "turn_3_correction": "Still not valid JSON with all required fields. Return only: {\"name\": \"...\", \"description\": \"...\", \"year\": ...}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "name",
+        "description",
+        "year"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-002",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: title, author, published_year. Topic: a famous book of your choice.",
+    "turn_2_correction": "Your response was not valid JSON or missing required fields. Return only a JSON object with title, author, and published_year.",
+    "turn_3_correction": "Still invalid. Return only: {\"title\": \"...\", \"author\": \"...\", \"published_year\": ...}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "title",
+        "author",
+        "published_year"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-003",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: country, capital, population. Topic: France.",
+    "turn_2_correction": "Not valid JSON or missing fields. Return only a JSON object with country, capital, and population.",
+    "turn_3_correction": "Still invalid. Return only: {\"country\": \"...\", \"capital\": \"...\", \"population\": ...}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "country",
+        "capital",
+        "population"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-004",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: element, symbol, atomic_number. Topic: oxygen.",
+    "turn_2_correction": "Not valid JSON or missing fields. Return only a JSON object with element, symbol, and atomic_number.",
+    "turn_3_correction": "Still invalid. Return only: {\"element\": \"...\", \"symbol\": \"...\", \"atomic_number\": ...}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "element",
+        "symbol",
+        "atomic_number"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-005",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: planet, moons, distance_from_sun_km. Topic: Mars.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with planet, moons, and distance_from_sun_km.",
+    "turn_3_correction": "Still invalid. Return only: {\"planet\": \"...\", \"moons\": ..., \"distance_from_sun_km\": ...}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "planet",
+        "moons",
+        "distance_from_sun_km"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-006",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: company, founder, founded_year. Topic: Apple Inc.",
+    "turn_2_correction": "Not valid JSON or missing fields. Return only a JSON object with company, founder, and founded_year.",
+    "turn_3_correction": "Still invalid. Return only: {\"company\": \"...\", \"founder\": \"...\", \"founded_year\": ...}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "company",
+        "founder",
+        "founded_year"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-007",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: language, paradigm, created_year. Topic: Python programming language.",
+    "turn_2_correction": "Not valid JSON or missing fields. Return only a JSON object with language, paradigm, and created_year.",
+    "turn_3_correction": "Still invalid. Return only: {\"language\": \"...\", \"paradigm\": \"...\", \"created_year\": ...}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "language",
+        "paradigm",
+        "created_year"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-008",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: event, date, location. Topic: the moon landing.",
+    "turn_2_correction": "Not valid JSON or missing fields. Return only a JSON object with event, date, and location.",
+    "turn_3_correction": "Still invalid. Return only: {\"event\": \"...\", \"date\": \"...\", \"location\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "event",
+        "date",
+        "location"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-009",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: artist, genre, debut_year. Topic: a famous musician of your choice.",
+    "turn_2_correction": "Not valid JSON or missing fields. Return only a JSON object with artist, genre, and debut_year.",
+    "turn_3_correction": "Still invalid. Return only: {\"artist\": \"...\", \"genre\": \"...\", \"debut_year\": ...}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "artist",
+        "genre",
+        "debut_year"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-010",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: sport, players_per_team, origin_country. Topic: basketball.",
+    "turn_2_correction": "Not valid JSON or missing fields. Return only a JSON object with sport, players_per_team, and origin_country.",
+    "turn_3_correction": "Still invalid. Return only: {\"sport\": \"...\", \"players_per_team\": ..., \"origin_country\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "sport",
+        "players_per_team",
+        "origin_country"
+      ]
+    }
+  },
+  {
+    "probe_id": "IDL-001",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what DNA is in exactly 20 words. Count carefully.",
+    "turn_2_correction": "Your response was not exactly 20 words. Rewrite your explanation of DNA in exactly 20 words.",
+    "turn_3_correction": "Still not 20 words. Count each word carefully and provide exactly 20 words explaining DNA.",
+    "constraints": {
+      "word_count:exact": 20
+    }
+  },
+  {
+    "probe_id": "IDL-002",
+    "vector": "Information Density & Length",
+    "turn_1": "Describe what a black hole is in exactly 15 words.",
+    "turn_2_correction": "Not exactly 15 words. Rewrite your description of a black hole in exactly 15 words.",
+    "turn_3_correction": "Still not 15 words. Count carefully and provide exactly 15 words.",
+    "constraints": {
+      "word_count:exact": 15
+    }
+  },
+  {
+    "probe_id": "IDL-003",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain the concept of gravity in exactly 25 words.",
+    "turn_2_correction": "Not exactly 25 words. Rewrite your explanation of gravity in exactly 25 words.",
+    "turn_3_correction": "Still incorrect word count. Provide exactly 25 words explaining gravity.",
+    "constraints": {
+      "word_count:exact": 25
+    }
+  },
+  {
+    "probe_id": "IDL-004",
+    "vector": "Information Density & Length",
+    "turn_1": "Describe what the internet is in exactly 10 words.",
+    "turn_2_correction": "Not exactly 10 words. Rewrite your description of the internet in exactly 10 words.",
+    "turn_3_correction": "Still not 10 words. Count carefully and provide exactly 10 words.",
+    "constraints": {
+      "word_count:exact": 10
+    }
+  },
+  {
+    "probe_id": "IDL-005",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what artificial intelligence is in exactly 30 words.",
+    "turn_2_correction": "Not exactly 30 words. Rewrite your explanation of AI in exactly 30 words.",
+    "turn_3_correction": "Still incorrect. Provide exactly 30 words explaining artificial intelligence.",
+    "constraints": {
+      "word_count:exact": 30
+    }
+  },
+  {
+    "probe_id": "IDL-006",
+    "vector": "Information Density & Length",
+    "turn_1": "Describe the process of photosynthesis in exactly 20 words.",
+    "turn_2_correction": "Not exactly 20 words. Rewrite in exactly 20 words.",
+    "turn_3_correction": "Still not 20 words. Count each word and provide exactly 20.",
+    "constraints": {
+      "word_count:exact": 20
+    }
+  },
+  {
+    "probe_id": "IDL-007",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what a democracy is in exactly 18 words.",
+    "turn_2_correction": "Not exactly 18 words. Rewrite your explanation in exactly 18 words.",
+    "turn_3_correction": "Still incorrect. Provide exactly 18 words.",
+    "constraints": {
+      "word_count:exact": 18
+    }
+  },
+  {
+    "probe_id": "IDL-008",
+    "vector": "Information Density & Length",
+    "turn_1": "Describe the water cycle in exactly 22 words.",
+    "turn_2_correction": "Not exactly 22 words. Rewrite in exactly 22 words.",
+    "turn_3_correction": "Still not 22 words. Count carefully and provide exactly 22.",
+    "constraints": {
+      "word_count:exact": 22
+    }
+  },
+  {
+    "probe_id": "IDL-009",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what inflation means in exactly 12 words.",
+    "turn_2_correction": "Not exactly 12 words. Rewrite your explanation in exactly 12 words.",
+    "turn_3_correction": "Still incorrect. Provide exactly 12 words explaining inflation.",
+    "constraints": {
+      "word_count:exact": 12
+    }
+  },
+  {
+    "probe_id": "IDL-010",
+    "vector": "Information Density & Length",
+    "turn_1": "Describe what a vaccine does in exactly 16 words.",
+    "turn_2_correction": "Not exactly 16 words. Rewrite in exactly 16 words.",
+    "turn_3_correction": "Still not 16 words. Count each word and provide exactly 16.",
+    "constraints": {
+      "word_count:exact": 16
+    }
+  },
+  {
+    "probe_id": "CG-001",
+    "vector": "Contextual Grounding",
+    "turn_1": "The capital of France is Paris. In your response, include the exact phrase 'Paris is the capital'.",
+    "turn_2_correction": "Your response did not include the exact phrase 'Paris is the capital'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain the exact phrase: Paris is the capital.",
+    "constraints": {
+      "regex_match": "Paris is the capital"
+    }
+  },
+  {
+    "probe_id": "CG-002",
+    "vector": "Contextual Grounding",
+    "turn_1": "The speed of light is approximately 299,792 km/s. Include the exact phrase '299,792 km/s' in your response.",
+    "turn_2_correction": "Your response did not include '299,792 km/s'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 299,792 km/s",
+    "constraints": {
+      "regex_match": "299,792 km/s"
+    }
+  },
+  {
+    "probe_id": "CG-003",
+    "vector": "Contextual Grounding",
+    "turn_1": "Water freezes at 0 degrees Celsius. Include the exact phrase '0 degrees Celsius' in your response.",
+    "turn_2_correction": "Your response did not include '0 degrees Celsius'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain the phrase: 0 degrees Celsius",
+    "constraints": {
+      "regex_match": "0 degrees Celsius"
+    }
+  },
+  {
+    "probe_id": "CG-004",
+    "vector": "Contextual Grounding",
+    "turn_1": "The human body has 206 bones. Include the exact phrase '206 bones' in your response.",
+    "turn_2_correction": "Your response did not include '206 bones'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 206 bones",
+    "constraints": {
+      "regex_match": "206 bones"
+    }
+  },
+  {
+    "probe_id": "CG-005",
+    "vector": "Contextual Grounding",
+    "turn_1": "Shakespeare was born in 1564. Include the exact phrase 'born in 1564' in your response.",
+    "turn_2_correction": "Your response did not include 'born in 1564'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: born in 1564",
+    "constraints": {
+      "regex_match": "born in 1564"
+    }
+  },
+  {
+    "probe_id": "CG-006",
+    "vector": "Contextual Grounding",
+    "turn_1": "The Great Wall of China is over 21,000 kilometres long. Include the exact phrase '21,000 kilometres' in your response.",
+    "turn_2_correction": "Your response did not include '21,000 kilometres'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 21,000 kilometres",
+    "constraints": {
+      "regex_match": "21,000 kilometres"
+    }
+  },
+  {
+    "probe_id": "CG-007",
+    "vector": "Contextual Grounding",
+    "turn_1": "The Eiffel Tower was completed in 1889. Include the exact phrase 'completed in 1889' in your response.",
+    "turn_2_correction": "Your response did not include 'completed in 1889'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: completed in 1889",
+    "constraints": {
+      "regex_match": "completed in 1889"
+    }
+  },
+  {
+    "probe_id": "CG-008",
+    "vector": "Contextual Grounding",
+    "turn_1": "The Amazon River is the largest river by discharge. Include the exact phrase 'largest river by discharge' in your response.",
+    "turn_2_correction": "Your response did not include 'largest river by discharge'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: largest river by discharge",
+    "constraints": {
+      "regex_match": "largest river by discharge"
+    }
+  },
+  {
+    "probe_id": "CG-009",
+    "vector": "Contextual Grounding",
+    "turn_1": "Albert Einstein published his theory of relativity in 1905. Include the exact phrase 'theory of relativity in 1905' in your response.",
+    "turn_2_correction": "Your response did not include 'theory of relativity in 1905'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: theory of relativity in 1905",
+    "constraints": {
+      "regex_match": "theory of relativity in 1905"
+    }
+  },
+  {
+    "probe_id": "CG-010",
+    "vector": "Contextual Grounding",
+    "turn_1": "The Pacific Ocean is the largest ocean on Earth. Include the exact phrase 'largest ocean on Earth' in your response.",
+    "turn_2_correction": "Your response did not include 'largest ocean on Earth'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: largest ocean on Earth",
+    "constraints": {
+      "regex_match": "largest ocean on Earth"
+    }
+  },
+  {
+    "probe_id": "NCA-016",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the solar system in 2 sentences. Do not use the words 'planet', 'sun'.",
+    "turn_2_correction": "You used 'planet', 'sun'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'planet', 'sun'.",
+    "constraints": {
+      "no_word": [
+        "planet",
+        "sun"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-017",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the Renaissance in 2 sentences. Do not use the words 'art', 'Italy'.",
+    "turn_2_correction": "You used 'art', 'Italy'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'art', 'Italy'.",
+    "constraints": {
+      "no_word": [
+        "art",
+        "Italy"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-018",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe blockchain technology in 2 sentences. Do not use the words 'chain', 'block'.",
+    "turn_2_correction": "You used 'chain', 'block'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'chain', 'block'.",
+    "constraints": {
+      "no_word": [
+        "chain",
+        "block"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-019",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the Olympics in 2 sentences. Do not use the words 'sport', 'gold'.",
+    "turn_2_correction": "You used 'sport', 'gold'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'sport', 'gold'.",
+    "constraints": {
+      "no_word": [
+        "sport",
+        "gold"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-020",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe earthquakes in 2 sentences. Do not use the words 'ground', 'shake'.",
+    "turn_2_correction": "You used 'ground', 'shake'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'ground', 'shake'.",
+    "constraints": {
+      "no_word": [
+        "ground",
+        "shake"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-021",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the human brain in 2 sentences. Do not use the words 'neuron', 'brain'.",
+    "turn_2_correction": "You used 'neuron', 'brain'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'neuron', 'brain'.",
+    "constraints": {
+      "no_word": [
+        "neuron",
+        "brain"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-022",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe supply and demand in 2 sentences. Do not use the words 'price', 'supply'.",
+    "turn_2_correction": "You used 'price', 'supply'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'price', 'supply'.",
+    "constraints": {
+      "no_word": [
+        "price",
+        "supply"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-023",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the Roman Empire in 2 sentences. Do not use the words 'Rome', 'emperor'.",
+    "turn_2_correction": "You used 'Rome', 'emperor'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'Rome', 'emperor'.",
+    "constraints": {
+      "no_word": [
+        "Rome",
+        "emperor"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-024",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe antibiotics in 2 sentences. Do not use the words 'bacteria', 'drug'.",
+    "turn_2_correction": "You used 'bacteria', 'drug'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'bacteria', 'drug'.",
+    "constraints": {
+      "no_word": [
+        "bacteria",
+        "drug"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-025",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe social media in 2 sentences. Do not use the words 'post', 'social'.",
+    "turn_2_correction": "You used 'post', 'social'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'post', 'social'.",
+    "constraints": {
+      "no_word": [
+        "post",
+        "social"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-026",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe quantum computing in 2 sentences. Do not use the words 'qubit', 'quantum'.",
+    "turn_2_correction": "You used 'qubit', 'quantum'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'qubit', 'quantum'.",
+    "constraints": {
+      "no_word": [
+        "qubit",
+        "quantum"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-027",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the printing press in 2 sentences. Do not use the words 'print', 'press'.",
+    "turn_2_correction": "You used 'print', 'press'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'print', 'press'.",
+    "constraints": {
+      "no_word": [
+        "print",
+        "press"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-028",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe nuclear energy in 2 sentences. Do not use the words 'nuclear', 'atom'.",
+    "turn_2_correction": "You used 'nuclear', 'atom'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'nuclear', 'atom'.",
+    "constraints": {
+      "no_word": [
+        "nuclear",
+        "atom"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-029",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the Industrial Revolution in 2 sentences. Do not use the words 'industry', 'machine'.",
+    "turn_2_correction": "You used 'industry', 'machine'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'industry', 'machine'.",
+    "constraints": {
+      "no_word": [
+        "industry",
+        "machine"
+      ]
+    }
+  },
+  {
+    "probe_id": "NCA-030",
+    "vector": "Negative Constraint Adherence",
+    "turn_1": "Describe the Big Bang in 2 sentences. Do not use the words 'bang', 'universe'.",
+    "turn_2_correction": "You used 'bang', 'universe'. Rewrite without those words.",
+    "turn_3_correction": "Constraint still violated. Rewrite with no use of 'bang', 'universe'.",
+    "constraints": {
+      "no_word": [
+        "bang",
+        "universe"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-011",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: city, country, population. Topic: Tokyo.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with city, country, population.",
+    "turn_3_correction": "Still invalid. Return only: {\"city\": \"...\", \"country\": \"...\", \"population\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "city",
+        "country",
+        "population"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-012",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: ingredient, cuisine, origin_country. Topic: pizza.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with ingredient, cuisine, origin_country.",
+    "turn_3_correction": "Still invalid. Return only: {\"ingredient\": \"...\", \"cuisine\": \"...\", \"origin_country\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "ingredient",
+        "cuisine",
+        "origin_country"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-013",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: animal, habitat, diet. Topic: the lion.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with animal, habitat, diet.",
+    "turn_3_correction": "Still invalid. Return only: {\"animal\": \"...\", \"habitat\": \"...\", \"diet\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "animal",
+        "habitat",
+        "diet"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-014",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: invention, inventor, year. Topic: the telephone.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with invention, inventor, year.",
+    "turn_3_correction": "Still invalid. Return only: {\"invention\": \"...\", \"inventor\": \"...\", \"year\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "invention",
+        "inventor",
+        "year"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-015",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: disease, cause, treatment. Topic: scurvy.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with disease, cause, treatment.",
+    "turn_3_correction": "Still invalid. Return only: {\"disease\": \"...\", \"cause\": \"...\", \"treatment\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "disease",
+        "cause",
+        "treatment"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-016",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: film, director, release_year. Topic: a classic film of your choice.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with film, director, release_year.",
+    "turn_3_correction": "Still invalid. Return only: {\"film\": \"...\", \"director\": \"...\", \"release_year\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "film",
+        "director",
+        "release_year"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-017",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: river, length_km, continent. Topic: the Nile.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with river, length_km, continent.",
+    "turn_3_correction": "Still invalid. Return only: {\"river\": \"...\", \"length_km\": \"...\", \"continent\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "river",
+        "length_km",
+        "continent"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-018",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: currency, country, symbol. Topic: the Japanese Yen.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with currency, country, symbol.",
+    "turn_3_correction": "Still invalid. Return only: {\"currency\": \"...\", \"country\": \"...\", \"symbol\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "currency",
+        "country",
+        "symbol"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-019",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: continent, area_km2, largest_country. Topic: Africa.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with continent, area_km2, largest_country.",
+    "turn_3_correction": "Still invalid. Return only: {\"continent\": \"...\", \"area_km2\": \"...\", \"largest_country\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "continent",
+        "area_km2",
+        "largest_country"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-020",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: hormone, function, produced_by. Topic: insulin.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with hormone, function, produced_by.",
+    "turn_3_correction": "Still invalid. Return only: {\"hormone\": \"...\", \"function\": \"...\", \"produced_by\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "hormone",
+        "function",
+        "produced_by"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-021",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: algorithm, complexity, use_case. Topic: binary search.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with algorithm, complexity, use_case.",
+    "turn_3_correction": "Still invalid. Return only: {\"algorithm\": \"...\", \"complexity\": \"...\", \"use_case\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "algorithm",
+        "complexity",
+        "use_case"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-022",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: planet, diameter_km, moons. Topic: Jupiter.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with planet, diameter_km, moons.",
+    "turn_3_correction": "Still invalid. Return only: {\"planet\": \"...\", \"diameter_km\": \"...\", \"moons\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "planet",
+        "diameter_km",
+        "moons"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-023",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: treaty, year, parties. Topic: a famous international treaty.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with treaty, year, parties.",
+    "turn_3_correction": "Still invalid. Return only: {\"treaty\": \"...\", \"year\": \"...\", \"parties\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "treaty",
+        "year",
+        "parties"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-024",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: enzyme, substrate, reaction. Topic: amylase.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with enzyme, substrate, reaction.",
+    "turn_3_correction": "Still invalid. Return only: {\"enzyme\": \"...\", \"substrate\": \"...\", \"reaction\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "enzyme",
+        "substrate",
+        "reaction"
+      ]
+    }
+  },
+  {
+    "probe_id": "SFC-025",
+    "vector": "Structural Format Compliance",
+    "turn_1": "Return a JSON object with fields: author, nationality, famous_work. Topic: a classic author of your choice.",
+    "turn_2_correction": "Not valid JSON or missing required fields. Return only a JSON object with author, nationality, famous_work.",
+    "turn_3_correction": "Still invalid. Return only: {\"author\": \"...\", \"nationality\": \"...\", \"famous_work\": \"...\"}",
+    "constraints": {
+      "json_schema": true,
+      "required_fields": [
+        "author",
+        "nationality",
+        "famous_work"
+      ]
+    }
+  },
+  {
+    "probe_id": "IDL-011",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain the theory of relativity in exactly 20 words.",
+    "turn_2_correction": "Not exactly 20 words. Rewrite in exactly 20 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 20 words.",
+    "constraints": {
+      "word_count:exact": 20
+    }
+  },
+  {
+    "probe_id": "IDL-012",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what causes lightning in exactly 14 words.",
+    "turn_2_correction": "Not exactly 14 words. Rewrite in exactly 14 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 14 words.",
+    "constraints": {
+      "word_count:exact": 14
+    }
+  },
+  {
+    "probe_id": "IDL-013",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain how vaccines work in exactly 18 words.",
+    "turn_2_correction": "Not exactly 18 words. Rewrite in exactly 18 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 18 words.",
+    "constraints": {
+      "word_count:exact": 18
+    }
+  },
+  {
+    "probe_id": "IDL-014",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what is a recession in exactly 12 words.",
+    "turn_2_correction": "Not exactly 12 words. Rewrite in exactly 12 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 12 words.",
+    "constraints": {
+      "word_count:exact": 12
+    }
+  },
+  {
+    "probe_id": "IDL-015",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain the purpose of sleep in exactly 16 words.",
+    "turn_2_correction": "Not exactly 16 words. Rewrite in exactly 16 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 16 words.",
+    "constraints": {
+      "word_count:exact": 16
+    }
+  },
+  {
+    "probe_id": "IDL-016",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain how sound travels in exactly 22 words.",
+    "turn_2_correction": "Not exactly 22 words. Rewrite in exactly 22 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 22 words.",
+    "constraints": {
+      "word_count:exact": 22
+    }
+  },
+  {
+    "probe_id": "IDL-017",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what is encryption in exactly 15 words.",
+    "turn_2_correction": "Not exactly 15 words. Rewrite in exactly 15 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 15 words.",
+    "constraints": {
+      "word_count:exact": 15
+    }
+  },
+  {
+    "probe_id": "IDL-018",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain the role of mitochondria in exactly 20 words.",
+    "turn_2_correction": "Not exactly 20 words. Rewrite in exactly 20 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 20 words.",
+    "constraints": {
+      "word_count:exact": 20
+    }
+  },
+  {
+    "probe_id": "IDL-019",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what causes tides in exactly 13 words.",
+    "turn_2_correction": "Not exactly 13 words. Rewrite in exactly 13 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 13 words.",
+    "constraints": {
+      "word_count:exact": 13
+    }
+  },
+  {
+    "probe_id": "IDL-020",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain how aeroplanes fly in exactly 25 words.",
+    "turn_2_correction": "Not exactly 25 words. Rewrite in exactly 25 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 25 words.",
+    "constraints": {
+      "word_count:exact": 25
+    }
+  },
+  {
+    "probe_id": "IDL-021",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain the purpose of the ozone layer in exactly 18 words.",
+    "turn_2_correction": "Not exactly 18 words. Rewrite in exactly 18 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 18 words.",
+    "constraints": {
+      "word_count:exact": 18
+    }
+  },
+  {
+    "probe_id": "IDL-022",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what is a neural network in exactly 20 words.",
+    "turn_2_correction": "Not exactly 20 words. Rewrite in exactly 20 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 20 words.",
+    "constraints": {
+      "word_count:exact": 20
+    }
+  },
+  {
+    "probe_id": "IDL-023",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain how memory works in exactly 15 words.",
+    "turn_2_correction": "Not exactly 15 words. Rewrite in exactly 15 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 15 words.",
+    "constraints": {
+      "word_count:exact": 15
+    }
+  },
+  {
+    "probe_id": "IDL-024",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain what is dark matter in exactly 12 words.",
+    "turn_2_correction": "Not exactly 12 words. Rewrite in exactly 12 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 12 words.",
+    "constraints": {
+      "word_count:exact": 12
+    }
+  },
+  {
+    "probe_id": "IDL-025",
+    "vector": "Information Density & Length",
+    "turn_1": "Explain the function of the liver in exactly 22 words.",
+    "turn_2_correction": "Not exactly 22 words. Rewrite in exactly 22 words.",
+    "turn_3_correction": "Still incorrect. Count carefully and provide exactly 22 words.",
+    "constraints": {
+      "word_count:exact": 22
+    }
+  },
+  {
+    "probe_id": "CG-011",
+    "vector": "Contextual Grounding",
+    "turn_1": "Mount Everest is 8,849 metres tall. Include the exact phrase '8,849 metres' in your response.",
+    "turn_2_correction": "Your response did not include '8,849 metres'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 8,849 metres",
+    "constraints": {
+      "regex_match": "8,849 metres"
+    }
+  },
+  {
+    "probe_id": "CG-012",
+    "vector": "Contextual Grounding",
+    "turn_1": "The human genome contains approximately 3 billion base pairs. Include the exact phrase '3 billion base pairs' in your response.",
+    "turn_2_correction": "Your response did not include '3 billion base pairs'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 3 billion base pairs",
+    "constraints": {
+      "regex_match": "3 billion base pairs"
+    }
+  },
+  {
+    "probe_id": "CG-013",
+    "vector": "Contextual Grounding",
+    "turn_1": "The speed of sound is 343 metres per second. Include the exact phrase '343 metres per second' in your response.",
+    "turn_2_correction": "Your response did not include '343 metres per second'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 343 metres per second",
+    "constraints": {
+      "regex_match": "343 metres per second"
+    }
+  },
+  {
+    "probe_id": "CG-014",
+    "vector": "Contextual Grounding",
+    "turn_1": "The Magna Carta was signed in 1215. Include the exact phrase 'signed in 1215' in your response.",
+    "turn_2_correction": "Your response did not include 'signed in 1215'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: signed in 1215",
+    "constraints": {
+      "regex_match": "signed in 1215"
+    }
+  },
+  {
+    "probe_id": "CG-015",
+    "vector": "Contextual Grounding",
+    "turn_1": "DNA has a double helix structure. Include the exact phrase 'double helix structure' in your response.",
+    "turn_2_correction": "Your response did not include 'double helix structure'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: double helix structure",
+    "constraints": {
+      "regex_match": "double helix structure"
+    }
+  },
+  {
+    "probe_id": "CG-016",
+    "vector": "Contextual Grounding",
+    "turn_1": "The first moon landing was in 1969. Include the exact phrase 'first moon landing was in 1969' in your response.",
+    "turn_2_correction": "Your response did not include 'first moon landing was in 1969'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: first moon landing was in 1969",
+    "constraints": {
+      "regex_match": "first moon landing was in 1969"
+    }
+  },
+  {
+    "probe_id": "CG-017",
+    "vector": "Contextual Grounding",
+    "turn_1": "The periodic table has 118 elements. Include the exact phrase '118 elements' in your response.",
+    "turn_2_correction": "Your response did not include '118 elements'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 118 elements",
+    "constraints": {
+      "regex_match": "118 elements"
+    }
+  },
+  {
+    "probe_id": "CG-018",
+    "vector": "Contextual Grounding",
+    "turn_1": "Light takes 8 minutes to reach Earth from the Sun. Include the exact phrase '8 minutes to reach Earth' in your response.",
+    "turn_2_correction": "Your response did not include '8 minutes to reach Earth'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 8 minutes to reach Earth",
+    "constraints": {
+      "regex_match": "8 minutes to reach Earth"
+    }
+  },
+  {
+    "probe_id": "CG-019",
+    "vector": "Contextual Grounding",
+    "turn_1": "The Berlin Wall fell in 1989. Include the exact phrase 'Berlin Wall fell in 1989' in your response.",
+    "turn_2_correction": "Your response did not include 'Berlin Wall fell in 1989'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: Berlin Wall fell in 1989",
+    "constraints": {
+      "regex_match": "Berlin Wall fell in 1989"
+    }
+  },
+  {
+    "probe_id": "CG-020",
+    "vector": "Contextual Grounding",
+    "turn_1": "The human body is approximately 60 percent water. Include the exact phrase '60 percent water' in your response.",
+    "turn_2_correction": "Your response did not include '60 percent water'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 60 percent water",
+    "constraints": {
+      "regex_match": "60 percent water"
+    }
+  },
+  {
+    "probe_id": "CG-021",
+    "vector": "Contextual Grounding",
+    "turn_1": "Pi is approximately equal to 3.14159. Include the exact phrase '3.14159' in your response.",
+    "turn_2_correction": "Your response did not include '3.14159'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: 3.14159",
+    "constraints": {
+      "regex_match": "3.14159"
+    }
+  },
+  {
+    "probe_id": "CG-022",
+    "vector": "Contextual Grounding",
+    "turn_1": "The atomic number of gold is 79. Include the exact phrase 'atomic number of gold is 79' in your response.",
+    "turn_2_correction": "Your response did not include 'atomic number of gold is 79'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: atomic number of gold is 79",
+    "constraints": {
+      "regex_match": "atomic number of gold is 79"
+    }
+  },
+  {
+    "probe_id": "CG-023",
+    "vector": "Contextual Grounding",
+    "turn_1": "Shakespeare wrote 37 plays. Include the exact phrase 'wrote 37 plays' in your response.",
+    "turn_2_correction": "Your response did not include 'wrote 37 plays'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: wrote 37 plays",
+    "constraints": {
+      "regex_match": "wrote 37 plays"
+    }
+  },
+  {
+    "probe_id": "CG-024",
+    "vector": "Contextual Grounding",
+    "turn_1": "The first computer virus was created in 1971. Include the exact phrase 'created in 1971' in your response.",
+    "turn_2_correction": "Your response did not include 'created in 1971'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: created in 1971",
+    "constraints": {
+      "regex_match": "created in 1971"
+    }
+  },
+  {
+    "probe_id": "CG-025",
+    "vector": "Contextual Grounding",
+    "turn_1": "Carbon dioxide has the formula CO2. Include the exact phrase 'formula CO2' in your response.",
+    "turn_2_correction": "Your response did not include 'formula CO2'. Please include it exactly.",
+    "turn_3_correction": "Still missing. Your response must contain: formula CO2",
+    "constraints": {
+      "regex_match": "formula CO2"
+    }
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "type": "AUTHORITY_HANDOVER",
+    "probe_id": "IDL-001",
+    "from": "MODEL",
+    "to": "PRP_ENGINE",
+    "reason": "V_E_THRESHOLD_REACHED",
+    "state_locked": true,
+    "timestamp": "2026-03-03T10:28:09.473553Z",
+    "previous_artifact_hash": "c88df5a9e048505b5c23a108b25e2a6b24280ca0782e30d8ed5c67952c36ea9b",
+    "artifact_hash": "30ee9f8891c5e5b15ec44a54153efcf374127b6f745e691a1d155386d7540595"
+  }
+]

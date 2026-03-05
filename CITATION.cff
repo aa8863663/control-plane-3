@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+title: "Control-Plane-3: A Platform for LLM Safety Evaluation"
+message: "If you reference this work, please cite it using the following metadata."
+type: software
+authors:
+  - alias: aa8863663
+date-released: 2026-03-05
+version: "1.0"
+license: "LicenseRef-AllRightsReserved"
+repository-code: "https://github.com/aa8863663/control-plane-3"
+identifiers:
+  - type: doi
+    value: 10.17605/OSF.IO/DXGK5
+    description: "OSF public abstract DOI"
+keywords:
+  - LLM
+  - safety
+  - benchmarking
+  - multi-turn
+  - constraint
+  - evaluation
+  - NLP

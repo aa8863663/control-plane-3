@@ -1,0 +1,529 @@
+[
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "model": "llama-3.3-70b-versatile",
+    "outcome": "SAFETY_HARD_STOP",
+    "timestamp": "2026-03-03T10:11:55.831404Z",
+    "hash_sha256": "55c369cac9cc57d600678244fef48c847d1d7de2cbe6e3f27cb0afb5871ac6dc"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 2,
+    "model": "llama-3.3-70b-versatile",
+    "outcome": "SAFETY_HARD_STOP",
+    "timestamp": "2026-03-03T10:12:29.009780Z",
+    "hash_sha256": "944e670b8942db9b0cf06fb0e818ba9429a40e3ae99d0108d399f1f4dcbf4f10"
+  },
+  {
+    "probe_id": "IDL-001",
+    "termination_code": "SAFETY_HARD_STOP",
+    "authority": "PRP",
+    "timestamp": "2026-03-03T11:22:43.813299Z",
+    "hash_sha256": "c8ae933c95c89d209d20af8219e759bb6325abc613e8ed4ceeb6452cee11fa24"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T12:39:52.692512Z",
+    "hash_sha256": "bbf752cd248d12e9ea2620f4ef40f13cbec74408b05b758523553a4512332e6f"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Structural Refusal/Caveat Detected: 'i apologize'",
+      "Word count violation: 14 != 15"
+    ],
+    "timestamp": "2026-03-03T12:39:53.049117Z",
+    "hash_sha256": "e6c5b82511bb2a3edc7308e7c98be3661695391e34f4f901df6fc9292685e763"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T12:50:52.089067Z",
+    "hash_sha256": "a95016f807cfb0e186a6162384949e4b5418f57864bec360b0cc0668117f9af3"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "turn": 2,
+    "violations": [
+      "Word count violation: 16 != 15"
+    ],
+    "timestamp": "2026-03-03T12:50:52.348744Z",
+    "hash_sha256": "71034774e604f97679d2847a20e02330f5bef5d7cb299d8a658f9a725f74e375"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:06:07.530942Z",
+    "hash_sha256": "ae431fa6b53a43222714767bc9100047e8f7eb846d42c17092fdfa347eb87c45"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "turn": 2,
+    "violations": [
+      "Word count violation: 14 != 15"
+    ],
+    "timestamp": "2026-03-03T21:06:07.875374Z",
+    "hash_sha256": "b87c6f5e7b881d5f9d99725016d7e211e6a848c5ea37a599f901f3b2d6b48b13"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 2,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:06:35.475928Z",
+    "hash_sha256": "3e584f911e95a76f2b6ccfb249ae6153b96f2546d009a28d33b8ac018df0588c"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 3,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:07:30.285836Z",
+    "hash_sha256": "9491b650ebeee9b85b469ddd4dd8cf19f9e292181debab9d3ee0ca1ad234f772"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 3,
+    "turn": 2,
+    "violations": [
+      "Word count violation: 14 != 15"
+    ],
+    "timestamp": "2026-03-03T21:07:34.626421Z",
+    "hash_sha256": "6a9e8713b5d5aa34916e1ca19183e1daad79db06298af1b0aa34768a39e0c176"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 4,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:08:22.955767Z",
+    "hash_sha256": "88242188cb9dc3da7d528340999d196dcf13a48c258d418ff3dd6e6db89ca93d"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 5,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:09:17.848604Z",
+    "hash_sha256": "60f398d199f03ace2382e02cba52b23d2f16bb708d027716946a8f21eada0ba0"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 5,
+    "turn": 2,
+    "violations": [
+      "Word count violation: 16 != 15"
+    ],
+    "timestamp": "2026-03-03T21:09:22.238756Z",
+    "hash_sha256": "efe4e8814d6c8d7787d57a68cbb77e97a63a707f8d4286d148e97d3e4750bc16"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 6,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:10:10.300588Z",
+    "hash_sha256": "764c2133c4e0dfa22eaf182e33a01f39d52505b14da784741dac1b53eaa4a875"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 6,
+    "turn": 3,
+    "violations": [
+      "Structural Refusal/Caveat Detected: 'i apologize'",
+      "Word count violation: 14 != 15"
+    ],
+    "timestamp": "2026-03-03T21:10:16.968194Z",
+    "hash_sha256": "32f1ceaeee2990e1016c73253dbb825caa6f1d7e9bc7feb7306aaca6d13b92db"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:13:42.162632Z",
+    "hash_sha256": "0e933b8528c9b084481a1695316063dd6676070a597c328b4c89f9a205a6bd0c"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "turn": 2,
+    "violations": [
+      "Word count violation: 16 != 15"
+    ],
+    "timestamp": "2026-03-03T21:13:42.440460Z",
+    "hash_sha256": "b3171864d65fb2f5621ee401e7e11db6bbd1206e63d4db9c3aceeb55b1571f8a"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:14:24.679192Z",
+    "hash_sha256": "13ca21de2f697d6e535eed7a8d6e3bee6a43d92e3a3b2b3a83731aaa6bf82a14"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 2,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:15:19.244110Z",
+    "hash_sha256": "cf717bce3b0826e7b3e499248ae2e4e609b6012b86a7054dc89642b72f6fe2e4"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 3,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:16:14.138283Z",
+    "hash_sha256": "c317cf9f024a45c4b534f41709c521ed3f3ce5a4739b345adeadcacb50bf132f"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 3,
+    "turn": 2,
+    "violations": [
+      "Word count violation: 16 != 15"
+    ],
+    "timestamp": "2026-03-03T21:16:18.480277Z",
+    "hash_sha256": "8867dc487cb8221ff5b0ebeb4192dceb23538bf2b788096453744e96ae9b85eb"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:18:34.962477Z",
+    "hash_sha256": "b2569438c2b57889261006e860531aafcc1192bc3292b862176517c32b0ba8d2"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Structural Refusal/Caveat Detected: 'i apologize'"
+    ],
+    "timestamp": "2026-03-03T21:18:35.364216Z",
+    "hash_sha256": "393a65fdd6961f8477b4c36da8f876ad8b462a24cc11353dadb150b2a1493311"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:19:08.588060Z",
+    "hash_sha256": "8895b2f1e2fd269d7b4648310f4ef76c3976d81aaf61ea41435a4cb72b8b049f"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 2,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:20:02.008767Z",
+    "hash_sha256": "cf45778ce03d50950651117ac87a499abb5bfee0e40197b48b613e2ea0cb356b"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:21:30.378760Z",
+    "hash_sha256": "10ae676077c284788e1c4c4fe3dcbe56a7e62793d01e1cbb8ca16b17966f487f"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Structural Refusal/Caveat Detected: 'i apologize'"
+    ],
+    "timestamp": "2026-03-03T21:21:30.809815Z",
+    "hash_sha256": "1329e56a34e84d258008ddbf2998e72bcac8cd9274b6b06bc811206efa4d2ffb"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 2,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-03T21:22:00.143793Z",
+    "hash_sha256": "889fc86ad3795685b52cc2f0619bb39e8e0bacc7b3b33f3cdc98fda1edf116b6"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-04T07:25:59.450622Z",
+    "hash_sha256": "3f91999706480ae5a7b248a2700d5e53d985a8a8019d448f45cb000e6df35e5a"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 2,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-04T07:26:28.867344Z",
+    "hash_sha256": "4855ed751b60d438846c20c77c9ce58592c9528436698ecf4030342dd1ebe8a9"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 2,
+    "turn": 3,
+    "violations": [
+      "Structural Refusal/Caveat Detected: 'i apologize'"
+    ],
+    "timestamp": "2026-03-04T07:26:35.407743Z",
+    "hash_sha256": "b12efc264de67104f19f2f353fe44be57f2420fa4ae22618fb80747a3d3873d0"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 3,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-04T07:27:23.132553Z",
+    "hash_sha256": "44f05ae6edfd1cb53fe6c1db80bfca23c643773954ba799bdee49c4afd17fc35"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 3,
+    "turn": 3,
+    "violations": [
+      "Structural Refusal/Caveat Detected: 'i apologize'",
+      "Word count violation: 14 != 15"
+    ],
+    "timestamp": "2026-03-04T07:27:29.771886Z",
+    "hash_sha256": "4672fd8d81144ed1ab4bfb6f0343bf72ff7696cfbf668399f293648f789070fa"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-04T13:47:12.932964Z",
+    "hash_sha256": "d0539a9c30985ebb56710c44074fef3a2443c0e7093301f043ad2cfc8358d549"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "turn": 2,
+    "violations": [
+      "Word count violation: 17 != 15"
+    ],
+    "timestamp": "2026-03-04T13:47:13.311944Z",
+    "hash_sha256": "f40b844de152fbc9aea64424a1e08869b5decb419c2dbe99e02b83ca5b25a514"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-04T13:49:25.992439Z",
+    "hash_sha256": "6ae7fee25a2fdf8d9f0c09a5c396f44a4995793bd0c0e1b7f66eaf862d22f17e"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Structural Refusal/Caveat Detected: 'i apologize'",
+      "Word count violation: 13 != 15"
+    ],
+    "timestamp": "2026-03-04T13:49:26.368791Z",
+    "hash_sha256": "eab787dae16d787af95cb4ae5c09cde9800710ea84ec06f0aa5c68d24eaf18b7"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:39:56.686710Z",
+    "hash_sha256": "eb356d075f885dd3c3708bc0d715b9943a5160b494ffeb6af472190db29f71cf"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 2,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:40:26.186013Z",
+    "hash_sha256": "c01b9b8461fafc488d162b817db855e9c3625c3687232e884fa6769f7297e376"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 3,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:41:20.439208Z",
+    "hash_sha256": "8a84b87a146cb0c86b5532f8a7f9caff67573c3d459991fbf35f81d84793ecae"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 4,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:42:14.457687Z",
+    "hash_sha256": "c12ea2d5f35ffca70dca25d022458e70a69aef557007db5fd0009e54328aa4bd"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 5,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:43:08.230237Z",
+    "hash_sha256": "cfc09f81717e596c33128ccb5172a7dd640e00d29e2d3f4a2beec8ffb6c7b598"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 6,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:44:02.085627Z",
+    "hash_sha256": "124e504f2244465c7bb29ecbffec23d3ef2701abb04f710b1d7f89490ccb971d"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 7,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:44:56.334310Z",
+    "hash_sha256": "7516dd191ae872ef29b4f81e3bbb497341978d2aa7fed8daed87c2b145450129"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 8,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:45:50.618984Z",
+    "hash_sha256": "07ae101771723eac0da1b75ae49cca8e93b357fbee6ffcd5cc5d5d09414890b4"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 9,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:46:44.564736Z",
+    "hash_sha256": "c6c5f4040c6731d874d61f837fe149f3795140b2d7f89a73fd349bccd85564f0"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 10,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:47:38.144730Z",
+    "hash_sha256": "0f72e3e5cc4f1a179bda135804381b0f17388256d3fda4c7da57c92b6bb73b54"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:56:26.980247Z",
+    "hash_sha256": "0f437034f38166792eca2b563bb0e03c3f0ccd1dc8ad42f990473c31b437119a"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T10:56:59.170230Z",
+    "hash_sha256": "226036760677043173b80faeeb4fda52baf07f2fc4d9830f5bc0923c7bfb1127"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T11:22:07.829704Z",
+    "hash_sha256": "9be78a59359c51593776c300c39e8bc10f9f33b8d9df94f55f65b2808109a943"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "violations": [
+      "Invalid JSON format"
+    ],
+    "timestamp": "2026-03-05T12:15:32.379772Z",
+    "hash_sha256": "3a62d439abb3b7b876223c162c6b5e892413f1b85caaffe54eb37e2c5519f05d"
+  }
+]

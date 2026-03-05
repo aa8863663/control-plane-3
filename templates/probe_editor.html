@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Probe Editor | Control Plane 3</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 960px; margin: 0 auto; padding: 0 20px; background: #f5f8fc; color: #1F3864; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #dde3ef; margin-bottom: 32px; }
+    .topbar a { color: #2E74B5; text-decoration: none; font-size: 13px; margin-left: 16px; }
+    h1 { font-size: 26px; margin-bottom: 4px; }
+    h2 { color: #2E74B5; border-bottom: 1px solid #dde3ef; padding-bottom: 6px; margin-top: 32px; }
+    .card { background: white; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); padding: 24px; margin-bottom: 24px; }
+    table { border-collapse: collapse; width: 100%; }
+    th { background: #1F3864; color: white; padding: 10px 14px; text-align: left; font-size: 13px; }
+    td { padding: 9px 14px; border-bottom: 1px solid #eef1f7; font-size: 13px; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; background: #e8f0fe; color: #1F3864; }
+    input, select, textarea { border: 1px solid #dde3ef; border-radius: 6px; padding: 8px 12px; font-size: 14px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+    textarea { height: 70px; resize: vertical; font-family: Arial; }
+    button { background: #1F3864; color: white; border: none; border-radius: 6px; padding: 10px 24px; font-size: 14px; cursor: pointer; }
+    button:hover { background: #2E74B5; }
+    button.danger { background: #c0392b; padding: 6px 14px; font-size: 13px; }
+    label { display: block; font-size: 12px; font-weight: bold; color: #555; margin-bottom: 2px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .success { background: #f0fff4; border: 1px solid #5cb85c; color: #2d7a2d; border-radius: 6px; padding: 10px 16px; margin-bottom: 16px; font-size: 14px; }
+    .filter-bar { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
+    .filter-bar select { width: auto; margin: 0; }
+    .filter-bar input { width: 200px; margin: 0; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <strong>Control Plane 3</strong>
+    <div>
+      <span style="font-size:13px;color:#888">👤 {{ user.username }}</span>
+      <a href="/">Home</a>
+      <a href="/logout">Sign out</a>
+    </div>
+  </div>
+
+  <h1>Probe Editor</h1>
+  <p style="color:#666;margin-bottom:24px">{{ probes|length }} probes loaded from probes_200.json</p>
+
+  {% if success %}<div class="success">✅ {{ success }}</div>{% endif %}
+
+  <h2>Add New Probe</h2>
+  <div class="card">
+    <form method="post" action="/probes/add">
+      <div class="grid2">
+        <div>
+          <label>Probe ID</label>
+          <input type="text" name="probe_id" placeholder="e.g. NCA-031" required>
+        </div>
+        <div>
+          <label>Vector</label>
+          <select name="vector">
+            <option>Negative Constraint Adherence</option>
+            <option>Structural Format Compliance</option>
+            <option>Information Density & Length</option>
+            <option>Contextual Grounding</option>
+          </select>
+        </div>
+      </div>
+      <label>Turn 1 (initial prompt with constraint)</label>
+      <textarea name="turn_1" required></textarea>
+      <label>Turn 2 (first correction)</label>
+      <textarea name="turn_2_correction" required></textarea>
+      <label>Turn 3 (second correction)</label>
+      <textarea name="turn_3_correction" required></textarea>
+      <div class="grid2">
+        <div>
+          <label>Constraint Type</label>
+          <select name="constraint_type">
+            <option value="no_word">no_word (forbidden words)</option>
+            <option value="word_count:exact">word_count:exact (exact length)</option>
+            <option value="json_schema">json_schema (valid JSON)</option>
+            <option value="regex_match">regex_match (pattern match)</option>
+          </select>
+        </div>
+        <div>
+          <label>Constraint Value</label>
+          <input type="text" name="constraint_value" placeholder='e.g. war  or  ["war","battle"]  or  20'>
+        </div>
+      </div>
+      <button type="submit">+ Add Probe</button>
+    </form>
+  </div>
+
+  <h2>All Probes</h2>
+  <div class="filter-bar">
+    <select id="vectorFilter" onchange="filterProbes()">
+      <option value="">All vectors</option>
+      <option>Negative Constraint Adherence</option>
+      <option>Structural Format Compliance</option>
+      <option>Information Density & Length</option>
+      <option>Contextual Grounding</option>
+    </select>
+    <input type="text" id="searchFilter" placeholder="Search probe ID..." oninput="filterProbes()">
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <table id="probeTable">
+      <tr><th>ID</th><th>Vector</th><th>Turn 1 (preview)</th><th>Constraint</th><th></th></tr>
+      {% for probe in probes %}
+      <tr data-vector="{{ probe.vector }}" data-id="{{ probe.probe_id }}">
+        <td><strong>{{ probe.probe_id }}</strong></td>
+        <td><span class="badge">{{ probe.vector[:3] }}</span></td>
+        <td>{{ probe.turn_1[:80] }}{% if probe.turn_1|length > 80 %}...{% endif %}</td>
+        <td><code style="font-size:11px">{{ probe.constraints | tojson | truncate(40) }}</code></td>
+        <td>
+          <form method="post" action="/probes/delete" style="display:inline">
+            <input type="hidden" name="probe_id" value="{{ probe.probe_id }}">
+            <button type="submit" class="danger" onclick="return confirm('Delete {{ probe.probe_id }}?')">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <script>
+    function filterProbes() {
+      const vector = document.getElementById('vectorFilter').value.toLowerCase();
+      const search = document.getElementById('searchFilter').value.toLowerCase();
+      document.querySelectorAll('#probeTable tr[data-vector]').forEach(row => {
+        const matchVector = !vector || row.dataset.vector.toLowerCase().includes(vector);
+        const matchSearch = !search || row.dataset.id.toLowerCase().includes(search);
+        row.style.display = matchVector && matchSearch ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

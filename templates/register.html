@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register | Control Plane 3</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f5f8fc; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(31,56,100,0.12); padding: 40px; width: 360px; }
+    h1 { color: #1F3864; font-size: 22px; margin-bottom: 6px; }
+    p { color: #888; font-size: 13px; margin-bottom: 24px; }
+    label { display: block; font-size: 13px; color: #444; margin-bottom: 4px; }
+    input { width: 100%; border: 1px solid #dde3ef; border-radius: 6px; padding: 10px 12px; font-size: 14px; margin-bottom: 16px; }
+    input:focus { border-color: #2E74B5; outline: none; }
+    button { width: 100%; background: #1F3864; color: white; border: none; border-radius: 6px; padding: 12px; font-size: 15px; font-weight: bold; cursor: pointer; }
+    button:hover { background: #2E74B5; }
+    .error { background: #fff0f0; border: 1px solid #e05c5c; color: #c00; border-radius: 6px; padding: 10px 12px; font-size: 13px; margin-bottom: 16px; }
+    .success { background: #f0fff4; border: 1px solid #5cb85c; color: #2d7a2d; border-radius: 6px; padding: 10px 12px; font-size: 13px; margin-bottom: 16px; }
+    .login-link { text-align: center; margin-top: 16px; font-size: 13px; color: #888; }
+    .login-link a { color: #2E74B5; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Create Account</h1>
+    <p>Control Plane 3 — LLM Safety Benchmarking</p>
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    {% if success %}<div class="success">{{ success }}</div>{% endif %}
+    <form method="post" action="/register">
+      <label>Username</label>
+      <input type="text" name="username" required>
+      <label>Password</label>
+      <input type="password" name="password" required>
+      <label>Confirm Password</label>
+      <input type="password" name="confirm" required>
+      <button type="submit">Create Account</button>
+    </form>
+    <div class="login-link"><a href="/login">Back to login</a></div>
+  </div>
+</body>
+</html>
