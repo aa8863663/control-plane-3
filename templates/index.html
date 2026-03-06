@@ -1,58 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Control Plane 3</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 0 20px; background: #f5f8fc; color: #1F3864; }
-    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #dde3ef; margin-bottom: 32px; }
-    .topbar h2 { font-size: 16px; margin: 0; }
-    .topbar span { font-size: 13px; color: #888; }
-    .topbar a { color: #2E74B5; text-decoration: none; font-size: 13px; margin-left: 16px; }
-    h1 { font-size: 28px; margin-bottom: 6px; }
-    p { color: #666; margin-bottom: 28px; }
-    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-    a.card { display: block; background: white; border: 1px solid #dde3ef; border-radius: 8px; padding: 20px; text-decoration: none; color: #1F3864; font-weight: bold; transition: box-shadow 0.2s; }
-    a.card:hover { box-shadow: 0 4px 12px rgba(46,116,181,0.15); border-color: #2E74B5; }
-    a.card span { display: block; font-size: 12px; color: #888; font-weight: normal; margin-top: 4px; }
-    a.card.highlight { border-color: #2E74B5; background: #f0f6ff; }
-    .section-label { font-size: 11px; font-weight: bold; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin: 28px 0 10px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control Plane 3</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Serif+Display&display=swap');
+:root {
+  --bg:#0a0c10;--surface:#111318;--border:#1e2229;
+  --accent:#00e5a0;--accent2:#7b6cff;--warn:#f5a623;--danger:#ff4f4f;
+  --text:#d4dbe8;--muted:#5a6070;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;padding:0 0 48px;}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,229,160,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,0.025) 1px,transparent 1px);
+  background-size:40px 40px;}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px;position:relative;z-index:1;}
+
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 0;border-bottom:1px solid var(--border);margin-bottom:36px;}
+.topbar-logo{font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;}
+.topbar-logo span{color:var(--accent);}
+.topbar-right{display:flex;align-items:center;gap:20px;}
+.topbar-user{font-size:0.7rem;color:var(--muted);}
+.topbar-right a{font-size:0.7rem;color:var(--muted);text-decoration:none;transition:color 0.15s;}
+.topbar-right a:hover{color:var(--accent);}
+.topbar-right a.admin-link{color:var(--accent2);}
+
+/* HERO */
+.hero{margin-bottom:36px;}
+.hero h1{font-family:'DM Serif Display',serif;font-size:2rem;color:#fff;margin-bottom:6px;}
+.hero h1 span{color:var(--accent);}
+.hero p{font-size:0.78rem;color:var(--muted);margin-bottom:4px;}
+.hero .doi{font-size:0.65rem;color:var(--muted);margin-top:8px;}
+.hero .doi span{color:var(--accent2);}
+
+/* SECTION LABEL */
+.section-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:28px 0 12px;}
+
+/* CARDS */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 20px;text-decoration:none;color:var(--text);transition:border-color 0.15s,background 0.15s;}
+.card:hover{border-color:rgba(0,229,160,0.3);background:#13161d;}
+.card-icon{font-size:1.1rem;margin-bottom:10px;}
+.card-title{font-size:0.82rem;font-weight:700;color:#fff;margin-bottom:4px;}
+.card-desc{font-size:0.68rem;color:var(--muted);line-height:1.5;}
+.card.highlight{border-color:rgba(0,229,160,0.25);background:rgba(0,229,160,0.04);}
+.card.highlight .card-title{color:var(--accent);}
+.card.gold{border-color:rgba(245,166,35,0.25);background:rgba(245,166,35,0.04);}
+.card.gold .card-title{color:var(--warn);}
+.card.purple{border-color:rgba(123,108,255,0.25);background:rgba(123,108,255,0.04);}
+.card.purple .card-title{color:#a89fff;}
+</style>
 </head>
 <body>
+<div class="grid-bg"></div>
+<div class="wrap">
+
   <div class="topbar">
-    <h2>Control Plane 3</h2>
-    <div>
-      {% if user %}<span>👤 {{ user.username }}</span><a href="/admin">Admin</a><a href="/logout">Sign out</a>{% endif %}
+    <div class="topbar-logo">Control Plane <span>3</span></div>
+    <div class="topbar-right">
+      {% if user %}
+      <span class="topbar-user">👤 {{ user.username }}</span>
+      <a href="/admin" class="admin-link">Admin</a>
+      <a href="/logout">Sign out</a>
+      {% endif %}
     </div>
   </div>
-  <h1>LLM Safety Benchmarking</h1>
-  <p>Multi-Turn Constraint Persistence (MTCP) Evaluation Platform &nbsp;|&nbsp; DOI: 10.17605/OSF.IO/DXGK5</p>
+
+  <div class="hero">
+    <h1>LLM Safety <span>Benchmarking</span></h1>
+    <p>Multi-Turn Constraint Persistence (MTCP) Evaluation Platform</p>
+    <div class="doi">DOI: <span>10.17605/OSF.IO/DXGK5</span> &nbsp;·&nbsp; © 2026 A. Abby. All Rights Reserved.</div>
+  </div>
 
   <div class="section-label">Benchmarking</div>
   <div class="grid">
-    <a class="card highlight" href="/run-benchmark">▶ Run Benchmark<span>Execute a new evaluation run</span></a>
-    <a class="card" href="/probes">🧪 Probe Editor<span>Add, view and delete probes</span></a>
-    <a class="card" href="/api/export-csv">⬇ Export CSV<span>Download all results as CSV</span></a>
+    <a class="card highlight" href="/run-benchmark">
+      <div class="card-icon">▶</div>
+      <div class="card-title">Run Benchmark</div>
+      <div class="card-desc">Execute evaluation runs against any model</div>
+    </a>
+    <a class="card" href="/probes">
+      <div class="card-icon">🧪</div>
+      <div class="card-title">Probe Editor</div>
+      <div class="card-desc">252 probes across 4 vectors + multilingual</div>
+    </a>
+    <a class="card" href="/api/export-csv">
+      <div class="card-icon">⬇</div>
+      <div class="card-title">Export CSV</div>
+      <div class="card-desc">Download all results</div>
+    </a>
+  </div>
+
+  <div class="section-label">Results & Leaderboard</div>
+  <div class="grid">
+    <a class="card gold" href="/leaderboard">
+      <div class="card-icon">🏆</div>
+      <div class="card-title">Leaderboard</div>
+      <div class="card-desc">Model rankings by MTCP pass rate</div>
+    </a>
+    <a class="card gold" href="/certificate">
+      <div class="card-icon">🎖</div>
+      <div class="card-title">Certificate</div>
+      <div class="card-desc">Generate MTCP compliance certificate</div>
+    </a>
+    <a class="card" href="/api/compare">
+      <div class="card-icon">🔀</div>
+      <div class="card-title">Compare</div>
+      <div class="card-desc">Side-by-side model comparison</div>
+    </a>
   </div>
 
   <div class="section-label">Analytics</div>
   <div class="grid">
-    <a class="card" href="/stats">📊 Stats<span>Outcomes and run breakdown</span></a>
-    <a class="card" href="/api/actuarial">📈 Actuarial<span>Pass rates and recovery latency</span></a>
-    <a class="card" href="/api/compare">🔀 Compare<span>Model comparison by pass rate</span></a>
+    <a class="card" href="/stats">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Stats</div>
+      <div class="card-desc">Outcomes and run breakdown</div>
+    </a>
+    <a class="card" href="/api/actuarial">
+      <div class="card-icon">📈</div>
+      <div class="card-title">Actuarial</div>
+      <div class="card-desc">Pass rates and recovery latency</div>
+    </a>
+    <a class="card" href="/api/costs">
+      <div class="card-icon">💰</div>
+      <div class="card-title">Costs</div>
+      <div class="card-desc">Token usage and cost metrics</div>
+    </a>
   </div>
 
   <div class="section-label">Reports & System</div>
   <div class="grid">
-    <a class="card" href="/api/costs">💰 Costs<span>Token usage and cost metrics</span></a>
-    <a class="card" href="/api/export-report">📄 Export Report<span>Download PDF benchmark report</span></a>
-    <a class="card" href="/health">❤️ Health<span>System and database status</span></a>
+    <a class="card" href="/api/export-report">
+      <div class="card-icon">📄</div>
+      <div class="card-title">Export Report</div>
+      <div class="card-desc">Download PDF benchmark report</div>
+    </a>
+    <a class="card" href="/health">
+      <div class="card-icon">❤️</div>
+      <div class="card-title">Health</div>
+      <div class="card-desc">System and database status</div>
+    </a>
+    <a class="card" href="/docs">
+      <div class="card-icon">🔧</div>
+      <div class="card-title">API Docs</div>
+      <div class="card-desc">Interactive OpenAPI documentation</div>
+    </a>
+    <a class="card purple" href="/settings/api-keys">
+      <div class="card-icon">🔑</div>
+      <div class="card-title">My API Keys</div>
+      <div class="card-desc">Store and manage your LLM provider keys</div>
+    </a>
   </div>
 
-  <div class="section-label">Developer</div>
-  <div class="grid">
-    <a class="card" href="/docs">🔧 API Docs<span>Interactive OpenAPI documentation</span></a>
-    <a class="card" href="/admin">🔑 API Keys<span>Manage keys for external access</span></a>
-  </div>
+</div>
 </body>
 </html>
