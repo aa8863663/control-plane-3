@@ -1,70 +1,67 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Stats | Control Plane 3</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #f5f8fc; color: #1F3864; }
-    h1,h2 { color: #1F3864; } h2 { color: #2E74B5; border-bottom: 1px solid #dde3ef; padding-bottom: 6px; }
-    table { border-collapse: collapse; width: 100%; margin-bottom: 24px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-    th { background: #1F3864; color: white; padding: 10px 14px; text-align: left; }
-    td { padding: 9px 14px; border-bottom: 1px solid #eef1f7; }
-    tr:last-child td { border-bottom: none; }
-    .chart-box { background: white; border-radius: 8px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-    a { color: #2E74B5; }
-  </style>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Stats — Control Plane 3{% endblock %}
+{% block extra_styles %}
+.stats-big-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
   <h1>Run Statistics</h1>
+  <p>Aggregate metrics across all MTCP benchmark evaluations</p>
+</div>
 
-  <h2>Outcomes</h2>
-  <div class="chart-box"><canvas id="outcomesChart" height="100"></canvas></div>
-  <table>
-    <tr><th>Outcome</th><th>Count</th></tr>
-    {% for row in data.outcomes %}
-    <tr><td>{{ row.outcome }}</td><td>{{ row.count }}</td></tr>
-    {% endfor %}
-  </table>
+<div class="stats-grid fade-up fade-up-1">
+  <div class="stat-card">
+    <div class="stat-label">Total Runs</div>
+    <div class="stat-value">{{ total_runs }}</div>
+    <div class="stat-sub">benchmark sessions</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Results</div>
+    <div class="stat-value">{{ total_results }}</div>
+    <div class="stat-sub">probe evaluations</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Hard Stops</div>
+    <div class="stat-value" style="color:var(--red)">{{ hard_stops }}</div>
+    <div class="stat-sub">SAFETY_HARD_STOP events</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Pass Rate</div>
+    <div class="stat-value" style="color:var(--orange)">
+      {% if total_results > 0 %}{{ "%.1f"|format(100 * (total_results - hard_stops) / total_results) }}%{% else %}—{% endif %}
+    </div>
+    <div class="stat-sub">overall across all models</div>
+  </div>
+</div>
 
-  <h2>Results by Temperature</h2>
-  <div class="chart-box"><canvas id="tempChart" height="100"></canvas></div>
-  <table>
-    <tr><th>Temperature</th><th>Runs</th><th>Results</th></tr>
-    {% for row in data.by_temperature %}
-    <tr><td>{{ row.temperature }}</td><td>{{ row.num_runs }}</td><td>{{ row.total_results }}</td></tr>
-    {% endfor %}
-  </table>
+<div class="card fade-up fade-up-2">
+  <div class="card-title">Protocol Reference</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px">
+    <div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;letter-spacing:0.05em">EVALUATION VECTORS</div>
+      <div style="font-size:12px;line-height:2.2;color:var(--text2)">
+        <div><span style="color:var(--accent2)">NCA</span> — Negative Constraint Adherence</div>
+        <div><span style="color:var(--accent2)">SFC</span> — Structural Format Compliance</div>
+        <div><span style="color:var(--accent2)">IDL</span> — Information Density & Length</div>
+        <div><span style="color:var(--accent2)">CG</span> — Contextual Grounding</div>
+        <div><span style="color:var(--accent2)">LANG</span> — Multilingual (FR/ES/AR/DE)</div>
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;letter-spacing:0.05em">GRADING SCALE</div>
+      <div style="font-size:12px;line-height:2.2;color:var(--text2)">
+        <div><span class="grade grade-Aplus" style="width:24px;height:20px;font-size:10px;border-radius:4px">A+</span> 95%+</div>
+        <div><span class="grade grade-A" style="width:24px;height:20px;font-size:10px;border-radius:4px">A</span> 90%+</div>
+        <div><span class="grade grade-B" style="width:24px;height:20px;font-size:10px;border-radius:4px">B</span> 80%+</div>
+        <div><span class="grade grade-C" style="width:24px;height:20px;font-size:10px;border-radius:4px">C</span> 70%+</div>
+        <div><span class="grade grade-D" style="width:24px;height:20px;font-size:10px;border-radius:4px">D</span> 60%+</div>
+        <div><span class="grade grade-F" style="width:24px;height:20px;font-size:10px;border-radius:4px">F</span> &lt;60%</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-  <h2>Recent Runs</h2>
-  <table>
-    <tr><th>ID</th><th>Created</th><th>Temp</th><th>Python</th></tr>
-    {% for run in data.recent_runs %}
-    <tr><td>{{ run.id[:8] }}...</td><td>{{ run.created_at[:19] }}</td><td>{{ run.temperature }}</td><td>{{ run.python_version }}</td></tr>
-    {% endfor %}
-  </table>
-
-  <p><a href="/">← Back to Home</a></p>
-
-  <script>
-    const outcomes = {{ data.outcomes | tojson }};
-    new Chart(document.getElementById('outcomesChart'), {
-      type: 'bar',
-      data: {
-        labels: outcomes.map(r => r.outcome),
-        datasets: [{ label: 'Count', data: outcomes.map(r => r.count), backgroundColor: ['#2E74B5','#e05c5c','#5cb85c','#f0ad4e'] }]
-      },
-      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-    });
-
-    const temps = {{ data.by_temperature | tojson }};
-    new Chart(document.getElementById('tempChart'), {
-      type: 'bar',
-      data: {
-        labels: temps.map(r => 'Temp ' + r.temperature),
-        datasets: [{ label: 'Results', data: temps.map(r => r.total_results), backgroundColor: '#2E74B5' }]
-      },
-      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-    });
-  </script>
-</body>
-</html>
+<div style="margin-top:24px" class="fade-up fade-up-3">
+  <a href="/" class="btn btn-ghost">← Dashboard</a>
+</div>
+{% endblock %}

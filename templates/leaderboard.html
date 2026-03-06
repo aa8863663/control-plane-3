@@ -1,114 +1,80 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Leaderboard | Control Plane 3</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 960px; margin: 0 auto; padding: 0 20px; background: #f5f8fc; color: #1F3864; }
-    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #dde3ef; margin-bottom: 32px; }
-    .topbar a { color: #2E74B5; text-decoration: none; font-size: 13px; margin-left: 16px; }
-    h1 { font-size: 26px; margin-bottom: 4px; }
-    h2 { color: #2E74B5; border-bottom: 1px solid #dde3ef; padding-bottom: 6px; margin-top: 32px; }
-    .chart-box { background: white; border-radius: 8px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-    table { border-collapse: collapse; width: 100%; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); margin-bottom: 24px; }
-    th { background: #1F3864; color: white; padding: 10px 14px; text-align: left; font-size: 13px; }
-    td { padding: 9px 14px; border-bottom: 1px solid #eef1f7; font-size: 13px; }
-    tr:last-child td { border-bottom: none; }
-    .grade { display: inline-block; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: bold; font-size: 14px; color: white; }
-    .grade-Aplus { background: #1a7a1a; }
-    .grade-A { background: #2e7d32; }
-    .grade-B { background: #1565c0; }
-    .grade-C { background: #f57f17; }
-    .grade-D { background: #e65100; }
-    .grade-F { background: #b71c1c; }
-    .rank { font-weight: bold; color: #1F3864; font-size: 16px; }
-    .rank-1 { color: #DAA520; }
-    .rank-2 { color: #888; }
-    .rank-3 { color: #cd7f32; }
-    .bar { height: 10px; border-radius: 5px; background: #2E74B5; display: inline-block; }
-    .empty { text-align: center; color: #888; padding: 40px; font-size: 14px; }
-  </style>
-</head>
-<body>
-  <div class="topbar">
-    <strong>Control Plane 3</strong>
-    <div>
-      <span style="font-size:13px;color:#888">👤 {{ user.username }}</span>
-      <a href="/">Home</a>
-      <a href="/logout">Sign out</a>
-    </div>
+{% extends "base.html" %}
+{% block title %}Leaderboard — Control Plane 3{% endblock %}
+{% block extra_styles %}
+.rank-bar { height: 4px; border-radius: 2px; display: inline-block; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+.temp-pill {
+  display: inline-block; padding: 2px 7px; border-radius: 4px;
+  font-size: 10px; background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text3);
+}
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>MTCP Leaderboard</h1>
+  <p>Models ranked by overall pass rate across all evaluation vectors · Multi-Turn Constraint Persistence v1.0</p>
+  <div class="doi-badge">DOI: 10.17605/OSF.IO/DXGK5</div>
+</div>
+
+<div class="card fade-up fade-up-1" style="margin-bottom:24px">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:50px">Rank</th>
+          <th>Model</th>
+          <th>Temp</th>
+          <th>Pass Rate</th>
+          <th>Grade</th>
+          <th>Passed</th>
+          <th>Hard Stops</th>
+          <th>Probes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if leaderboard %}
+          {% for row in leaderboard %}
+          <tr class="fade-up" style="animation-delay:{{ loop.index * 0.04 }}s;opacity:0">
+            <td>
+              <span class="rank {% if loop.index == 1 %}rank-1{% elif loop.index == 2 %}rank-2{% elif loop.index == 3 %}rank-3{% endif %}">
+                {% if loop.index == 1 %}🥇
+                {% elif loop.index == 2 %}🥈
+                {% elif loop.index == 3 %}🥉
+                {% else %}{{ loop.index }}{% endif %}
+              </span>
+            </td>
+            <td>
+              <span class="model-name">{{ row.model }}</span>
+              {% if 'llama' in row.model %}<span class="model-provider">Groq</span>{% endif %}
+              {% if 'claude' in row.model %}<span class="model-provider">Anthropic</span>{% endif %}
+            </td>
+            <td><span class="temp-pill">T={{ row.temperature }}</span></td>
+            <td>
+              <div class="progress-wrap">
+                <div class="progress-bar" style="max-width:80px"><div class="progress-fill" style="width:{{ row.pass_rate }}%"></div></div>
+                <span style="font-size:12px;color:var(--text)">{{ row.pass_rate }}%</span>
+              </div>
+            </td>
+            <td>
+              <span class="grade grade-{{ row.grade | replace('+','plus') }}">{{ row.grade }}</span>
+            </td>
+            <td style="color:var(--green)">{{ row.passed }}</td>
+            <td style="color:var(--red)">{{ row.hard_stops }}</td>
+            <td style="color:var(--text3)">{{ row.total }}</td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="8" style="text-align:center;padding:48px;color:var(--text3)">
+            No benchmark results yet. <a href="/run-benchmark" style="color:var(--accent2)">Run your first benchmark →</a>
+          </td></tr>
+        {% endif %}
+      </tbody>
+    </table>
   </div>
+</div>
 
-  <h1>🏆 MTCP Leaderboard</h1>
-  <p style="color:#666;margin-bottom:24px">Models ranked by overall MTCP pass rate across all evaluation vectors. Protocol: Multi-Turn Constraint Persistence v1.0 | DOI: 10.17605/OSF.IO/DXGK5</p>
-
-  {% if leaderboard %}
-  <div class="chart-box">
-    <canvas id="lbChart" height="80"></canvas>
-  </div>
-
-  <table>
-    <tr><th>Rank</th><th>Model</th><th>Score</th><th>Grade</th><th>Pass Rate</th><th>Hard Stops</th><th>Avg Latency</th><th>Probes</th></tr>
-    {% for row in leaderboard %}
-    <tr>
-      <td><span class="rank rank-{{ loop.index }}">{% if loop.index == 1 %}🥇{% elif loop.index == 2 %}🥈{% elif loop.index == 3 %}🥉{% else %}{{ loop.index }}{% endif %}</span></td>
-      <td><strong>{{ row.model }}</strong></td>
-      <td>
-        <div class="bar" style="width:{{ row.pass_rate }}px"></div>
-        <span style="margin-left:8px">{{ row.pass_rate }}%</span>
-      </td>
-      <td><span class="grade grade-{{ row.grade | replace('+','plus') }}">{{ row.grade }}</span></td>
-      <td>{{ row.passed }}/{{ row.total }}</td>
-      <td>{{ row.hard_stops }}</td>
-      <td>{{ row.avg_latency }}</td>
-      <td>{{ row.total }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-
-  <h2>Vector Breakdown</h2>
-  <div class="chart-box">
-    <canvas id="vectorChart" height="100"></canvas>
-  </div>
-
-  {% else %}
-  <div class="chart-box">
-    <div class="empty">No benchmark results yet.<br><br><a href="/run-benchmark" style="color:#2E74B5">▶ Run your first benchmark</a> to populate the leaderboard.</div>
-  </div>
-  {% endif %}
-
-  <p><a href="/">← Back to Home</a></p>
-
-  <script>
-    const lb = {{ leaderboard | tojson }};
-    const vb = {{ vector_breakdown | tojson }};
-
-    if (lb.length > 0) {
-      new Chart(document.getElementById('lbChart'), {
-        type: 'bar',
-        data: {
-          labels: lb.map(r => r.model),
-          datasets: [{ label: 'MTCP Pass Rate %', data: lb.map(r => r.pass_rate), backgroundColor: '#1F3864' }]
-        },
-        options: { scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
-      });
-
-      if (Object.keys(vb).length > 0) {
-        const models = [...new Set(lb.map(r => r.model))];
-        const vectors = ['NCA','SFC','IDL','CG'];
-        const colors = ['#1F3864','#2E74B5','#5b9bd5','#9dc3e6'];
-        const datasets = models.map((model, i) => ({
-          label: model,
-          data: vectors.map(v => vb[model] && vb[model][v] ? vb[model][v] : 0),
-          backgroundColor: colors[i % colors.length]
-        }));
-        new Chart(document.getElementById('vectorChart'), {
-          type: 'bar',
-          data: { labels: vectors, datasets },
-          options: { scales: { y: { beginAtZero: true, max: 100 } } }
-        });
-      }
-    }
-  </script>
-</body>
-</html>
+<div style="display:flex;gap:16px;flex-wrap:wrap" class="fade-up fade-up-3">
+  <a href="/certificate" class="btn btn-primary">📋 View Certificates</a>
+  <a href="/api/export-csv" class="btn btn-ghost">↓ Export CSV</a>
+  <a href="/" class="btn btn-ghost">← Dashboard</a>
+</div>
+{% endblock %}

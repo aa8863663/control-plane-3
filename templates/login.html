@@ -1,38 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Login | Control Plane 3</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Control Plane 3</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #f5f8fc; display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-    .card { background: white; border-radius: 12px; box-shadow: 0 4px 24px rgba(31,56,100,0.12); padding: 40px; width: 360px; }
-    h1 { color: #1F3864; font-size: 22px; margin-bottom: 6px; }
-    p { color: #888; font-size: 13px; margin-bottom: 24px; }
-    label { display: block; font-size: 13px; color: #444; margin-bottom: 4px; }
-    input { width: 100%; border: 1px solid #dde3ef; border-radius: 6px; padding: 10px 12px; font-size: 14px; margin-bottom: 16px; outline: none; }
-    input:focus { border-color: #2E74B5; }
-    button { width: 100%; background: #1F3864; color: white; border: none; border-radius: 6px; padding: 12px; font-size: 15px; font-weight: bold; cursor: pointer; }
-    button:hover { background: #2E74B5; }
-    .error { background: #fff0f0; border: 1px solid #e05c5c; color: #c00; border-radius: 6px; padding: 10px 12px; font-size: 13px; margin-bottom: 16px; }
-    .register-link { text-align: center; margin-top: 16px; font-size: 13px; color: #888; }
-    .register-link a { color: #2E74B5; text-decoration: none; }
+    :root {
+      --bg: #080b12; --surface: #0e1420; --surface2: #141c2e;
+      --border: #1e2d4a; --accent: #2563ff; --accent2: #0ea5e9;
+      --text: #e8edf5; --text2: #8a9ab5; --text3: #4a5a75;
+      --red: #ef4444;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background-image: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(37,99,255,0.1) 0%, transparent 70%);
+    }
+    .login-wrap { width: 100%; max-width: 380px; padding: 24px; }
+    .login-brand { text-align: center; margin-bottom: 40px; }
+    .login-logo {
+      width: 48px; height: 48px; margin: 0 auto 16px;
+      background: var(--accent);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .login-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+    .login-sub { font-size: 11px; color: var(--text3); letter-spacing: 0.05em; }
+    .login-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px;
+    }
+    .field { margin-bottom: 20px; }
+    label { font-size: 10px; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; display: block; }
+    input {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); font-family: 'JetBrains Mono', monospace;
+      font-size: 13px; padding: 12px 14px; border-radius: 8px;
+      width: 100%; outline: none; transition: border-color 0.15s;
+    }
+    input:focus { border-color: var(--accent); }
+    .btn-login {
+      width: 100%; padding: 12px;
+      background: var(--accent); color: white;
+      border: none; border-radius: 8px;
+      font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.05em;
+      transition: all 0.15s;
+      box-shadow: 0 0 24px rgba(37,99,255,0.3);
+      margin-top: 8px;
+    }
+    .btn-login:hover { background: #1d4ed8; box-shadow: 0 0 32px rgba(37,99,255,0.4); }
+    .error { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: var(--red); padding: 10px 14px; border-radius: 8px; font-size: 12px; margin-bottom: 20px; }
+    .login-footer { text-align: center; margin-top: 24px; font-size: 10px; color: var(--text3); line-height: 1.8; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+    .login-wrap { animation: fadeUp 0.5s ease forwards; }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Control Plane 3</h1>
-    <p>LLM Safety Benchmarking Platform</p>
-    {% if error %}
-    <div class="error">{{ error }}</div>
-    {% endif %}
-    <form method="post" action="/login">
-      <label>Username</label>
-      <input type="text" name="username" autocomplete="username" required>
-      <label>Password</label>
-      <input type="password" name="password" autocomplete="current-password" required>
-      <button type="submit">Sign In</button>
-    </form>
-    <div class="register-link"><a href="/register">Create an account</a></div>
+  <div class="login-wrap">
+    <div class="login-brand">
+      <div class="login-logo"></div>
+      <div class="login-title">Control Plane 3</div>
+      <div class="login-sub">MTCP Safety Evaluation Platform</div>
+    </div>
+    <div class="login-card">
+      {% if error %}
+      <div class="error">{{ error }}</div>
+      {% endif %}
+      <form method="post" action="/login">
+        <div class="field">
+          <label>Username</label>
+          <input type="text" name="username" placeholder="admin" autocomplete="username" autofocus>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-login">SIGN IN →</button>
+      </form>
+    </div>
+    <div class="login-footer">
+      © 2026 A. Abby · All Rights Reserved<br>
+      DOI: 10.17605/OSF.IO/DXGK5
+    </div>
   </div>
 </body>
 </html>
