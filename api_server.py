@@ -2,7 +2,9 @@ from fastapi import FastAPI, Request, Cookie, Form, Header
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, FileResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-import sqlite3, subprocess, os, csv, io, json
+import psycopg2
+import psycopg2.extras
+import os, subprocess, os, csv, io, json
 from typing import Optional
 from auth import init_users_table, login_user, get_user_from_token, logout_token, create_user
 from report_generator import generate_report
