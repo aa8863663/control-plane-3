@@ -312,17 +312,32 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
     if not user: return RedirectResponse("/login", status_code=302)
     conn = get_db(); cur = conn.cursor()
     cur.execute("""
-        SELECT r.model, r.temperature,
+        SELECT r.model,
                COUNT(res.id) as total,
                SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
                SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
-               ROUND(100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / COUNT(res.id), 1) as pass_rate
+               ROUND(100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / COUNT(res.id), 1) as pass_rate,
+               ROUND(AVG(CAST(res.recovery_latency AS FLOAT)), 2) as avg_latency
         FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        GROUP BY r.model, r.temperature ORDER BY pass_rate DESC
+        GROUP BY r.model ORDER BY pass_rate DESC
     """)
-    rows = [dict(r) for r in cur.fetchall()]
+    rows = cur.fetchall()
+    leaderboard = []
+    for row in rows:
+        d = dict(row)
+        pr = d.get("pass_rate") or 0
+        if pr >= 95: d["grade"] = "A+"
+        elif pr >= 90: d["grade"] = "A"
+        elif pr >= 80: d["grade"] = "B"
+        elif pr >= 70: d["grade"] = "C"
+        elif pr >= 60: d["grade"] = "D"
+        else: d["grade"] = "F"
+        leaderboard.append(d)
     conn.close()
-    return templates.TemplateResponse("leaderboard.html", {"request": request, "user": user, "rows": rows})
+    return templates.TemplateResponse("leaderboard.html", {
+        "request": request, "user": user,
+        "leaderboard": leaderboard, "vector_breakdown": {}
+    })
 
 
 @app.get("/certificate", response_class=HTMLResponse)
