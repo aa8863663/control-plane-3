@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control Plane 3 — MTCP Safety Evaluation Platform</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Serif+Display&display=swap');
+
+:root {
+  --bg: #0a0c10;
+  --surface: #111318;
+  --border: #1e2229;
+  --accent: #00e5a0;
+  --accent2: #7b6cff;
+  --warn: #f5a623;
+  --danger: #ff4f4f;
+  --text: #d4dbe8;
+  --muted: #5a6070;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.6;
+}
+
+.grid-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0,229,160,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,160,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.container { max-width: 1000px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+/* NAV */
+nav {
+  border-bottom: 1px solid var(--border);
+  padding: 18px 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.nav-logo { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: #fff; }
+.nav-logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 24px; }
+.nav-links a { font-size: 0.72rem; color: var(--muted); text-decoration: none; letter-spacing: 0.5px; transition: color 0.15s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-cta { background: var(--accent); color: #000; padding: 7px 16px; border-radius: 5px; font-size: 0.72rem; font-weight: 700; text-decoration: none; letter-spacing: 0.5px; }
+
+/* HERO */
+.hero { padding: 80px 0 60px; text-align: center; }
+.hero-badge {
+  display: inline-block; background: rgba(0,229,160,0.08);
+  border: 1px solid rgba(0,229,160,0.25); color: var(--accent);
+  font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 24px;
+}
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 3rem; color: #fff; line-height: 1.15;
+  margin-bottom: 20px; letter-spacing: -0.5px;
+}
+.hero h1 span { color: var(--accent); }
+.hero p {
+  font-size: 0.85rem; color: var(--muted); max-width: 600px;
+  margin: 0 auto 32px; line-height: 1.8;
+}
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary { background: var(--accent); color: #000; padding: 12px 24px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; font-weight: 700; text-decoration: none; letter-spacing: 0.5px; }
+.btn-secondary { background: transparent; color: var(--text); padding: 12px 24px; border-radius: 6px; border: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; text-decoration: none; letter-spacing: 0.5px; transition: border-color 0.15s; }
+.btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+.doi { font-size: 0.65rem; color: var(--muted); margin-top: 20px; }
+.doi a { color: var(--accent2); text-decoration: none; }
+
+/* STATS BAR */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; margin-bottom: 64px;
+}
+.stat-cell { background: var(--surface); padding: 22px 20px; text-align: center; }
+.stat-cell .val { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: #fff; }
+.stat-cell .val.green { color: var(--accent); }
+.stat-cell .val.warn { color: var(--warn); }
+.stat-cell .lbl { font-size: 0.63rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+
+/* SECTIONS */
+.section { margin-bottom: 64px; }
+.section-label {
+  font-size: 0.63rem; text-transform: uppercase; letter-spacing: 2.5px;
+  color: var(--muted); margin-bottom: 16px;
+}
+.section h2 { font-family: 'DM Serif Display', serif; font-size: 1.6rem; color: #fff; margin-bottom: 8px; }
+.section p { font-size: 0.78rem; color: var(--muted); line-height: 1.8; margin-bottom: 20px; max-width: 680px; }
+
+/* LEADERBOARD TABLE */
+.lb-table { width: 100%; border-collapse: collapse; }
+.lb-table th {
+  text-align: left; font-size: 0.62rem; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--muted); padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.lb-table td { padding: 11px 14px; font-size: 0.76rem; border-bottom: 1px solid rgba(30,34,41,0.6); }
+.lb-table tr:hover td { background: rgba(255,255,255,0.02); }
+.lb-table tr.top td { background: rgba(0,229,160,0.04); }
+.rank { font-weight: 700; color: var(--muted); }
+.rank.gold { color: #DAA520; }
+.rank.silver { color: #aaa; }
+.rank.bronze { color: #cd7f32; }
+.model-name { font-weight: 700; color: #fff; }
+.model-provider { font-size: 0.63rem; color: var(--muted); }
+.grade { display: inline-block; width: 26px; height: 26px; line-height: 26px; text-align: center; border-radius: 4px; font-weight: 700; font-size: 0.78rem; }
+.grade-C { background: rgba(245,166,35,0.15); color: var(--warn); }
+.grade-D { background: rgba(255,79,79,0.15); color: var(--danger); }
+.bar-wrap { width: 80px; height: 5px; background: var(--border); border-radius: 3px; display: inline-block; vertical-align: middle; margin-left: 8px; }
+.bar-fill { height: 100%; border-radius: 3px; }
+
+/* MODEL CARDS */
+.model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.model-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+.model-card.winner { border-color: rgba(0,229,160,0.25); }
+.model-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.model-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.model-card-title { font-size: 0.85rem; font-weight: 700; color: #fff; }
+.model-card-sub { font-size: 0.63rem; color: var(--muted); }
+.model-avg { font-size: 1.3rem; font-family: 'DM Serif Display', serif; }
+.model-temps { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+.temp-row { display: flex; align-items: center; gap: 10px; font-size: 0.72rem; }
+.temp-label { color: var(--muted); width: 35px; flex-shrink: 0; }
+.temp-bar-wrap { flex: 1; height: 5px; background: var(--border); border-radius: 3px; }
+.temp-bar { height: 100%; border-radius: 3px; }
+.temp-val { color: var(--text); width: 45px; text-align: right; flex-shrink: 0; }
+
+/* FINDINGS */
+.findings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.finding-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 18px; }
+.finding-num { font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.finding-title { font-size: 0.82rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.finding-body { font-size: 0.72rem; color: var(--muted); line-height: 1.7; }
+
+/* PROTOCOL */
+.protocol-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.protocol-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.protocol-icon { font-size: 1.2rem; margin-bottom: 10px; }
+.protocol-title { font-size: 0.78rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.protocol-body { font-size: 0.7rem; color: var(--muted); line-height: 1.7; }
+
+/* VECTORS */
+.vector-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.vector-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+.vector-name { font-size: 1rem; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.vector-full { font-size: 0.63rem; color: var(--muted); margin-bottom: 6px; }
+.vector-count { font-size: 0.7rem; color: var(--text); }
+
+/* CTA SECTION */
+.cta-section {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 48px; text-align: center;
+  margin-bottom: 64px;
+}
+.cta-section h2 { font-family: 'DM Serif Display', serif; font-size: 1.8rem; color: #fff; margin-bottom: 12px; }
+.cta-section p { font-size: 0.78rem; color: var(--muted); margin-bottom: 28px; }
+
+/* FOOTER */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 0; text-align: center;
+  font-size: 0.68rem; color: var(--muted);
+}
+footer a { color: var(--accent2); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<div class="container">
+<nav>
+  <div class="nav-logo">Control Plane <span>3</span></div>
+  <div class="nav-links">
+    <a href="#results">Results</a>
+    <a href="#protocol">Protocol</a>
+    <a href="#findings">Findings</a>
+    <a href="#access">Access</a>
+    <a href="/login" class="nav-cta">Sign In</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">DOI: 10.17605/OSF.IO/DXGK5</div>
+  <h1>The <span>MTCP</span> Benchmark<br>for LLM Safety</h1>
+  <p>Control Plane 3 measures whether AI models maintain compliance after correction — the most realistic safety test for production deployments. Not jailbreaks. Not single-turn prompts. Post-correction persistence.</p>
+  <div class="hero-actions">
+    <a href="/login" class="btn-primary">Access Platform</a>
+    <a href="#results" class="btn-secondary">View Results</a>
+  </div>
+  <div class="doi">Registered research · <a href="https://doi.org/10.17605/OSF.IO/DXGK5">DOI: 10.17605/OSF.IO/DXGK5</a> · © 2026 A. Abby · All Rights Reserved</div>
+</div>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stat-cell"><div class="val green">252</div><div class="lbl">Probes per Run</div></div>
+  <div class="stat-cell"><div class="val">16</div><div class="lbl">Completed Runs</div></div>
+  <div class="stat-cell"><div class="val warn">76.6%</div><div class="lbl">Best Pass Rate</div></div>
+  <div class="stat-cell"><div class="val">0</div><div class="lbl">Models Passing (B+)</div></div>
+</div>
+
+<!-- LEADERBOARD -->
+<div class="section" id="results">
+  <div class="section-label">March 2026 · Full Dataset</div>
+  <h2>MTCP Leaderboard</h2>
+  <p>All models benchmarked across 4 temperatures (T=0.0, 0.2, 0.5, 0.8). 252 probes per run. No model has achieved a passing grade yet.</p>
+
+  <table class="lb-table">
+    <thead>
+      <tr><th>Rank</th><th>Model</th><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr>
+    </thead>
+    <tbody>
+      <tr class="top"><td><span class="rank gold">🥇</span></td><td><span class="model-name">LLaMA 3.3 70B</span><span class="model-provider"> · Groq · Open Source</span></td><td>0.0</td><td>76.6% <span class="bar-wrap"><span class="bar-fill" style="width:77%;background:var(--warn)"></span></span></td><td>59</td><td><span class="grade grade-C">C</span></td></tr>
+      <tr><td><span class="rank silver">🥈</span></td><td><span class="model-name">LLaMA 3.3 70B</span><span class="model-provider"> · Groq · Open Source</span></td><td>0.5</td><td>75.8% <span class="bar-wrap"><span class="bar-fill" style="width:76%;background:var(--warn)"></span></span></td><td>61</td><td><span class="grade grade-C">C</span></td></tr>
+      <tr><td><span class="rank bronze">🥉</span></td><td><span class="model-name">LLaMA 3.3 70B</span><span class="model-provider"> · Groq · Open Source</span></td><td>0.8</td><td>75.4% <span class="bar-wrap"><span class="bar-fill" style="width:75%;background:var(--warn)"></span></span></td><td>62</td><td><span class="grade grade-C">C</span></td></tr>
+      <tr><td><span class="rank">4</span></td><td><span class="model-name">LLaMA 3.1 8B</span><span class="model-provider"> · Groq · Open Source</span></td><td>0.2</td><td>75.0% <span class="bar-wrap"><span class="bar-fill" style="width:75%;background:var(--warn)"></span></span></td><td>63</td><td><span class="grade grade-C">C</span></td></tr>
+      <tr><td><span class="rank">5</span></td><td><span class="model-name">LLaMA 3.3 70B</span><span class="model-provider"> · Groq · Open Source</span></td><td>0.2</td><td>74.6% <span class="bar-wrap"><span class="bar-fill" style="width:75%;background:var(--warn)"></span></span></td><td>64</td><td><span class="grade grade-C">C</span></td></tr>
+      <tr><td><span class="rank">6</span></td><td><span class="model-name">LLaMA 3.1 8B</span><span class="model-provider"> · Groq · Open Source</span></td><td>0.0</td><td>72.2% <span class="bar-wrap"><span class="bar-fill" style="width:72%;background:var(--warn)"></span></span></td><td>70</td><td><span class="grade grade-C">C</span></td></tr>
+      <tr><td><span class="rank">7</span></td><td><span class="model-name">LLaMA 3.1 8B</span><span class="model-provider"> · Groq · Open Source</span></td><td>0.5</td><td>71.0% <span class="bar-wrap"><span class="bar-fill" style="width:71%;background:var(--warn)"></span></span></td><td>73</td><td><span class="grade grade-C">C</span></td></tr>
+      <tr><td><span class="rank">8</span></td><td><span class="model-name">Claude Sonnet 4</span><span class="model-provider"> · Anthropic · Paid</span></td><td>0.2</td><td>68.7% <span class="bar-wrap"><span class="bar-fill" style="width:69%;background:var(--danger)"></span></span></td><td>79</td><td><span class="grade grade-D">D</span></td></tr>
+      <tr><td><span class="rank">9</span></td><td><span class="model-name">LLaMA 3.1 8B</span><span class="model-provider"> · Groq · Open Source</span></td><td>0.8</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
+      <tr><td><span class="rank">9</span></td><td><span class="model-name">Claude Sonnet 4</span><span class="model-provider"> · Anthropic · Paid</span></td><td>0.0</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
+      <tr><td><span class="rank">9</span></td><td><span class="model-name">Claude Sonnet 4</span><span class="model-provider"> · Anthropic · Paid</span></td><td>0.5</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
+      <tr><td><span class="rank">9</span></td><td><span class="model-name">Claude Sonnet 4</span><span class="model-provider"> · Anthropic · Paid</span></td><td>0.8</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
+      <tr><td><span class="rank">13</span></td><td><span class="model-name">Claude Haiku</span><span class="model-provider"> · Anthropic · Paid</span></td><td>0.8</td><td>67.1% <span class="bar-wrap"><span class="bar-fill" style="width:67%;background:var(--danger)"></span></span></td><td>83</td><td><span class="grade grade-D">D</span></td></tr>
+      <tr><td><span class="rank">14</span></td><td><span class="model-name">Claude Haiku</span><span class="model-provider"> · Anthropic · Paid</span></td><td>0.0</td><td>66.7% <span class="bar-wrap"><span class="bar-fill" style="width:67%;background:var(--danger)"></span></span></td><td>84</td><td><span class="grade grade-D">D</span></td></tr>
+      <tr><td><span class="rank">15</span></td><td><span class="model-name">Claude Haiku</span><span class="model-provider"> · Anthropic · Paid</span></td><td>0.2</td><td>65.5% <span class="bar-wrap"><span class="bar-fill" style="width:66%;background:var(--danger)"></span></span></td><td>87</td><td><span class="grade grade-D">D</span></td></tr>
+      <tr><td><span class="rank">16</span></td><td><span class="model-name">Claude Haiku</span><span class="model-provider"> · Anthropic · Paid</span></td><td>0.5</td><td>65.1% <span class="bar-wrap"><span class="bar-fill" style="width:65%;background:var(--danger)"></span></span></td><td>88</td><td><span class="grade grade-D">D</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MODEL CARDS -->
+<div class="section">
+  <div class="section-label">Average across all temperatures</div>
+  <h2>Model Comparison</h2>
+  <div class="model-grid">
+
+    <div class="model-card winner">
+      <div class="model-card-header">
+        <div class="model-icon" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
+        <div><div class="model-card-title">LLaMA 3.3 70B</div><div class="model-card-sub">llama-3.3-70b-versatile · Groq · Open Source</div></div>
+      </div>
+      <div class="model-avg" style="color:var(--warn)">75.6% avg <span style="font-size:0.7rem;color:var(--muted)">· 61.5 avg hard stops</span></div>
+      <div class="model-temps">
+        <div class="temp-row"><span class="temp-label">T=0.0</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:77%;background:var(--warn)"></div></div><span class="temp-val">76.6%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.2</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:75%;background:var(--warn)"></div></div><span class="temp-val">74.6%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.5</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:76%;background:var(--warn)"></div></div><span class="temp-val">75.8%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.8</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:75%;background:var(--warn)"></div></div><span class="temp-val">75.4%</span></div>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <div class="model-card-header">
+        <div class="model-icon" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
+        <div><div class="model-card-title">LLaMA 3.1 8B</div><div class="model-card-sub">llama-3.1-8b-instant · Groq · Open Source</div></div>
+      </div>
+      <div class="model-avg" style="color:var(--warn)">71.5% avg <span style="font-size:0.7rem;color:var(--muted)">· 71.8 avg hard stops</span></div>
+      <div class="model-temps">
+        <div class="temp-row"><span class="temp-label">T=0.0</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:72%;background:var(--warn)"></div></div><span class="temp-val">72.2%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.2</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:75%;background:var(--warn)"></div></div><span class="temp-val">75.0%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.5</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:71%;background:var(--warn)"></div></div><span class="temp-val">71.0%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.8</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:68%;background:var(--danger)"></div></div><span class="temp-val">67.9%</span></div>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <div class="model-card-header">
+        <div class="model-icon" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
+        <div><div class="model-card-title">Claude Sonnet 4</div><div class="model-card-sub">claude-sonnet-4-20250514 · Anthropic · Paid</div></div>
+      </div>
+      <div class="model-avg" style="color:var(--danger)">68.1% avg <span style="font-size:0.7rem;color:var(--muted)">· 80.5 avg hard stops</span></div>
+      <div class="model-temps">
+        <div class="temp-row"><span class="temp-label">T=0.0</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:68%;background:var(--danger)"></div></div><span class="temp-val">67.9%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.2</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:69%;background:var(--danger)"></div></div><span class="temp-val">68.7%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.5</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:68%;background:var(--danger)"></div></div><span class="temp-val">67.9%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.8</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:68%;background:var(--danger)"></div></div><span class="temp-val">67.9%</span></div>
+      </div>
+    </div>
+
+    <div class="model-card">
+      <div class="model-card-header">
+        <div class="model-icon" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
+        <div><div class="model-card-title">Claude Haiku</div><div class="model-card-sub">claude-haiku-4-5-20251001 · Anthropic · Paid</div></div>
+      </div>
+      <div class="model-avg" style="color:var(--danger)">66.1% avg <span style="font-size:0.7rem;color:var(--muted)">· 85.5 avg hard stops</span></div>
+      <div class="model-temps">
+        <div class="temp-row"><span class="temp-label">T=0.0</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:67%;background:var(--danger)"></div></div><span class="temp-val">66.7%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.2</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:66%;background:var(--danger)"></div></div><span class="temp-val">65.5%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.5</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:65%;background:var(--danger)"></div></div><span class="temp-val">65.1%</span></div>
+        <div class="temp-row"><span class="temp-label">T=0.8</span><div class="temp-bar-wrap"><div class="temp-bar" style="width:67%;background:var(--danger)"></div></div><span class="temp-val">67.1%</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- KEY FINDINGS -->
+<div class="section" id="findings">
+  <div class="section-label">Research Findings · March 2026</div>
+  <h2>What MTCP Reveals</h2>
+  <div class="findings-grid">
+    <div class="finding-card">
+      <div class="finding-num">Finding 01</div>
+      <div class="finding-title">Open source outperforms paid Claude on MTCP</div>
+      <div class="finding-body">LLaMA 3.3 70B averages 75.6% — a full 7.5 points above Claude Sonnet 4 at 68.1%, despite Sonnet costing significantly more per token. Size and price do not predict MTCP compliance.</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">Finding 02</div>
+      <div class="finding-title">Temperature has near-zero effect on Claude</div>
+      <div class="finding-body">Claude Haiku spans only 2% across all four temperatures. Sonnet scored identically at T=0.5 and T=0.8. This indicates systematic post-correction failures, not sampling randomness.</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">Finding 03</div>
+      <div class="finding-title">Higher temperature degrades LLaMA compliance</div>
+      <div class="finding-body">LLaMA 3.1 8B drops 7 points from T=0.2 to T=0.8. LLaMA 3.3 70B stays flat across all temperatures. This divergence suggests different failure modes between model families.</div>
+    </div>
+    <div class="finding-card">
+      <div class="finding-num">Finding 04</div>
+      <div class="finding-title">No model has passed MTCP yet</div>
+      <div class="finding-body">The best result — LLaMA 3.3 70B at T=0.0 with 76.6% — is still a grade C. A passing grade requires 80%+. MTCP is a genuinely hard safety benchmark for production use.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROTOCOL -->
+<div class="section" id="protocol">
+  <div class="section-label">Methodology</div>
+  <h2>The MTCP Protocol</h2>
+  <p>Multi-Turn Constraint Persistence tests whether models maintain compliance after explicit correction — the most relevant safety metric for real-world deployments where human oversight occurs.</p>
+  <div class="protocol-grid">
+    <div class="protocol-card">
+      <div class="protocol-icon">💬</div>
+      <div class="protocol-title">Turn 1 — Initial Probe</div>
+      <div class="protocol-body">Model receives a constrained prompt. Compliance is assessed against the constraint vector (NCA, SFC, IDL, CG, or LANG).</div>
+    </div>
+    <div class="protocol-card">
+      <div class="protocol-icon">⚠️</div>
+      <div class="protocol-title">Turn 2 — Correction</div>
+      <div class="protocol-body">If T1 violated, model receives an explicit correction. Recovery is measured. Persistent violation triggers T3.</div>
+    </div>
+    <div class="protocol-card">
+      <div class="protocol-icon">🛑</div>
+      <div class="protocol-title">Turn 3 — Hard Stop</div>
+      <div class="protocol-body">If T2 violated, a reinforced correction is issued. Continued violation triggers SAFETY_HARD_STOP — logged, terminated, counted.</div>
+    </div>
+  </div>
+  <div style="margin-top:20px;">
+    <div class="section-label" style="margin-bottom:12px;">Evaluation Vectors — 252 probes total</div>
+    <div class="vector-grid">
+      <div class="vector-card"><div class="vector-name">NCA</div><div class="vector-full">Negative Constraint Adherence</div><div class="vector-count">64 probes</div></div>
+      <div class="vector-card"><div class="vector-name">SFC</div><div class="vector-full">Structural Format Compliance</div><div class="vector-count">62 probes</div></div>
+      <div class="vector-card"><div class="vector-name">IDL</div><div class="vector-full">Information Density & Length</div><div class="vector-count">62 probes</div></div>
+      <div class="vector-card"><div class="vector-name">CG</div><div class="vector-full">Contextual Grounding</div><div class="vector-count">64 probes</div></div>
+      <div class="vector-card"><div class="vector-name">LANG</div><div class="vector-full">Multilingual (FR/ES/AR/DE)</div><div class="vector-count">12 probes</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section" id="access">
+  <h2>Request Access</h2>
+  <p>Control Plane 3 is available to enterprise clients, AI governance platforms, and research institutions under NDA. Contact us to discuss evaluation, licensing, or acquisition.</p>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <a href="/login" class="btn-primary">Platform Login</a>
+    <a href="https://doi.org/10.17605/OSF.IO/DXGK5" class="btn-secondary" target="_blank">Research DOI</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>Control Plane 3 · MTCP Safety Evaluation Platform · © 2026 A. Abby · All Rights Reserved</p>
+  <p style="margin-top:6px;">DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5">10.17605/OSF.IO/DXGK5</a> · Methodology confidential · Available under NDA</p>
+</footer>
+
+</div>
+</body>
+</html>

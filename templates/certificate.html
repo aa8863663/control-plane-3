@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Certificate | Control Plane 3</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 860px; margin: 0 auto; padding: 0 20px; background: #f5f8fc; color: #1F3864; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #dde3ef; margin-bottom: 32px; }
+    .topbar a { color: #2E74B5; text-decoration: none; font-size: 13px; margin-left: 16px; }
+    .cert { background: white; border: 3px solid #1F3864; border-radius: 12px; padding: 40px; margin-bottom: 24px; box-shadow: 0 4px 24px rgba(31,56,100,0.12); }
+    .cert-header { text-align: center; border-bottom: 2px solid #dde3ef; padding-bottom: 24px; margin-bottom: 24px; }
+    .cert-logo { font-size: 13px; color: #888; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    .cert-title { font-size: 22px; font-weight: bold; color: #1F3864; margin-bottom: 4px; }
+    .cert-subtitle { font-size: 13px; color: #888; }
+    .grade-badge { width: 100px; height: 100px; border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: bold; color: white; }
+    .grade-Aplus { background: linear-gradient(135deg, #1a7a1a, #2e7d32); }
+    .grade-A { background: linear-gradient(135deg, #2e7d32, #388e3c); }
+    .grade-B { background: linear-gradient(135deg, #1565c0, #1976d2); }
+    .grade-C { background: linear-gradient(135deg, #f57f17, #f9a825); }
+    .grade-D { background: linear-gradient(135deg, #e65100, #ef6c00); }
+    .grade-F { background: linear-gradient(135deg, #b71c1c, #c62828); }
+    .score { text-align: center; font-size: 48px; font-weight: bold; color: #1F3864; }
+    .score-label { text-align: center; font-size: 13px; color: #888; margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+    .stat { background: #f5f8fc; border-radius: 8px; padding: 16px; text-align: center; }
+    .stat strong { display: block; font-size: 24px; color: #2E74B5; }
+    .stat span { font-size: 12px; color: #888; }
+    table { border-collapse: collapse; width: 100%; margin-top: 16px; }
+    th { background: #1F3864; color: white; padding: 8px 12px; text-align: left; font-size: 13px; }
+    td { padding: 8px 12px; border-bottom: 1px solid #eef1f7; font-size: 13px; }
+    .footer { text-align: center; font-size: 11px; color: #aaa; margin-top: 24px; border-top: 1px solid #eee; padding-top: 12px; }
+    .desc { text-align: center; font-size: 14px; color: #555; margin: 8px 0 20px; font-style: italic; }
+    select, button { border: 1px solid #dde3ef; border-radius: 6px; padding: 9px 16px; font-size: 14px; }
+    button { background: #1F3864; color: white; border: none; cursor: pointer; margin-left: 8px; }
+    button:hover { background: #2E74B5; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <strong>Control Plane 3</strong>
+    <div>
+      <span style="font-size:13px;color:#888">👤 {{ user.username }}</span>
+      <a href="/">Home</a>
+      <a href="/logout">Sign out</a>
+    </div>
+  </div>
+
+  <h1 style="margin-bottom:8px">MTCP Certificate</h1>
+  <p style="color:#666;margin-bottom:24px">Generate a compliance certificate for any model in your results.</p>
+
+  <form method="get" action="/certificate" style="margin-bottom:28px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+    <select name="model">
+      <option value="">All models</option>
+      {% for m in models %}
+      <option value="{{ m }}" {% if m == selected_model %}selected{% endif %}>{{ m }}</option>
+      {% endfor %}
+    </select>
+    <button type="submit">Generate Certificate</button>
+    {% if cert %}
+    <a href="/api/export-certificate?model={{ selected_model or '' }}" style="color:#2E74B5;font-size:13px;margin-left:8px">⬇ Download JSON</a>
+    {% endif %}
+  </form>
+
+  {% if cert and not cert.error %}
+  <div class="cert">
+    <div class="cert-header">
+      <div class="cert-logo">Multi-Turn Constraint Persistence Protocol</div>
+      <div class="cert-title">MTCP Compliance Certificate</div>
+      <div class="cert-subtitle">Control Plane 3 &nbsp;|&nbsp; DOI: {{ cert.doi }} &nbsp;|&nbsp; {{ cert.issued_at[:10] }}</div>
+      <div class="cert-subtitle" style="margin-top:4px">Certificate ID: {{ cert.certificate_id }}</div>
+    </div>
+
+    <div class="grade-badge grade-{{ cert.overall_grade | replace('+','plus') }}">{{ cert.overall_grade }}</div>
+    <div class="score">{{ cert.overall_score }}%</div>
+    <div class="score-label">Overall MTCP Pass Rate</div>
+    <div class="desc">{{ cert.grade_description }}</div>
+
+    <div class="grid">
+      <div class="stat"><strong>{{ cert.total_probes }}</strong><span>Total Probes</span></div>
+      <div class="stat"><strong>{{ cert.completed }}</strong><span>Completed</span></div>
+      <div class="stat"><strong>{{ cert.hard_stops }}</strong><span>Hard Stops</span></div>
+    </div>
+
+    <h3 style="color:#2E74B5;margin-bottom:8px">Vector Breakdown</h3>
+    <table>
+      <tr><th>Vector</th><th>Score</th><th>Grade</th><th>Passed</th><th>Failed</th><th>Avg Latency</th></tr>
+      {% for vec, data in cert.vector_breakdown.items() %}
+      <tr>
+        <td><strong>{{ vec }}</strong></td>
+        <td>{{ data.score }}%</td>
+        <td><strong>{{ data.grade }}</strong></td>
+        <td>{{ data.passed }}</td>
+        <td>{{ data.failed }}</td>
+        <td>{{ data.avg_recovery_latency }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <div class="footer">
+      Model: {{ cert.model }} &nbsp;|&nbsp; Protocol: {{ cert.protocol }} &nbsp;|&nbsp;
+      Control Plane 3 — github.com/aa8863663/control-plane-3 &nbsp;|&nbsp; All Rights Reserved © 2026 A. Abby
+    </div>
+  </div>
+  {% elif cert and cert.error %}
+  <div style="background:#fff0f0;border:1px solid #e05c5c;border-radius:8px;padding:20px;color:#c00">{{ cert.error }}</div>
+  {% endif %}
+
+  <p><a href="/">← Back to Home</a></p>
+</body>
+</html>

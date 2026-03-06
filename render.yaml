@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: control-plane-3
+    runtime: docker
+    plan: free
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: USER_KEYS_SECRET
+        sync: false
