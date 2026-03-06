@@ -323,3 +323,22 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return templates.TemplateResponse("leaderboard.html", {"request": request, "user": user, "rows": rows})
+
+
+@app.get("/certificate", response_class=HTMLResponse)
+def certificate(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    if not user: return RedirectResponse("/login", status_code=302)
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("""
+        SELECT r.model, r.temperature,
+               COUNT(res.id) as total,
+               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
+               ROUND(100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / COUNT(res.id), 1) as pass_rate,
+               SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops
+        FROM runs r LEFT JOIN results res ON r.id=res.run_id
+        GROUP BY r.model, r.temperature ORDER BY pass_rate DESC
+    """)
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return templates.TemplateResponse("certificate.html", {"request": request, "user": user, "rows": rows})
