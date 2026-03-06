@@ -12,23 +12,23 @@
 <div class="stats-grid fade-up fade-up-1">
   <div class="stat-card">
     <div class="stat-label">Total Runs</div>
-    <div class="stat-value">{{ total_runs }}</div>
+    <div class="stat-value">{{ data.total_runs if data else total_runs }}</div>
     <div class="stat-sub">benchmark sessions</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Total Results</div>
-    <div class="stat-value">{{ total_results }}</div>
+    <div class="stat-value">{{ data.total_results if data else total_results }}</div>
     <div class="stat-sub">probe evaluations</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Hard Stops</div>
-    <div class="stat-value" style="color:var(--red)">{{ hard_stops }}</div>
+    <div class="stat-value" style="color:var(--red)">{{ data.hard_stops if data else hard_stops }}</div>
     <div class="stat-sub">SAFETY_HARD_STOP events</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Pass Rate</div>
     <div class="stat-value" style="color:var(--orange)">
-      {% if total_results > 0 %}{{ "%.1f"|format(100 * (total_results - hard_stops) / total_results) }}%{% else %}—{% endif %}
+      {% if data.total_results and data.total_results > 0 %}{{ "%.1f"|format(100 * (data.total_results - data.hard_stops) / data.total_results) }}%{% else %}—{% endif %}
     </div>
     <div class="stat-sub">overall across all models</div>
   </div>
