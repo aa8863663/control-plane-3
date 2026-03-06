@@ -37,8 +37,10 @@ DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "controlplane
 PROBES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "probes_200.json")
 
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    import psycopg2
+    import psycopg2.extras
+    conn = psycopg2.connect(os.environ.get("DATABASE_URL", ""))
+    conn.cursor_factory = psycopg2.extras.RealDictCursor
     return conn
 
 def current_user(session=None):
