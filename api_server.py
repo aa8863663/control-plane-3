@@ -207,16 +207,22 @@ def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
     conn = get_db(); cur = conn.cursor()
     cur.execute("SELECT COUNT(*) FROM results"); total_results = cur.fetchone()[0]
     cur.execute("SELECT COUNT(*) FROM runs"); total_runs = cur.fetchone()[0]
-    try:
-        cur.execute("SELECT SUM(total_tokens) FROM results"); total_tokens = cur.fetchone()[0] or 0
-        cur.execute("SELECT r.temperature, COUNT(res.id) as results, SUM(res.total_tokens) as total_tokens FROM runs r LEFT JOIN results res ON r.id=res.run_id GROUP BY r.temperature ORDER BY r.temperature")
-        note = None
-    except:
-        total_tokens = 0
-        cur.execute("SELECT r.temperature, COUNT(res.id) as results FROM runs r LEFT JOIN results res ON r.id=res.run_id GROUP BY r.temperature ORDER BY r.temperature")
-        note = "Token columns not present in this schema version. Run new benchmarks to populate."
-    breakdown = [dict(r) for r in cur.fetchall()]; conn.close()
-    return templates.TemplateResponse("costs.html", {"request": request, "data": {"total_results": total_results, "total_runs": total_runs, "total_tokens": total_tokens, "breakdown": breakdown, "note": note}, "user": user})
+    cur.execute("""
+        SELECT r.model, r.temperature, COUNT(res.id) as results,
+               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
+               SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops
+        FROM runs r LEFT JOIN results res ON r.id=res.run_id
+        GROUP BY r.model, r.temperature ORDER BY r.model, r.temperature
+    """)
+    breakdown = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    note = "Token tracking not available for imported benchmark runs. Showing result counts only."
+    return templates.TemplateResponse("costs.html", {
+        "request": request, "user": user,
+        "data": {"total_results": total_results, "total_runs": total_runs,
+                 "total_tokens": "N/A", "breakdown": breakdown, "note": note}
+    })
+
 
 @app.get("/api/compare", response_class=HTMLResponse)
 def compare_page(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -294,3 +300,7 @@ def export_report(session: Optional[str] = Cookie(default=None), x_api_key: Opti
     path = generate_report("/tmp/cp3_report.pdf")
     if path.endswith(".pdf"): return FileResponse(path, media_type="application/pdf", filename="control-plane-3-report.pdf")
     return FileResponse(path, media_type="text/html", filename="control-plane-3-report.html")
+
+@app.get("/landing", response_class=HTMLResponse)
+def landing_page(request: Request):
+    return templates.TemplateResponse("landing.html", {"request": request})
