@@ -11,6 +11,24 @@ from api_keys import init_api_keys_table, create_api_key, validate_api_key, list
 init_users_table()
 init_api_keys_table()
 
+def create_default_admin():
+    try:
+        conn = sqlite3.connect(os.path.join(os.path.dirname(os.path.abspath(__file__)), "controlplane.db"))
+        conn.row_factory = sqlite3.Row
+        existing = conn.execute("SELECT id FROM users WHERE username = 'admin'").fetchone()
+        if not existing:
+            import hashlib, secrets
+            salt = secrets.token_hex(16)
+            h = hashlib.sha256((salt + "admin123").encode()).hexdigest()
+            pw = f"{salt}:{h}"
+            conn.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", ('admin', pw))
+            conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Admin init warning: {e}")
+
+create_default_admin()
+
 app = FastAPI(title="Control Plane 3", description="MTCP LLM Safety Benchmarking Platform")
 templates = Jinja2Templates(directory="templates")
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "controlplane.db")
