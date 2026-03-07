@@ -14,6 +14,7 @@ init_users_table()
 init_api_keys_table()
 
 def create_default_admin():
+    return  # now handled by init_users_table
     try:
         conn = sqlite3.connect(os.path.join(os.path.dirname(os.path.abspath(__file__)), "controlplane.db"))
         conn.row_factory = sqlite3.Row
@@ -101,7 +102,9 @@ def admin_page(request: Request, session: Optional[str] = Cookie(default=None), 
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
     conn = get_db()
-    users = [dict(r) for r in conn.execute("SELECT id, username, created_at, is_active FROM users ORDER BY id").fetchall()]
+    cur = conn.cursor()
+    cur.execute("SELECT id, username, created_at, is_active FROM users ORDER BY id")
+    users = [dict(r) for r in cur.fetchall()]
     conn.close()
     keys = list_api_keys(user["id"])
     return templates.TemplateResponse("admin.html", {"request": request, "user": user, "users": users, "api_keys": keys, "new_key": request.query_params.get("new_key")})
@@ -320,8 +323,8 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
                COUNT(res.id) as total,
                SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
                SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
-               ROUND(100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / COUNT(res.id), 1) as pass_rate,
-               ROUND(AVG(CAST(res.recovery_latency AS FLOAT)), 2) as avg_latency
+               ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / COUNT(res.id))::numeric, 1) as pass_rate,
+               ROUND(AVG(res.recovery_latency::numeric), 2) as avg_latency
         FROM runs r LEFT JOIN results res ON r.id=res.run_id
         GROUP BY r.model ORDER BY pass_rate DESC
     """)
@@ -353,7 +356,7 @@ def certificate(request: Request, session: Optional[str] = Cookie(default=None))
         SELECT r.model, r.temperature,
                COUNT(res.id) as total,
                SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-               ROUND(100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / COUNT(res.id), 1) as pass_rate,
+               ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / COUNT(res.id))::numeric, 1) as pass_rate,
                SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops
         FROM runs r LEFT JOIN results res ON r.id=res.run_id
         GROUP BY r.model, r.temperature ORDER BY pass_rate DESC
