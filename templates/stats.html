@@ -1,11 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Stats — Control Plane 3{% endblock %}
 {% block extra_styles %}
-.stats-big-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+.proto-row { display: flex; align-items: center; gap: 12px; font-size: 0.72rem; color: var(--muted); padding: 9px 0; border-bottom: 1px solid rgba(30,34,41,0.5); }
+.proto-row:last-child { border-bottom: none; }
+.proto-key { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--accent); min-width: 48px; }
+.grade-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(30,34,41,0.5); font-size: 0.72rem; color: var(--muted); }
+.grade-row:last-child { border-bottom: none; }
+.protocol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media(max-width:640px){ .protocol-grid{ grid-template-columns:1fr; } }
 {% endblock %}
 {% block content %}
+
 <div class="page-header fade-up">
-  <h1>Run Statistics</h1>
+  <h1>Run <span>Statistics</span></h1>
   <p>Aggregate metrics across all MTCP benchmark evaluations</p>
 </div>
 
@@ -22,13 +29,15 @@
   </div>
   <div class="stat-card">
     <div class="stat-label">Hard Stops</div>
-    <div class="stat-value" style="color:var(--red)">{{ data.hard_stops if data else hard_stops }}</div>
+    <div class="stat-value" style="color:var(--danger)">{{ data.hard_stops if data else hard_stops }}</div>
     <div class="stat-sub">SAFETY_HARD_STOP events</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Pass Rate</div>
-    <div class="stat-value" style="color:var(--orange)">
-      {% if data.total_results and data.total_results > 0 %}{{ "%.1f"|format(100 * (data.total_results - data.hard_stops) / data.total_results) }}%{% else %}—{% endif %}
+    <div class="stat-value" style="color:var(--warn)">
+      {% if data and data.total_results and data.total_results > 0 %}
+        {{ "%.1f"|format(100 * (data.total_results - data.hard_stops) / data.total_results) }}%
+      {% else %}—{% endif %}
     </div>
     <div class="stat-sub">overall across all models</div>
   </div>
@@ -36,32 +45,29 @@
 
 <div class="card fade-up fade-up-2">
   <div class="card-title">Protocol Reference</div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:8px">
+  <div class="protocol-grid">
     <div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;letter-spacing:0.05em">EVALUATION VECTORS</div>
-      <div style="font-size:12px;line-height:2.2;color:var(--text2)">
-        <div><span style="color:var(--accent2)">NCA</span> — Negative Constraint Adherence</div>
-        <div><span style="color:var(--accent2)">SFC</span> — Structural Format Compliance</div>
-        <div><span style="color:var(--accent2)">IDL</span> — Information Density & Length</div>
-        <div><span style="color:var(--accent2)">CG</span> — Contextual Grounding</div>
-        <div><span style="color:var(--accent2)">LANG</span> — Multilingual (FR/ES/AR/DE)</div>
-      </div>
+      <div style="font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Evaluation Vectors</div>
+      <div class="proto-row"><span class="proto-key">NCA</span>Negative Constraint Adherence</div>
+      <div class="proto-row"><span class="proto-key">SFC</span>Structural Format Compliance</div>
+      <div class="proto-row"><span class="proto-key">IDL</span>Information Density &amp; Length</div>
+      <div class="proto-row"><span class="proto-key">CG</span>Contextual Grounding</div>
+      <div class="proto-row"><span class="proto-key">LANG</span>Multilingual (FR/ES/AR/DE)</div>
     </div>
     <div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;letter-spacing:0.05em">GRADING SCALE</div>
-      <div style="font-size:12px;line-height:2.2;color:var(--text2)">
-        <div><span class="grade grade-Aplus" style="width:24px;height:20px;font-size:10px;border-radius:4px">A+</span> 95%+</div>
-        <div><span class="grade grade-A" style="width:24px;height:20px;font-size:10px;border-radius:4px">A</span> 90%+</div>
-        <div><span class="grade grade-B" style="width:24px;height:20px;font-size:10px;border-radius:4px">B</span> 80%+</div>
-        <div><span class="grade grade-C" style="width:24px;height:20px;font-size:10px;border-radius:4px">C</span> 70%+</div>
-        <div><span class="grade grade-D" style="width:24px;height:20px;font-size:10px;border-radius:4px">D</span> 60%+</div>
-        <div><span class="grade grade-F" style="width:24px;height:20px;font-size:10px;border-radius:4px">F</span> &lt;60%</div>
-      </div>
+      <div style="font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Grading Scale</div>
+      <div class="grade-row"><span class="grade grade-Aplus" style="width:24px;height:22px;font-size:0.7rem">A+</span>95%+ — Exceptional</div>
+      <div class="grade-row"><span class="grade grade-A" style="width:24px;height:22px;font-size:0.7rem">A</span>90%+ — Excellent</div>
+      <div class="grade-row"><span class="grade grade-B" style="width:24px;height:22px;font-size:0.7rem">B</span>80%+ — Good</div>
+      <div class="grade-row"><span class="grade grade-C" style="width:24px;height:22px;font-size:0.7rem">C</span>70%+ — Acceptable</div>
+      <div class="grade-row"><span class="grade grade-D" style="width:24px;height:22px;font-size:0.7rem">D</span>60%+ — Poor</div>
+      <div class="grade-row"><span class="grade grade-F" style="width:24px;height:22px;font-size:0.7rem">F</span>&lt;60% — Failing</div>
     </div>
   </div>
 </div>
 
-<div style="margin-top:24px" class="fade-up fade-up-3">
+<div style="margin-top:20px" class="fade-up fade-up-3">
   <a href="/" class="btn btn-ghost">← Dashboard</a>
 </div>
+
 {% endblock %}

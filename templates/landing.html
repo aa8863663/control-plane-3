@@ -279,7 +279,7 @@
         passes <span class="hl">MTCP</span>
       </h1>
       <p class="hero-sub fade-up d3">
-        The first independent benchmark measuring whether AI models maintain safety constraints across multi-turn conversations. 4,032 evaluations. 4 models. The best grade is C.
+        The first independent benchmark measuring whether AI models maintain safety constraints across multi-turn conversations. {{ total_results }} evaluations. {{ total_models }} models tested. Best grade: {{ best_grade }}.
       </p>
       <div class="hero-actions fade-up d4">
         <a href="#results" class="btn-primary">View Results →</a>
@@ -288,15 +288,15 @@
       </div>
       <div class="stat-strip fade-up d5">
         <div class="stat-strip-item">
-          <div class="stat-strip-val">4,032</div>
+          <div class="stat-strip-val">{{ total_results }}</div>
           <div class="stat-strip-label">Evaluations</div>
         </div>
         <div class="stat-strip-item">
-          <div class="stat-strip-val">4</div>
+          <div class="stat-strip-val">{{ total_models }}</div>
           <div class="stat-strip-label">Models</div>
         </div>
         <div class="stat-strip-item">
-          <div class="stat-strip-val" style="color:var(--orange)">C</div>
+          <div class="stat-strip-val" style="color:var(--orange)">{{ best_grade }}</div>
           <div class="stat-strip-label">Best Grade</div>
         </div>
         <div class="stat-strip-item">
@@ -311,7 +311,7 @@
   <section id="results">
     <div class="section-label">Benchmark Results</div>
     <h2 class="section-title">Full Leaderboard</h2>
-    <p class="section-sub">All models evaluated across 252 probes at 4 temperature settings. Results are independent and peer-registered.</p>
+    <p class="section-sub">All models evaluated across 200 probes at 4 temperature settings. Results are independent and peer-registered.</p>
 
     <div class="results-wrap">
       <div class="results-header">
@@ -324,91 +324,31 @@
       <table>
         <thead>
           <tr>
-            <th>Rank</th>
+            <th>#</th>
             <th>Model</th>
-            <th>Avg Pass Rate</th>
+            <th>Pass Rate</th>
             <th>Grade</th>
-            <th>Avg Hard Stops</th>
-            <th>Temp Variance</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="winner-row">
-            <td style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#fbbf24">🥇</td>
-            <td>
-              <div class="model-cell">
-                <div class="model-icon icon-groq">GR</div>
-                <div>
-                  <div class="model-name">llama-3.3-70b-versatile <span class="winner-tag">BEST</span></div>
-                  <div class="model-provider">Meta · via Groq</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="pass-bar"><div class="pass-fill" style="width:75.6%"></div></div>
-              <span style="color:var(--text);font-weight:500">75.6%</span>
-            </td>
-            <td><span class="grade-badge grade-C">C</span></td>
-            <td style="color:var(--red)">61.5</td>
-            <td style="color:var(--green);font-size:11px">Low (1.2%)</td>
-          </tr>
+          {% for m in model_rows %}
           <tr>
-            <td style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#9ca3af">🥈</td>
+            <td style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#9ca3af">{{ loop.index }}</td>
             <td>
               <div class="model-cell">
-                <div class="model-icon icon-groq">GR</div>
+                <div class="model-icon" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);color:#818cf8">{{ m.model[:2]|upper }}</div>
                 <div>
-                  <div class="model-name">llama-3.1-8b-instant</div>
-                  <div class="model-provider">Meta · via Groq</div>
+                  <div class="model-name">{{ m.model }}{% if loop.first %} <span class="winner-tag">BEST</span>{% endif %}</div>
                 </div>
               </div>
             </td>
             <td>
-              <div class="pass-bar"><div class="pass-fill" style="width:71.5%"></div></div>
-              <span style="color:var(--text);font-weight:500">71.5%</span>
+              <div class="pass-bar"><div class="pass-fill" style="width:{{ m.pass_rate }}%"></div></div>
+              <span style="color:var(--text);font-weight:500">{{ m.pass_rate }}%</span>
             </td>
-            <td><span class="grade-badge grade-C">C</span></td>
-            <td style="color:var(--red)">71.8</td>
-            <td style="color:var(--orange);font-size:11px">High (7.1%)</td>
+            <td><span class="grade-badge grade-{{ m.grade }}">{{ m.grade }}</span></td>
           </tr>
-          <tr>
-            <td style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:#b45309">🥉</td>
-            <td>
-              <div class="model-cell">
-                <div class="model-icon icon-anthropic">AN</div>
-                <div>
-                  <div class="model-name">claude-sonnet-4-20250514</div>
-                  <div class="model-provider">Anthropic</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="pass-bar"><div class="pass-fill" style="width:68.1%"></div></div>
-              <span style="color:var(--text);font-weight:500">68.1%</span>
-            </td>
-            <td><span class="grade-badge grade-D">D</span></td>
-            <td style="color:var(--red)">80.3</td>
-            <td style="color:var(--green);font-size:11px">Very Low (0.8%)</td>
-          </tr>
-          <tr>
-            <td style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--text3)">4</td>
-            <td>
-              <div class="model-cell">
-                <div class="model-icon icon-anthropic">AN</div>
-                <div>
-                  <div class="model-name">claude-haiku-4-5-20251001</div>
-                  <div class="model-provider">Anthropic</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="pass-bar"><div class="pass-fill" style="width:66.1%"></div></div>
-              <span style="color:var(--text);font-weight:500">66.1%</span>
-            </td>
-            <td><span class="grade-badge grade-D">D</span></td>
-            <td style="color:var(--red)">83.3</td>
-            <td style="color:var(--green);font-size:11px">Very Low (1.6%)</td>
-          </tr>
+          {% endfor %}
         </tbody>
       </table>
     </div>
@@ -423,12 +363,12 @@
       <div class="finding-card">
         <div class="finding-num">01</div>
         <div class="finding-title">Open source beats paid Claude</div>
-        <div class="finding-text">LLaMA 3.3 70B achieves 75.6% average vs Claude Sonnet 4 at 68.1% — a 7.5 point gap. The free open source model outperforms Anthropic's commercial product on safety constraint persistence.</div>
+        <div class="finding-text">{{ top_model }} leads with {{ top_score }}% average. Older smaller models outperform newer flagships on constraint persistence — a surprising finding across {{ total_models }} models tested.</div>
       </div>
       <div class="finding-card">
         <div class="finding-num">02</div>
         <div class="finding-title">No model passes MTCP</div>
-        <div class="finding-text">The highest grade achieved across all 16 benchmark runs is C. No production LLM reliably maintains constraints across multi-turn correction sequences at scale.</div>
+        <div class="finding-text">The highest grade achieved is {{ best_grade }}. No production LLM reliably maintains constraints across multi-turn correction sequences at scale. {{ total_models }} models tested across 6 providers.</div>
       </div>
       <div class="finding-card">
         <div class="finding-num">03</div>
@@ -447,7 +387,7 @@
   <section id="protocol" style="padding-top:0">
     <div class="section-label">Protocol</div>
     <h2 class="section-title">5 Evaluation Vectors</h2>
-    <p class="section-sub">Each model is tested across 252 probes in a structured three-turn correction sequence. Hard stops are cryptographically logged.</p>
+    <p class="section-sub">Each model is tested across 200 probes in a structured three-turn correction sequence. Hard stops are cryptographically logged.</p>
     <div class="vectors-grid">
       <div class="vector-card">
         <div class="vector-code">NCA</div>

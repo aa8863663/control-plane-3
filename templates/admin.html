@@ -1,19 +1,21 @@
 {% extends "base.html" %}
 {% block title %}Admin — Control Plane 3{% endblock %}
 {% block extra_styles %}
-.user-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(30,45,74,0.5); }
+.user-row { display: flex; align-items: center; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid rgba(30,34,41,0.5); }
 .user-row:last-child { border-bottom: none; }
-.user-name { font-size: 13px; color: var(--text); font-weight: 500; }
-.user-role { font-size: 10px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
-.role-admin { background: rgba(37,99,255,0.15); color: #60a5fa; border: 1px solid rgba(37,99,255,0.3); }
-.role-user { background: var(--surface2); color: var(--text3); border: 1px solid var(--border); }
-.btn-danger { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid rgba(239,68,68,0.2); font-size: 11px; padding: 5px 10px; border-radius: 6px; cursor: pointer; text-decoration: none; transition: all 0.15s; }
-.btn-danger:hover { background: rgba(239,68,68,0.2); }
-.section-gap { margin-bottom: 28px; }
+.user-name { font-size: 0.76rem; color: var(--text); font-weight: 500; }
+.role-tag { font-size: 0.58rem; padding: 2px 7px; border-radius: 3px; margin-left: 8px; letter-spacing: 0.5px; }
+.role-admin { background: rgba(0,229,160,0.1); color: var(--accent); border: 1px solid rgba(0,229,160,0.2); }
+.role-user  { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+.form-inline { display: grid; gap: 12px; align-items: end; }
+.form-3 { grid-template-columns: 1fr 1fr auto; }
+.form-4 { grid-template-columns: 1fr 1fr 1fr auto; }
+.section-gap { margin-bottom: 20px; }
 {% endblock %}
 {% block content %}
+
 <div class="page-header fade-up">
-  <h1>Admin Panel</h1>
+  <h1>Admin <span>Panel</span></h1>
   <p>User management and platform configuration</p>
 </div>
 
@@ -24,27 +26,27 @@
     <div class="user-row">
       <div>
         <span class="user-name">{{ u.username }}</span>
-        <span class="user-role {% if u.username == 'admin' %}role-admin{% else %}role-user{% endif %}">
+        <span class="role-tag {% if u.username == 'admin' %}role-admin{% else %}role-user{% endif %}">
           {% if u.username == 'admin' %}admin{% else %}user{% endif %}
         </span>
       </div>
       <div style="display:flex;gap:8px;align-items:center">
-        <span style="font-size:10px;color:var(--text3)">ID: {{ u.id }}</span>
+        <span style="font-size:0.62rem;color:var(--muted)">ID: {{ u.id }}</span>
         {% if u.username != 'admin' %}
-        <a href="/admin/delete-user/{{ u.id }}" class="btn-danger">Delete</a>
+        <a href="/admin/delete-user/{{ u.id }}" class="btn btn-danger" style="font-size:0.62rem;padding:4px 10px">Delete</a>
         {% endif %}
       </div>
     </div>
     {% endfor %}
   {% else %}
-    <div style="color:var(--text3);font-size:12px;padding:16px 0">No users found.</div>
+    <div style="color:var(--muted);font-size:0.72rem;padding:12px 0">No users found.</div>
   {% endif %}
 </div>
 
 <div class="card section-gap fade-up fade-up-2">
   <div class="card-title">Create User</div>
   <form method="post" action="/admin/create-user" style="margin-top:12px">
-    <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end">
+    <div class="form-inline form-3">
       <div>
         <label>Username</label>
         <input type="text" name="username" placeholder="newuser">
@@ -53,7 +55,7 @@
         <label>Password</label>
         <input type="password" name="password" placeholder="••••••••">
       </div>
-      <button type="submit" class="btn btn-primary" style="height:42px">Create</button>
+      <button type="submit" class="btn btn-primary" style="height:40px;margin-top:22px">Create</button>
     </div>
   </form>
 </div>
@@ -61,7 +63,7 @@
 <div class="card section-gap fade-up fade-up-3">
   <div class="card-title">Change Password</div>
   <form method="post" action="/admin/change-password" style="margin-top:12px">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end">
+    <div class="form-inline form-4">
       <div>
         <label>Username</label>
         <input type="text" name="username" placeholder="admin">
@@ -74,20 +76,21 @@
         <label>Confirm</label>
         <input type="password" name="confirm_password" placeholder="••••••••">
       </div>
-      <button type="submit" class="btn btn-primary" style="height:42px">Update</button>
+      <button type="submit" class="btn btn-primary" style="height:40px;margin-top:22px">Update</button>
     </div>
   </form>
 </div>
 
 <div class="card fade-up fade-up-4">
   <div class="card-title">Platform Info</div>
-  <div style="font-size:12px;color:var(--text2);line-height:2.2;margin-top:8px">
+  <div style="font-size:0.72rem;color:var(--muted);line-height:2.2;margin-top:4px">
     <div>Protocol: <span style="color:var(--text)">MTCP v1.0</span></div>
-    <div>DOI: <span style="color:var(--accent2)">10.17605/OSF.IO/DXGK5</span></div>
+    <div>DOI: <span style="color:var(--accent)">10.17605/OSF.IO/DXGK5</span></div>
     <div>© 2026 A. Abby · All Rights Reserved</div>
-    <div style="margin-top:8px">
-      <a href="/api/export-csv" class="btn btn-ghost" style="font-size:11px;padding:6px 12px">↓ Export All Data</a>
+    <div style="margin-top:10px">
+      <a href="/api/export-csv" class="btn btn-ghost" style="font-size:0.65rem;padding:6px 14px">↓ Export All Data</a>
     </div>
   </div>
 </div>
+
 {% endblock %}
