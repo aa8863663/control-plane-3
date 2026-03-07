@@ -233,8 +233,15 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
     cur.execute("SELECT r.temperature, COUNT(DISTINCT r.id) as num_runs, COUNT(res.id) as total_results FROM runs r LEFT JOIN results res ON r.id=res.run_id GROUP BY r.temperature ORDER BY r.temperature")
     temp_rows = [dict(r) for r in cur.fetchall()]
     cur.execute("SELECT id, created_at, temperature, python_version FROM runs ORDER BY created_at DESC LIMIT 10")
-    recent_runs = [dict(r) for r in cur.fetchall()]; conn.close()
-    return templates.TemplateResponse("stats.html", {"request": request, "data": {"outcomes": outcome_rows, "by_temperature": temp_rows, "recent_runs": recent_runs}, "user": user})
+    recent_runs = [dict(r) for r in cur.fetchall()]
+    cur.execute("SELECT COUNT(*) FROM runs")
+    total_runs = cur.fetchone()[0]
+    cur.execute("SELECT COUNT(*) FROM results")
+    total_results = cur.fetchone()[0]
+    cur.execute("SELECT COUNT(*) FROM results WHERE outcome='SAFETY_HARD_STOP'")
+    hard_stops = cur.fetchone()[0]
+    conn.close()
+    return templates.TemplateResponse("stats.html", {"request": request, "data": {"outcomes": outcome_rows, "by_temperature": temp_rows, "recent_runs": recent_runs, "total_runs": total_runs, "total_results": total_results, "hard_stops": hard_stops}, "user": user})
 
 @app.get("/api/actuarial", response_class=HTMLResponse)
 def actuarial_page(request: Request, session: Optional[str] = Cookie(default=None)):
