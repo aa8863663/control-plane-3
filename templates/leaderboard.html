@@ -7,6 +7,14 @@
   font-size: 10px; background: var(--surface2); border: 1px solid var(--border);
   color: var(--text3);
 }
+.risk-pill {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.5px;
+}
+.risk-low    { background: rgba(34,197,94,0.12);  color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+.risk-medium { background: rgba(249,115,22,0.12); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
+.risk-high   { background: rgba(239,68,68,0.12);  color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+.risk-critical { background: rgba(220,38,38,0.15); color: #f87171; border: 1px solid rgba(220,38,38,0.4); }
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
@@ -27,6 +35,9 @@
           <th>Grade</th>
           <th>Passed</th>
           <th>Hard Stops</th>
+          <th>Breach Rate</th>
+          <th>Enforcement</th>
+          <th>Turns to Breach</th>
           <th>Probes</th>
         </tr>
       </thead>
@@ -46,6 +57,7 @@
               <span class="model-name">{{ row.model }}</span>
               {% if 'llama' in row.model %}<span class="model-provider">Groq</span>{% endif %}
               {% if 'claude' in row.model %}<span class="model-provider">Anthropic</span>{% endif %}
+              {% if 'gpt' in row.model %}<span class="model-provider">OpenAI</span>{% endif %}
             </td>
             <td><span class="temp-pill">T={{ row.temperature }}</span></td>
             <td>
@@ -59,11 +71,20 @@
             </td>
             <td style="color:var(--green)">{{ row.passed }}</td>
             <td style="color:var(--red)">{{ row.hard_stops }}</td>
+            <td style="color:var(--red);font-family:var(--font-mono);font-size:12px">
+              {% if row.breach_rate is not none %}{{ row.breach_rate }}%{% else %}—{% endif %}
+            </td>
+            <td style="color:var(--green);font-family:var(--font-mono);font-size:12px">
+              {% if row.enforcement_reliability is not none %}{{ row.enforcement_reliability }}%{% else %}—{% endif %}
+            </td>
+            <td style="color:#fbbf24;font-family:var(--font-mono);font-size:12px">
+              {% if row.mean_turns_to_breach is not none %}{{ row.mean_turns_to_breach }}{% else %}—{% endif %}
+            </td>
             <td style="color:var(--text3)">{{ row.total }}</td>
           </tr>
           {% endfor %}
         {% else %}
-          <tr><td colspan="8" style="text-align:center;padding:48px;color:var(--text3)">
+          <tr><td colspan="11" style="text-align:center;padding:48px;color:var(--text3)">
             No benchmark results yet. <a href="/run-benchmark" style="color:var(--accent2)">Run your first benchmark →</a>
           </td></tr>
         {% endif %}

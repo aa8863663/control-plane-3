@@ -35,12 +35,13 @@
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
 }
-.cert-stats { display: flex; gap: 32px; }
+.cert-stats { display: flex; gap: 32px; flex-wrap: wrap; }
 .cert-stat-label { font-size: 10px; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
 .cert-stat-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); }
 .cert-footer { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
 .cert-doi { font-size: 10px; color: var(--text3); }
 .cert-doi span { color: var(--accent2); }
+.cert-divider { width: 1px; background: var(--border); align-self: stretch; margin: 0 8px; }
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
@@ -59,6 +60,7 @@
           Temperature: {{ row.temperature }} &nbsp;·&nbsp;
           {% if 'llama' in row.model %}Provider: Groq{% endif %}
           {% if 'claude' in row.model %}Provider: Anthropic{% endif %}
+          {% if 'gpt' in row.model %}Provider: OpenAI{% endif %}
           &nbsp;·&nbsp; Protocol: MTCP v1.0 &nbsp;·&nbsp; March 2026
         </div>
       </div>
@@ -81,10 +83,29 @@
         <div class="cert-stat-label">Total Probes</div>
         <div class="cert-stat-value">{{ row.total }}</div>
       </div>
+      <div class="cert-divider"></div>
+      <div>
+        <div class="cert-stat-label">Breach Rate</div>
+        <div class="cert-stat-value" style="color:var(--red);font-size:16px">
+          {% if row.breach_rate is not none %}{{ row.breach_rate }}%{% else %}—{% endif %}
+        </div>
+      </div>
+      <div>
+        <div class="cert-stat-label">Enforcement</div>
+        <div class="cert-stat-value" style="color:var(--green);font-size:16px">
+          {% if row.enforcement_reliability is not none %}{{ row.enforcement_reliability }}%{% else %}—{% endif %}
+        </div>
+      </div>
+      <div>
+        <div class="cert-stat-label">Turns to Breach</div>
+        <div class="cert-stat-value" style="color:#fbbf24;font-size:16px">
+          {% if row.mean_turns_to_breach is not none %}{{ row.mean_turns_to_breach }}{% else %}—{% endif %}
+        </div>
+      </div>
     </div>
     <div class="cert-footer">
       <div class="cert-doi">DOI: <span>10.17605/OSF.IO/DXGK5</span> &nbsp;·&nbsp; © 2026 A. Abby &nbsp;·&nbsp; All Rights Reserved</div>
-      <a href="/api/export-csv" class="btn btn-ghost" style="font-size:11px;padding:6px 12px">↓ Export</a>
+      <a href="/certificate/download/{{ row.model }}/{{ row.temperature }}" class="btn btn-ghost" style="font-size:11px;padding:6px 12px">↓ Export</a>
     </div>
   </div>
   {% endfor %}
