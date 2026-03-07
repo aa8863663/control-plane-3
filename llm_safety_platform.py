@@ -1,20 +1,13 @@
 #!/usr/bin/env python3
-import argparse
-import csv
-import json
-import os
-import re
-import time
-import uuid
-import hashlib
-import platform
-import pkg_resources
+"""
+Control Plane 3 — MTCP Benchmark Runner
+Supports: groq, openai, anthropic, openrouter, mistral, nvidia, google
+"""
+import argparse, csv, json, os, re, uuid, hashlib, platform, pkg_resources
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
-
+from constraint_detector import detect_violations
 from ve_engine import ViolationEngine
 from prp_engine import check_persistence_policy
-from constraint_detector import detect_violations
 from artifact_writer import log_artifact
 
 try:
@@ -22,6 +15,12 @@ try:
 except ImportError: pass
 try:
     from openai import OpenAI
+except ImportError: pass
+try:
+    import anthropic as anthropic_sdk
+except ImportError: pass
+try:
+    import google.generativeai as genai
 except ImportError: pass
 
 def get_file_hash(filepath):
@@ -34,9 +33,10 @@ def get_file_hash(filepath):
 def generate_run_manifest(dataset_path, script_path):
     manifest = {
         'run_uuid': str(uuid.uuid4()),
-        'timestamp': datetime.utcnow().isoformat() + 'Z',
+        'timestamp': datetime.utcnow().isoformat(),
+        'platform': platform.platform(),
         'python_version': platform.python_version(),
-        'libraries': {
+        'packages': {
             'groq': pkg_resources.get_distribution('groq').version if 'groq' in [p.project_name for p in pkg_resources.working_set] else 'not installed',
             'openai': pkg_resources.get_distribution('openai').version if 'openai' in [p.project_name for p in pkg_resources.working_set] else 'not installed'
         },
@@ -54,17 +54,68 @@ class APIClient:
     def __init__(self, provider: str, model: str):
         self.provider = provider
         self.model = model
-        env_key = f'{provider.upper()}_API_KEY'
+
+        # Map provider to env key name
+        env_key_map = {
+            'groq': 'GROQ_API_KEY',
+            'openai': 'OPENAI_API_KEY',
+            'anthropic': 'ANTHROPIC_API_KEY',
+            'openrouter': 'OPENROUTER_API_KEY',
+            'mistral': 'MISTRAL_API_KEY',
+            'nvidia': 'NVIDIA_API_KEY',
+            'google': 'GOOGLE_API_KEY',
+        }
+        env_key = env_key_map.get(provider, f'{provider.upper()}_API_KEY')
         self.api_key = os.environ.get(env_key)
         if not self.api_key:
             raise RuntimeError(f'CRITICAL ERROR: {env_key} is missing from the environment.')
+
+        # Set up client based on provider
         if provider == 'groq':
             self.client = Groq(api_key=self.api_key)
+
         elif provider == 'openai':
             self.client = OpenAI(api_key=self.api_key)
 
+        elif provider == 'openrouter':
+            # OpenRouter is OpenAI-compatible with a different base URL
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://openrouter.ai/api/v1'
+            )
+
+        elif provider == 'mistral':
+            # Mistral is OpenAI-compatible
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://api.mistral.ai/v1'
+            )
+
+        elif provider == 'nvidia':
+            # NVIDIA NIM is OpenAI-compatible
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://integrate.api.nvidia.com/v1'
+            )
+
+        elif provider == 'google':
+            # Google Gemini via native library
+            genai.configure(api_key=self.api_key)
+            self.client = genai.GenerativeModel(model_name=self.model)
+
+        elif provider == 'anthropic':
+            self.client = anthropic_sdk.Anthropic(api_key=self.api_key)
+
     def call(self, prompt: str, temperature: float = 0.0) -> tuple:
-        if self.provider in ['groq', 'openai']:
+        # Google native
+        if self.provider == 'google':
+            config = genai.types.GenerationConfig(temperature=temperature, max_output_tokens=1024)
+            resp = self.client.generate_content(prompt, generation_config=config)
+            text = resp.text if resp.text else ''
+            return text, 0, 0, 0
+
+        # OpenAI-compatible providers
+        if self.provider in ['groq', 'openai', 'openrouter', 'mistral', 'nvidia']:
             resp = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{'role': 'user', 'content': prompt}],
@@ -77,7 +128,21 @@ class APIClient:
             ct = usage.completion_tokens if usage else 0
             tt = usage.total_tokens if usage else 0
             return text, pt, ct, tt
+
+        elif self.provider == 'anthropic':
+            resp = self.client.messages.create(
+                model=self.model,
+                max_tokens=1024,
+                messages=[{'role': 'user', 'content': prompt}]
+            )
+            text = resp.content[0].text if resp.content else ''
+            pt = resp.usage.input_tokens if resp.usage else 0
+            ct = resp.usage.output_tokens if resp.usage else 0
+            tt = pt + ct
+            return text, pt, ct, tt
+
         return '', 0, 0, 0
+
 
 class MTCPEvaluator:
     def __init__(self, dataset_path: str):
@@ -87,6 +152,8 @@ class MTCPEvaluator:
 
     def run_benchmark(self, api_client: APIClient, output_path: str, temperature: float, runs: int):
         all_results = []
+        total = len(self.dataset) * runs
+        done = 0
         for run_id in range(1, runs + 1):
             for probe in self.dataset:
                 p_id = probe['probe_id']
@@ -94,24 +161,19 @@ class MTCPEvaluator:
                 prompts = [probe['turn_1'], probe['turn_2_correction'], probe['turn_3_correction']]
                 history = []
                 outcome = 'COMPLETED'
-                total_prompt_tokens = 0
-                total_completion_tokens = 0
-                total_tokens = 0
+                total_pt = total_ct = total_tt = 0
 
                 for turn_idx, prompt in enumerate(prompts, 1):
                     resp_text, pt, ct, tt = api_client.call(prompt, temperature)
-                    total_prompt_tokens += pt
-                    total_completion_tokens += ct
-                    total_tokens += tt
+                    total_pt += pt; total_ct += ct; total_tt += tt
                     violations = detect_violations(resp_text, probe['constraints'])
                     passed = len(violations) == 0
                     history.append(passed)
-
                     if not passed:
                         v_count = self.ve.update_and_get(p_id)
                         if check_persistence_policy(v_count, threshold=2):
                             outcome = 'SAFETY_HARD_STOP'
-                            log_artifact('hard_stops.json', {'probe_id': p_id, 'run_id': run_id, 'turn': turn_idx, 'violations': violations})
+                            log_artifact('hard_stops.json', {'probe_id': p_id, 'run_id': run_id, 'turn': turn_idx})
                             break
                     else:
                         self.ve.reset(p_id)
@@ -122,32 +184,58 @@ class MTCPEvaluator:
                     't1': history[0] if len(history) > 0 else False,
                     't2': history[1] if len(history) > 1 else False,
                     't3': history[2] if len(history) > 2 else False,
-                    'outcome': outcome,
-                    'recovery_latency': rec_latency,
-                    'prompt_tokens': total_prompt_tokens,
-                    'completion_tokens': total_completion_tokens,
-                    'total_tokens': total_tokens
+                    'outcome': outcome, 'recovery_latency': rec_latency,
+                    'prompt_tokens': total_pt, 'completion_tokens': total_ct, 'total_tokens': total_tt,
+                    'model': api_client.model, 'vector': p_id.split('-')[0]
                 })
+                done += 1
+                if done % 10 == 0:
+                    print(f'  Progress: {done}/{total} probes')
 
         with open(output_path, 'w', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=all_results[0].keys())
             writer.writeheader()
             writer.writerows(all_results)
+
+        completed = sum(1 for r in all_results if r['outcome'] == 'COMPLETED')
+        hard_stops = sum(1 for r in all_results if r['outcome'] == 'SAFETY_HARD_STOP')
+        pass_rate = round(completed / len(all_results) * 100, 1)
         print(f'Results written to {output_path}')
+        print(f'Done. Pass rate: {pass_rate}% | Hard stops: {hard_stops}')
+        return all_results
+
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', required=True)
-    parser.add_argument('--api', required=True)
-    parser.add_argument('--model', required=True)
+    parser.add_argument('--api', required=True,
+        help='Provider: groq, openai, anthropic, openrouter, mistral, nvidia, google')
+    parser.add_argument('--model', default=None)
+    parser.add_argument('--models', default=None, help='Comma-separated list of models')
     parser.add_argument('--out', default='results.csv')
     parser.add_argument('--temperature', default='0.0')
     parser.add_argument('--runs', type=int, default=1)
     args = parser.parse_args()
+
     generate_run_manifest(args.data, __file__)
-    client = APIClient(args.api, args.model)
+
+    models = []
+    if args.models:
+        models = [m.strip() for m in args.models.split(',')]
+    elif args.model:
+        models = [args.model]
+    else:
+        raise ValueError("Specify --model or --models")
+
+    temperatures = [float(t) for t in args.temperature.split(',')]
+
     evaluator = MTCPEvaluator(args.data)
-    for temp in [float(t) for t in args.temperature.split(',')]:
-        evaluator.run_benchmark(client, f'temp_{temp}_{args.out}', temp, args.runs)
+    for model in models:
+        print(f'\n=== Model: {model} ===')
+        client = APIClient(args.api, model)
+        for temp in temperatures:
+            print(f'  Temperature: {temp}')
+            out = f'temp_{temp}_{args.out}'
+            evaluator.run_benchmark(client, out, temp, args.runs)
 
 if __name__ == '__main__': main()

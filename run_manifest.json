@@ -1,13 +1,14 @@
 {
-  "run_uuid": "76c17ff9-b69e-49dc-b681-1c7d1917f6a4",
-  "timestamp": "2026-03-07T10:28:50.012893Z",
+  "run_uuid": "c380af1c-d850-4c8d-82f0-2b33d25f7558",
+  "timestamp": "2026-03-07T18:11:14.345495",
+  "platform": "macOS-15.6.1-x86_64-i386-64bit",
   "python_version": "3.9.6",
-  "libraries": {
+  "packages": {
     "groq": "1.0.0",
     "openai": "2.26.0"
   },
   "integrity": {
-    "dataset_sha256": "2178bca3254f28fc777c810852df19bb8d10eb03f26a843f3641049d79d88381",
-    "script_sha256": "c1cb75e786b564177b82dfce977afeabde98999f63d1389944701c60f2140a3e"
+    "dataset_sha256": "0151b5c88b857c5944c4ac7b2c1abaea2a3f86bf0fd1a111abafb92bd784ef68",
+    "script_sha256": "0797594412ea17c3a2fa8a1bab4fd26a257ec93642453e75507245e871a8a0fc"
   }
 }
