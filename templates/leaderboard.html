@@ -1,28 +1,45 @@
 {% extends "base.html" %}
 {% block title %}Leaderboard — Control Plane 3{% endblock %}
 {% block extra_styles %}
-.temp-pill {
-  display: inline-block; padding: 2px 7px; border-radius: 3px;
-  font-size: 0.6rem; background: var(--surface2); border: 1px solid var(--border);
-  color: var(--muted);
-}
-.best-row td { background: rgba(0,229,160,0.03); }
-@media(max-width:900px){ .col-hide { display:none; } }
-{% endblock %}
+.temp-pill{display:inline-block;padding:2px 7px;border-radius:3px;font-size:0.58rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
+.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:5px 12px;border-radius:3px;cursor:pointer;transition:all 0.15s;letter-spacing:0.8px;text-transform:uppercase;}
+.filter-btn:hover,.filter-btn.on{border-color:var(--accent);color:var(--accent);background:rgba(0,229,160,0.05);}
+.best-row td{background:rgba(0,229,160,0.03);}
+.sub-row td{font-size:0.68rem;color:var(--muted);}
+.summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
+.sum-item{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 14px;}
+.sum-val{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}
+.sum-lbl{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+@media(max-width:900px){.col-hide{display:none;} .summary-bar{grid-template-columns:1fr 1fr;}}
 {% block content %}
-
 <div class="page-header fade-up">
   <h1>MTCP <span>Leaderboard</span></h1>
-  <p>Models ranked by overall pass rate across all evaluation vectors · Multi-Turn Constraint Persistence v1.0</p>
+  <p>All runs ranked by overall pass rate · 252 probes per run · 4 temperatures × 4 models = 16 runs</p>
   <div class="doi-badge">DOI: 10.17605/OSF.IO/DXGK5</div>
 </div>
 
-<div class="card fade-up fade-up-1" style="padding:0;overflow:hidden;margin-bottom:20px">
+<div class="summary-bar fade-up">
+  <div class="sum-item"><div class="sum-val" style="color:var(--accent)">C</div><div class="sum-lbl">Best grade achieved</div></div>
+  <div class="sum-item"><div class="sum-val">76.6%</div><div class="sum-lbl">Highest pass rate</div></div>
+  <div class="sum-item"><div class="sum-val" style="color:var(--danger)">65.1%</div><div class="sum-lbl">Lowest pass rate</div></div>
+  <div class="sum-item"><div class="sum-val" style="color:var(--muted)">0</div><div class="sum-lbl">Models passing MTCP</div></div>
+</div>
+
+<div class="filter-bar fade-up">
+  <button class="filter-btn on" onclick="filterTable('all',this)">All Models</button>
+  <button class="filter-btn" onclick="filterTable('llama',this)">LLaMA Only</button>
+  <button class="filter-btn" onclick="filterTable('claude',this)">Claude Only</button>
+  <button class="filter-btn" onclick="filterTable('t0',this)">T=0.0</button>
+  <button class="filter-btn" onclick="filterTable('t08',this)">T=0.8</button>
+</div>
+
+<div class="card fade-up fade-up-1" style="padding:0;overflow:hidden;margin-bottom:16px">
   <div class="table-wrap">
-    <table>
+    <table id="lb-table">
       <thead>
         <tr>
-          <th style="width:48px">Rank</th>
+          <th style="width:44px">Rank</th>
           <th>Model</th>
           <th>Temp</th>
           <th>Pass Rate</th>
@@ -38,13 +55,12 @@
       <tbody>
         {% if leaderboard %}
           {% for row in leaderboard %}
-          <tr {% if loop.index == 1 %}class="best-row"{% endif %}>
+          <tr class="lb-row {% if loop.index==1 %}best-row{% endif %}"
+              data-model="{{ row.model|lower }}"
+              data-temp="{{ row.temperature }}">
             <td>
-              <span class="rank {% if loop.index == 1 %}rank-1{% elif loop.index == 2 %}rank-2{% elif loop.index == 3 %}rank-3{% endif %}">
-                {% if loop.index == 1 %}🥇
-                {% elif loop.index == 2 %}🥈
-                {% elif loop.index == 3 %}🥉
-                {% else %}{{ loop.index }}{% endif %}
+              <span class="rank {% if loop.index==1 %}rank-1{% elif loop.index==2 %}rank-2{% elif loop.index==3 %}rank-3{% endif %}">
+                {% if loop.index==1 %}🥇{% elif loop.index==2 %}🥈{% elif loop.index==3 %}🥉{% else %}{{ loop.index }}{% endif %}
               </span>
             </td>
             <td>
@@ -52,27 +68,26 @@
               {% if 'llama' in row.model|lower %}<span class="model-provider">Groq</span>{% endif %}
               {% if 'claude' in row.model|lower %}<span class="model-provider">Anthropic</span>{% endif %}
               {% if 'gpt' in row.model|lower %}<span class="model-provider">OpenAI</span>{% endif %}
-              {% if 'grok' in row.model|lower %}<span class="model-provider">xAI</span>{% endif %}
             </td>
             <td><span class="temp-pill">T={{ row.temperature }}</span></td>
             <td>
               <div class="progress-wrap">
-                <div class="progress-bar" style="max-width:80px">
+                <div class="progress-bar" style="max-width:70px">
                   <div class="progress-fill" style="width:{{ row.pass_rate }}%"></div>
                 </div>
-                <span style="font-size:0.72rem;color:var(--text)">{{ row.pass_rate }}%</span>
+                <span style="font-size:0.7rem;color:var(--text)">{{ row.pass_rate }}%</span>
               </div>
             </td>
-            <td><span class="grade grade-{{ row.grade | replace('+','plus') }}">{{ row.grade }}</span></td>
+            <td><span class="grade grade-{{ row.grade|replace('+','plus') }}">{{ row.grade }}</span></td>
             <td style="color:var(--accent)">{{ row.passed }}</td>
             <td style="color:var(--danger)">{{ row.hard_stops }}</td>
-            <td class="col-hide" style="color:var(--danger);font-size:0.7rem">
+            <td class="col-hide" style="font-size:0.68rem;color:var(--danger)">
               {% if row.breach_rate is not none %}{{ row.breach_rate }}%{% else %}<span style="color:var(--muted)">—</span>{% endif %}
             </td>
-            <td class="col-hide" style="color:var(--accent);font-size:0.7rem">
+            <td class="col-hide" style="font-size:0.68rem;color:var(--accent)">
               {% if row.enforcement_reliability is not none %}{{ row.enforcement_reliability }}%{% else %}<span style="color:var(--muted)">—</span>{% endif %}
             </td>
-            <td class="col-hide" style="color:var(--warn);font-size:0.7rem">
+            <td class="col-hide" style="font-size:0.68rem;color:var(--warn)">
               {% if row.mean_turns_to_breach is not none %}{{ row.mean_turns_to_breach }}{% else %}<span style="color:var(--muted)">—</span>{% endif %}
             </td>
             <td style="color:var(--muted)">{{ row.total }}</td>
@@ -80,7 +95,7 @@
           {% endfor %}
         {% else %}
           <tr><td colspan="11" style="text-align:center;padding:48px;color:var(--muted)">
-            No benchmark results yet. <a href="/run-benchmark" style="color:var(--accent)">Run your first benchmark →</a>
+            No results yet. <a href="/run-benchmark" style="color:var(--accent)">Run your first benchmark →</a>
           </td></tr>
         {% endif %}
       </tbody>
@@ -88,10 +103,26 @@
   </div>
 </div>
 
-<div style="display:flex;gap:10px;flex-wrap:wrap" class="fade-up fade-up-3">
-  <a href="/certificate" class="btn btn-primary">◎ View Certificates</a>
+<div style="display:flex;gap:8px;flex-wrap:wrap" class="fade-up fade-up-3">
+  <a href="/certificate" class="btn btn-primary">◎ Certificates</a>
   <a href="/api/export-csv" class="btn btn-ghost">↓ Export CSV</a>
+  <a href="/stats" class="btn btn-ghost">◻ Stats</a>
   <a href="/" class="btn btn-ghost">← Dashboard</a>
 </div>
 
+<script>
+function filterTable(f, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.lb-row').forEach(row => {
+    const m = row.dataset.model; const t = row.dataset.temp;
+    let show = true;
+    if(f==='llama' && !m.includes('llama')) show=false;
+    if(f==='claude' && !m.includes('claude')) show=false;
+    if(f==='t0' && t!=='0.0') show=false;
+    if(f==='t08' && t!=='0.8') show=false;
+    row.style.display = show ? '' : 'none';
+  });
+}
+</script>
 {% endblock %}

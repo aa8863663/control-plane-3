@@ -1,19 +1,23 @@
 {% extends "base.html" %}
 {% block title %}Stats — Control Plane 3{% endblock %}
 {% block extra_styles %}
-.proto-row { display: flex; align-items: center; gap: 12px; font-size: 0.72rem; color: var(--muted); padding: 9px 0; border-bottom: 1px solid rgba(30,34,41,0.5); }
-.proto-row:last-child { border-bottom: none; }
-.proto-key { font-family: 'DM Serif Display', serif; font-size: 1rem; color: var(--accent); min-width: 48px; }
-.grade-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(30,34,41,0.5); font-size: 0.72rem; color: var(--muted); }
-.grade-row:last-child { border-bottom: none; }
-.protocol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-@media(max-width:640px){ .protocol-grid{ grid-template-columns:1fr; } }
-{% endblock %}
+.chart-wrap{background:var(--surface2);border-radius:4px;padding:16px;margin-top:10px;}
+.bar-chart{display:flex;flex-direction:column;gap:10px;}
+.bar-row{display:flex;align-items:center;gap:10px;font-size:0.68rem;}
+.bar-label{width:140px;color:var(--muted);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+.bar-val{width:48px;text-align:right;flex-shrink:0;color:var(--text);}
+.proto-row{display:flex;align-items:center;gap:12px;font-size:0.7rem;color:var(--muted);padding:9px 0;border-bottom:1px solid rgba(30,34,41,0.5);}
+.proto-row:last-child{border-bottom:none;}
+.proto-key{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--accent);min-width:46px;}
+.grade-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(30,34,41,0.5);font-size:0.7rem;color:var(--muted);}
+.grade-row:last-child{border-bottom:none;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+@media(max-width:640px){.two-col{grid-template-columns:1fr;}}
 {% block content %}
-
 <div class="page-header fade-up">
   <h1>Run <span>Statistics</span></h1>
-  <p>Aggregate metrics across all MTCP benchmark evaluations</p>
+  <p>Aggregate metrics, outcome breakdown, and protocol reference across all MTCP benchmark evaluations</p>
 </div>
 
 <div class="stats-grid fade-up fade-up-1">
@@ -25,7 +29,7 @@
   <div class="stat-card">
     <div class="stat-label">Total Results</div>
     <div class="stat-value">{{ data.total_results if data else total_results }}</div>
-    <div class="stat-sub">probe evaluations</div>
+    <div class="stat-sub">probe evaluations logged</div>
   </div>
   <div class="stat-card">
     <div class="stat-label">Hard Stops</div>
@@ -33,41 +37,54 @@
     <div class="stat-sub">SAFETY_HARD_STOP events</div>
   </div>
   <div class="stat-card">
-    <div class="stat-label">Pass Rate</div>
+    <div class="stat-label">Overall Pass Rate</div>
     <div class="stat-value" style="color:var(--warn)">
       {% if data and data.total_results and data.total_results > 0 %}
         {{ "%.1f"|format(100 * (data.total_results - data.hard_stops) / data.total_results) }}%
       {% else %}—{% endif %}
     </div>
-    <div class="stat-sub">overall across all models</div>
+    <div class="stat-sub">across all models and runs</div>
   </div>
 </div>
 
-<div class="card fade-up fade-up-2">
-  <div class="card-title">Protocol Reference</div>
-  <div class="protocol-grid">
-    <div>
-      <div style="font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Evaluation Vectors</div>
-      <div class="proto-row"><span class="proto-key">NCA</span>Negative Constraint Adherence</div>
-      <div class="proto-row"><span class="proto-key">SFC</span>Structural Format Compliance</div>
-      <div class="proto-row"><span class="proto-key">IDL</span>Information Density &amp; Length</div>
-      <div class="proto-row"><span class="proto-key">CG</span>Contextual Grounding</div>
-      <div class="proto-row"><span class="proto-key">LANG</span>Multilingual (FR/ES/AR/DE)</div>
+<div class="two-col fade-up fade-up-2">
+  <div class="card">
+    <div class="card-title">Pass Rate by Model</div>
+    <div class="chart-wrap">
+      <div class="bar-chart">
+        <div class="bar-row"><span class="bar-label">LLaMA 3.3 70B</span><div class="bar-track"><div class="bar-val-fill" style="height:100%;width:75.6%;background:var(--accent);border-radius:3px;"></div></div><span class="bar-val" style="color:var(--accent)">75.6%</span></div>
+        <div class="bar-row"><span class="bar-label">LLaMA 3.1 8B</span><div class="bar-track"><div style="height:100%;width:71.5%;background:var(--warn);border-radius:3px;"></div></div><span class="bar-val" style="color:var(--warn)">71.5%</span></div>
+        <div class="bar-row"><span class="bar-label">Claude Sonnet 4</span><div class="bar-track"><div style="height:100%;width:68.1%;background:var(--danger);border-radius:3px;"></div></div><span class="bar-val" style="color:var(--danger)">68.1%</span></div>
+        <div class="bar-row"><span class="bar-label">Claude Haiku 4.5</span><div class="bar-track"><div style="height:100%;width:66.1%;background:var(--danger);border-radius:3px;"></div></div><span class="bar-val" style="color:var(--danger)">66.1%</span></div>
+      </div>
     </div>
-    <div>
-      <div style="font-size:0.6rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Grading Scale</div>
-      <div class="grade-row"><span class="grade grade-Aplus" style="width:24px;height:22px;font-size:0.7rem">A+</span>95%+ — Exceptional</div>
-      <div class="grade-row"><span class="grade grade-A" style="width:24px;height:22px;font-size:0.7rem">A</span>90%+ — Excellent</div>
-      <div class="grade-row"><span class="grade grade-B" style="width:24px;height:22px;font-size:0.7rem">B</span>80%+ — Good</div>
-      <div class="grade-row"><span class="grade grade-C" style="width:24px;height:22px;font-size:0.7rem">C</span>70%+ — Acceptable</div>
-      <div class="grade-row"><span class="grade grade-D" style="width:24px;height:22px;font-size:0.7rem">D</span>60%+ — Poor</div>
-      <div class="grade-row"><span class="grade grade-F" style="width:24px;height:22px;font-size:0.7rem">F</span>&lt;60% — Failing</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Grading Scale</div>
+    <div style="margin-top:4px;">
+      <div class="grade-row"><span class="grade grade-Aplus" style="width:22px;height:20px;font-size:0.65rem">A+</span>95%+ — Exceptional persistence</div>
+      <div class="grade-row"><span class="grade grade-A" style="width:22px;height:20px;font-size:0.65rem">A</span>90%+ — Excellent compliance</div>
+      <div class="grade-row"><span class="grade grade-B" style="width:22px;height:20px;font-size:0.65rem">B</span>80%+ — Good with minor lapses</div>
+      <div class="grade-row"><span class="grade grade-C" style="width:22px;height:20px;font-size:0.65rem">C</span>70%+ — Acceptable, correction-dependent</div>
+      <div class="grade-row"><span class="grade grade-D" style="width:22px;height:20px;font-size:0.65rem">D</span>60%+ — Poor persistence</div>
+      <div class="grade-row"><span class="grade grade-F" style="width:22px;height:20px;font-size:0.65rem">F</span>&lt;60% — Failing</div>
     </div>
   </div>
 </div>
 
-<div style="margin-top:20px" class="fade-up fade-up-3">
-  <a href="/" class="btn btn-ghost">← Dashboard</a>
+<div class="card fade-up fade-up-3">
+  <div class="card-title">Evaluation Vectors</div>
+  <div style="margin-top:4px;">
+    <div class="proto-row"><span class="proto-key">NCA</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Negative Constraint Adherence</div><div>Forbidden words + semantic synonym detection. Tests lexical and semantic restraint.</div></div></div>
+    <div class="proto-row"><span class="proto-key">SFC</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Structural Format Compliance</div><div>Valid JSON output with required schema fields. Machine-verifiable deterministically.</div></div></div>
+    <div class="proto-row"><span class="proto-key">IDL</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Information Density & Length</div><div>Exact word count constraints. Verified deterministically — no ambiguity in pass/fail.</div></div></div>
+    <div class="proto-row"><span class="proto-key">CG</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Contextual Grounding</div><div>Required phrase inclusion from supplied context. Tests retrieval-to-output fidelity.</div></div></div>
+    <div class="proto-row"><span class="proto-key" style="color:var(--accent2)">LANG</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Multilingual Constraint Persistence</div><div>FR · ES · AR · DE. First multilingual benchmark of this type. Language-switching failure modes exposed.</div></div></div>
+  </div>
 </div>
 
+<div style="margin-top:16px;" class="fade-up fade-up-4">
+  <a href="/leaderboard" class="btn btn-primary">◈ Leaderboard</a>
+  <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
+</div>
 {% endblock %}

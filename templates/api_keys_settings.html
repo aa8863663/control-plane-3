@@ -5,590 +5,367 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>API Key Settings — Control Plane 3</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=DM+Serif+Display&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=DM+Serif+Display&display=swap');
 :root {
-  --bg: #0a0c10;
-  --surface: #111318;
-  --surface2: #161920;
-  --border: #1e2229;
-  --accent: #00e5a0;
-  --accent2: #7b6cff;
-  --warn: #f5a623;
-  --danger: #ff4f4f;
-  --text: #d4dbe8;
-  --muted: #5a6070;
+  --bg:#0a0c10;--surface:#111318;--surface2:#161920;--border:#1e2229;
+  --accent:#00e5a0;--accent2:#7b6cff;--warn:#f5a623;--danger:#ff4f4f;--blue:#3b9eff;
+  --text:#d4dbe8;--muted:#5a6070;
 }
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;overflow-x:hidden;}
+.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,229,160,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,0.025) 1px,transparent 1px);
+  background-size:40px 40px;}
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* NAV — identical to landing */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;
+  padding:14px 32px;background:rgba(10,12,16,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;}
+.nav-logo span{color:var(--accent);}
+.nav-links{display:flex;gap:24px;list-style:none;align-items:center;}
+.nav-links a{font-size:0.68rem;color:var(--muted);text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-links a.active{color:var(--accent);}
+.nav-user{font-size:0.68rem;color:var(--muted);border:1px solid var(--border);padding:6px 14px;border-radius:4px;}
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'JetBrains Mono', monospace;
-  min-height: 100vh;
-  display: flex;
-}
+/* PAGE — identical to landing */
+.page{max-width:1000px;margin:0 auto;padding:100px 20px 60px;position:relative;z-index:1;}
 
-/* Sidebar */
-.sidebar {
-  width: 220px; flex-shrink: 0;
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  padding: 28px 0;
-  position: fixed; top: 0; left: 0; bottom: 0;
-}
+/* PAGE HEADER */
+.site-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--border);}
+.title-block h1{font-family:'DM Serif Display',serif;font-size:2.2rem;color:#fff;}
+.title-block h1 span{color:var(--accent);}
+.title-block p{color:var(--muted);font-size:0.7rem;margin-top:6px;letter-spacing:0.5px;}
+.status-badge{background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);color:var(--accent);padding:6px 14px;border-radius:4px;font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
 
-.sidebar-logo {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.2rem; color: #fff;
-  padding: 0 24px 28px;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-logo span { color: var(--accent); }
+/* SECTION LABEL — identical to landing */
+.section-label{font-size:0.63rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
 
-.nav { padding: 20px 0; flex: 1; }
-.nav a {
-  display: flex; align-items: center; gap: 10px;
-  padding: 10px 24px; font-size: 0.73rem;
-  color: var(--muted); text-decoration: none;
-  transition: color 0.15s, background 0.15s;
-  letter-spacing: 0.3px;
-}
-.nav a:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-.nav a.active { color: var(--accent); background: rgba(0,229,160,0.06); border-right: 2px solid var(--accent); }
-.nav-icon { font-size: 1rem; width: 18px; text-align: center; }
+/* SECURITY NOTE */
+.note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:6px;padding:14px 18px;font-size:0.74rem;line-height:1.75;margin-bottom:28px;}
+.note-box strong{color:var(--accent);}
 
-.sidebar-user {
-  padding: 16px 24px;
-  border-top: 1px solid var(--border);
-  font-size: 0.68rem; color: var(--muted);
-}
-.sidebar-user strong { display: block; color: var(--text); margin-bottom: 2px; }
+/* PROVIDER CARDS */
+.provider-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:10px;transition:border-color 0.2s;}
+.provider-card:hover{border-color:#252c36;}
+.provider-card.has-key{border-color:rgba(0,229,160,0.3);}
+.provider-header{display:flex;align-items:center;gap:16px;padding:16px 20px;cursor:pointer;user-select:none;}
+.provider-logo{width:36px;height:36px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.provider-info{flex:1;}
+.provider-name{font-size:0.84rem;font-weight:700;color:#fff;margin-bottom:2px;}
+.provider-models{font-size:0.62rem;color:var(--muted);}
+.provider-right{display:flex;align-items:center;gap:12px;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#252c36;transition:background 0.2s;}
+.has-key .status-dot{background:var(--accent);box-shadow:0 0 6px rgba(0,229,160,0.5);}
+.expand-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:4px 10px;border-radius:3px;cursor:pointer;transition:all 0.15s;letter-spacing:1px;text-transform:uppercase;}
+.expand-btn:hover{border-color:var(--accent);color:var(--accent);}
 
-/* Main content */
-.main {
-  margin-left: 220px;
-  flex: 1; padding: 40px 48px;
-  max-width: 900px;
-}
+.provider-body{display:none;padding:0 20px 18px;border-top:1px solid var(--border);}
+.provider-body.open{display:block;}
 
-.page-header { margin-bottom: 36px; }
-.page-header h1 {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.7rem; color: #fff; margin-bottom: 6px;
-}
-.page-header p { font-size: 0.73rem; color: var(--muted); line-height: 1.6; }
+.key-row{display:flex;gap:10px;margin-top:14px;align-items:center;}
+.key-input-wrap{flex:1;position:relative;}
+.key-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:4px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:0.72rem;padding:10px 40px 10px 13px;outline:none;transition:border-color 0.15s;}
+.key-input:focus{border-color:var(--accent);}
+.key-input::placeholder{color:var(--muted);}
+.toggle-vis{position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:0.82rem;padding:0;transition:color 0.15s;}
+.toggle-vis:hover{color:var(--text);}
 
-.security-banner {
-  background: rgba(0,229,160,0.06);
-  border: 1px solid rgba(0,229,160,0.2);
-  border-radius: 8px; padding: 14px 18px;
-  display: flex; gap: 12px; align-items: flex-start;
-  margin-bottom: 32px; font-size: 0.72rem; line-height: 1.6;
-  color: var(--text);
-}
-.security-banner .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
-.security-banner strong { color: var(--accent); }
+.save-btn{background:var(--accent);color:#000;border:none;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:700;padding:10px 16px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;white-space:nowrap;transition:background 0.15s;}
+.save-btn:hover{background:#00c88a;}
+.remove-btn{background:none;border:1px solid rgba(255,79,79,0.25);color:var(--danger);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;padding:10px 13px;cursor:pointer;transition:all 0.15s;white-space:nowrap;text-transform:uppercase;letter-spacing:1px;}
+.remove-btn:hover{background:rgba(255,79,79,0.08);border-color:var(--danger);}
 
-/* Provider cards */
-.providers-grid { display: flex; flex-direction: column; gap: 12px; }
+.key-hint{font-size:0.62rem;color:var(--muted);margin-top:8px;line-height:1.6;}
+.key-hint a{color:var(--accent2);text-decoration:none;}
+.key-hint a:hover{text-decoration:underline;}
+.key-saved-info{display:none;font-size:0.65rem;color:var(--accent);margin-top:8px;}
+.has-key .key-saved-info{display:block;}
 
-.provider-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  transition: border-color 0.2s;
-}
-.provider-card:hover { border-color: rgba(255,255,255,0.08); }
-.provider-card.has-key { border-color: rgba(0,229,160,0.2); }
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 18px;font-size:0.7rem;color:var(--text);display:flex;align-items:center;gap:10px;transform:translateY(60px);opacity:0;transition:all 0.3s ease;z-index:200;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:rgba(0,229,160,0.3);}
+.toast.success .toast-icon{color:var(--accent);}
+.toast.error{border-color:rgba(255,79,79,0.3);}
+.toast.error .toast-icon{color:var(--danger);}
 
-.provider-header {
-  display: flex; align-items: center; gap: 16px;
-  padding: 18px 22px; cursor: pointer;
-  user-select: none;
-}
-
-.provider-logo {
-  width: 38px; height: 38px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem; flex-shrink: 0;
-}
-
-.provider-info { flex: 1; }
-.provider-name { font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
-.provider-models { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.3px; }
-
-.provider-status {
-  display: flex; align-items: center; gap: 10px;
-}
-.status-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--border);
-  transition: background 0.2s;
-}
-.has-key .status-dot { background: var(--accent); box-shadow: 0 0 6px rgba(0,229,160,0.4); }
-
-.expand-btn {
-  background: none; border: 1px solid var(--border);
-  color: var(--muted); font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem; padding: 4px 10px; border-radius: 4px;
-  cursor: pointer; transition: all 0.15s; letter-spacing: 0.5px;
-}
-.expand-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-/* Key input area */
-.provider-body {
-  display: none;
-  padding: 0 22px 20px;
-  border-top: 1px solid var(--border);
-}
-.provider-body.open { display: block; }
-
-.key-row {
-  display: flex; gap: 10px; margin-top: 16px; align-items: center;
-}
-
-.key-input-wrap {
-  flex: 1; position: relative;
-}
-
-.key-input {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
-  padding: 10px 40px 10px 14px;
-  outline: none;
-  transition: border-color 0.15s;
-  letter-spacing: 0.5px;
-}
-.key-input:focus { border-color: var(--accent2); }
-.key-input::placeholder { color: var(--muted); letter-spacing: 0; }
-
-.toggle-vis {
-  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  background: none; border: none; cursor: pointer;
-  color: var(--muted); font-size: 0.85rem; padding: 0;
-  transition: color 0.15s;
-}
-.toggle-vis:hover { color: var(--text); }
-
-.save-btn {
-  background: var(--accent); color: #000;
-  border: none; border-radius: 6px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; font-weight: 700;
-  padding: 10px 18px; cursor: pointer;
-  letter-spacing: 0.5px; white-space: nowrap;
-  transition: opacity 0.15s;
-}
-.save-btn:hover { opacity: 0.85; }
-
-.remove-btn {
-  background: none; border: 1px solid rgba(255,79,79,0.3);
-  color: var(--danger); border-radius: 6px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; padding: 10px 14px;
-  cursor: pointer; transition: all 0.15s; white-space: nowrap;
-}
-.remove-btn:hover { background: rgba(255,79,79,0.08); border-color: var(--danger); }
-
-.key-hint {
-  font-size: 0.65rem; color: var(--muted);
-  margin-top: 8px; line-height: 1.5;
-}
-.key-hint a { color: var(--accent2); text-decoration: none; }
-.key-hint a:hover { text-decoration: underline; }
-
-.key-saved-info {
-  display: none;
-  font-size: 0.68rem; color: var(--accent);
-  margin-top: 10px;
-}
-.has-key .key-saved-info { display: block; }
-
-/* Toast */
-.toast {
-  position: fixed; bottom: 28px; right: 28px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 8px; padding: 12px 18px;
-  font-size: 0.73rem; color: var(--text);
-  display: flex; align-items: center; gap: 10px;
-  transform: translateY(80px); opacity: 0;
-  transition: all 0.3s ease;
-  z-index: 100; pointer-events: none;
-}
-.toast.show { transform: translateY(0); opacity: 1; }
-.toast.success { border-color: rgba(0,229,160,0.3); }
-.toast.success .toast-icon { color: var(--accent); }
-.toast.error { border-color: rgba(255,79,79,0.3); }
-.toast.error .toast-icon { color: var(--danger); }
-
-.grid-bg {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(0,229,160,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,229,160,0.02) 1px, transparent 1px);
-  background-size: 40px 40px;
+@media(max-width:768px){
+  nav{padding:12px 16px;}
+  .nav-links{display:none;}
+  .page{padding:80px 16px 48px;}
+  .site-header{flex-direction:column;gap:12px;}
+  .key-row{flex-wrap:wrap;}
 }
 </style>
 </head>
 <body>
 <div class="grid-bg"></div>
 
-<!-- Sidebar -->
-<nav class="sidebar">
-  <div class="sidebar-logo">Control Plane <span>3</span></div>
-  <div class="nav">
-    <a href="/"><span class="nav-icon">⬡</span> Dashboard</a>
-    <a href="/run-benchmark"><span class="nav-icon">▶</span> Run Benchmark</a>
-    <a href="/leaderboard"><span class="nav-icon">◈</span> Leaderboard</a>
-    <a href="/certificate"><span class="nav-icon">◎</span> Certificate</a>
-    <a href="/probes"><span class="nav-icon">≡</span> Probe Editor</a>
-    <a href="/stats"><span class="nav-icon">◻</span> Stats</a>
-    <a href="/api-keys-settings" class="active"><span class="nav-icon">◆</span> API Keys</a>
-    <a href="/admin"><span class="nav-icon">⚙</span> Admin</a>
-  </div>
-  <div class="sidebar-user">
-    <strong>{{ current_user.username }}</strong>
-    <a href="/logout" style="color:var(--danger);text-decoration:none;font-size:0.65rem;">Sign out</a>
-  </div>
+<nav>
+  <div class="nav-logo">Control Plane <span>3</span></div>
+  <ul class="nav-links">
+    <li><a href="/">Dashboard</a></li>
+    <li><a href="/leaderboard">Leaderboard</a></li>
+    <li><a href="/certificate">Certificate</a></li>
+    <li><a href="/stats">Stats</a></li>
+    <li><a href="/settings/api-keys" class="active">API Keys</a></li>
+    <li><a href="/admin">Admin</a></li>
+  </ul>
+  <div class="nav-user">{{ current_user.username }}</div>
 </nav>
 
-<!-- Main -->
-<main class="main">
-  <div class="page-header">
-    <h1>API Key Settings</h1>
-    <p>Add your provider API keys to run MTCP benchmarks. Keys are encrypted and stored per account — never shared.</p>
+<div class="page">
+
+  <div class="site-header">
+    <div class="title-block">
+      <h1>API Key <span>Settings</span></h1>
+      <p>Manage provider keys for running MTCP benchmark evaluations</p>
+    </div>
+    <div class="status-badge">🔒 Encrypted at rest</div>
   </div>
 
-  <div class="security-banner">
-    <span class="icon">🔒</span>
-    <div>
-      <strong>Encrypted at rest.</strong> Your keys are stored using AES-256 encryption tied to your account.
-      They are never logged, never exposed in results, and never shared with other users.
-      Keys are only decrypted at runtime when a benchmark is actively running under your session.
+  <div class="section-label">Security</div>
+  <div class="note-box" style="margin-bottom:28px;">
+    <strong>Your keys are encrypted and stored per account.</strong> Never logged, never exposed in results, never shared with other users. Keys are only decrypted at runtime when a benchmark is actively running under your session.
+  </div>
+
+  <div class="section-label">Provider Keys</div>
+
+  <!-- Groq -->
+  <div class="provider-card {% if keys.groq %}has-key{% endif %}" id="card-groq">
+    <div class="provider-header" onclick="toggle('groq')">
+      <div class="provider-logo" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
+      <div class="provider-info">
+        <div class="provider-name">Groq</div>
+        <div class="provider-models">llama-3.1-8b-instant · llama-3.3-70b-versatile · gemma2-9b-it</div>
+      </div>
+      <div class="provider-right">
+        <div class="status-dot"></div>
+        <button class="expand-btn" id="btn-groq">Configure</button>
+      </div>
+    </div>
+    <div class="provider-body" id="body-groq">
+      <div class="key-row">
+        <div class="key-input-wrap">
+          <input class="key-input" type="password" id="input-groq" placeholder="gsk_••••••••••••••••••••••••••••••••••••••••••••••••••••••" value="{% if keys.groq %}{{ keys.groq }}{% endif %}">
+          <button class="toggle-vis" onclick="toggleVis('groq')">👁</button>
+        </div>
+        <button class="save-btn" onclick="saveKey('groq')">Save</button>
+        {% if keys.groq %}<button class="remove-btn" onclick="removeKey('groq')">Remove</button>{% endif %}
+      </div>
+      <div class="key-hint">Get your key at <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> · Free tier: 1,000 req/day</div>
+      <div class="key-saved-info">✓ Key saved — Groq models available for benchmarking</div>
     </div>
   </div>
 
-  <div class="providers-grid">
-
-    <!-- Groq -->
-    <div class="provider-card {% if keys.groq %}has-key{% endif %}" id="card-groq">
-      <div class="provider-header" onclick="toggle('groq')">
-        <div class="provider-logo" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
-        <div class="provider-info">
-          <div class="provider-name">Groq</div>
-          <div class="provider-models">llama-3.1-8b-instant · llama-3.3-70b-versatile · gemma2-9b-it</div>
-        </div>
-        <div class="provider-status">
-          <div class="status-dot"></div>
-          <button class="expand-btn" id="btn-groq">CONFIGURE</button>
-        </div>
+  <!-- Anthropic -->
+  <div class="provider-card {% if keys.anthropic %}has-key{% endif %}" id="card-anthropic">
+    <div class="provider-header" onclick="toggle('anthropic')">
+      <div class="provider-logo" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
+      <div class="provider-info">
+        <div class="provider-name">Anthropic</div>
+        <div class="provider-models">claude-haiku · claude-sonnet · claude-opus</div>
       </div>
-      <div class="provider-body" id="body-groq">
-        <div class="key-row">
-          <div class="key-input-wrap">
-            <input class="key-input" type="password" id="input-groq"
-              placeholder="gsk_••••••••••••••••••••••••••••••••••••••••••••••••••••••"
-              value="{% if keys.groq %}{{ keys.groq }}{% endif %}">
-            <button class="toggle-vis" onclick="toggleVis('groq')">👁</button>
-          </div>
-          <button class="save-btn" onclick="saveKey('groq')">SAVE</button>
-          {% if keys.groq %}
-          <button class="remove-btn" onclick="removeKey('groq')">REMOVE</button>
-          {% endif %}
-        </div>
-        <div class="key-hint">
-          Get your key at <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> · Free tier: 1,000 req/day
-        </div>
-        <div class="key-saved-info">✓ Key saved — Groq models available for benchmarking</div>
+      <div class="provider-right">
+        <div class="status-dot"></div>
+        <button class="expand-btn" id="btn-anthropic">Configure</button>
       </div>
     </div>
-
-    <!-- Anthropic -->
-    <div class="provider-card {% if keys.anthropic %}has-key{% endif %}" id="card-anthropic">
-      <div class="provider-header" onclick="toggle('anthropic')">
-        <div class="provider-logo" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
-        <div class="provider-info">
-          <div class="provider-name">Anthropic</div>
-          <div class="provider-models">claude-haiku · claude-sonnet · claude-opus</div>
+    <div class="provider-body" id="body-anthropic">
+      <div class="key-row">
+        <div class="key-input-wrap">
+          <input class="key-input" type="password" id="input-anthropic" placeholder="sk-ant-••••••••••••••••••••••••••••••••••••••••••" value="{% if keys.anthropic %}{{ keys.anthropic }}{% endif %}">
+          <button class="toggle-vis" onclick="toggleVis('anthropic')">👁</button>
         </div>
-        <div class="provider-status">
-          <div class="status-dot"></div>
-          <button class="expand-btn" id="btn-anthropic">CONFIGURE</button>
-        </div>
+        <button class="save-btn" onclick="saveKey('anthropic')">Save</button>
+        {% if keys.anthropic %}<button class="remove-btn" onclick="removeKey('anthropic')">Remove</button>{% endif %}
       </div>
-      <div class="provider-body" id="body-anthropic">
-        <div class="key-row">
-          <div class="key-input-wrap">
-            <input class="key-input" type="password" id="input-anthropic"
-              placeholder="sk-ant-••••••••••••••••••••••••••••••••••••••••••"
-              value="{% if keys.anthropic %}{{ keys.anthropic }}{% endif %}">
-            <button class="toggle-vis" onclick="toggleVis('anthropic')">👁</button>
-          </div>
-          <button class="save-btn" onclick="saveKey('anthropic')">SAVE</button>
-          {% if keys.anthropic %}
-          <button class="remove-btn" onclick="removeKey('anthropic')">REMOVE</button>
-          {% endif %}
-        </div>
-        <div class="key-hint">
-          Get your key at <a href="https://console.anthropic.com/keys" target="_blank">console.anthropic.com/keys</a> · ~$0.04 per full Haiku run
-        </div>
-        <div class="key-saved-info">✓ Key saved — Anthropic models available for benchmarking</div>
-      </div>
+      <div class="key-hint">Get your key at <a href="https://console.anthropic.com/keys" target="_blank">console.anthropic.com/keys</a> · ~$0.04 per full Haiku run</div>
+      <div class="key-saved-info">✓ Key saved — Anthropic models available for benchmarking</div>
     </div>
-
-    <!-- OpenAI -->
-    <div class="provider-card {% if keys.openai %}has-key{% endif %}" id="card-openai">
-      <div class="provider-header" onclick="toggle('openai')">
-        <div class="provider-logo" style="background:rgba(16,163,127,0.12);color:#10a37f;">⬡</div>
-        <div class="provider-info">
-          <div class="provider-name">OpenAI</div>
-          <div class="provider-models">gpt-4o · gpt-4o-mini · gpt-4-turbo · gpt-3.5-turbo</div>
-        </div>
-        <div class="provider-status">
-          <div class="status-dot"></div>
-          <button class="expand-btn" id="btn-openai">CONFIGURE</button>
-        </div>
-      </div>
-      <div class="provider-body" id="body-openai">
-        <div class="key-row">
-          <div class="key-input-wrap">
-            <input class="key-input" type="password" id="input-openai"
-              placeholder="sk-••••••••••••••••••••••••••••••••••••••••••••••••"
-              value="{% if keys.openai %}{{ keys.openai }}{% endif %}">
-            <button class="toggle-vis" onclick="toggleVis('openai')">👁</button>
-          </div>
-          <button class="save-btn" onclick="saveKey('openai')">SAVE</button>
-          {% if keys.openai %}
-          <button class="remove-btn" onclick="removeKey('openai')">REMOVE</button>
-          {% endif %}
-        </div>
-        <div class="key-hint">
-          Get your key at <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a>
-        </div>
-        <div class="key-saved-info">✓ Key saved — OpenAI models available for benchmarking</div>
-      </div>
-    </div>
-
-    <!-- Google Gemini -->
-    <div class="provider-card {% if keys.google %}has-key{% endif %}" id="card-google">
-      <div class="provider-header" onclick="toggle('google')">
-        <div class="provider-logo" style="background:rgba(66,133,244,0.12);color:#4285f4;">◈</div>
-        <div class="provider-info">
-          <div class="provider-name">Google Gemini</div>
-          <div class="provider-models">gemini-1.5-pro · gemini-1.5-flash · gemini-2.0-flash</div>
-        </div>
-        <div class="provider-status">
-          <div class="status-dot"></div>
-          <button class="expand-btn" id="btn-google">CONFIGURE</button>
-        </div>
-      </div>
-      <div class="provider-body" id="body-google">
-        <div class="key-row">
-          <div class="key-input-wrap">
-            <input class="key-input" type="password" id="input-google"
-              placeholder="AIza••••••••••••••••••••••••••••••••••••••"
-              value="{% if keys.google %}{{ keys.google }}{% endif %}">
-            <button class="toggle-vis" onclick="toggleVis('google')">👁</button>
-          </div>
-          <button class="save-btn" onclick="saveKey('google')">SAVE</button>
-          {% if keys.google %}
-          <button class="remove-btn" onclick="removeKey('google')">REMOVE</button>
-          {% endif %}
-        </div>
-        <div class="key-hint">
-          Get your key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> · Free tier available
-        </div>
-        <div class="key-saved-info">✓ Key saved — Gemini models available for benchmarking</div>
-      </div>
-    </div>
-
-    <!-- Mistral -->
-    <div class="provider-card {% if keys.mistral %}has-key{% endif %}" id="card-mistral">
-      <div class="provider-header" onclick="toggle('mistral')">
-        <div class="provider-logo" style="background:rgba(255,107,0,0.12);color:#ff6b00;">▲</div>
-        <div class="provider-info">
-          <div class="provider-name">Mistral AI</div>
-          <div class="provider-models">mistral-large · mistral-small · mixtral-8x22b</div>
-        </div>
-        <div class="provider-status">
-          <div class="status-dot"></div>
-          <button class="expand-btn" id="btn-mistral">CONFIGURE</button>
-        </div>
-      </div>
-      <div class="provider-body" id="body-mistral">
-        <div class="key-row">
-          <div class="key-input-wrap">
-            <input class="key-input" type="password" id="input-mistral"
-              placeholder="••••••••••••••••••••••••••••••••"
-              value="{% if keys.mistral %}{{ keys.mistral }}{% endif %}">
-            <button class="toggle-vis" onclick="toggleVis('mistral')">👁</button>
-          </div>
-          <button class="save-btn" onclick="saveKey('mistral')">SAVE</button>
-          {% if keys.mistral %}
-          <button class="remove-btn" onclick="removeKey('mistral')">REMOVE</button>
-          {% endif %}
-        </div>
-        <div class="key-hint">
-          Get your key at <a href="https://console.mistral.ai/api-keys" target="_blank">console.mistral.ai</a>
-        </div>
-        <div class="key-saved-info">✓ Key saved — Mistral models available for benchmarking</div>
-      </div>
-    </div>
-
-    <!-- Cohere -->
-    <div class="provider-card {% if keys.cohere %}has-key{% endif %}" id="card-cohere">
-      <div class="provider-header" onclick="toggle('cohere')">
-        <div class="provider-logo" style="background:rgba(57,119,255,0.12);color:#3977ff;">◻</div>
-        <div class="provider-info">
-          <div class="provider-name">Cohere</div>
-          <div class="provider-models">command-r-plus · command-r · command</div>
-        </div>
-        <div class="provider-status">
-          <div class="status-dot"></div>
-          <button class="expand-btn" id="btn-cohere">CONFIGURE</button>
-        </div>
-      </div>
-      <div class="provider-body" id="body-cohere">
-        <div class="key-row">
-          <div class="key-input-wrap">
-            <input class="key-input" type="password" id="input-cohere"
-              placeholder="••••••••••••••••••••••••••••••••••••••••"
-              value="{% if keys.cohere %}{{ keys.cohere }}{% endif %}">
-            <button class="toggle-vis" onclick="toggleVis('cohere')">👁</button>
-          </div>
-          <button class="save-btn" onclick="saveKey('cohere')">SAVE</button>
-          {% if keys.cohere %}
-          <button class="remove-btn" onclick="removeKey('cohere')">REMOVE</button>
-          {% endif %}
-        </div>
-        <div class="key-hint">
-          Get your key at <a href="https://dashboard.cohere.com/api-keys" target="_blank">dashboard.cohere.com</a> · Free trial available
-        </div>
-        <div class="key-saved-info">✓ Key saved — Cohere models available for benchmarking</div>
-      </div>
-    </div>
-
-    <!-- Hugging Face -->
-    <div class="provider-card {% if keys.huggingface %}has-key{% endif %}" id="card-huggingface">
-      <div class="provider-header" onclick="toggle('huggingface')">
-        <div class="provider-logo" style="background:rgba(255,210,0,0.1);color:#ffd200;">🤗</div>
-        <div class="provider-info">
-          <div class="provider-name">Hugging Face</div>
-          <div class="provider-models">Thousands of hosted models · LLaMA · Mistral · Falcon · GPT-J</div>
-        </div>
-        <div class="provider-status">
-          <div class="status-dot"></div>
-          <button class="expand-btn" id="btn-huggingface">CONFIGURE</button>
-        </div>
-      </div>
-      <div class="provider-body" id="body-huggingface">
-        <div class="key-row">
-          <div class="key-input-wrap">
-            <input class="key-input" type="password" id="input-huggingface"
-              placeholder="hf_••••••••••••••••••••••••••••••••••••"
-              value="{% if keys.huggingface %}{{ keys.huggingface }}{% endif %}">
-            <button class="toggle-vis" onclick="toggleVis('huggingface')">👁</button>
-          </div>
-          <button class="save-btn" onclick="saveKey('huggingface')">SAVE</button>
-          {% if keys.huggingface %}
-          <button class="remove-btn" onclick="removeKey('huggingface')">REMOVE</button>
-          {% endif %}
-        </div>
-        <div class="key-hint">
-          Get your key at <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co/settings/tokens</a> · Free inference API included
-        </div>
-        <div class="key-saved-info">✓ Key saved — Hugging Face models available for benchmarking</div>
-      </div>
-    </div>
-
   </div>
-</main>
 
-<!-- Toast notification -->
+  <!-- OpenAI -->
+  <div class="provider-card {% if keys.openai %}has-key{% endif %}" id="card-openai">
+    <div class="provider-header" onclick="toggle('openai')">
+      <div class="provider-logo" style="background:rgba(16,163,127,0.12);color:#10a37f;">⬡</div>
+      <div class="provider-info">
+        <div class="provider-name">OpenAI</div>
+        <div class="provider-models">gpt-4o · gpt-4o-mini · gpt-4-turbo · gpt-3.5-turbo</div>
+      </div>
+      <div class="provider-right">
+        <div class="status-dot"></div>
+        <button class="expand-btn" id="btn-openai">Configure</button>
+      </div>
+    </div>
+    <div class="provider-body" id="body-openai">
+      <div class="key-row">
+        <div class="key-input-wrap">
+          <input class="key-input" type="password" id="input-openai" placeholder="sk-••••••••••••••••••••••••••••••••••••••••••••••••" value="{% if keys.openai %}{{ keys.openai }}{% endif %}">
+          <button class="toggle-vis" onclick="toggleVis('openai')">👁</button>
+        </div>
+        <button class="save-btn" onclick="saveKey('openai')">Save</button>
+        {% if keys.openai %}<button class="remove-btn" onclick="removeKey('openai')">Remove</button>{% endif %}
+      </div>
+      <div class="key-hint">Get your key at <a href="https://platform.openai.com/api-keys" target="_blank">platform.openai.com/api-keys</a></div>
+      <div class="key-saved-info">✓ Key saved — OpenAI models available for benchmarking</div>
+    </div>
+  </div>
+
+  <!-- Google Gemini -->
+  <div class="provider-card {% if keys.google %}has-key{% endif %}" id="card-google">
+    <div class="provider-header" onclick="toggle('google')">
+      <div class="provider-logo" style="background:rgba(66,133,244,0.12);color:#4285f4;">◈</div>
+      <div class="provider-info">
+        <div class="provider-name">Google Gemini</div>
+        <div class="provider-models">gemini-1.5-pro · gemini-1.5-flash · gemini-2.0-flash</div>
+      </div>
+      <div class="provider-right">
+        <div class="status-dot"></div>
+        <button class="expand-btn" id="btn-google">Configure</button>
+      </div>
+    </div>
+    <div class="provider-body" id="body-google">
+      <div class="key-row">
+        <div class="key-input-wrap">
+          <input class="key-input" type="password" id="input-google" placeholder="AIza••••••••••••••••••••••••••••••••••••••" value="{% if keys.google %}{{ keys.google }}{% endif %}">
+          <button class="toggle-vis" onclick="toggleVis('google')">👁</button>
+        </div>
+        <button class="save-btn" onclick="saveKey('google')">Save</button>
+        {% if keys.google %}<button class="remove-btn" onclick="removeKey('google')">Remove</button>{% endif %}
+      </div>
+      <div class="key-hint">Get your key at <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> · Free tier available</div>
+      <div class="key-saved-info">✓ Key saved — Gemini models available for benchmarking</div>
+    </div>
+  </div>
+
+  <!-- Mistral -->
+  <div class="provider-card {% if keys.mistral %}has-key{% endif %}" id="card-mistral">
+    <div class="provider-header" onclick="toggle('mistral')">
+      <div class="provider-logo" style="background:rgba(255,107,0,0.12);color:#ff6b00;">▲</div>
+      <div class="provider-info">
+        <div class="provider-name">Mistral AI</div>
+        <div class="provider-models">mistral-large · mistral-small · mixtral-8x22b</div>
+      </div>
+      <div class="provider-right">
+        <div class="status-dot"></div>
+        <button class="expand-btn" id="btn-mistral">Configure</button>
+      </div>
+    </div>
+    <div class="provider-body" id="body-mistral">
+      <div class="key-row">
+        <div class="key-input-wrap">
+          <input class="key-input" type="password" id="input-mistral" placeholder="••••••••••••••••••••••••••••••••" value="{% if keys.mistral %}{{ keys.mistral }}{% endif %}">
+          <button class="toggle-vis" onclick="toggleVis('mistral')">👁</button>
+        </div>
+        <button class="save-btn" onclick="saveKey('mistral')">Save</button>
+        {% if keys.mistral %}<button class="remove-btn" onclick="removeKey('mistral')">Remove</button>{% endif %}
+      </div>
+      <div class="key-hint">Get your key at <a href="https://console.mistral.ai/api-keys" target="_blank">console.mistral.ai</a></div>
+      <div class="key-saved-info">✓ Key saved — Mistral models available for benchmarking</div>
+    </div>
+  </div>
+
+  <!-- Cohere -->
+  <div class="provider-card {% if keys.cohere %}has-key{% endif %}" id="card-cohere">
+    <div class="provider-header" onclick="toggle('cohere')">
+      <div class="provider-logo" style="background:rgba(57,119,255,0.12);color:#3977ff;">◻</div>
+      <div class="provider-info">
+        <div class="provider-name">Cohere</div>
+        <div class="provider-models">command-r-plus · command-r · command</div>
+      </div>
+      <div class="provider-right">
+        <div class="status-dot"></div>
+        <button class="expand-btn" id="btn-cohere">Configure</button>
+      </div>
+    </div>
+    <div class="provider-body" id="body-cohere">
+      <div class="key-row">
+        <div class="key-input-wrap">
+          <input class="key-input" type="password" id="input-cohere" placeholder="••••••••••••••••••••••••••••••••••••••••" value="{% if keys.cohere %}{{ keys.cohere }}{% endif %}">
+          <button class="toggle-vis" onclick="toggleVis('cohere')">👁</button>
+        </div>
+        <button class="save-btn" onclick="saveKey('cohere')">Save</button>
+        {% if keys.cohere %}<button class="remove-btn" onclick="removeKey('cohere')">Remove</button>{% endif %}
+      </div>
+      <div class="key-hint">Get your key at <a href="https://dashboard.cohere.com/api-keys" target="_blank">dashboard.cohere.com</a> · Free trial available</div>
+      <div class="key-saved-info">✓ Key saved — Cohere models available for benchmarking</div>
+    </div>
+  </div>
+
+  <!-- Hugging Face -->
+  <div class="provider-card {% if keys.huggingface %}has-key{% endif %}" id="card-huggingface">
+    <div class="provider-header" onclick="toggle('huggingface')">
+      <div class="provider-logo" style="background:rgba(255,210,0,0.1);color:#ffd200;">🤗</div>
+      <div class="provider-info">
+        <div class="provider-name">Hugging Face</div>
+        <div class="provider-models">LLaMA · Mistral · Falcon · GPT-J · thousands of hosted models</div>
+      </div>
+      <div class="provider-right">
+        <div class="status-dot"></div>
+        <button class="expand-btn" id="btn-huggingface">Configure</button>
+      </div>
+    </div>
+    <div class="provider-body" id="body-huggingface">
+      <div class="key-row">
+        <div class="key-input-wrap">
+          <input class="key-input" type="password" id="input-huggingface" placeholder="hf_••••••••••••••••••••••••••••••••••••" value="{% if keys.huggingface %}{{ keys.huggingface }}{% endif %}">
+          <button class="toggle-vis" onclick="toggleVis('huggingface')">👁</button>
+        </div>
+        <button class="save-btn" onclick="saveKey('huggingface')">Save</button>
+        {% if keys.huggingface %}<button class="remove-btn" onclick="removeKey('huggingface')">Remove</button>{% endif %}
+      </div>
+      <div class="key-hint">Get your key at <a href="https://huggingface.co/settings/tokens" target="_blank">huggingface.co/settings/tokens</a> · Free inference API included</div>
+      <div class="key-saved-info">✓ Key saved — Hugging Face models available for benchmarking</div>
+    </div>
+  </div>
+
+</div>
+
 <div class="toast" id="toast">
   <span class="toast-icon" id="toast-icon"></span>
   <span id="toast-msg"></span>
 </div>
 
 <script>
-  function toggle(provider) {
-    const body = document.getElementById('body-' + provider);
-    const btn = document.getElementById('btn-' + provider);
-    const isOpen = body.classList.contains('open');
-    // Close all
-    document.querySelectorAll('.provider-body').forEach(b => b.classList.remove('open'));
-    document.querySelectorAll('.expand-btn').forEach(b => b.textContent = 'CONFIGURE');
-    // Open this one if it was closed
-    if (!isOpen) {
-      body.classList.add('open');
-      btn.textContent = 'CLOSE';
-    }
-  }
-
-  function toggleVis(provider) {
-    const input = document.getElementById('input-' + provider);
-    input.type = input.type === 'password' ? 'text' : 'password';
-  }
-
-  function showToast(msg, type) {
-    const toast = document.getElementById('toast');
-    const icon = document.getElementById('toast-icon');
-    const msgEl = document.getElementById('toast-msg');
-    toast.className = 'toast ' + type;
-    icon.textContent = type === 'success' ? '✓' : '✕';
-    msgEl.textContent = msg;
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-  }
-
-  async function saveKey(provider) {
-    const val = document.getElementById('input-' + provider).value.trim();
-    if (!val) { showToast('Please enter a key first', 'error'); return; }
-
-    try {
-      const res = await fetch('/api/user-keys/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider, key: val })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        document.getElementById('card-' + provider).classList.add('has-key');
-        showToast(provider.charAt(0).toUpperCase() + provider.slice(1) + ' key saved', 'success');
-      } else {
-        showToast(data.detail || 'Failed to save key', 'error');
-      }
-    } catch (e) {
-      showToast('Network error — try again', 'error');
-    }
-  }
-
-  async function removeKey(provider) {
-    if (!confirm('Remove ' + provider + ' API key?')) return;
-    try {
-      const res = await fetch('/api/user-keys/remove', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider })
-      });
-      if (res.ok) {
-        document.getElementById('card-' + provider).classList.remove('has-key');
-        document.getElementById('input-' + provider).value = '';
-        showToast(provider + ' key removed', 'success');
-      }
-    } catch (e) {
-      showToast('Network error — try again', 'error');
-    }
-  }
+function toggle(p) {
+  const body = document.getElementById('body-'+p);
+  const btn  = document.getElementById('btn-'+p);
+  const open = body.classList.contains('open');
+  document.querySelectorAll('.provider-body').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.expand-btn').forEach(b=>b.textContent='Configure');
+  if(!open){body.classList.add('open');btn.textContent='Close';}
+}
+function toggleVis(p) {
+  const i=document.getElementById('input-'+p);
+  i.type=i.type==='password'?'text':'password';
+}
+function showToast(msg,type) {
+  const t=document.getElementById('toast');
+  document.getElementById('toast-icon').textContent=type==='success'?'✓':'✕';
+  document.getElementById('toast-msg').textContent=msg;
+  t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),3000);
+}
+async function saveKey(p) {
+  const val=document.getElementById('input-'+p).value.trim();
+  if(!val){showToast('Please enter a key first','error');return;}
+  try {
+    const res=await fetch('/api/user-keys/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider:p,key:val})});
+    const data=await res.json();
+    if(res.ok){document.getElementById('card-'+p).classList.add('has-key');showToast(p.charAt(0).toUpperCase()+p.slice(1)+' key saved','success');}
+    else{showToast(data.detail||'Failed to save key','error');}
+  }catch(e){showToast('Network error — try again','error');}
+}
+async function removeKey(p) {
+  if(!confirm('Remove '+p+' API key?'))return;
+  try {
+    const res=await fetch('/api/user-keys/remove',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({provider:p})});
+    if(res.ok){document.getElementById('card-'+p).classList.remove('has-key');document.getElementById('input-'+p).value='';showToast(p+' key removed','success');}
+  }catch(e){showToast('Network error — try again','error');}
+}
 </script>
 </body>
 </html>

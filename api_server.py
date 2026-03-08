@@ -214,7 +214,27 @@ def probe_delete(request: Request, session: Optional[str] = Cookie(default=None)
 def home(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
-    return templates.TemplateResponse("index.html", {"request": request, "user": user})
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM results")
+    total_results = list(cur.fetchone().values())[0]
+    cur.execute("SELECT COUNT(DISTINCT model) FROM runs")
+    total_models = list(cur.fetchone().values())[0]
+    cur.execute("SELECT COUNT(*) FROM runs")
+    total_runs = list(cur.fetchone().values())[0]
+    cur.execute("SELECT r.model, ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(res.id),0))::numeric, 1) as pass_rate FROM runs r LEFT JOIN results res ON r.id=res.run_id WHERE r.model IS NOT NULL AND r.model != ''  GROUP BY r.model ORDER BY pass_rate DESC")
+    model_rows = []
+    for row in cur.fetchall():
+        d = dict(row); pr = float(d.get('pass_rate') or 0)
+        if pr >= 95: d['grade'] = 'A+'
+        elif pr >= 90: d['grade'] = 'A'
+        elif pr >= 80: d['grade'] = 'B'
+        elif pr >= 70: d['grade'] = 'C'
+        elif pr >= 60: d['grade'] = 'D'
+        else: d['grade'] = 'F'
+        model_rows.append(d)
+    conn.close()
+    best_grade = model_rows[0]['grade'] if model_rows else '?'
+    return templates.TemplateResponse("index.html", {"request": request, "user": user, "total_results": total_results, "total_models": total_models, "total_runs": total_runs, "model_rows": model_rows, "best_grade": best_grade})
 
 @app.get("/run-benchmark", response_class=HTMLResponse)
 def run_benchmark_page(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -235,11 +255,11 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
     cur.execute("SELECT id, created_at, temperature, python_version FROM runs ORDER BY created_at DESC LIMIT 10")
     recent_runs = [dict(r) for r in cur.fetchall()]
     cur.execute("SELECT COUNT(*) FROM runs")
-    total_runs = cur.fetchone()[0]
+    total_runs = list(cur.fetchone().values())[0]
     cur.execute("SELECT COUNT(*) FROM results")
-    total_results = cur.fetchone()[0]
+    total_results = list(cur.fetchone().values())[0]
     cur.execute("SELECT COUNT(*) FROM results WHERE outcome='SAFETY_HARD_STOP'")
-    hard_stops = cur.fetchone()[0]
+    hard_stops = list(cur.fetchone().values())[0]
     conn.close()
     return templates.TemplateResponse("stats.html", {"request": request, "data": {"outcomes": outcome_rows, "by_temperature": temp_rows, "recent_runs": recent_runs, "total_runs": total_runs, "total_results": total_results, "hard_stops": hard_stops}, "user": user})
 
@@ -360,7 +380,27 @@ def export_report(session: Optional[str] = Cookie(default=None), x_api_key: Opti
 
 @app.get("/landing", response_class=HTMLResponse)
 def landing_page(request: Request):
-    return templates.TemplateResponse("landing.html", {"request": request})
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM results")
+    total_results = list(cur.fetchone().values())[0]
+    cur.execute("SELECT COUNT(DISTINCT model) FROM runs WHERE model IS NOT NULL AND model != ''")
+    total_models = list(cur.fetchone().values())[0]
+    cur.execute("""SELECT r.model, ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(res.id),0))::numeric, 1) as pass_rate FROM runs r LEFT JOIN results res ON r.id=res.run_id WHERE r.model IS NOT NULL AND r.model != '' GROUP BY r.model ORDER BY pass_rate DESC""")
+    model_rows = []
+    for row in cur.fetchall():
+        d = dict(row); pr = float(d.get('pass_rate') or 0)
+        if pr >= 95: d['grade'] = 'A+'
+        elif pr >= 90: d['grade'] = 'A'
+        elif pr >= 80: d['grade'] = 'B'
+        elif pr >= 70: d['grade'] = 'C'
+        elif pr >= 60: d['grade'] = 'D'
+        else: d['grade'] = 'F'
+        model_rows.append(d)
+    conn.close()
+    best_grade = model_rows[0]['grade'] if model_rows else '?'
+    top_model = model_rows[0]['model'] if model_rows else '?'
+    top_score = model_rows[0]['pass_rate'] if model_rows else 0
+    return templates.TemplateResponse("landing.html", {"request": request, "total_results": total_results, "total_models": total_models, "model_rows": model_rows, "best_grade": best_grade, "top_model": top_model, "top_score": top_score})
 
 # ── Public leaderboard (NO login required) ───────────────────────────────────
 
