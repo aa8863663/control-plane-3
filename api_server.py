@@ -434,10 +434,10 @@ def landing_page(request: Request):
         elif pr >= 60: d['grade'] = 'D'
         else: d['grade'] = 'F'
         model_rows.append(d)
-    total_runs = list(cur.fetchone().values())[0]
     cur.execute("SELECT COUNT(*) FROM runs WHERE dataset IS NULL OR dataset='main'")
-    pass_range = f"{min(rates):.1f}%–{max(rates):.1f}%" if rates else 'N/A'
+    _row = cur.fetchone(); total_runs = list(_row.values())[0] if _row else 0
     rates = [float(r['pass_rate']) for r in model_rows if r.get('pass_rate')]
+    pass_range = f"{min(rates):.1f}%–{max(rates):.1f}%" if rates else 'N/A'
     conn.close()
     best_grade = model_rows[0]['grade'] if model_rows else '?'
     top_model = model_rows[0]['model'] if model_rows else '?'
