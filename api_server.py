@@ -323,7 +323,7 @@ def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
     cur.execute("SELECT COUNT(*) FROM results"); total_results = list(cur.fetchone().values())[0]
     cur.execute("SELECT COUNT(*) FROM runs"); total_runs = list(cur.fetchone().values())[0]
     cur.execute("""
-        SELECT r.model, r.temperature, COUNT(res.id) as results,
+        SELECT r.model, r.temperature, COUNT(res.id) as total,
                SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
                SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops
         FROM runs r LEFT JOIN results res ON r.id=res.run_id
