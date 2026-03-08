@@ -512,8 +512,15 @@ def public_leaderboard(request: Request):
     highest_pass = max(pass_rates) if pass_rates else 0
     lowest_pass = min(pass_rates) if pass_rates else 0
     models_passing = sum(1 for r in leaderboard if r.get("grade") in ["A+","A"])
-    return templates.TemplateResponse("leaderboard.html", {
-        "request": request, "user": None, "leaderboard": leaderboard
+    pass_rates = [float(r.get("pass_rate") or 0) for r in leaderboard]
+    best_grade = leaderboard[0]["grade"] if leaderboard else "?"
+    highest_pass = max(pass_rates) if pass_rates else 0
+    lowest_pass = min(pass_rates) if pass_rates else 0
+    models_passing = sum(1 for r in leaderboard if r.get("grade") in ["A+","A"])
+    return templates.TemplateResponse("public_leaderboard.html", {
+        "request": request, "user": None, "leaderboard": leaderboard,
+        "best_grade": best_grade, "highest_pass": highest_pass,
+        "lowest_pass": lowest_pass, "models_passing": models_passing
     })
 
 # ── Private leaderboard (login required) ─────────────────────────────────────

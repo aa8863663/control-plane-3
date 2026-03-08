@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}MTCP Public Leaderboard — Control Plane 3{% endblock %}
+{% block extra_styles %}
+.temp-pill{display:inline-block;padding:2px 7px;border-radius:3px;font-size:0.58rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
+.best-row td{background:rgba(0,229,160,0.03);}
+.summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
+.sum-item{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 14px;}
+.sum-val{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}
+.sum-lbl{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+.pub-cta{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.pub-cta-text{font-size:0.76rem;color:var(--muted);line-height:1.6;}
+.pub-cta-text strong{color:var(--text);}
+.grade-A{color:#00e5a0;font-weight:700;}
+.grade-B{color:#4ade80;font-weight:700;}
+.grade-C{color:#fbbf24;font-weight:700;}
+.grade-D{color:#ef4444;font-weight:700;}
+.grade-F{color:#7f1d1d;font-weight:700;}
+@media(max-width:900px){.col-hide{display:none;}.summary-bar{grid-template-columns:1fr 1fr;}}
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>MTCP <span>Public Leaderboard</span></h1>
+  <p>Multi-Turn Constraint Persistence · 11 models · 4 temperatures · 44 runs · DOI: 10.17605/OSF.IO/DXGK5</p>
+  <div class="doi-badge">control-plane-3.onrender.com · v1.5 · March 2026</div>
+</div>
+
+<div class="pub-cta fade-up">
+  <div class="pub-cta-text">
+    <strong>Full per-vector breakdown, certificates, and actuarial reports available on platform.</strong><br>
+    Dataset: <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500" target="_blank" style="color:var(--accent)">huggingface.co/datasets/aa8899/mtcp-boundary-500</a> ·
+    Research: <a href="https://doi.org/10.17605/OSF.IO/DXGK5" target="_blank" style="color:var(--accent)">doi.org/10.17605/OSF.IO/DXGK5</a>
+  </div>
+  <a href="/login" class="btn btn-primary" style="font-size:0.64rem;white-space:nowrap;">Access Platform →</a>
+</div>
+
+<div class="summary-bar fade-up">
+  <div class="sum-item"><div class="sum-val" style="color:var(--accent)">{{ best_grade }}</div><div class="sum-lbl">Best grade achieved</div></div>
+  <div class="sum-item"><div class="sum-val">{{ highest_pass }}%</div><div class="sum-lbl">Highest pass rate</div></div>
+  <div class="sum-item"><div class="sum-val" style="color:var(--danger)">{{ lowest_pass }}%</div><div class="sum-lbl">Lowest pass rate</div></div>
+  <div class="sum-item"><div class="sum-val" style="color:var(--accent)">{{ models_passing }}</div><div class="sum-lbl">Models grade A or above</div></div>
+</div>
+
+<div class="card fade-up fade-up-1" style="padding:0;overflow:hidden;margin-bottom:16px">
+  <div class="table-wrap">
+    <table id="lb-table">
+      <thead>
+        <tr>
+          <th style="width:44px">Rank</th>
+          <th>Model</th>
+          <th>Temp</th>
+          <th>Pass Rate</th>
+          <th>Grade</th>
+          <th>Passed</th>
+          <th class="col-hide">Hard Stops</th>
+          <th class="col-hide">Probes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in leaderboard %}
+        <tr class="lb-row {% if loop.first %}best-row{% endif %}"
+            data-model="{{ row.model|lower }}"
+            data-temp="{{ row.temperature }}">
+          <td style="color:var(--muted);font-size:0.68rem;">{{ loop.index }}</td>
+          <td>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;">{{ row.model }}</span>
+            {% if 'llama' in row.model|lower and 'nvidia' not in row.model|lower %}<span style="font-size:0.58rem;color:var(--muted);margin-left:6px;">Groq</span>{% endif %}
+            {% if 'claude' in row.model|lower %}<span style="font-size:0.58rem;color:var(--muted);margin-left:6px;">Anthropic</span>{% endif %}
+            {% if 'gpt' in row.model|lower %}<span style="font-size:0.58rem;color:var(--muted);margin-left:6px;">OpenAI</span>{% endif %}
+            {% if 'grok' in row.model|lower %}<span style="font-size:0.58rem;color:var(--muted);margin-left:6px;">xAI</span>{% endif %}
+            {% if 'nvidia' in row.model|lower %}<span style="font-size:0.58rem;color:var(--muted);margin-left:6px;">NVIDIA</span>{% endif %}
+            {% if 'gemini' in row.model|lower %}<span style="font-size:0.58rem;color:var(--muted);margin-left:6px;">Google</span>{% endif %}
+          </td>
+          <td><span class="temp-pill">T={{ row.temperature }}</span></td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="bar-wrap" style="width:80px;height:4px;background:var(--surface2);border-radius:2px;display:inline-block;">
+                <span class="bar-fill" style="display:block;height:4px;border-radius:2px;width:{{ row.pass_rate }}%;background:{% if row.pass_rate >= 90 %}var(--accent){% elif row.pass_rate >= 80 %}#4ade80{% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %};"></span>
+              </span>
+              <span style="font-size:0.7rem;color:var(--text)">{{ row.pass_rate }}%</span>
+            </div>
+          </td>
+          <td><span class="grade-{{ row.grade|replace('+','') }}">{{ row.grade }}</span></td>
+          <td style="color:var(--accent);font-size:0.72rem;">{{ row.passed }}</td>
+          <td class="col-hide" style="color:var(--danger);font-size:0.72rem;">{{ row.hard_stops }}</td>
+          <td class="col-hide" style="color:var(--muted);font-size:0.72rem;">{{ row.total }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card fade-up fade-up-2" style="padding:16px 20px;margin-bottom:16px;">
+  <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px;">MTCP Grading Scale</div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <span style="font-size:0.72rem;"><span class="grade-A">A</span> <span style="color:var(--muted)">≥90% — Pass</span></span>
+    <span style="font-size:0.72rem;"><span class="grade-B">B</span> <span style="color:var(--muted)">≥80%</span></span>
+    <span style="font-size:0.72rem;"><span class="grade-C">C</span> <span style="color:var(--muted)">≥70%</span></span>
+    <span style="font-size:0.72rem;"><span class="grade-D">D</span> <span style="color:var(--muted)">≥60%</span></span>
+    <span style="font-size:0.72rem;"><span class="grade-F" style="color:#7f1d1d;font-weight:700;">F</span> <span style="color:var(--muted)">&lt;60% — Fail</span></span>
+  </div>
+  <div style="margin-top:10px;font-size:0.68rem;color:var(--muted);line-height:1.7;">
+    MTCP evaluates multi-turn constraint persistence — whether models maintain compliance with explicit rules after correction. 252 probes (LLaMA/Claude) or 200 probes (GPT/Grok/NVIDIA/Gemini) per run across 5 vectors: NCA · SFC · IDL · CG · LANG. © 2026 A. Abby. All Rights Reserved.
+  </div>
+</div>
+{% endblock %}
