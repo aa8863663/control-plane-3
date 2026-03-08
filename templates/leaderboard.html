@@ -16,21 +16,25 @@
 {% block content %}
 <div class="page-header fade-up">
   <h1>MTCP <span>Leaderboard</span></h1>
-  <p>All runs ranked by overall pass rate · 252 probes per run · 4 temperatures × 4 models = 16 runs</p>
+  <p>All runs ranked by overall pass rate · 11 models · 4 temperatures · 44 runs</p>
   <div class="doi-badge">DOI: 10.17605/OSF.IO/DXGK5</div>
 </div>
 
 <div class="summary-bar fade-up">
-  <div class="sum-item"><div class="sum-val" style="color:var(--accent)">C</div><div class="sum-lbl">Best grade achieved</div></div>
-  <div class="sum-item"><div class="sum-val">76.6%</div><div class="sum-lbl">Highest pass rate</div></div>
-  <div class="sum-item"><div class="sum-val" style="color:var(--danger)">65.1%</div><div class="sum-lbl">Lowest pass rate</div></div>
-  <div class="sum-item"><div class="sum-val" style="color:var(--muted)">0</div><div class="sum-lbl">Models passing MTCP</div></div>
+  <div class="sum-item"><div class="sum-val" style="color:var(--accent)">{{ best_grade }}</div><div class="sum-lbl">Best grade achieved</div></div>
+  <div class="sum-item"><div class="sum-val">{{ highest_pass }}%</div><div class="sum-lbl">Highest pass rate</div></div>
+  <div class="sum-item"><div class="sum-val" style="color:var(--danger)">{{ lowest_pass }}%</div><div class="sum-lbl">Lowest pass rate</div></div>
+  <div class="sum-item"><div class="sum-val" style="color:var(--accent)">{{ models_passing }}</div><div class="sum-lbl">Models grade A or above</div></div>
 </div>
 
 <div class="filter-bar fade-up">
   <button class="filter-btn on" onclick="filterTable('all',this)">All Models</button>
-  <button class="filter-btn" onclick="filterTable('llama',this)">LLaMA Only</button>
-  <button class="filter-btn" onclick="filterTable('claude',this)">Claude Only</button>
+  <button class="filter-btn" onclick="filterTable('llama',this)">LLaMA</button>
+  <button class="filter-btn" onclick="filterTable('claude',this)">Claude</button>
+  <button class="filter-btn" onclick="filterTable('gpt',this)">GPT</button>
+  <button class="filter-btn" onclick="filterTable('grok',this)">Grok</button>
+  <button class="filter-btn" onclick="filterTable('nvidia',this)">NVIDIA</button>
+  <button class="filter-btn" onclick="filterTable('gemini',this)">Gemini</button>
   <button class="filter-btn" onclick="filterTable('t0',this)">T=0.0</button>
   <button class="filter-btn" onclick="filterTable('t08',this)">T=0.8</button>
 </div>
@@ -120,6 +124,10 @@ function filterTable(f, btn) {
     let show = true;
     if(f==='llama' && !m.includes('llama')) show=false;
     if(f==='claude' && !m.includes('claude')) show=false;
+    if(f==='gpt' && !m.includes('gpt')) show=false;
+    if(f==='grok' && !m.includes('grok')) show=false;
+    if(f==='nvidia' && !m.includes('nvidia')) show=false;
+    if(f==='gemini' && !m.includes('gemini')) show=false;
     if(f==='t0' && t!=='0.0') show=false;
     if(f==='t08' && t!=='0.8') show=false;
     row.style.display = show ? '' : 'none';
