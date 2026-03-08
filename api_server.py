@@ -40,7 +40,7 @@ def is_admin_user(session=None):
     if not user: return False
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT is_admin FROM users WHERE username=%s", (user,))
+        cur.execute("SELECT is_admin FROM users WHERE username=%s", (user["username"] if isinstance(user, dict) else user,))
         row = cur.fetchone()
         conn.close()
         return bool(row and row['is_admin'])
