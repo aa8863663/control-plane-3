@@ -1,40 +1,53 @@
 """
-Simple authentication module for Control Plane 3.
-Uses SQLite to store users. Passwords hashed with bcrypt via passlib.
+Authentication module for Control Plane 3.
+Uses Neon PostgreSQL for users and sessions — survives Render deploys.
+Passwords hashed with sha256 + salt.
 """
-import sqlite3
 import os
 import hashlib
 import secrets
-from datetime import datetime
+from datetime import datetime, timedelta
 
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "controlplane.db")
+import psycopg2
+import psycopg2.extras
+
+DATABASE_URL = os.environ.get("DATABASE_URL", "")
 
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    conn = psycopg2.connect(DATABASE_URL)
+    conn.cursor_factory = psycopg2.extras.RealDictCursor
     return conn
 
 def init_users_table():
     conn = get_db()
-    conn.execute("""
+    cur = conn.cursor()
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id SERIAL PRIMARY KEY,
             username TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
-            created_at TEXT DEFAULT (datetime('now')),
-            is_active INTEGER DEFAULT 1
+            created_at TIMESTAMP DEFAULT NOW(),
+            is_active INTEGER DEFAULT 1,
+            is_admin BOOLEAN DEFAULT FALSE
         )
     """)
-    conn.execute("""
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS sessions (
             token TEXT PRIMARY KEY,
             user_id INTEGER NOT NULL,
-            created_at TEXT DEFAULT (datetime('now')),
-            expires_at TEXT NOT NULL
+            created_at TIMESTAMP DEFAULT NOW(),
+            expires_at TIMESTAMP NOT NULL
         )
     """)
     conn.commit()
+    # ensure default admin exists
+    cur.execute("SELECT id FROM users WHERE username=%s", ("admin",))
+    if not cur.fetchone():
+        cur.execute(
+            "INSERT INTO users (username, password_hash, is_admin) VALUES (%s, %s, TRUE)",
+            ("admin", hash_password("admin123"))
+        )
+        conn.commit()
     conn.close()
 
 def hash_password(password: str) -> str:
@@ -52,46 +65,60 @@ def verify_password(password: str, stored_hash: str) -> bool:
 def create_user(username: str, password: str) -> bool:
     try:
         conn = get_db()
-        conn.execute(
-            "INSERT INTO users (username, password_hash) VALUES (?, ?)",
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO users (username, password_hash) VALUES (%s, %s)",
             (username, hash_password(password))
         )
         conn.commit()
         conn.close()
         return True
-    except sqlite3.IntegrityError:
+    except psycopg2.IntegrityError:
         return False
 
-def login_user(username: str, password: str) -> str:
+def login_user(username: str, password: str):
     conn = get_db()
-    row = conn.execute("SELECT * FROM users WHERE username=? AND is_active=1", (username,)).fetchone()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE username=%s AND is_active=1", (username,))
+    row = cur.fetchone()
     conn.close()
     if row and verify_password(password, row["password_hash"]):
         token = secrets.token_urlsafe(32)
-        from datetime import timedelta
         expires = (datetime.utcnow() + timedelta(hours=24)).isoformat()
         conn = get_db()
-        conn.execute("INSERT INTO sessions (token, user_id, expires_at) VALUES (?,?,?)",
-                     (token, row["id"], expires))
+        cur = conn.cursor()
+        cur.execute(
+            "INSERT INTO sessions (token, user_id, expires_at) VALUES (%s, %s, %s)",
+            (token, row["id"], expires)
+        )
         conn.commit()
         conn.close()
         return token
     return None
 
-def get_user_from_token(token: str) -> dict:
+def get_user_from_token(token: str):
     if not token:
         return None
-    conn = get_db()
-    row = conn.execute("""
-        SELECT u.id, u.username FROM sessions s
-        JOIN users u ON s.user_id = u.id
-        WHERE s.token=? AND s.expires_at > datetime('now')
-    """, (token,)).fetchone()
-    conn.close()
-    return dict(row) if row else None
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT u.id, u.username FROM sessions s
+            JOIN users u ON s.user_id = u.id
+            WHERE s.token=%s AND s.expires_at > NOW()
+        """, (token,))
+        row = cur.fetchone()
+        conn.close()
+        return dict(row) if row else None
+    except Exception:
+        return None
 
 def logout_token(token: str):
-    conn = get_db()
-    conn.execute("DELETE FROM sessions WHERE token=?", (token,))
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("DELETE FROM sessions WHERE token=%s", (token,))
+        conn.commit()
+        conn.close()
+    except Exception:
+        pass
