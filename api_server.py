@@ -303,8 +303,8 @@ def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
     conn = get_db(); cur = conn.cursor()
-    cur.execute("SELECT COUNT(*) FROM results"); total_results = cur.fetchone()[0]
-    cur.execute("SELECT COUNT(*) FROM runs"); total_runs = cur.fetchone()[0]
+    cur.execute("SELECT COUNT(*) FROM results"); total_results = list(cur.fetchone().values())[0]
+    cur.execute("SELECT COUNT(*) FROM runs"); total_runs = list(cur.fetchone().values())[0]
     cur.execute("""
         SELECT r.model, r.temperature, COUNT(res.id) as results,
                SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
@@ -341,8 +341,8 @@ def health_page(request: Request, session: Optional[str] = Cookie(default=None))
     if not user: return RedirectResponse("/login", status_code=302)
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) FROM runs"); run_count = cur.fetchone()[0]
-        cur.execute("SELECT COUNT(*) FROM results"); result_count = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM runs"); run_count = list(cur.fetchone().values())[0]
+        cur.execute("SELECT COUNT(*) FROM results"); result_count = list(cur.fetchone().values())[0]
         conn.close(); db_status = "OK"
     except Exception as e:
         db_status = f"ERROR: {e}"; run_count = 0; result_count = 0
