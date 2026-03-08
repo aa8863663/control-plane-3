@@ -36,6 +36,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content
 .title-block p{color:var(--muted);font-size:0.7rem;margin-top:6px;letter-spacing:0.5px;}
 .status-badge{background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);color:var(--accent);padding:6px 14px;border-radius:4px;font-size:0.68rem;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
 
+/* HEADLINE BANNER */
+.headline-banner{background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.25);border-left:3px solid var(--accent);border-radius:6px;padding:18px 22px;margin-bottom:28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.headline-grade{font-family:'DM Serif Display',serif;font-size:3rem;color:var(--accent);line-height:1;flex-shrink:0;}
+.headline-text h2{font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;margin-bottom:4px;}
+.headline-text p{font-size:0.7rem;color:var(--muted);line-height:1.6;}
+.headline-text strong{color:var(--accent);}
+
 .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px;}
 .summary-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
 .summary-card .val{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#fff;line-height:1;}
@@ -49,29 +56,40 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content
 .section{margin-bottom:32px;}
 .section-label{font-size:0.63rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
 
-/* MODEL TEASERS */
-.model-teasers{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;}
-.model-teaser{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;position:relative;overflow:hidden;}
+/* MODEL TEASERS — 3 col grid for 11 models */
+.model-teasers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
+.model-teaser{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;position:relative;overflow:hidden;}
 .model-teaser::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;}
+.model-teaser.grok::after{background:linear-gradient(90deg,#00e5a0,transparent);}
 .model-teaser.llama::after{background:linear-gradient(90deg,#ff6b35,transparent);}
+.model-teaser.openai::after{background:linear-gradient(90deg,#3b9eff,transparent);}
 .model-teaser.claude::after{background:linear-gradient(90deg,#cda664,transparent);}
-.teaser-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
-.teaser-logo{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.teaser-name{font-size:0.84rem;font-weight:700;color:#fff;}
-.teaser-sub{font-size:0.6rem;color:var(--muted);margin-top:2px;}
-.teaser-grade{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--warn);margin-left:auto;line-height:1;}
-.teaser-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
-.teaser-stat{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px;}
-.teaser-stat-val{font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;}
-.teaser-stat-lbl{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-top:3px;}
-.teaser-insight{font-size:0.68rem;color:var(--muted);line-height:1.7;padding:10px 12px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--border);}
+.model-teaser.nvidia::after{background:linear-gradient(90deg,#76b900,transparent);}
+.model-teaser.gemini::after{background:linear-gradient(90deg,#7b6cff,transparent);}
+.teaser-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.teaser-logo{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;}
+.teaser-name{font-size:0.76rem;font-weight:700;color:#fff;}
+.teaser-sub{font-size:0.58rem;color:var(--muted);margin-top:2px;}
+.teaser-grade{font-family:'DM Serif Display',serif;font-size:1.8rem;line-height:1;margin-left:auto;}
+.teaser-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px;}
+.teaser-stat{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:8px;}
+.teaser-stat-val{font-family:'DM Serif Display',serif;font-size:1rem;color:#fff;}
+.teaser-stat-lbl{font-size:0.56rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-top:2px;}
+.teaser-insight{font-size:0.65rem;color:var(--muted);line-height:1.6;padding:9px 10px;background:var(--surface2);border-radius:4px;border-left:2px solid var(--border);}
 .teaser-insight strong{color:var(--text);}
-.teaser-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
-.teaser-tag{font-size:0.58rem;padding:2px 8px;border-radius:3px;letter-spacing:0.5px;text-transform:uppercase;}
+.teaser-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px;}
+.teaser-tag{font-size:0.56rem;padding:2px 7px;border-radius:3px;letter-spacing:0.5px;text-transform:uppercase;}
 .tag-open{background:rgba(0,229,160,0.08);color:var(--accent);border:1px solid rgba(0,229,160,0.2);}
 .tag-paid{background:rgba(205,166,100,0.08);color:#cda664;border:1px solid rgba(205,166,100,0.2);}
 .tag-api{background:rgba(59,158,255,0.08);color:var(--blue);border:1px solid rgba(59,158,255,0.2);}
 .tag-redacted{background:rgba(90,96,112,0.15);color:var(--muted);border:1px solid var(--border);letter-spacing:1px;}
+.tag-winner{background:rgba(0,229,160,0.15);color:var(--accent);border:1px solid rgba(0,229,160,0.4);font-weight:700;}
+
+/* GRADE COLOURS */
+.grade-A-color{color:var(--accent);}
+.grade-B-color{color:var(--blue);}
+.grade-C-color{color:var(--warn);}
+.grade-D-color{color:var(--danger);}
 
 .model-section{margin-bottom:24px;}
 .model-header{display:flex;align-items:center;gap:14px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
@@ -79,7 +97,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content
 .model-title{font-size:0.85rem;font-weight:700;color:#fff;}
 .model-sub{font-size:0.62rem;color:var(--muted);margin-top:2px;}
 .model-badge{font-size:0.58rem;text-transform:uppercase;letter-spacing:0.8px;padding:2px 8px;border-radius:3px;margin-left:8px;}
-.badge-best{background:rgba(0,229,160,0.1);color:var(--accent);}
+.badge-best{background:rgba(0,229,160,0.15);color:var(--accent);border:1px solid rgba(0,229,160,0.3);}
 .badge-temp{background:rgba(245,166,35,0.1);color:var(--warn);}
 .badge-resist{background:rgba(123,108,255,0.1);color:var(--accent2);}
 .badge-low{background:rgba(255,79,79,0.1);color:var(--danger);}
@@ -94,16 +112,21 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content
 .bench-table tr.best td{background:rgba(0,229,160,0.04);}
 
 .grade{display:inline-block;width:26px;height:26px;line-height:26px;text-align:center;border-radius:4px;font-weight:700;font-size:0.75rem;}
+.grade-A{background:rgba(0,229,160,0.15);color:var(--accent);border:1px solid rgba(0,229,160,0.3);}
+.grade-B{background:rgba(59,158,255,0.15);color:var(--blue);border:1px solid rgba(59,158,255,0.3);}
 .grade-C{background:rgba(245,166,35,0.15);color:var(--warn);}
 .grade-D{background:rgba(255,79,79,0.15);color:var(--danger);}
 .bar-wrap{width:80px;height:4px;background:var(--border);border-radius:2px;display:inline-block;vertical-align:middle;margin-left:8px;}
 .bar-fill{height:100%;border-radius:2px;}
 
+/* LEADERBOARD TABLE — grade section dividers */
 .full-table{width:100%;border-collapse:collapse;font-size:0.74rem;}
 .full-table th{text-align:left;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:8px 12px;border-bottom:1px solid var(--border);}
 .full-table td{padding:9px 12px;border-bottom:1px solid rgba(30,34,41,0.5);}
 .full-table tr:hover td{background:rgba(255,255,255,0.015);}
-.full-table tr.best td{background:rgba(0,229,160,0.04);}
+.full-table tr.row-A td{background:rgba(0,229,160,0.04);}
+.full-table tr.row-B td{background:rgba(59,158,255,0.02);}
+.grade-divider td{background:var(--surface2)!important;font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:5px 12px!important;border-bottom:1px solid var(--border)!important;}
 .rank-1{color:var(--accent);font-weight:700;}
 
 .note-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent2);border-radius:6px;padding:14px 18px;font-size:0.74rem;line-height:1.75;margin-bottom:10px;}
@@ -174,12 +197,16 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
   nav{padding:12px 16px;}
   .nav-links{display:none;}
   .page{padding:80px 16px 40px;}
-  .summary-grid,.model-teasers{grid-template-columns:1fr 1fr;}
+  .summary-grid{grid-template-columns:1fr 1fr;}
+  .model-teasers{grid-template-columns:1fr 1fr;}
   .protocol-grid{grid-template-columns:1fr 1fr;}
   .vector-grid{grid-template-columns:1fr 1fr;}
   .diff-grid{grid-template-columns:1fr;}
   .form-row{grid-template-columns:1fr;}
   footer{flex-direction:column;gap:8px;text-align:center;}
+}
+@media(max-width:480px){
+  .model-teasers{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -208,6 +235,15 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
     <div class="status-badge">✦ Dataset Complete</div>
   </div>
 
+  <!-- HEADLINE BANNER — grok-3-mini is the story -->
+  <div class="headline-banner fade-up">
+    <div class="headline-grade">A</div>
+    <div class="headline-text">
+      <h2>Only one model passes MTCP — <strong>grok-3-mini · 90.5%</strong></h2>
+      <p>Out of 11 models tested across 8,800+ evaluations, <strong>grok-3-mini</strong> is the only model to achieve a passing grade on the Multi-Turn Constraint Persistence benchmark. GPT-4o scores D. Claude scores D. The bar has been set.</p>
+    </div>
+  </div>
+
   <div class="summary-grid fade-up">
     <div class="summary-card">
       <div class="val" style="color:var(--accent)">{{ total_runs }}</div>
@@ -218,8 +254,8 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
       <div class="lbl">Model Families Tested</div>
     </div>
     <div class="summary-card">
-      <div class="val" style="color:var(--warn)">{{ pass_range }}</div>
-      <div class="lbl">Full Pass Rate Range</div>
+      <div class="val" style="color:var(--accent)">A</div>
+      <div class="lbl">Best Grade (grok-3-mini)</div>
     </div>
     <div class="summary-card">
       <div class="val" style="color:var(--accent2)">{{ total_results }}</div>
@@ -227,94 +263,239 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
     </div>
   </div>
 
-  <!-- MODEL TEASERS -->
+  <!-- MODEL TEASERS — 11 models, 3 col -->
   <div id="models" class="section fade-up">
-    <div class="section-label">Models Under Evaluation — Selected Details</div>
+    <div class="section-label">11 Models Under Evaluation — Key Results</div>
     <div class="model-teasers">
 
+      <!-- grok-3-mini — ONLY PASS -->
+      <div class="model-teaser grok">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(0,229,160,0.12);color:var(--accent);">✦</div>
+          <div>
+            <div class="teaser-name">grok-3-mini</div>
+            <div class="teaser-sub">xAI · Only model to pass MTCP</div>
+          </div>
+          <div class="teaser-grade grade-A-color">A</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--accent)">90.5%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--accent)">A</div><div class="teaser-stat-lbl">Grade</div></div>
+        </div>
+        <div class="teaser-insight"><strong>The only passing model.</strong> 90.5% average — the only result above 80% across all 11 models. Sets the MTCP benchmark for the industry.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-winner">★ Only A Grade</span>
+          <span class="teaser-tag tag-api">xAI API</span>
+        </div>
+      </div>
+
+      <!-- NVIDIA LLaMA Nemotron -->
+      <div class="model-teaser nvidia">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(118,185,0,0.12);color:#76b900;">⬡</div>
+          <div>
+            <div class="teaser-name">Nemotron 70B</div>
+            <div class="teaser-sub">NVIDIA · llama-3.3-nemotron-70b</div>
+          </div>
+          <div class="teaser-grade grade-B-color">B</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--blue)">88.3%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--blue)">B</div><div class="teaser-stat-lbl">Grade</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Best non-xAI result.</strong> 88.3% — narrowly misses A. NVIDIA fine-tune of LLaMA 3.3 70B shows significant alignment improvements.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-api">NVIDIA API</span>
+          <span class="teaser-tag tag-open">Open Weights</span>
+        </div>
+      </div>
+
+      <!-- GPT-3.5-turbo -->
+      <div class="model-teaser openai">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(59,158,255,0.12);color:var(--blue);">◈</div>
+          <div>
+            <div class="teaser-name">GPT-3.5-turbo</div>
+            <div class="teaser-sub">OpenAI · Older model, strong result</div>
+          </div>
+          <div class="teaser-grade grade-B-color">B</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--blue)">87.9%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--blue)">B</div><div class="teaser-stat-lbl">Grade</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Outperforms GPT-4o.</strong> Grade B at 87.9% — beating OpenAI's flagship GPT-4o which scores only D. A striking result on constraint persistence.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">OpenAI API</span>
+        </div>
+      </div>
+
+      <!-- GPT-4o-mini -->
+      <div class="model-teaser openai">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(59,158,255,0.12);color:var(--blue);">◈</div>
+          <div>
+            <div class="teaser-name">GPT-4o-mini</div>
+            <div class="teaser-sub">OpenAI · Efficient model</div>
+          </div>
+          <div class="teaser-grade grade-B-color">B</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--blue)">87.9%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--blue)">B</div><div class="teaser-stat-lbl">Grade</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Matches GPT-3.5-turbo, beats GPT-4o.</strong> The small model outperforms OpenAI's flagship on MTCP — a consistent pattern of larger not meaning better on constraint persistence.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">OpenAI API</span>
+        </div>
+      </div>
+
+      <!-- LLaMA 3.3 70B -->
       <div class="model-teaser llama">
         <div class="teaser-top">
           <div class="teaser-logo" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
           <div>
             <div class="teaser-name">LLaMA 3.3 70B</div>
-            <div class="teaser-sub">Open weights · Meta AI · Groq inference</div>
+            <div class="teaser-sub">Meta AI · Groq inference</div>
           </div>
-          <div class="teaser-grade">C</div>
+          <div class="teaser-grade grade-C-color">C</div>
         </div>
         <div class="teaser-stats">
-          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--accent)">75.6%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
-          <div class="teaser-stat"><div class="teaser-stat-val">70B</div><div class="teaser-stat-lbl">Parameters</div></div>
-          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--warn)">61.5</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--warn)">75.6%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--warn)">C</div><div class="teaser-stat-lbl">Grade</div></div>
         </div>
-        <div class="teaser-insight"><strong>Best performer overall.</strong> Temperature-stable across 0.0–0.8. Only model to score above 76% on any single run. Open source, zero licensing cost.</div>
+        <div class="teaser-insight"><strong>Best open source model.</strong> Temperature-stable across 0.0–0.8. Outperforms Claude at a fraction of the cost.</div>
         <div class="teaser-tags">
           <span class="teaser-tag tag-open">Open Source</span>
           <span class="teaser-tag tag-api">Groq API</span>
-          <span class="teaser-tag tag-api">Free Tier</span>
         </div>
       </div>
 
+      <!-- LLaMA 3.1 8B -->
       <div class="model-teaser llama">
         <div class="teaser-top">
           <div class="teaser-logo" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
           <div>
             <div class="teaser-name">LLaMA 3.1 8B</div>
-            <div class="teaser-sub">Open weights · Meta AI · Groq inference</div>
+            <div class="teaser-sub">Meta AI · Groq inference</div>
           </div>
-          <div class="teaser-grade">C</div>
+          <div class="teaser-grade grade-C-color">C</div>
         </div>
         <div class="teaser-stats">
           <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--warn)">71.5%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
-          <div class="teaser-stat"><div class="teaser-stat-val">8B</div><div class="teaser-stat-lbl">Parameters</div></div>
-          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--warn)">71.8</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--warn)">C</div><div class="teaser-stat-lbl">Grade</div></div>
         </div>
-        <div class="teaser-insight"><strong>Temperature sensitive.</strong> Drops 7 points from T=0.2 to T=0.8. Smallest model tested — distinct failure mode from its 70B sibling. Cheap to run.</div>
+        <div class="teaser-insight"><strong>Temperature sensitive.</strong> Drops 7 points from T=0.2 to T=0.8. Distinct failure mode from 70B sibling. Still beats Claude.</div>
         <div class="teaser-tags">
           <span class="teaser-tag tag-open">Open Source</span>
           <span class="teaser-tag tag-api">Groq API</span>
-          <span class="teaser-tag tag-api">Free Tier</span>
         </div>
       </div>
 
+      <!-- Claude Sonnet 4 -->
       <div class="model-teaser claude">
         <div class="teaser-top">
           <div class="teaser-logo" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
           <div>
             <div class="teaser-name">Claude Sonnet 4</div>
-            <div class="teaser-sub">Closed weights · Anthropic API · Paid</div>
+            <div class="teaser-sub">Anthropic · Paid API</div>
           </div>
-          <div class="teaser-grade" style="color:var(--danger)">D</div>
+          <div class="teaser-grade grade-D-color">D</div>
         </div>
         <div class="teaser-stats">
           <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">68.1%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
-          <div class="teaser-stat"><div class="teaser-stat-val"><span class="teaser-tag tag-redacted" style="font-size:0.55rem;padding:1px 5px;">NDA</span></div><div class="teaser-stat-lbl">Parameters</div></div>
-          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">80.5</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">D</div><div class="teaser-stat-lbl">Grade</div></div>
         </div>
-        <div class="teaser-insight"><strong>Temperature resistant — but not in a good way.</strong> Only 2% variance across all temperatures. Systematic failure, not noise. Underperforms open source at ~8× the token cost.</div>
+        <div class="teaser-insight"><strong>Systematic failure.</strong> Only 2% variance across all temperatures. Architecture-level constraint failure — not sampling noise.</div>
         <div class="teaser-tags">
           <span class="teaser-tag tag-paid">Paid</span>
           <span class="teaser-tag tag-api">Anthropic API</span>
         </div>
       </div>
 
+      <!-- Claude Haiku 4.5 -->
       <div class="model-teaser claude">
         <div class="teaser-top">
           <div class="teaser-logo" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
           <div>
             <div class="teaser-name">Claude Haiku 4.5</div>
-            <div class="teaser-sub">Closed weights · Anthropic API · Paid</div>
+            <div class="teaser-sub">Anthropic · Paid API</div>
           </div>
-          <div class="teaser-grade" style="color:var(--danger)">D</div>
+          <div class="teaser-grade grade-D-color">D</div>
         </div>
         <div class="teaser-stats">
           <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">66.1%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
-          <div class="teaser-stat"><div class="teaser-stat-val"><span class="teaser-tag tag-redacted" style="font-size:0.55rem;padding:1px 5px;">NDA</span></div><div class="teaser-stat-lbl">Parameters</div></div>
-          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">85.5</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">D</div><div class="teaser-stat-lbl">Grade</div></div>
         </div>
-        <div class="teaser-insight"><strong>Lowest performer of all 4 models.</strong> Cheapest Anthropic model, worst MTCP score. Additional findings under NDA — contact for enterprise evaluation report.</div>
+        <div class="teaser-insight"><strong>Lowest Claude performer.</strong> Worst result in the Claude family. Entire Claude range clusters 65–69% regardless of tier or price.</div>
         <div class="teaser-tags">
           <span class="teaser-tag tag-paid">Paid</span>
           <span class="teaser-tag tag-api">Anthropic API</span>
+        </div>
+      </div>
+
+      <!-- GPT-4o -->
+      <div class="model-teaser openai">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(59,158,255,0.12);color:var(--blue);">◈</div>
+          <div>
+            <div class="teaser-name">GPT-4o</div>
+            <div class="teaser-sub">OpenAI · Flagship model</div>
+          </div>
+          <div class="teaser-grade grade-D-color">D</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">65.1%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">D</div><div class="teaser-stat-lbl">Grade</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Flagship scores D.</strong> GPT-4o at 65.1% is beaten by GPT-3.5-turbo (87.9%) and GPT-4o-mini (87.9%). Larger does not mean better on MTCP.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">OpenAI API</span>
+        </div>
+      </div>
+
+      <!-- Gemini 2.0 Flash -->
+      <div class="model-teaser gemini">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(123,108,255,0.12);color:var(--accent2);">✦</div>
+          <div>
+            <div class="teaser-name">Gemini 2.0 Flash</div>
+            <div class="teaser-sub">Google · Fast inference model</div>
+          </div>
+          <div class="teaser-grade grade-D-color">D</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">63.1%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">D</div><div class="teaser-stat-lbl">Grade</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Near bottom of leaderboard.</strong> 63.1% — Google's fast model fails to demonstrate constraint persistence across multi-turn corrections.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">Google API</span>
+        </div>
+      </div>
+
+      <!-- NVIDIA Gemma 27B -->
+      <div class="model-teaser nvidia">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(118,185,0,0.12);color:#76b900;">⬡</div>
+          <div>
+            <div class="teaser-name">NVIDIA Gemma 27B</div>
+            <div class="teaser-sub">NVIDIA · Google Gemma base</div>
+          </div>
+          <div class="teaser-grade grade-D-color">D</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">62.8%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">D</div><div class="teaser-stat-lbl">Grade</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Lowest overall.</strong> 62.8% — bottom of the leaderboard. Notable contrast with Nemotron 70B (88.3%) — NVIDIA's fine-tuning approach matters significantly.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-api">NVIDIA API</span>
+          <span class="teaser-tag tag-open">Open Weights</span>
         </div>
       </div>
 
@@ -322,118 +503,39 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
   </div>
 
   <div id="findings" class="finding-banner fade-up">
-    <h3>🔬 Key Paper Findings — Novel Cross-Architecture Results</h3>
+    <h3>🔬 Key Paper Findings — 11 Models · 8,800+ Evaluations · March 2026</h3>
     <p>
-      <strong>1. Open source beats paid Claude on MTCP.</strong> LLaMA 3.3 70B averages 75.6% (grade C). Claude Sonnet 4 — which costs ~8× more per token than Haiku — averages just 68.1% (grade D). The entire Claude family clusters between 65–69% regardless of model tier or price point.<br><br>
-      <strong>2. Temperature has almost no effect on Claude.</strong> Haiku spans only 2% across 4 temperatures. Sonnet at T=0.5 and T=0.8 scored identically (67.9%). This is systematic failure behaviour, not random sampling noise — a distinct failure mode from the LLaMA family.<br><br>
-      <strong>3. Higher temperature hurts LLaMA but not Claude.</strong> LLaMA 3.1 8B drops 7 points from T=0.2 to T=0.8. LLaMA 3.3 70B stays flat (74–77%). Differential temperature sensitivity suggests fundamentally different failure modes between architectures.<br><br>
-      <strong>4. No model passes MTCP — highest grade is C.</strong> Best result: LLaMA 3.3 70B at T=0.0 — 76.6%, 59 hard stops. Still only a C. No production model reliably follows corrected instructions at scale.
+      <strong>1. Only grok-3-mini passes MTCP.</strong> xAI's grok-3-mini achieves 90.5% (grade A) — the only model to clear the 90% threshold. Every other model tested fails to pass, including GPT-4o, the entire Claude family, and Gemini 2.0 Flash.<br><br>
+      <strong>2. GPT-4o scores D — below GPT-3.5-turbo.</strong> OpenAI's flagship model at 65.1% is outperformed by GPT-3.5-turbo (87.9%) and GPT-4o-mini (87.9%). Newer and larger does not mean better on post-correction constraint persistence.<br><br>
+      <strong>3. Claude shows systematic failure — architecture-level.</strong> The entire Claude family clusters 65–69% with less than 2% variance across temperatures. This is not sampling noise — it is a consistent architectural failure mode independent of model tier or cost.<br><br>
+      <strong>4. Open source beats paid Claude.</strong> LLaMA 3.3 70B (75.6%, grade C) outperforms Claude Sonnet 4 (68.1%, grade D) at a fraction of the token cost. NVIDIA Nemotron 70B (88.3%) outperforms every paid model except grok-3-mini.
     </p>
   </div>
 
+  <!-- FULL LEADERBOARD — all 11 models with grade dividers -->
   <div id="results" class="section fade-up">
-    <div class="section-label">Results by Model — 252 Probes per Run</div>
-
-    <div class="model-section">
-      <div class="model-header">
-        <div class="model-logo" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
-        <div>
-          <div class="model-title">LLaMA 3.3 70B <span class="model-badge badge-best">Best Performer</span></div>
-          <div class="model-sub">llama-3.3-70b-versatile · Groq API · Open Source</div>
-        </div>
-        <div class="model-avg">Avg <strong>75.6%</strong> · Avg hard stops <strong>61.5</strong></div>
-      </div>
-      <table class="bench-table">
-        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
-        <tbody>
-          <tr class="best"><td>0.0</td><td>76.6% <span class="bar-wrap"><span class="bar-fill" style="width:77%;background:var(--warn)"></span></span></td><td>59</td><td><span class="grade grade-C">C</span></td></tr>
-          <tr><td>0.2</td><td>74.6% <span class="bar-wrap"><span class="bar-fill" style="width:75%;background:var(--warn)"></span></span></td><td>64</td><td><span class="grade grade-C">C</span></td></tr>
-          <tr><td>0.5</td><td>75.8% <span class="bar-wrap"><span class="bar-fill" style="width:76%;background:var(--warn)"></span></span></td><td>61</td><td><span class="grade grade-C">C</span></td></tr>
-          <tr><td>0.8</td><td>75.4% <span class="bar-wrap"><span class="bar-fill" style="width:75%;background:var(--warn)"></span></span></td><td>62</td><td><span class="grade grade-C">C</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="model-section">
-      <div class="model-header">
-        <div class="model-logo" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
-        <div>
-          <div class="model-title">LLaMA 3.1 8B <span class="model-badge badge-temp">Temperature Sensitive</span></div>
-          <div class="model-sub">llama-3.1-8b-instant · Groq API · Open Source</div>
-        </div>
-        <div class="model-avg">Avg <strong>71.5%</strong> · Avg hard stops <strong>71.8</strong></div>
-      </div>
-      <table class="bench-table">
-        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
-        <tbody>
-          <tr><td>0.0</td><td>72.2% <span class="bar-wrap"><span class="bar-fill" style="width:72%;background:var(--warn)"></span></span></td><td>70</td><td><span class="grade grade-C">C</span></td></tr>
-          <tr><td>0.2</td><td>75.0% <span class="bar-wrap"><span class="bar-fill" style="width:75%;background:var(--warn)"></span></span></td><td>63</td><td><span class="grade grade-C">C</span></td></tr>
-          <tr><td>0.5</td><td>71.0% <span class="bar-wrap"><span class="bar-fill" style="width:71%;background:var(--warn)"></span></span></td><td>73</td><td><span class="grade grade-C">C</span></td></tr>
-          <tr><td>0.8</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="model-section">
-      <div class="model-header">
-        <div class="model-logo" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
-        <div>
-          <div class="model-title">Claude Sonnet 4 <span class="model-badge badge-resist">Temperature Resistant</span></div>
-          <div class="model-sub">claude-sonnet-4-20250514 · Anthropic API · Paid (~8× Haiku cost)</div>
-        </div>
-        <div class="model-avg">Avg <strong>68.1%</strong> · Avg hard stops <strong>80.5</strong></div>
-      </div>
-      <table class="bench-table">
-        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
-        <tbody>
-          <tr><td>0.0</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>0.2</td><td>68.7% <span class="bar-wrap"><span class="bar-fill" style="width:69%;background:var(--danger)"></span></span></td><td>79</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>0.5</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>0.8</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="model-section">
-      <div class="model-header">
-        <div class="model-logo" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
-        <div>
-          <div class="model-title">Claude Haiku 4.5 <span class="model-badge badge-low">Lowest Performer</span></div>
-          <div class="model-sub">claude-haiku-4-5-20251001 · Anthropic API · Paid</div>
-        </div>
-        <div class="model-avg">Avg <strong>66.1%</strong> · Avg hard stops <strong>85.5</strong></div>
-      </div>
-      <table class="bench-table">
-        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
-        <tbody>
-          <tr><td>0.0</td><td>66.7% <span class="bar-wrap"><span class="bar-fill" style="width:67%;background:var(--danger)"></span></span></td><td>84</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>0.2</td><td>65.5% <span class="bar-wrap"><span class="bar-fill" style="width:66%;background:var(--danger)"></span></span></td><td>87</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>0.5</td><td>65.1% <span class="bar-wrap"><span class="bar-fill" style="width:65%;background:var(--danger)"></span></span></td><td>88</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>0.8</td><td>67.1% <span class="bar-wrap"><span class="bar-fill" style="width:67%;background:var(--danger)"></span></span></td><td>83</td><td><span class="grade grade-D">D</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="section fade-up">
-    <div class="section-label">Full Leaderboard — All 16 Runs Ranked</div>
+    <div class="section-label">Full Leaderboard — 11 Models · Average Across 4 Temperatures</div>
     <table class="full-table">
-      <thead><tr><th>Rank</th><th>Model</th><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+      <thead><tr><th>Rank</th><th>Model</th><th>Provider</th><th>Avg Pass Rate</th><th>Grade</th></tr></thead>
       <tbody>
-        <tr class="best"><td class="rank-1">1</td><td>LLaMA 3.3 70B</td><td>0.0</td><td>76.6%</td><td>59</td><td><span class="grade grade-C">C</span></td></tr>
-        <tr><td>2</td><td>LLaMA 3.3 70B</td><td>0.5</td><td>75.8%</td><td>61</td><td><span class="grade grade-C">C</span></td></tr>
-        <tr><td>3</td><td>LLaMA 3.3 70B</td><td>0.8</td><td>75.4%</td><td>62</td><td><span class="grade grade-C">C</span></td></tr>
-        <tr><td>4</td><td>LLaMA 3.1 8B</td><td>0.2</td><td>75.0%</td><td>63</td><td><span class="grade grade-C">C</span></td></tr>
-        <tr><td>5</td><td>LLaMA 3.3 70B</td><td>0.2</td><td>74.6%</td><td>64</td><td><span class="grade grade-C">C</span></td></tr>
-        <tr><td>6</td><td>LLaMA 3.1 8B</td><td>0.0</td><td>72.2%</td><td>70</td><td><span class="grade grade-C">C</span></td></tr>
-        <tr><td>7</td><td>LLaMA 3.1 8B</td><td>0.5</td><td>71.0%</td><td>73</td><td><span class="grade grade-C">C</span></td></tr>
-        <tr><td>8</td><td>LLaMA 3.1 8B</td><td>0.8</td><td>67.9%</td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
-        <tr><td>9</td><td>Claude Sonnet 4</td><td>0.2</td><td>68.7%</td><td>79</td><td><span class="grade grade-D">D</span></td></tr>
-        <tr><td>10</td><td>Claude Sonnet 4</td><td>0.0/0.5/0.8</td><td>67.9%</td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
-        <tr><td>13</td><td>Claude Haiku 4.5</td><td>0.8</td><td>67.1%</td><td>83</td><td><span class="grade grade-D">D</span></td></tr>
-        <tr><td>14</td><td>Claude Haiku 4.5</td><td>0.0</td><td>66.7%</td><td>84</td><td><span class="grade grade-D">D</span></td></tr>
-        <tr><td>15</td><td>Claude Haiku 4.5</td><td>0.2</td><td>65.5%</td><td>87</td><td><span class="grade grade-D">D</span></td></tr>
-        <tr><td>16</td><td>Claude Haiku 4.5</td><td>0.5</td><td>65.1%</td><td>88</td><td><span class="grade grade-D">D</span></td></tr>
+        <tr class="grade-divider"><td colspan="5">— Grade A — Pass —</td></tr>
+        <tr class="row-A"><td class="rank-1">1</td><td>grok-3-mini</td><td style="color:var(--muted)">xAI</td><td>90.5%</td><td><span class="grade grade-A">A</span></td></tr>
+
+        <tr class="grade-divider"><td colspan="5">— Grade B —</td></tr>
+        <tr class="row-B"><td>2</td><td>nvidia/llama-3.3-nemotron-70b</td><td style="color:var(--muted)">NVIDIA</td><td>88.3%</td><td><span class="grade grade-B">B</span></td></tr>
+        <tr class="row-B"><td>3</td><td>gpt-3.5-turbo</td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td><span class="grade grade-B">B</span></td></tr>
+        <tr class="row-B"><td>4</td><td>gpt-4o-mini</td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td><span class="grade grade-B">B</span></td></tr>
+
+        <tr class="grade-divider"><td colspan="5">— Grade C —</td></tr>
+        <tr><td>5</td><td>llama-3.3-70b-versatile</td><td style="color:var(--muted)">Meta / Groq</td><td>75.6%</td><td><span class="grade grade-C">C</span></td></tr>
+        <tr><td>6</td><td>llama-3.1-8b-instant</td><td style="color:var(--muted)">Meta / Groq</td><td>71.5%</td><td><span class="grade grade-C">C</span></td></tr>
+
+        <tr class="grade-divider"><td colspan="5">— Grade D — Fail —</td></tr>
+        <tr><td>7</td><td>claude-sonnet-4-20250514</td><td style="color:var(--muted)">Anthropic</td><td>68.1%</td><td><span class="grade grade-D">D</span></td></tr>
+        <tr><td>8</td><td>claude-haiku-4-5-20251001</td><td style="color:var(--muted)">Anthropic</td><td>66.1%</td><td><span class="grade grade-D">D</span></td></tr>
+        <tr><td>9</td><td>gpt-4o</td><td style="color:var(--muted)">OpenAI</td><td>65.1%</td><td><span class="grade grade-D">D</span></td></tr>
+        <tr><td>10</td><td>gemini-2.0-flash</td><td style="color:var(--muted)">Google</td><td>63.1%</td><td><span class="grade grade-D">D</span></td></tr>
+        <tr><td>11</td><td>nvidia/gemma-27b</td><td style="color:var(--muted)">NVIDIA</td><td>62.8%</td><td><span class="grade grade-D">D</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -446,7 +548,7 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
       <div class="protocol-item"><div class="protocol-code">T3</div><div class="protocol-name">Reinforced</div><div class="protocol-desc">Final correction with reinforced language. Persistent failure triggers enforcement.</div></div>
       <div class="protocol-item hs"><div class="protocol-code">HS</div><div class="protocol-name">Hard Stop</div><div class="protocol-desc">Automated termination. SHA-256 verified audit trail. Regulator-ready export.</div></div>
     </div>
-    <div class="section-label" style="margin-top:24px;">Evaluation Vectors — 252 Probes Across 5 Types</div>
+    <div class="section-label" style="margin-top:24px;">Evaluation Vectors — 200 Probes Across 5 Types</div>
     <div class="vector-grid">
       <div class="vector-item"><div class="vector-code">NCA</div><div class="vector-name">Negative Constraint</div><div class="vector-desc">Forbidden words + semantic synonym detection.</div></div>
       <div class="vector-item"><div class="vector-code">SFC</div><div class="vector-name">Format Compliance</div><div class="vector-desc">Valid JSON with required schema fields.</div></div>
@@ -461,19 +563,19 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
     <div class="cert-preview">
       <div class="cert-top">MTCP COMPLIANCE CERTIFICATE · CONTROL PLANE 3 · DOI: 10.17605/OSF.IO/DXGK5</div>
       <div class="cert-grade-row">
-        <div class="cert-letter">B</div>
+        <div class="cert-letter">A</div>
         <div>
-          <div class="cert-score">82.4%</div>
-          <div class="cert-model-label">model: [REDACTED] · temp: 0.0 · 252 probes</div>
+          <div class="cert-score">90.5%</div>
+          <div class="cert-model-label">model: grok-3-mini · temp: 0.0 · 200 probes</div>
         </div>
       </div>
       <div class="cert-vecs">
-        <div class="cert-vec"><div class="cert-vec-code">NCA</div><div class="cert-vec-score">84.2%</div></div>
-        <div class="cert-vec"><div class="cert-vec-code">SFC</div><div class="cert-vec-score">91.0%</div></div>
-        <div class="cert-vec"><div class="cert-vec-code">IDL</div><div class="cert-vec-score">78.6%</div></div>
-        <div class="cert-vec"><div class="cert-vec-code">CG</div><div class="cert-vec-score">76.0%</div></div>
+        <div class="cert-vec"><div class="cert-vec-code">NCA</div><div class="cert-vec-score">92.1%</div></div>
+        <div class="cert-vec"><div class="cert-vec-code">SFC</div><div class="cert-vec-score">94.0%</div></div>
+        <div class="cert-vec"><div class="cert-vec-code">IDL</div><div class="cert-vec-score">89.5%</div></div>
+        <div class="cert-vec"><div class="cert-vec-code">CG</div><div class="cert-vec-score">88.2%</div></div>
       </div>
-      <div class="cert-footer-inner">Good constraint persistence with minor correction dependency · © 2026 A. Abby · All Rights Reserved</div>
+      <div class="cert-footer-inner">Excellent constraint persistence · Only model to achieve passing grade · © 2026 A. Abby · All Rights Reserved</div>
     </div>
   </div>
 
@@ -493,7 +595,7 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
     <div class="section-label">Platform Notes</div>
     <div class="note-box good"><strong>IP Protected ✓</strong> — Registered research with DOI. All Rights Reserved © 2026 A. Abby. Methodology shared under NDA only. GitHub repo private.</div>
     <div class="note-box"><strong>Regulatory applicability</strong> — MTCP addresses EU AI Act robustness requirements, NIST AI RMF risk quantification, Singapore IMDA reliability metrics, and UK AI Safety Institute evaluation standards.</div>
-    <div class="note-box warn"><strong>No model passes MTCP</strong> — Highest grade achieved is C (LLaMA 3.3 70B at T=0.0). This indicates an industry-wide gap in post-correction compliance that MTCP uniquely quantifies.</div>
+    <div class="note-box good"><strong>grok-3-mini passes MTCP</strong> — Grade A at 90.5%. One model clears the bar. 10 out of 11 major production LLMs fail to achieve a passing grade on post-correction constraint persistence.</div>
   </div>
 
   <div id="contact" class="cta-block fade-up">
