@@ -662,6 +662,106 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
   </div>
 
 
+
+  <!-- ANONYMISED SUMMARY TABLE -->
+  <div class="section fade-up">
+    <div class="section-label">Anonymised Performance Summary — 11 Models · 44 Runs · MTCP v1.5</div>
+    <p style="font-size:0.74rem;color:var(--muted);margin-bottom:14px;line-height:1.7;">Pass rates shown as averages across 4 temperatures. Model identities anonymised by architecture family. Full named results available on the <a href="/leaderboard" style="color:var(--accent)">leaderboard</a> (login required).</p>
+    <div class="table-wrap">
+      <table id="anon-table" style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="text-align:left;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:7px 12px;border-bottom:1px solid var(--border);">Model Family</th>
+            <th style="text-align:left;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:7px 12px;border-bottom:1px solid var(--border);">Architecture</th>
+            <th style="text-align:left;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:7px 12px;border-bottom:1px solid var(--border);">Avg Pass Rate</th>
+            <th style="text-align:left;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:7px 12px;border-bottom:1px solid var(--border);">Temp Sensitivity</th>
+            <th style="text-align:left;font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);padding:7px 12px;border-bottom:1px solid var(--border);">Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:rgba(0,229,160,0.04)">
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Reasoning-Optimised (Small)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Closed · Proprietary</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:var(--accent);font-weight:600">90.5%</span> <span style="font-size:0.6rem;color:var(--muted)">(92.5% peak)</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--warn)">Moderate ↓ at high T</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(0,229,160,0.15);color:var(--accent);border:1px solid rgba(0,229,160,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">A</span></td>
+          </tr>
+          <tr>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Tuned Open-Weight (Large)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Open weights · Tuned inference</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:#4ade80;font-weight:600">88.3%</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--accent)">Stable across all T</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">B</span></td>
+          </tr>
+          <tr style="background:rgba(255,255,255,0.01)">
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Chat-Optimised (Small, Legacy)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Closed · Proprietary</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:#4ade80;font-weight:600">87.9%</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--accent)">Very stable</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">B</span></td>
+          </tr>
+          <tr>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Chat-Optimised (Small, Current)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Closed · Proprietary</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:#4ade80;font-weight:600">87.9%</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--warn)">Mild drop at T=0.8</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(74,222,128,0.15);color:#4ade80;border:1px solid rgba(74,222,128,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">B</span></td>
+          </tr>
+          <tr style="background:rgba(255,255,255,0.01)">
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Open-Weight (Large)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Open weights · Standard inference</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:var(--warn);font-weight:600">75.6%</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--accent)">Stable</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(251,191,36,0.15);color:var(--warn);border:1px solid rgba(251,191,36,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">C</span></td>
+          </tr>
+          <tr>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Open-Weight (Small)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Open weights · Standard inference</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:var(--warn);font-weight:600">71.5%</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--danger)">High sensitivity ↓7pt</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(251,191,36,0.15);color:var(--warn);border:1px solid rgba(251,191,36,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">C</span></td>
+          </tr>
+          <tr style="background:rgba(255,255,255,0.01)">
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Safety-Tuned (Large)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Closed · Heavy RLHF</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:var(--danger);font-weight:600">68.1%</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--accent)">Temperature resistant</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">D</span></td>
+          </tr>
+          <tr>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Safety-Tuned (Small)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Closed · Heavy RLHF</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:var(--danger);font-weight:600">66.1%</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--accent)">Temperature resistant</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">D</span></td>
+          </tr>
+          <tr style="background:rgba(255,255,255,0.01)">
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Frontier (Flagship)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Closed · Proprietary</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:var(--danger);font-weight:600">65.1%</span> <span style="font-size:0.6rem;color:var(--danger)">⚠ inverse scaling</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--accent)">Temperature resistant</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">D</span></td>
+          </tr>
+          <tr>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text)">Fast Multimodal</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--muted)">Closed · Proprietary</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="color:var(--danger);font-weight:600">63.1%</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--accent)">Near-flat across T</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:1px solid rgba(30,34,41,0.5);"><span style="background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">D</span></td>
+          </tr>
+          <tr style="background:rgba(255,255,255,0.01)">
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:none;color:var(--text)">Tuned Open-Weight (Small)</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:none;color:var(--muted)">Open weights · Tuned inference</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:none;"><span style="color:var(--danger);font-weight:600">62.8%</span></td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:none;color:var(--accent)">Near-flat across T</td>
+            <td style="padding:9px 12px;font-size:0.76rem;border-bottom:none;"><span style="background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3);padding:2px 8px;border-radius:3px;font-size:0.7rem;font-weight:700">D</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="note-box" style="margin-top:14px;">Model identities anonymised by architecture family. <strong>Full named leaderboard available on platform</strong> (login required). Contact for enterprise evaluation report with named results and per-vector breakdown.</div>
+  </div>
+
   <!-- DETAILED RESULTS BY MODEL -->
   <div id="model-results" class="section fade-up">
     <div class="section-label">Results by Model — 200–252 Probes per Run · 11 Models · 4 Temperatures</div>
