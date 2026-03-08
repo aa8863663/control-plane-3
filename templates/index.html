@@ -49,12 +49,12 @@
   <div class="stat-card fade-up fade-up-3">
     <div class="stat-label">Models Tested</div>
     <div class="stat-value">{{ total_models }}</div>
-    <div class="stat-sub">across 4 temps × 4 models</div>
+    <div class="stat-sub">11 models · 44 benchmark runs</div>
   </div>
   <div class="stat-card fade-up fade-up-4">
     <div class="stat-label">Best Grade</div>
-    <div class="stat-value" style="color:var(--warn)">{{ best_grade }}</div>
-    <div class="stat-sub">No model passes MTCP</div>
+    <div class="stat-value" style="color:var(--accent)">{{ best_grade }}</div>
+    <div class="stat-sub">grok-3-mini · 90.5% · Only pass</div>
   </div>
 </div>
 
@@ -80,19 +80,19 @@
     <div class="card-title">Key Findings</div>
     <div class="finding-item">
       <div class="finding-num">01</div>
-      <div class="finding-text"><strong>Open source beats paid Claude.</strong> LLaMA 3.3 70B avg 75.6% vs Claude Sonnet 4 at 68.1% — a 7.5pt gap at ~8× lower cost.</div>
+      <div class="finding-text"><strong>grok-3-mini is the only passing model.</strong> 90.5% grade A — the only result above 80% across all 11 models. GPT-4o, Claude, and Gemini all fail.</div>
     </div>
     <div class="finding-item">
       <div class="finding-num">02</div>
-      <div class="finding-text"><strong>Temperature has no effect on Claude.</strong> Only 2% variance across T=0.0–0.8 — systematic failure, not noise.</div>
+      <div class="finding-text"><strong>GPT-4o scores D — below GPT-3.5-turbo.</strong> OpenAI's flagship at 65.1% is outperformed by GPT-3.5-turbo (87.9%) and GPT-4o-mini (87.9%). Bigger is not better on MTCP.</div>
     </div>
     <div class="finding-item">
       <div class="finding-num">03</div>
-      <div class="finding-text"><strong>No model passes MTCP.</strong> Highest grade is C. No production LLM reliably follows corrected instructions at scale.</div>
+      <div class="finding-text"><strong>Claude shows systematic failure.</strong> Entire Claude family clusters 65–69% with under 2% temperature variance — architecture-level failure, not noise.</div>
     </div>
     <div class="finding-item">
       <div class="finding-num">04</div>
-      <div class="finding-text"><strong>Architecture-level differences.</strong> LLaMA shows 7pt temperature sensitivity vs Claude's 2pt — distinct failure modes.</div>
+      <div class="finding-text"><strong>Open source beats paid Claude.</strong> LLaMA 3.3 70B (75.6%) outperforms Claude Sonnet 4 (68.1%). NVIDIA Nemotron 70B (88.3%) outperforms every paid model except grok-3-mini.</div>
     </div>
   </div>
 </div>
