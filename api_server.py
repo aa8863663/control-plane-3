@@ -33,6 +33,20 @@ def get_db():
 def current_user(session=None):
     return get_user_from_token(session) if session else None
 
+def is_admin_user(session=None):
+    """Returns True only if the logged-in user has is_admin=True in the database."""
+    if not session: return False
+    user = get_user_from_token(session)
+    if not user: return False
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("SELECT is_admin FROM users WHERE username=%s", (user,))
+        row = cur.fetchone()
+        conn.close()
+        return bool(row and row['is_admin'])
+    except:
+        return False
+
 def get_auth(session: Optional[str] = None, x_api_key: Optional[str] = None):
     if session:
         u = get_user_from_token(session)
@@ -173,6 +187,7 @@ def admin_revoke_key(request: Request, session: Optional[str] = Cookie(default=N
 def probe_editor(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
+    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
     with open(PROBES_PATH) as f:
         probes = json.load(f)
     return templates.TemplateResponse("probe_editor.html", {"request": request, "user": user, "probes": probes, "success": None})
@@ -287,6 +302,7 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
 def actuarial_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
+    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
     conn = get_db(); cur = conn.cursor()
     cur.execute("SELECT r.temperature, COUNT(res.id) as total, SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed, SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as failed, AVG(CAST(res.recovery_latency AS FLOAT)) as avg_latency FROM runs r LEFT JOIN results res ON r.id=res.run_id WHERE (r.dataset IS NULL OR r.dataset='main') GROUP BY r.temperature ORDER BY r.temperature")
     data = []
@@ -302,6 +318,7 @@ def actuarial_page(request: Request, session: Optional[str] = Cookie(default=Non
 def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
+    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
     conn = get_db(); cur = conn.cursor()
     cur.execute("SELECT COUNT(*) FROM results"); total_results = list(cur.fetchone().values())[0]
     cur.execute("SELECT COUNT(*) FROM runs"); total_runs = list(cur.fetchone().values())[0]
@@ -339,6 +356,7 @@ def compare_page(request: Request, session: Optional[str] = Cookie(default=None)
 def health_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
+    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
     try:
         conn = get_db(); cur = conn.cursor()
         cur.execute("SELECT COUNT(*) FROM runs"); run_count = list(cur.fetchone().values())[0]
@@ -416,11 +434,15 @@ def landing_page(request: Request):
         elif pr >= 60: d['grade'] = 'D'
         else: d['grade'] = 'F'
         model_rows.append(d)
+    total_runs = list(cur.fetchone().values())[0]
+    cur.execute("SELECT COUNT(*) FROM runs WHERE dataset IS NULL OR dataset='main'")
+    pass_range = f"{min(rates):.1f}%–{max(rates):.1f}%" if rates else 'N/A'
+    rates = [float(r['pass_rate']) for r in model_rows if r.get('pass_rate')]
     conn.close()
     best_grade = model_rows[0]['grade'] if model_rows else '?'
     top_model = model_rows[0]['model'] if model_rows else '?'
     top_score = model_rows[0]['pass_rate'] if model_rows else 0
-    return templates.TemplateResponse("landing.html", {"request": request, "total_results": total_results, "total_models": total_models, "model_rows": model_rows, "best_grade": best_grade, "top_model": top_model, "top_score": top_score})
+    return templates.TemplateResponse("landing.html", {"request": request, "total_results": total_results, "total_models": total_models, "total_runs": total_runs, "pass_range": pass_range, "model_rows": model_rows, "best_grade": best_grade, "top_model": top_model, "top_score": top_score})
 
 # ── Public leaderboard (NO login required) ───────────────────────────────────
 
@@ -554,6 +576,8 @@ def api_keys_settings_page(request: Request, session: Optional[str] = Cookie(def
     user = current_user(session)
     if not user:
         return RedirectResponse("/login", status_code=302)
+    if not is_admin_user(session):
+        return RedirectResponse("/", status_code=302)
     return templates.TemplateResponse("api_keys_settings.html", {
         "request": request,
         "current_user": user,
