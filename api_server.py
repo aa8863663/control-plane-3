@@ -421,6 +421,7 @@ def export_report(session: Optional[str] = Cookie(default=None), x_api_key: Opti
 def ctrl_probes_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
+    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
     conn = get_db(); cur = conn.cursor()
     cur.execute("""
         SELECT r.model,
