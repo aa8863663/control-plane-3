@@ -260,7 +260,6 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
     total_results = list(cur.fetchone().values())[0]
     cur.execute("SELECT COUNT(*) FROM results WHERE outcome='SAFETY_HARD_STOP'")
     hard_stops = list(cur.fetchone().values())[0]
-    conn.close()
     # Model pass rates for bar chart (main runs only)
     cur.execute("""
         SELECT r.model, ROUND(100.0*SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END)/COUNT(*),1) as pass_rate
@@ -281,6 +280,7 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
     """)
     ctrl_rows = [{"model": row[0], "passed": row[1], "total": row[2], "pass_rate": float(row[3])} for row in cur.fetchall()]
 
+    conn.close()
     return templates.TemplateResponse("stats.html", {"request": request, "data": {"outcomes": outcome_rows, "by_temperature": temp_rows, "recent_runs": recent_runs, "total_runs": total_runs, "total_results": total_results, "hard_stops": hard_stops}, "user": user, "model_rows": model_rows, "ctrl_rows": ctrl_rows})
 
 @app.get("/api/actuarial", response_class=HTMLResponse)
