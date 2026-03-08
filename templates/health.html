@@ -1,12 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head><title>Health</title></head>
-<body>
-  <h1>System Health</h1>
-  <p>Status: <strong>{{ data.status }}</strong></p>
-  <p>Database: {{ data.db_status }}</p>
-  <p>Total Runs: {{ data.run_count }}</p>
-  <p>Total Results: {{ data.result_count }}</p>
-  <p><a href="/">← Back to Home</a></p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Health — Control Plane 3{% endblock %}
+{% block extra_styles %}
+.health-status{display:inline-block;padding:4px 14px;border-radius:3px;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
+.status-ok{background:rgba(0,229,160,0.15);color:var(--accent);border:1px solid rgba(0,229,160,0.3);}
+.status-degraded{background:rgba(239,68,68,0.15);color:var(--danger);border:1px solid rgba(239,68,68,0.3);}
+.health-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(30,34,41,0.5);font-size:0.75rem;}
+.health-row:last-child{border-bottom:none;}
+.health-label{color:var(--muted);}
+.health-val{color:var(--text);font-family:'JetBrains Mono',monospace;}
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>System <span>Health</span></h1>
+  <p>Live database and platform status</p>
+</div>
+<div class="card fade-up fade-up-1" style="max-width:480px;">
+  <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;">
+    Platform Status
+    <span class="health-status {% if data.status == 'OK' %}status-ok{% else %}status-degraded{% endif %}">{{ data.status }}</span>
+  </div>
+  <div style="margin-top:12px;">
+    <div class="health-row"><span class="health-label">Database</span><span class="health-val" style="color:{% if data.db_status == 'OK' %}var(--accent){% else %}var(--danger){% endif %}">{{ data.db_status }}</span></div>
+    <div class="health-row"><span class="health-label">Total Runs</span><span class="health-val">{{ data.run_count }}</span></div>
+    <div class="health-row"><span class="health-label">Total Results</span><span class="health-val">{{ data.result_count }}</span></div>
+    <div class="health-row"><span class="health-label">Database Provider</span><span class="health-val">Neon PostgreSQL</span></div>
+    <div class="health-row"><span class="health-label">Region</span><span class="health-val">EU Central (Frankfurt)</span></div>
+  </div>
+</div>
+<div style="margin-top:16px;" class="fade-up fade-up-2">
+  <a href="/admin" class="btn btn-primary">◈ Admin</a>
+  <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
+</div>
+{% endblock %}

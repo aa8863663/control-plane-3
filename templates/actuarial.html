@@ -1,49 +1,62 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Actuarial | Control Plane 3</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #f5f8fc; color: #1F3864; }
-    h1,h2 { color: #1F3864; } h2 { color: #2E74B5; border-bottom: 1px solid #dde3ef; padding-bottom: 6px; }
-    table { border-collapse: collapse; width: 100%; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-    th { background: #1F3864; color: white; padding: 10px 14px; text-align: left; }
-    td { padding: 9px 14px; border-bottom: 1px solid #eef1f7; }
-    tr:last-child td { border-bottom: none; }
-    .chart-box { background: white; border-radius: 8px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
-    a { color: #2E74B5; }
-  </style>
-</head>
-<body>
-  <h1>Actuarial Metrics</h1>
-  <h2>Pass Rate by Temperature</h2>
-  <div class="chart-box"><canvas id="passChart" height="100"></canvas></div>
-  <table>
-    <tr><th>Temperature</th><th>Total</th><th>Passed</th><th>Failed</th><th>Pass Rate</th><th>Avg Latency</th></tr>
-    {% for row in data %}
-    <tr>
-      <td>{{ row.temperature }}</td>
-      <td>{{ row.total }}</td>
-      <td>{{ row.passed }}</td>
-      <td>{{ row.failed }}</td>
-      <td>{{ row.pass_rate }}%</td>
-      <td>{{ row.avg_latency if row.avg_latency is not none else 'N/A' }}</td>
-    </tr>
-    {% endfor %}
+{% extends "base.html" %}
+{% block title %}Actuarial — Control Plane 3{% endblock %}
+{% block extra_styles %}
+.act-table{width:100%;border-collapse:collapse;font-size:0.72rem;}
+.act-table th{color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.05em;padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;}
+.act-table td{padding:9px 12px;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text);}
+.act-table tr:last-child td{border-bottom:none;}
+.chart-wrap{background:var(--surface2);border-radius:4px;padding:20px;margin-bottom:18px;}
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Actuarial <span>Metrics</span></h1>
+  <p>Pass rate and latency breakdown by temperature setting across all benchmark runs</p>
+</div>
+<div class="card fade-up fade-up-1">
+  <div class="card-title">Pass Rate by Temperature</div>
+  <div class="chart-wrap"><canvas id="passChart" height="80"></canvas></div>
+</div>
+<div class="card fade-up fade-up-2">
+  <div class="card-title">Temperature Breakdown</div>
+  <table class="act-table" style="margin-top:10px;">
+    <thead><tr><th>Temperature</th><th>Total</th><th>Passed</th><th>Failed</th><th>Pass Rate</th><th>Avg Latency</th></tr></thead>
+    <tbody>
+      {% for row in data %}
+      <tr>
+        <td>{{ row.temperature }}</td>
+        <td>{{ row.total }}</td>
+        <td style="color:var(--accent)">{{ row.passed }}</td>
+        <td style="color:var(--danger)">{{ row.failed }}</td>
+        <td style="color:{% if row.pass_rate >= 80 %}var(--accent){% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %}">{{ row.pass_rate }}%</td>
+        <td style="color:var(--muted)">{{ row.avg_latency if row.avg_latency is not none else 'N/A' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
-  <p><a href="/">← Back to Home</a></p>
-  <script>
-    const rows = {{ data | tojson }};
-    new Chart(document.getElementById('passChart'), {
-      type: 'bar',
-      data: {
-        labels: rows.map(r => 'Temp ' + r.temperature),
-        datasets: [
-          { label: 'Pass Rate %', data: rows.map(r => r.pass_rate), backgroundColor: '#2E74B5' },
-        ]
-      },
-      options: { scales: { y: { beginAtZero: true, max: 100 } } }
-    });
-  </script>
-</body>
-</html>
+</div>
+<div style="margin-top:16px;" class="fade-up fade-up-3">
+  <a href="/stats" class="btn btn-primary">◈ Stats</a>
+  <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const rows = {{ data | tojson }};
+new Chart(document.getElementById('passChart'), {
+  type: 'bar',
+  data: {
+    labels: rows.map(r => 'T=' + r.temperature),
+    datasets: [
+      { label: 'Pass Rate %', data: rows.map(r => r.pass_rate), backgroundColor: '#00e5a0', borderRadius: 3 },
+      { label: 'Fail Rate %', data: rows.map(r => 100 - r.pass_rate), backgroundColor: '#ef4444', borderRadius: 3 }
+    ]
+  },
+  options: {
+    scales: {
+      y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#6b7280' } },
+      x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
+    },
+    plugins: { legend: { labels: { color: '#9ca3af' } } }
+  }
+});
+</script>
+{% endblock %}
