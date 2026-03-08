@@ -528,3 +528,14 @@ def certificate_download(model: str, temperature: str, session: Optional[str] = 
     path = generate_certificate_pdf(model=model, temperature=float(temperature))
     return FileResponse(path, media_type="application/pdf",
                         filename=f"MTCP_Certificate_{model}_T{temperature}.pdf")
+
+@app.get("/settings/api-keys", response_class=HTMLResponse)
+def api_keys_settings_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    if not user:
+        return RedirectResponse("/login", status_code=302)
+    return templates.TemplateResponse("api_keys_settings.html", {
+        "request": request,
+        "current_user": user,
+        "keys": {}
+    })
