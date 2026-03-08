@@ -416,6 +416,37 @@ def export_report(session: Optional[str] = Cookie(default=None), x_api_key: Opti
     if path.endswith(".pdf"): return FileResponse(path, media_type="application/pdf", filename="control-plane-3-report.pdf")
     return FileResponse(path, media_type="text/html", filename="control-plane-3-report.html")
 
+
+@app.get("/ctrl-probes", response_class=HTMLResponse)
+def ctrl_probes_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    if not user: return RedirectResponse("/login", status_code=302)
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("""
+        SELECT r.model,
+               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
+               COUNT(*) as total,
+               ROUND(100.0*SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END)/COUNT(*),1) as pass_rate
+        FROM runs r JOIN results res ON r.id=res.run_id
+        WHERE r.dataset='ctrl'
+        GROUP BY r.model ORDER BY pass_rate DESC
+    """)
+    ctrl_rows = [{"model": row["model"], "passed": row["passed"], "total": row["total"], "pass_rate": float(row["pass_rate"])} for row in cur.fetchall()]
+
+    # Get main benchmark avg for comparison
+    cur.execute("""
+        SELECT r.model, ROUND(100.0*SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END)/COUNT(*),1) as pass_rate
+        FROM runs r JOIN results res ON r.id=res.run_id
+        WHERE r.dataset IS NULL OR r.dataset='main'
+        GROUP BY r.model
+    """)
+    main_rates = {row["model"]: float(row["pass_rate"]) for row in cur.fetchall()}
+    for row in ctrl_rows:
+        row["main_pass_rate"] = main_rates.get(row["model"], "N/A")
+
+    conn.close()
+    return templates.TemplateResponse("ctrl_probes.html", {"request": request, "user": user, "ctrl_rows": ctrl_rows})
+
 @app.get("/landing", response_class=HTMLResponse)
 def landing_page(request: Request):
     conn = get_db(); cur = conn.cursor()
