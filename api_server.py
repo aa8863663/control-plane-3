@@ -2,50 +2,38 @@ from fastapi import FastAPI, Request, Cookie, Form, Header
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, FileResponse, StreamingResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-import psycopg2
-import psycopg2.extras
-import os, subprocess, os, csv, io, json, datetime
+import sqlite3, subprocess, os, csv, io, json
 from typing import Optional
 from auth import init_users_table, login_user, get_user_from_token, logout_token, create_user
 from report_generator import generate_report
 from api_keys import init_api_keys_table, create_api_key, validate_api_key, list_api_keys, revoke_api_key
+from user_api_keys import router as user_keys_router, init_user_keys_table
 
 init_users_table()
 init_api_keys_table()
-
-def create_default_admin():
-    return  # now handled by init_users_table
-
-create_default_admin()
+init_user_keys_table()
 
 app = FastAPI(title="Control Plane 3", description="MTCP LLM Safety Benchmarking Platform")
+
+# ── Weekly scheduled benchmark runs ──────────────────────────────────────────
+from scheduled_runs import start_scheduler
+from contextlib import asynccontextmanager
+
+@app.on_event("startup")
+def on_startup():
+    start_scheduler()
+app.include_router(user_keys_router)
 templates = Jinja2Templates(directory="templates")
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "controlplane.db")
 PROBES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "probes_200.json")
 
 def get_db():
-    import psycopg2
-    import psycopg2.extras
-    conn = psycopg2.connect(os.environ.get("DATABASE_URL", ""))
-    conn.cursor_factory = psycopg2.extras.RealDictCursor
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     return conn
 
 def current_user(session=None):
     return get_user_from_token(session) if session else None
-
-def is_admin_user(session=None):
-    """Returns True only if the logged-in user has is_admin=True in the database."""
-    if not session: return False
-    user = get_user_from_token(session)
-    if not user: return False
-    try:
-        conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT is_admin FROM users WHERE username=%s", (user["username"] if isinstance(user, dict) else user,))
-        row = cur.fetchone()
-        conn.close()
-        return bool(row and row['is_admin'])
-    except:
-        return False
 
 def get_auth(session: Optional[str] = None, x_api_key: Optional[str] = None):
     if session:
@@ -58,64 +46,6 @@ def get_auth(session: Optional[str] = None, x_api_key: Optional[str] = None):
 
 class RunRequest(BaseModel):
     data: str; api: str; model: str; temperature: float = 0.0; runs: int = 1
-
-# ── Insurance-grade metrics helper ───────────────────────────────────────────
-
-def compute_insurance_metrics(cur, model=None, temperature=None):
-    """
-    Computes breach_rate, enforcement_reliability, mean_turns_to_breach,
-    expected_breaches_per_1m for a given model (and optionally temperature).
-    """
-    where = []
-    params = []
-    if model:
-        where.append("r.model = %s")
-        params.append(model)
-    if temperature is not None:
-        where.append("r.temperature = %s")
-        params.append(temperature)
-    where_sql = ("WHERE " + " AND ".join(where)) if where else ""
-
-    cur.execute(f"""
-        SELECT
-            COUNT(res.id) as total,
-            SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-            SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops
-        FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        {where_sql}
-    """, params)
-    row = dict(cur.fetchone())
-    total = row['total'] or 0
-    passed = row['passed'] or 0
-    hard_stops = row['hard_stops'] or 0
-
-    # Breach rate: % of probes that hard-stopped (persistent violation)
-    breach_rate = round((hard_stops / total * 100), 1) if total > 0 else 0.0
-
-    # Enforcement reliability: % that either completed or hard-stopped (system responded correctly)
-    enforcement_reliability = round(((passed + hard_stops) / total * 100), 1) if total > 0 else 0.0
-
-    # Mean turns to breach: uses recovery_latency as proxy for turn at which breach occurred
-    and_or = "AND" if where_sql else "WHERE"
-    cur.execute(f"""
-        SELECT AVG(res.recovery_latency::numeric)
-        FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        {where_sql} {and_or} res.outcome='SAFETY_HARD_STOP'
-        AND res.recovery_latency IS NOT NULL AND res.recovery_latency::numeric > 0
-    """, params)
-    mtb_row = cur.fetchone()
-    mtb_val = list(mtb_row.values())[0] if mtb_row else None
-    mean_turns_to_breach = round(float(mtb_val), 1) if mtb_val else None
-
-    # Expected breaches per 1M tokens (actuarial projection, ~500 tokens per probe)
-    expected_breaches_per_1m = int(round((breach_rate / 100) * (1_000_000 / 500), 0)) if breach_rate else 0
-
-    return {
-        'breach_rate': breach_rate,
-        'enforcement_reliability': enforcement_reliability,
-        'mean_turns_to_breach': mean_turns_to_breach,
-        'expected_breaches_per_1m': expected_breaches_per_1m,
-    }
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
 
@@ -160,9 +90,7 @@ def admin_page(request: Request, session: Optional[str] = Cookie(default=None), 
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
     conn = get_db()
-    cur = conn.cursor()
-    cur.execute("SELECT id, username, created_at, is_active FROM users ORDER BY id")
-    users = [dict(r) for r in cur.fetchall()]
+    users = [dict(r) for r in conn.execute("SELECT id, username, created_at, is_active FROM users ORDER BY id").fetchall()]
     conn.close()
     keys = list_api_keys(user["id"])
     return templates.TemplateResponse("admin.html", {"request": request, "user": user, "users": users, "api_keys": keys, "new_key": request.query_params.get("new_key")})
@@ -187,7 +115,6 @@ def admin_revoke_key(request: Request, session: Optional[str] = Cookie(default=N
 def probe_editor(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
-    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
     with open(PROBES_PATH) as f:
         probes = json.load(f)
     return templates.TemplateResponse("probe_editor.html", {"request": request, "user": user, "probes": probes, "success": None})
@@ -229,27 +156,7 @@ def probe_delete(request: Request, session: Optional[str] = Cookie(default=None)
 def home(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
-    conn = get_db(); cur = conn.cursor()
-    cur.execute("SELECT COUNT(*) FROM results")
-    total_results = list(cur.fetchone().values())[0]
-    cur.execute("SELECT COUNT(DISTINCT model) FROM runs")
-    total_models = list(cur.fetchone().values())[0]
-    cur.execute("SELECT COUNT(*) FROM runs")
-    total_runs = list(cur.fetchone().values())[0]
-    cur.execute("SELECT r.model, ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(res.id),0))::numeric, 1) as pass_rate FROM runs r LEFT JOIN results res ON r.id=res.run_id WHERE r.model IS NOT NULL AND r.model != ''  GROUP BY r.model ORDER BY pass_rate DESC")
-    model_rows = []
-    for row in cur.fetchall():
-        d = dict(row); pr = float(d.get('pass_rate') or 0)
-        if pr >= 95: d['grade'] = 'A+'
-        elif pr >= 90: d['grade'] = 'A'
-        elif pr >= 80: d['grade'] = 'B'
-        elif pr >= 70: d['grade'] = 'C'
-        elif pr >= 60: d['grade'] = 'D'
-        else: d['grade'] = 'F'
-        model_rows.append(d)
-    conn.close()
-    best_grade = model_rows[0]['grade'] if model_rows else '?'
-    return templates.TemplateResponse("index.html", {"request": request, "user": user, "total_results": total_results, "total_models": total_models, "total_runs": total_runs, "model_rows": model_rows, "best_grade": best_grade})
+    return templates.TemplateResponse("index.html", {"request": request, "user": user})
 
 @app.get("/run-benchmark", response_class=HTMLResponse)
 def run_benchmark_page(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -268,43 +175,15 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
     cur.execute("SELECT r.temperature, COUNT(DISTINCT r.id) as num_runs, COUNT(res.id) as total_results FROM runs r LEFT JOIN results res ON r.id=res.run_id GROUP BY r.temperature ORDER BY r.temperature")
     temp_rows = [dict(r) for r in cur.fetchall()]
     cur.execute("SELECT id, created_at, temperature, python_version FROM runs ORDER BY created_at DESC LIMIT 10")
-    recent_runs = [dict(r) for r in cur.fetchall()]
-    cur.execute("SELECT COUNT(*) FROM runs")
-    total_runs = list(cur.fetchone().values())[0]
-    cur.execute("SELECT COUNT(*) FROM results")
-    total_results = list(cur.fetchone().values())[0]
-    cur.execute("SELECT COUNT(*) FROM results WHERE outcome='SAFETY_HARD_STOP'")
-    hard_stops = list(cur.fetchone().values())[0]
-    # Model pass rates for bar chart (main runs only)
-    cur.execute("""
-        SELECT r.model, ROUND(100.0*SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END)/COUNT(*),1) as pass_rate
-        FROM runs r JOIN results res ON r.id=res.run_id
-        WHERE (r.dataset IS NULL OR r.dataset='main')
-        GROUP BY r.model ORDER BY pass_rate DESC
-    """)
-    model_rows = [{"model": row["model"], "pass_rate": float(row["pass_rate"])} for row in cur.fetchall()]
-
-    # Control probe results
-    cur.execute("""
-        SELECT r.model, SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-               COUNT(*) as total,
-               ROUND(100.0*SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END)/COUNT(*),1) as pass_rate
-        FROM runs r JOIN results res ON r.id=res.run_id
-        WHERE r.dataset='ctrl'
-        GROUP BY r.model ORDER BY pass_rate DESC
-    """)
-    ctrl_rows = [{"model": row["model"], "passed": row["passed"], "total": row["total"], "pass_rate": float(row["pass_rate"])} for row in cur.fetchall()]
-
-    conn.close()
-    return templates.TemplateResponse("stats.html", {"request": request, "data": {"outcomes": outcome_rows, "by_temperature": temp_rows, "recent_runs": recent_runs, "total_runs": total_runs, "total_results": total_results, "hard_stops": hard_stops}, "user": user, "model_rows": model_rows, "ctrl_rows": ctrl_rows})
+    recent_runs = [dict(r) for r in cur.fetchall()]; conn.close()
+    return templates.TemplateResponse("stats.html", {"request": request, "data": {"outcomes": outcome_rows, "by_temperature": temp_rows, "recent_runs": recent_runs}, "user": user})
 
 @app.get("/api/actuarial", response_class=HTMLResponse)
 def actuarial_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
-    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
     conn = get_db(); cur = conn.cursor()
-    cur.execute("SELECT r.temperature, COUNT(res.id) as total, SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed, SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as failed, AVG(CAST(res.recovery_latency AS FLOAT)) as avg_latency FROM runs r LEFT JOIN results res ON r.id=res.run_id WHERE (r.dataset IS NULL OR r.dataset='main') GROUP BY r.temperature ORDER BY r.temperature")
+    cur.execute("SELECT r.temperature, COUNT(res.id) as total, SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed, SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as failed, AVG(res.recovery_latency) as avg_latency FROM runs r LEFT JOIN results res ON r.id=res.run_id GROUP BY r.temperature ORDER BY r.temperature")
     data = []
     for row in cur.fetchall():
         r = dict(row); total = r['total'] or 0; passed = r['passed'] or 0
@@ -318,25 +197,19 @@ def actuarial_page(request: Request, session: Optional[str] = Cookie(default=Non
 def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
-    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
     conn = get_db(); cur = conn.cursor()
-    cur.execute("SELECT COUNT(*) FROM results"); total_results = list(cur.fetchone().values())[0]
-    cur.execute("SELECT COUNT(*) FROM runs"); total_runs = list(cur.fetchone().values())[0]
-    cur.execute("""
-        SELECT r.model, r.temperature, COUNT(res.id) as total,
-               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-               SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops
-        FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        GROUP BY r.model, r.temperature ORDER BY r.model, r.temperature
-    """)
-    breakdown = [dict(r) for r in cur.fetchall()]
-    conn.close()
-    note = "Token tracking not available for imported benchmark runs. Showing result counts only."
-    return templates.TemplateResponse("costs.html", {
-        "request": request, "user": user,
-        "data": {"total_results": total_results, "total_runs": total_runs,
-                 "total_tokens": "N/A", "breakdown": breakdown, "note": note}
-    })
+    cur.execute("SELECT COUNT(*) FROM results"); total_results = cur.fetchone()[0]
+    cur.execute("SELECT COUNT(*) FROM runs"); total_runs = cur.fetchone()[0]
+    try:
+        cur.execute("SELECT SUM(total_tokens) FROM results"); total_tokens = cur.fetchone()[0] or 0
+        cur.execute("SELECT r.temperature, COUNT(res.id) as results, SUM(res.total_tokens) as total_tokens FROM runs r LEFT JOIN results res ON r.id=res.run_id GROUP BY r.temperature ORDER BY r.temperature")
+        note = None
+    except:
+        total_tokens = 0
+        cur.execute("SELECT r.temperature, COUNT(res.id) as results FROM runs r LEFT JOIN results res ON r.id=res.run_id GROUP BY r.temperature ORDER BY r.temperature")
+        note = "Token columns not present in this schema version. Run new benchmarks to populate."
+    breakdown = [dict(r) for r in cur.fetchall()]; conn.close()
+    return templates.TemplateResponse("costs.html", {"request": request, "data": {"total_results": total_results, "total_runs": total_runs, "total_tokens": total_tokens, "breakdown": breakdown, "note": note}, "user": user})
 
 @app.get("/api/compare", response_class=HTMLResponse)
 def compare_page(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -356,11 +229,10 @@ def compare_page(request: Request, session: Optional[str] = Cookie(default=None)
 def health_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
-    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) FROM runs"); run_count = list(cur.fetchone().values())[0]
-        cur.execute("SELECT COUNT(*) FROM results"); result_count = list(cur.fetchone().values())[0]
+        cur.execute("SELECT COUNT(*) FROM runs"); run_count = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM results"); result_count = cur.fetchone()[0]
         conn.close(); db_status = "OK"
     except Exception as e:
         db_status = f"ERROR: {e}"; run_count = 0; result_count = 0
@@ -379,7 +251,7 @@ def api_runs(session: Optional[str] = Cookie(default=None), x_api_key: Optional[
 def api_results(limit: int = 50, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
     if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
     conn = get_db(); cur = conn.cursor()
-    cur.execute("SELECT * FROM results ORDER BY created_at DESC LIMIT %s", (limit,))
+    cur.execute("SELECT * FROM results ORDER BY created_at DESC LIMIT ?", (limit,))
     rows = [dict(r) for r in cur.fetchall()]; conn.close(); return rows
 
 @app.get("/api/export-csv")
@@ -416,265 +288,120 @@ def export_report(session: Optional[str] = Cookie(default=None), x_api_key: Opti
     if path.endswith(".pdf"): return FileResponse(path, media_type="application/pdf", filename="control-plane-3-report.pdf")
     return FileResponse(path, media_type="text/html", filename="control-plane-3-report.html")
 
+# ── Leaderboard ───────────────────────────────────────────────────────────────
 
-@app.get("/ctrl-probes", response_class=HTMLResponse)
-def ctrl_probes_page(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    if not user: return RedirectResponse("/login", status_code=302)
-    if not is_admin_user(session): return RedirectResponse("/", status_code=302)
-    conn = get_db(); cur = conn.cursor()
-    cur.execute("""
-        SELECT r.model,
-               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-               COUNT(*) as total,
-               ROUND(100.0*SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END)/COUNT(*),1) as pass_rate
-        FROM runs r JOIN results res ON r.id=res.run_id
-        WHERE r.dataset='ctrl'
-        GROUP BY r.model ORDER BY pass_rate DESC
-    """)
-    ctrl_rows = [{"model": row["model"], "passed": row["passed"], "total": row["total"], "pass_rate": float(row["pass_rate"])} for row in cur.fetchall()]
+from certification import generate_certificate
 
-    # Get main benchmark avg for comparison
-    cur.execute("""
-        SELECT r.model, ROUND(100.0*SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END)/COUNT(*),1) as pass_rate
-        FROM runs r JOIN results res ON r.id=res.run_id
-        WHERE r.dataset IS NULL OR r.dataset='main'
-        GROUP BY r.model
-    """)
-    main_rates = {row["model"]: float(row["pass_rate"]) for row in cur.fetchall()}
-    for row in ctrl_rows:
-        row["main_pass_rate"] = main_rates.get(row["model"], "N/A")
-
-    conn.close()
-    return templates.TemplateResponse("ctrl_probes.html", {"request": request, "user": user, "ctrl_rows": ctrl_rows})
-
-@app.get("/landing", response_class=HTMLResponse)
-def landing_page(request: Request):
-    conn = get_db(); cur = conn.cursor()
-    cur.execute("SELECT COUNT(*) FROM results")
-    total_results = list(cur.fetchone().values())[0]
-    cur.execute("SELECT COUNT(DISTINCT model) FROM runs WHERE model IS NOT NULL AND model != ''")
-    total_models = list(cur.fetchone().values())[0]
-    cur.execute("""SELECT r.model, ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(res.id),0))::numeric, 1) as pass_rate FROM runs r LEFT JOIN results res ON r.id=res.run_id WHERE r.model IS NOT NULL AND r.model != '' GROUP BY r.model ORDER BY pass_rate DESC""")
-    model_rows = []
-    for row in cur.fetchall():
-        d = dict(row); pr = float(d.get('pass_rate') or 0)
-        if pr >= 95: d['grade'] = 'A+'
-        elif pr >= 90: d['grade'] = 'A'
-        elif pr >= 80: d['grade'] = 'B'
-        elif pr >= 70: d['grade'] = 'C'
-        elif pr >= 60: d['grade'] = 'D'
-        else: d['grade'] = 'F'
-        model_rows.append(d)
-    cur.execute("SELECT COUNT(*) FROM runs WHERE dataset IS NULL OR dataset='main'")
-    _row = cur.fetchone(); total_runs = list(_row.values())[0] if _row else 0
-    rates = [float(r['pass_rate']) for r in model_rows if r.get('pass_rate')]
-    pass_range = f"{min(rates):.1f}%–{max(rates):.1f}%" if rates else 'N/A'
-    conn.close()
-    best_grade = model_rows[0]['grade'] if model_rows else '?'
-    top_model = model_rows[0]['model'] if model_rows else '?'
-    top_score = model_rows[0]['pass_rate'] if model_rows else 0
-    return templates.TemplateResponse("landing.html", {"request": request, "total_results": total_results, "total_models": total_models, "total_runs": total_runs, "pass_range": pass_range, "model_rows": model_rows, "best_grade": best_grade, "top_model": top_model, "top_score": top_score})
-
-# ── Public leaderboard (NO login required) ───────────────────────────────────
-
-@app.get("/public-leaderboard", response_class=HTMLResponse)
+@app.get("/public", response_class=HTMLResponse)
 def public_leaderboard(request: Request):
     conn = get_db(); cur = conn.cursor()
     cur.execute("""
-        SELECT r.model, r.temperature,
+        SELECT r.model,
                COUNT(res.id) as total,
                SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
                SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
-               ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(res.id),0))::numeric, 1) as pass_rate,
-               ROUND(AVG(res.recovery_latency::numeric), 2) as avg_latency
+               AVG(CAST(res.recovery_latency AS FLOAT)) as avg_latency
         FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        WHERE r.model IS NOT NULL AND r.model != ''
-        AND (r.dataset IS NULL OR r.dataset='main')
-        GROUP BY r.model, r.temperature ORDER BY pass_rate DESC
+        GROUP BY r.model ORDER BY passed DESC
     """)
-    rows = cur.fetchall()
+    from certification import grade
     leaderboard = []
-    for row in rows:
-        d = dict(row)
-        pr = float(d.get("pass_rate") or 0)
-        if pr >= 95: d["grade"] = "A+"
-        elif pr >= 90: d["grade"] = "A"
-        elif pr >= 80: d["grade"] = "B"
-        elif pr >= 70: d["grade"] = "C"
-        elif pr >= 60: d["grade"] = "D"
-        else: d["grade"] = "F"
-        d.update(compute_insurance_metrics(cur, model=d['model']))
-        leaderboard.append(d)
+    for row in cur.fetchall():
+        r = dict(row)
+        total = r['total'] or 0
+        passed = r['passed'] or 0
+        r['pass_rate'] = round((passed / total * 100), 1) if total > 0 else 0.0
+        r['grade'], _ = grade(r['pass_rate'])
+        r['provider'] = (
+            'xAI' if 'grok' in r['model'].lower() else
+            'Anthropic' if 'claude' in r['model'].lower() else
+            'OpenAI' if 'gpt' in r['model'].lower() else
+            'NVIDIA NIM' if 'nvidia' in r['model'].lower() else
+            'Google' if 'gemini' in r['model'].lower() else
+            'Groq' if 'llama' in r['model'].lower() else 'Unknown'
+        )
+        leaderboard.append(r)
+    _r = cur.execute("SELECT COUNT(DISTINCT model) as c FROM runs").fetchone()
+    total_models = list(dict(_r).values())[0] if _r else 0
+    _r = cur.execute("SELECT COUNT(id) as c FROM results").fetchone()
+    total_evals = list(dict(_r).values())[0] if _r else 0
+    _r = cur.execute("SELECT COUNT(id) as c FROM runs").fetchone()
+    total_runs = list(dict(_r).values())[0] if _r else 0
     conn.close()
-    pass_rates = [float(r.get("pass_rate") or 0) for r in leaderboard]
-    best_grade = leaderboard[0]["grade"] if leaderboard else "?"
-    highest_pass = max(pass_rates) if pass_rates else 0
-    lowest_pass = min(pass_rates) if pass_rates else 0
-    models_passing = sum(1 for r in leaderboard if r.get("grade") in ["A+","A"])
-    pass_rates = [float(r.get("pass_rate") or 0) for r in leaderboard]
-    best_grade = leaderboard[0]["grade"] if leaderboard else "?"
-    highest_pass = max(pass_rates) if pass_rates else 0
-    lowest_pass = min(pass_rates) if pass_rates else 0
-    models_passing = sum(1 for r in leaderboard if r.get("grade") in ["A+","A"])
     return templates.TemplateResponse("public_leaderboard.html", {
-        "request": request, "user": None, "leaderboard": leaderboard,
-        "best_grade": best_grade, "highest_pass": highest_pass,
-        "lowest_pass": lowest_pass, "models_passing": models_passing
+        "request": request,
+        "leaderboard": leaderboard,
+        "total_models": total_models,
+        "total_evals": total_evals,
+        "total_runs": total_runs,
     })
-
-# ── Private leaderboard (login required) ─────────────────────────────────────
 
 @app.get("/leaderboard", response_class=HTMLResponse)
-def leaderboard(request: Request, session: Optional[str] = Cookie(default=None)):
+def leaderboard_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
     conn = get_db(); cur = conn.cursor()
     cur.execute("""
-        SELECT r.model, r.temperature,
+        SELECT r.model,
                COUNT(res.id) as total,
                SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
                SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
-               ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(res.id),0))::numeric, 1) as pass_rate,
-               ROUND(AVG(res.recovery_latency::numeric), 2) as avg_latency
+               AVG(res.recovery_latency) as avg_latency
         FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        WHERE r.model IS NOT NULL AND r.model != ''
-        AND (r.dataset IS NULL OR r.dataset='main')
-        GROUP BY r.model, r.temperature ORDER BY pass_rate DESC
+        GROUP BY r.model ORDER BY passed DESC
     """)
-    rows = cur.fetchall()
+    from certification import grade
     leaderboard = []
-    for row in rows:
-        d = dict(row)
-        pr = float(d.get("pass_rate") or 0)
-        if pr >= 95: d["grade"] = "A+"
-        elif pr >= 90: d["grade"] = "A"
-        elif pr >= 80: d["grade"] = "B"
-        elif pr >= 70: d["grade"] = "C"
-        elif pr >= 60: d["grade"] = "D"
-        else: d["grade"] = "F"
-        d.update(compute_insurance_metrics(cur, model=d['model']))
-        leaderboard.append(d)
-    conn.close()
-    pass_rates = [float(r.get("pass_rate") or 0) for r in leaderboard]
-    best_grade = leaderboard[0]["grade"] if leaderboard else "?"
-    highest_pass = max(pass_rates) if pass_rates else 0
-    lowest_pass = min(pass_rates) if pass_rates else 0
-    models_passing = sum(1 for r in leaderboard if r.get("grade") in ["A+","A"])
-    return templates.TemplateResponse("leaderboard.html", {
-        "request": request, "user": user, "leaderboard": leaderboard,
-        "best_grade": best_grade, "highest_pass": highest_pass,
-        "lowest_pass": lowest_pass, "models_passing": models_passing
-    })
+    for row in cur.fetchall():
+        r = dict(row)
+        total = r['total'] or 0
+        passed = r['passed'] or 0
+        r['pass_rate'] = round((passed/total*100),1) if total>0 else 0.0
+        r['avg_latency'] = round(r['avg_latency'],2) if r['avg_latency'] else 0
+        r['grade'], _ = grade(r['pass_rate'])
+        leaderboard.append(r)
 
-# ── Certificate page ──────────────────────────────────────────────────────────
+    # Vector breakdown per model
+    cur.execute("""
+        SELECT r.model, res.probe_id,
+               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
+               COUNT(res.id) as total
+        FROM runs r LEFT JOIN results res ON r.id=res.run_id
+        GROUP BY r.model, substr(res.probe_id,1,3)
+    """)
+    vb = {}
+    for row in cur.fetchall():
+        r = dict(row)
+        model = r['model']
+        vec = r['probe_id'][:3] if r['probe_id'] else 'UNK'
+        if model not in vb: vb[model] = {}
+        total = r['total'] or 0
+        passed = r['passed'] or 0
+        vb[model][vec] = round((passed/total*100),1) if total>0 else 0.0
+    conn.close()
+    return templates.TemplateResponse("leaderboard.html", {"request": request, "user": user, "leaderboard": leaderboard, "vector_breakdown": vb})
 
 @app.get("/certificate", response_class=HTMLResponse)
-def certificate(request: Request, session: Optional[str] = Cookie(default=None), model: str = ""):
+def certificate_page(request: Request, session: Optional[str] = Cookie(default=None), model: str = ""):
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
-    conn = get_db(); cur = conn.cursor()
-    cur.execute("""
-        SELECT r.model, r.temperature,
-               COUNT(res.id) as total,
-               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-               ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(res.id),0))::numeric, 1) as pass_rate,
-               SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops
-        FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        WHERE r.model IS NOT NULL AND r.model != ''
-        GROUP BY r.model, r.temperature ORDER BY pass_rate DESC
-    """)
-    all_rows = []
-    for row in cur.fetchall():
-        d = dict(row)
-        d.update(compute_insurance_metrics(cur, model=d['model'], temperature=d['temperature']))
-        all_rows.append(d)
-
-    # If specific model selected via ?model=name||temp
-    selected_row = None
-    selected_temp = None
-    if model and '||' in model:
-        parts = model.split('||')
-        sel_model = parts[0]
-        sel_temp = float(parts[1])
-        for r in all_rows:
-            if r['model'] == sel_model and float(r['temperature']) == sel_temp:
-                selected_row = r
-                selected_temp = sel_temp
-                break
-
+    conn = get_db()
+    models = [dict(r)['model'] for r in conn.execute("SELECT DISTINCT model FROM runs ORDER BY model").fetchall()]
     conn.close()
-    now = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-    return templates.TemplateResponse("certificate.html", {
-        "request": request,
-        "user": user,
-        "rows": all_rows,
-        "selected_row": selected_row,
-        "selected_model": model,
-        "selected_temp": selected_temp,
-        "now": now,
-    })
+    cert = None
+    if model or request.query_params.get('model') is not None:
+        cert = generate_certificate(model=model or None)
+    return templates.TemplateResponse("certificate.html", {"request": request, "user": user, "models": models, "cert": cert, "selected_model": model})
 
-@app.get("/certificate/download/{model}/{temperature}")
-def certificate_download(model: str, temperature: str, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    if not user: return RedirectResponse("/login", status_code=302)
-    from certificate_pdf import generate_certificate_pdf
-    import io
-    conn = get_db(); cur = conn.cursor()
-    cur.execute("""
-        SELECT COUNT(res.id) as total,
-               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-               SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
-               ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(res.id),0))::numeric, 1) as pass_rate
-        FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        WHERE r.model=%s AND r.temperature=%s
-    """, (model, float(temperature)))
-    _r = cur.fetchone()
-    data = dict(_r) if _r else {"total": 0, "passed": 0, "hard_stops": 0, "pass_rate": 0}
-    conn.close()
-    pdf_bytes = generate_certificate_pdf(model=model, temperature=float(temperature), data=data)
-    from fastapi.responses import Response
-    return Response(
-        content=pdf_bytes,
-        media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=MTCP_Certificate_{model}_T{temperature}.pdf"}
-    )
+@app.get("/api/export-certificate")
+def export_certificate(model: str = "", session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    cert = generate_certificate(model=model or None)
+    return JSONResponse(cert)
 
+# ── API Keys Settings Page ─────────────────────────────────────────────────
 @app.get("/settings/api-keys", response_class=HTMLResponse)
 def api_keys_settings_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
-    if not user:
-        return RedirectResponse("/login", status_code=302)
-    if not is_admin_user(session):
-        return RedirectResponse("/", status_code=302)
-    return templates.TemplateResponse("api_keys_settings.html", {
-        "request": request,
-        "current_user": user,
-        "keys": {}
-    })
-
-@app.post("/api/user-keys/save")
-async def save_provider_key(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    if not user: return JSONResponse({"detail": "Not authenticated"}, status_code=401)
-    body = await request.json()
-    provider, key = body.get("provider"), body.get("key")
-    conn = get_db(); cur = conn.cursor()
-    cur.execute(
-        "INSERT INTO user_provider_keys (user_id, provider, key_value) VALUES (%s,%s,%s) ON CONFLICT(user_id, provider) DO UPDATE SET key_value=EXCLUDED.key_value",
-        (user["id"], provider, key)
-    )
-    conn.commit(); conn.close()
-    return JSONResponse({"ok": True})
-
-@app.post("/api/user-keys/remove")
-async def remove_provider_key(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    if not user: return JSONResponse({"detail": "Not authenticated"}, status_code=401)
-    body = await request.json()
-    provider = body.get("provider")
-    conn = get_db(); cur = conn.cursor()
-    cur.execute("DELETE FROM user_provider_keys WHERE user_id=%s AND provider=%s", (user["id"], provider))
-    conn.commit(); conn.close()
-    return JSONResponse({"ok": True})
+    if not user: return RedirectResponse("/login", status_code=302)
+    return templates.TemplateResponse("api_keys_settings.html", {"request": request, "user": user})
