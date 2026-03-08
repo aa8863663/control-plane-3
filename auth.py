@@ -79,7 +79,7 @@ def create_user(username: str, password: str) -> bool:
 def login_user(username: str, password: str):
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE username=%s AND is_active=1", (username,))
+    cur.execute("SELECT * FROM users WHERE username=%s AND is_active=TRUE", (username,))
     row = cur.fetchone()
     conn.close()
     if row and verify_password(password, row["password_hash"]):
