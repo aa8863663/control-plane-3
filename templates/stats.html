@@ -53,10 +53,13 @@
     <div class="card-title">Pass Rate by Model</div>
     <div class="chart-wrap">
       <div class="bar-chart">
-        <div class="bar-row"><span class="bar-label">LLaMA 3.3 70B</span><div class="bar-track"><div class="bar-val-fill" style="height:100%;width:75.6%;background:var(--accent);border-radius:3px;"></div></div><span class="bar-val" style="color:var(--accent)">75.6%</span></div>
-        <div class="bar-row"><span class="bar-label">LLaMA 3.1 8B</span><div class="bar-track"><div style="height:100%;width:71.5%;background:var(--warn);border-radius:3px;"></div></div><span class="bar-val" style="color:var(--warn)">71.5%</span></div>
-        <div class="bar-row"><span class="bar-label">Claude Sonnet 4</span><div class="bar-track"><div style="height:100%;width:68.1%;background:var(--danger);border-radius:3px;"></div></div><span class="bar-val" style="color:var(--danger)">68.1%</span></div>
-        <div class="bar-row"><span class="bar-label">Claude Haiku 4.5</span><div class="bar-track"><div style="height:100%;width:66.1%;background:var(--danger);border-radius:3px;"></div></div><span class="bar-val" style="color:var(--danger)">66.1%</span></div>
+        {% for row in model_rows %}
+        <div class="bar-row">
+          <span class="bar-label">{{ row.model }}</span>
+          <div class="bar-track"><div style="height:100%;width:{{ row.pass_rate }}%;background:{% if row.pass_rate >= 80 %}var(--accent){% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %};border-radius:3px;"></div></div>
+          <span class="bar-val" style="color:{% if row.pass_rate >= 80 %}var(--accent){% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %}">{{ row.pass_rate }}%</span>
+        </div>
+        {% endfor %}
       </div>
     </div>
   </div>
@@ -84,7 +87,33 @@
   </div>
 </div>
 
-<div style="margin-top:16px;" class="fade-up fade-up-4">
+
+<div class="card fade-up fade-up-4">
+  <div class="card-title">Control Probe Validation <span style="font-size:0.7rem;color:var(--muted);margin-left:8px;">20 probes · edge case baseline · T=0.0</span></div>
+  <p style="font-size:0.7rem;color:var(--muted);margin:8px 0 12px;">Control probes are deliberately harder edge cases used to validate the MTCP methodology. Results are not comparable to main benchmark scores.</p>
+  <table style="width:100%;border-collapse:collapse;font-size:0.72rem;">
+    <thead>
+      <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
+        <th style="text-align:left;padding:6px 0;">Model</th>
+        <th style="text-align:right;padding:6px 0;">Passed</th>
+        <th style="text-align:right;padding:6px 0;">Total</th>
+        <th style="text-align:right;padding:6px 0;">Pass Rate</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in ctrl_rows %}
+      <tr style="border-bottom:1px solid rgba(30,34,41,0.5);">
+        <td style="padding:7px 0;color:var(--text);">{{ row.model }}</td>
+        <td style="text-align:right;color:var(--accent);">{{ row.passed }}</td>
+        <td style="text-align:right;color:var(--muted);">{{ row.total }}</td>
+        <td style="text-align:right;color:{% if row.pass_rate >= 50 %}var(--warn){% else %}var(--danger){% endif %};">{{ row.pass_rate }}%</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top:16px;" class="fade-up fade-up-5">
   <a href="/leaderboard" class="btn btn-primary">◈ Leaderboard</a>
   <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
 </div>
