@@ -7,6 +7,9 @@
 .compare-table tr:last-child td{border-bottom:none;}
 .compare-table tr:hover td{background:rgba(255,255,255,0.02);}
 .chart-wrap{background:var(--surface2);border-radius:4px;padding:20px;margin-bottom:18px;}
+.rate-high{color:var(--accent);}
+.rate-mid{color:var(--warn);}
+.rate-low{color:var(--danger);}
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
@@ -29,7 +32,7 @@
         <td>{{ row.total }}</td>
         <td style="color:var(--accent)">{{ row.passed }}</td>
         <td style="color:var(--danger)">{{ row.failed }}</td>
-        <td style="color:{% if row.pass_rate >= 80 %}var(--accent){% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %}">{{ row.pass_rate }}%</td>
+        <td class="{% if row.pass_rate >= 80 %}rate-high{% elif row.pass_rate >= 70 %}rate-mid{% else %}rate-low{% endif %}">{{ row.pass_rate }}%</td>
       </tr>
       {% endfor %}
     </tbody>
