@@ -547,6 +547,11 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
         d.update(compute_insurance_metrics(cur, model=d['model']))
         leaderboard.append(d)
     conn.close()
+    pass_rates = [float(r.get("pass_rate") or 0) for r in leaderboard]
+    best_grade = leaderboard[0]["grade"] if leaderboard else "?"
+    highest_pass = max(pass_rates) if pass_rates else 0
+    lowest_pass = min(pass_rates) if pass_rates else 0
+    models_passing = sum(1 for r in leaderboard if r.get("grade") in ["A+","A"])
     return templates.TemplateResponse("leaderboard.html", {
         "request": request, "user": user, "leaderboard": leaderboard,
         "best_grade": best_grade, "highest_pass": highest_pass,
