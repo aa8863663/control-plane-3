@@ -267,7 +267,7 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
         WHERE (r.dataset IS NULL OR r.dataset='main')
         GROUP BY r.model ORDER BY pass_rate DESC
     """)
-    model_rows = [{"model": row[0], "pass_rate": float(row[1])} for row in cur.fetchall()]
+    model_rows = [{"model": row["model"], "pass_rate": float(row["pass_rate"])} for row in cur.fetchall()]
 
     # Control probe results
     cur.execute("""
@@ -278,7 +278,7 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
         WHERE r.dataset='ctrl'
         GROUP BY r.model ORDER BY pass_rate DESC
     """)
-    ctrl_rows = [{"model": row[0], "passed": row[1], "total": row[2], "pass_rate": float(row[3])} for row in cur.fetchall()]
+    ctrl_rows = [{"model": row["model"], "passed": row["passed"], "total": row["total"], "pass_rate": float(row["pass_rate"])} for row in cur.fetchall()]
 
     conn.close()
     return templates.TemplateResponse("stats.html", {"request": request, "data": {"outcomes": outcome_rows, "by_temperature": temp_rows, "recent_runs": recent_runs, "total_runs": total_runs, "total_results": total_results, "hard_stops": hard_stops}, "user": user, "model_rows": model_rows, "ctrl_rows": ctrl_rows})
