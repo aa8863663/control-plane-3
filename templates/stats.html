@@ -54,10 +54,23 @@
     <div class="chart-wrap">
       <div class="bar-chart">
         {% for row in model_rows %}
-        <div class="bar-row">
-          <span class="bar-label">{{ row.model }}</span>
-          <div class="bar-track"><div style="height:100%;width:{{ row.pass_rate }}%;background:{% if row.pass_rate >= 80 %}var(--accent){% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %};border-radius:3px;"></div></div>
-          <span class="bar-val" style="color:{% if row.pass_rate >= 80 %}var(--accent){% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %}">{{ row.pass_rate }}%</span>
+        <div class="bar-row" title="{{ row.model }}">
+          <span class="bar-label" style="font-size:0.62rem;">
+            {% if 'grok' in row.model %}grok-3-mini
+            {% elif 'nvidia-llama' in row.model %}nvidia/llama-70b
+            {% elif 'gpt-3.5' in row.model %}gpt-3.5-turbo
+            {% elif 'gpt-4o-mini' in row.model %}gpt-4o-mini
+            {% elif 'gpt-4o' in row.model %}gpt-4o
+            {% elif 'llama-3.3' in row.model %}llama-3.3-70b
+            {% elif 'llama-3.1' in row.model %}llama-3.1-8b
+            {% elif 'sonnet' in row.model %}claude-sonnet-4
+            {% elif 'haiku' in row.model %}claude-haiku-4.5
+            {% elif 'gemini' in row.model %}gemini-2.0-flash
+            {% elif 'gemma' in row.model %}nvidia/gemma-27b
+            {% else %}{{ row.model[:18] }}{% endif %}
+          </span>
+          <div class="bar-track"><div style="height:100%;width:{{ row.pass_rate }}%;background:{% if row.pass_rate >= 90 %}var(--accent){% elif row.pass_rate >= 80 %}#4ade80{% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %};border-radius:3px;transition:width 0.6s ease;"></div></div>
+          <span class="bar-val" style="color:{% if row.pass_rate >= 90 %}var(--accent){% elif row.pass_rate >= 80 %}#4ade80{% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %}">{{ row.pass_rate }}%</span>
         </div>
         {% endfor %}
       </div>
@@ -87,6 +100,49 @@
   </div>
 </div>
 
+
+<div class="two-col fade-up fade-up-3b" style="margin-bottom:18px;">
+  <div class="card">
+    <div class="card-title">Results by Temperature</div>
+    <table style="width:100%;border-collapse:collapse;font-size:0.72rem;margin-top:8px;">
+      <thead>
+        <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
+          <th style="text-align:left;padding:5px 0;">Temp</th>
+          <th style="text-align:right;padding:5px 0;">Runs</th>
+          <th style="text-align:right;padding:5px 0;">Evaluations</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data.by_temperature %}
+        <tr style="border-bottom:1px solid rgba(30,34,41,0.5);">
+          <td style="padding:6px 0;color:var(--accent2);">T={{ row.temperature }}</td>
+          <td style="text-align:right;color:var(--text);">{{ row.num_runs }}</td>
+          <td style="text-align:right;color:var(--muted);">{{ row.total_results }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-title">Outcome Breakdown</div>
+    <table style="width:100%;border-collapse:collapse;font-size:0.72rem;margin-top:8px;">
+      <thead>
+        <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
+          <th style="text-align:left;padding:5px 0;">Outcome</th>
+          <th style="text-align:right;padding:5px 0;">Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data.outcomes %}
+        <tr style="border-bottom:1px solid rgba(30,34,41,0.5);">
+          <td style="padding:6px 0;color:{% if row.outcome == 'COMPLETED' %}var(--accent){% elif row.outcome == 'SAFETY_HARD_STOP' %}var(--danger){% else %}var(--warn){% endif %};">{{ row.outcome }}</td>
+          <td style="text-align:right;color:var(--text);">{{ row.count }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <div class="card fade-up fade-up-4">
   <div class="card-title">Control Probe Validation <span style="font-size:0.7rem;color:var(--muted);margin-left:8px;">20 probes · edge case baseline · T=0.0</span></div>
