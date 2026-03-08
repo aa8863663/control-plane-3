@@ -499,6 +499,155 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
         </div>
       </div>
 
+      <div class="model-teaser" style="border-color:rgba(0,229,160,0.2)">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(0,229,160,0.12);color:#00e5a0;">★</div>
+          <div>
+            <div class="teaser-name">Grok 3 Mini</div>
+            <div class="teaser-sub">Closed weights · xAI API · Paid</div>
+          </div>
+          <div class="teaser-grade" style="color:#00e5a0">A</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:#00e5a0">90.5%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val">200</div><div class="teaser-stat-lbl">Probes</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--accent)">19.5</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Only model to achieve grade A.</strong> 92.5% at T=0.0 — highest single-run score across all 11 models. Maintains above 88% at all temperatures. xAI's reasoning-optimised architecture shows clear advantage on constraint persistence.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">xAI API</span>
+          <span class="teaser-tag" style="background:rgba(0,229,160,0.1);color:#00e5a0;border-color:rgba(0,229,160,0.3)">Grade A</span>
+        </div>
+      </div>
+
+      <div class="model-teaser" style="border-color:rgba(100,180,255,0.2)">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(100,180,255,0.12);color:#64b4ff;">▣</div>
+          <div>
+            <div class="teaser-name">GPT-4o Mini</div>
+            <div class="teaser-sub">Closed weights · OpenAI API · Paid</div>
+          </div>
+          <div class="teaser-grade" style="color:#4ade80">B</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:#4ade80">87.9%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val">200</div><div class="teaser-stat-lbl">Probes</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:#4ade80">24.0</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Best value OpenAI model.</strong> Grade B at a fraction of GPT-4o cost. Drops at high temperature (85.0% at T=0.8) but holds strong otherwise. Outperforms its larger sibling GPT-4o by over 20 points.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">OpenAI API</span>
+        </div>
+      </div>
+
+      <div class="model-teaser" style="border-color:rgba(100,180,255,0.2)">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(100,180,255,0.12);color:#64b4ff;">▣</div>
+          <div>
+            <div class="teaser-name">GPT-3.5 Turbo</div>
+            <div class="teaser-sub">Closed weights · OpenAI API · Paid</div>
+          </div>
+          <div class="teaser-grade" style="color:#4ade80">B</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:#4ade80">87.9%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val">200</div><div class="teaser-stat-lbl">Probes</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:#4ade80">24.1</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Remarkably stable older model.</strong> Temperature-consistent across all 4 settings (87.5–88.5%). Matches GPT-4o Mini avg despite being far cheaper. Older architecture — significant result for cost-efficiency arguments.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">OpenAI API</span>
+        </div>
+      </div>
+
+      <div class="model-teaser" style="border-color:rgba(123,108,255,0.2)">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(123,108,255,0.12);color:#7b6cff;">◈</div>
+          <div>
+            <div class="teaser-name">NVIDIA LLaMA 70B</div>
+            <div class="teaser-sub">Closed inference · NVIDIA API · Paid</div>
+          </div>
+          <div class="teaser-grade" style="color:#4ade80">B</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:#4ade80">88.3%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val">200</div><div class="teaser-stat-lbl">Probes</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:#4ade80">23.5</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+        </div>
+        <div class="teaser-insight"><strong>NVIDIA-tuned LLaMA 70B outperforms Meta's original.</strong> 88.3% avg vs 75.6% for the same base architecture on Groq — a 12.7 point uplift from NVIDIA's inference optimisation and fine-tuning. Architecture matters less than tuning.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">NVIDIA API</span>
+        </div>
+      </div>
+
+      <div class="model-teaser" style="border-color:rgba(239,68,68,0.15)">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(100,180,255,0.12);color:#64b4ff;">▣</div>
+          <div>
+            <div class="teaser-name">GPT-4o</div>
+            <div class="teaser-sub">Closed weights · OpenAI API · Paid (flagship)</div>
+          </div>
+          <div class="teaser-grade" style="color:var(--danger)">D</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">65.1%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val">200</div><div class="teaser-stat-lbl">Probes</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">69.8</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+        </div>
+        <div class="teaser-insight"><strong>OpenAI's flagship scores D.</strong> 65.1% avg — behind both GPT-3.5 Turbo and GPT-4o Mini by over 20 points. The most expensive OpenAI model is the worst-performing OpenAI model on MTCP. Inverse scaling result.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">OpenAI API</span>
+          <span class="teaser-tag" style="background:rgba(239,68,68,0.1);color:#ef4444;border-color:rgba(239,68,68,0.3)">Inverse scaling</span>
+        </div>
+      </div>
+
+      <div class="model-teaser" style="border-color:rgba(239,68,68,0.15)">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(66,200,100,0.12);color:#42c864;">◉</div>
+          <div>
+            <div class="teaser-name">Gemini 2.0 Flash</div>
+            <div class="teaser-sub">Closed weights · Google API · Paid</div>
+          </div>
+          <div class="teaser-grade" style="color:var(--danger)">D</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">63.1%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val">200</div><div class="teaser-stat-lbl">Probes</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">73.5</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Google's fastest model scores D.</strong> 63.1% avg — consistent across temperatures (62.5–63.5%) suggesting a systematic architectural ceiling. Extremely temperature-stable failure mode similar to Claude.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">Google API</span>
+        </div>
+      </div>
+
+      <div class="model-teaser" style="border-color:rgba(239,68,68,0.15)">
+        <div class="teaser-top">
+          <div class="teaser-logo" style="background:rgba(123,108,255,0.12);color:#7b6cff;">◈</div>
+          <div>
+            <div class="teaser-name">NVIDIA Gemma 27B</div>
+            <div class="teaser-sub">Closed inference · NVIDIA API · Paid</div>
+          </div>
+          <div class="teaser-grade" style="color:var(--danger)">D</div>
+        </div>
+        <div class="teaser-stats">
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">62.8%</div><div class="teaser-stat-lbl">Avg pass rate</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val">200</div><div class="teaser-stat-lbl">Probes</div></div>
+          <div class="teaser-stat"><div class="teaser-stat-val" style="color:var(--danger)">74.3</div><div class="teaser-stat-lbl">Avg hard stops</div></div>
+        </div>
+        <div class="teaser-insight"><strong>Lowest overall performer.</strong> 62.8% avg — despite NVIDIA tuning, Gemma 27B hits a floor. Near-zero temperature variance (62.5–63.0%) indicates systematic constraint failure baked into base architecture.</div>
+        <div class="teaser-tags">
+          <span class="teaser-tag tag-paid">Paid</span>
+          <span class="teaser-tag tag-api">NVIDIA API</span>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -510,6 +659,233 @@ code{background:rgba(255,255,255,0.06);padding:1px 6px;border-radius:3px;font-si
       <strong>3. Claude shows systematic failure — architecture-level.</strong> The entire Claude family clusters 65–69% with less than 2% variance across temperatures. This is not sampling noise — it is a consistent architectural failure mode independent of model tier or cost.<br><br>
       <strong>4. Open source beats paid Claude.</strong> LLaMA 3.3 70B (75.6%, grade C) outperforms Claude Sonnet 4 (68.1%, grade D) at a fraction of the token cost. NVIDIA Nemotron 70B (88.3%) outperforms every paid model except grok-3-mini.
     </p>
+  </div>
+
+
+  <!-- DETAILED RESULTS BY MODEL -->
+  <div id="model-results" class="section fade-up">
+    <div class="section-label">Results by Model — 200–252 Probes per Run · 11 Models · 4 Temperatures</div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(0,229,160,0.12);color:#00e5a0;">★</div>
+        <div>
+          <div class="model-title">Grok 3 Mini <span class="model-badge" style="background:rgba(0,229,160,0.1);color:#00e5a0;border-color:rgba(0,229,160,0.3)">Only Grade A</span></div>
+          <div class="model-sub">grok-3-mini · xAI API · 200 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>90.5%</strong> · Avg hard stops <strong>19.5</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr class="best"><td>0.0</td><td>92.5% <span class="bar-wrap"><span class="bar-fill" style="width:93%;background:#00e5a0"></span></span></td><td>15</td><td><span class="grade" style="background:rgba(0,229,160,0.15);color:#00e5a0;border-color:rgba(0,229,160,0.3)">A</span></td></tr>
+          <tr><td>0.2</td><td>91.5% <span class="bar-wrap"><span class="bar-fill" style="width:92%;background:#00e5a0"></span></span></td><td>17</td><td><span class="grade" style="background:rgba(0,229,160,0.15);color:#00e5a0;border-color:rgba(0,229,160,0.3)">A</span></td></tr>
+          <tr><td>0.5</td><td>89.5% <span class="bar-wrap"><span class="bar-fill" style="width:90%;background:#4ade80"></span></span></td><td>21</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr><td>0.8</td><td>88.5% <span class="bar-wrap"><span class="bar-fill" style="width:89%;background:#4ade80"></span></span></td><td>23</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(123,108,255,0.12);color:#7b6cff;">◈</div>
+        <div>
+          <div class="model-title">NVIDIA LLaMA 70B <span class="model-badge" style="background:rgba(74,222,128,0.1);color:#4ade80;border-color:rgba(74,222,128,0.3)">Grade B</span></div>
+          <div class="model-sub">nvidia/llama-3.3-nemotron-70b · NVIDIA API · 200 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>88.3%</strong> · Avg hard stops <strong>23.5</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>0.0</td><td>88.0% <span class="bar-wrap"><span class="bar-fill" style="width:88%;background:#4ade80"></span></span></td><td>24</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr><td>0.2</td><td>88.0% <span class="bar-wrap"><span class="bar-fill" style="width:88%;background:#4ade80"></span></span></td><td>24</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr><td>0.5</td><td>88.5% <span class="bar-wrap"><span class="bar-fill" style="width:89%;background:#4ade80"></span></span></td><td>23</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr><td>0.8</td><td>88.5% <span class="bar-wrap"><span class="bar-fill" style="width:89%;background:#4ade80"></span></span></td><td>23</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(100,180,255,0.12);color:#64b4ff;">▣</div>
+        <div>
+          <div class="model-title">GPT-4o Mini <span class="model-badge" style="background:rgba(74,222,128,0.1);color:#4ade80;border-color:rgba(74,222,128,0.3)">Grade B</span></div>
+          <div class="model-sub">gpt-4o-mini · OpenAI API · 200 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>87.9%</strong> · Avg hard stops <strong>24.0</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr class="best"><td>0.0</td><td>89.5% <span class="bar-wrap"><span class="bar-fill" style="width:90%;background:#4ade80"></span></span></td><td>21</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr><td>0.2</td><td>89.5% <span class="bar-wrap"><span class="bar-fill" style="width:90%;background:#4ade80"></span></span></td><td>21</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr><td>0.5</td><td>87.5% <span class="bar-wrap"><span class="bar-fill" style="width:88%;background:#4ade80"></span></span></td><td>25</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr><td>0.8</td><td>85.0% <span class="bar-wrap"><span class="bar-fill" style="width:85%;background:#4ade80"></span></span></td><td>30</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(100,180,255,0.12);color:#64b4ff;">▣</div>
+        <div>
+          <div class="model-title">GPT-3.5 Turbo <span class="model-badge" style="background:rgba(74,222,128,0.1);color:#4ade80;border-color:rgba(74,222,128,0.3)">Grade B</span></div>
+          <div class="model-sub">gpt-3.5-turbo · OpenAI API · 200 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>87.9%</strong> · Avg hard stops <strong>24.1</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>0.0</td><td>87.5% <span class="bar-wrap"><span class="bar-fill" style="width:88%;background:#4ade80"></span></span></td><td>25</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr class="best"><td>0.2</td><td>88.5% <span class="bar-wrap"><span class="bar-fill" style="width:89%;background:#4ade80"></span></span></td><td>23</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr><td>0.5</td><td>87.5% <span class="bar-wrap"><span class="bar-fill" style="width:88%;background:#4ade80"></span></span></td><td>25</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+          <tr><td>0.8</td><td>88.0% <span class="bar-wrap"><span class="bar-fill" style="width:88%;background:#4ade80"></span></span></td><td>24</td><td><span class="grade" style="background:rgba(74,222,128,0.15);color:#4ade80;border-color:rgba(74,222,128,0.3)">B</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
+        <div>
+          <div class="model-title">LLaMA 3.3 70B <span class="model-badge badge-best">Best Open Source</span></div>
+          <div class="model-sub">llama-3.3-70b-versatile · Groq API · 252 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>75.6%</strong> · Avg hard stops <strong>61.5</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr class="best"><td>0.0</td><td>76.6% <span class="bar-wrap"><span class="bar-fill" style="width:77%;background:var(--warn)"></span></span></td><td>59</td><td><span class="grade grade-C">C</span></td></tr>
+          <tr><td>0.2</td><td>74.6% <span class="bar-wrap"><span class="bar-fill" style="width:75%;background:var(--warn)"></span></span></td><td>64</td><td><span class="grade grade-C">C</span></td></tr>
+          <tr><td>0.5</td><td>75.8% <span class="bar-wrap"><span class="bar-fill" style="width:76%;background:var(--warn)"></span></span></td><td>61</td><td><span class="grade grade-C">C</span></td></tr>
+          <tr><td>0.8</td><td>75.4% <span class="bar-wrap"><span class="bar-fill" style="width:75%;background:var(--warn)"></span></span></td><td>62</td><td><span class="grade grade-C">C</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(255,107,53,0.12);color:#ff6b35;">⚡</div>
+        <div>
+          <div class="model-title">LLaMA 3.1 8B <span class="model-badge badge-temp">Temperature Sensitive</span></div>
+          <div class="model-sub">llama-3.1-8b-instant · Groq API · 252 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>71.5%</strong> · Avg hard stops <strong>71.8</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>0.0</td><td>72.2% <span class="bar-wrap"><span class="bar-fill" style="width:72%;background:var(--warn)"></span></span></td><td>70</td><td><span class="grade grade-C">C</span></td></tr>
+          <tr class="best"><td>0.2</td><td>75.0% <span class="bar-wrap"><span class="bar-fill" style="width:75%;background:var(--warn)"></span></span></td><td>63</td><td><span class="grade grade-C">C</span></td></tr>
+          <tr><td>0.5</td><td>71.0% <span class="bar-wrap"><span class="bar-fill" style="width:71%;background:var(--warn)"></span></span></td><td>73</td><td><span class="grade grade-C">C</span></td></tr>
+          <tr><td>0.8</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
+        <div>
+          <div class="model-title">Claude Sonnet 4 <span class="model-badge badge-resist">Temperature Resistant</span></div>
+          <div class="model-sub">claude-sonnet-4-20250514 · Anthropic API · 252 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>68.1%</strong> · Avg hard stops <strong>80.5</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>0.0</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr class="best"><td>0.2</td><td>68.7% <span class="bar-wrap"><span class="bar-fill" style="width:69%;background:var(--danger)"></span></span></td><td>79</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.5</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.8</td><td>67.9% <span class="bar-wrap"><span class="bar-fill" style="width:68%;background:var(--danger)"></span></span></td><td>81</td><td><span class="grade grade-D">D</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(205,166,100,0.12);color:#cda664;">◎</div>
+        <div>
+          <div class="model-title">Claude Haiku 4.5 <span class="model-badge badge-low">Lowest Claude</span></div>
+          <div class="model-sub">claude-haiku-4-5-20251001 · Anthropic API · 252 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>66.1%</strong> · Avg hard stops <strong>85.5</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>0.0</td><td>66.7% <span class="bar-wrap"><span class="bar-fill" style="width:67%;background:var(--danger)"></span></span></td><td>84</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.2</td><td>65.5% <span class="bar-wrap"><span class="bar-fill" style="width:66%;background:var(--danger)"></span></span></td><td>87</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.5</td><td>65.1% <span class="bar-wrap"><span class="bar-fill" style="width:65%;background:var(--danger)"></span></span></td><td>88</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr class="best"><td>0.8</td><td>67.1% <span class="bar-wrap"><span class="bar-fill" style="width:67%;background:var(--danger)"></span></span></td><td>83</td><td><span class="grade grade-D">D</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(100,180,255,0.12);color:#64b4ff;">▣</div>
+        <div>
+          <div class="model-title">GPT-4o <span class="model-badge badge-low">Inverse Scaling</span></div>
+          <div class="model-sub">gpt-4o · OpenAI API · 200 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>65.1%</strong> · Avg hard stops <strong>69.8</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>0.0</td><td>65.5% <span class="bar-wrap"><span class="bar-fill" style="width:66%;background:var(--danger)"></span></span></td><td>69</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.2</td><td>64.5% <span class="bar-wrap"><span class="bar-fill" style="width:65%;background:var(--danger)"></span></span></td><td>71</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.5</td><td>64.5% <span class="bar-wrap"><span class="bar-fill" style="width:65%;background:var(--danger)"></span></span></td><td>71</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr class="best"><td>0.8</td><td>66.0% <span class="bar-wrap"><span class="bar-fill" style="width:66%;background:var(--danger)"></span></span></td><td>68</td><td><span class="grade grade-D">D</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(66,200,100,0.12);color:#42c864;">◉</div>
+        <div>
+          <div class="model-title">Gemini 2.0 Flash <span class="model-badge badge-resist">Temperature Flat</span></div>
+          <div class="model-sub">gemini-2.0-flash · Google API · 200 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>63.1%</strong> · Avg hard stops <strong>73.5</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>0.0</td><td>62.5% <span class="bar-wrap"><span class="bar-fill" style="width:63%;background:var(--danger)"></span></span></td><td>75</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.2</td><td>63.0% <span class="bar-wrap"><span class="bar-fill" style="width:63%;background:var(--danger)"></span></span></td><td>74</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.5</td><td>63.5% <span class="bar-wrap"><span class="bar-fill" style="width:64%;background:var(--danger)"></span></span></td><td>73</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.8</td><td>63.5% <span class="bar-wrap"><span class="bar-fill" style="width:64%;background:var(--danger)"></span></span></td><td>73</td><td><span class="grade grade-D">D</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="model-section">
+      <div class="model-header">
+        <div class="model-logo" style="background:rgba(123,108,255,0.12);color:#7b6cff;">◈</div>
+        <div>
+          <div class="model-title">NVIDIA Gemma 27B <span class="model-badge badge-low">Lowest Overall</span></div>
+          <div class="model-sub">nvidia/gemma-3-27b-it · NVIDIA API · 200 probes</div>
+        </div>
+        <div class="model-avg">Avg <strong>62.8%</strong> · Avg hard stops <strong>74.3</strong></div>
+      </div>
+      <table class="bench-table">
+        <thead><tr><th>Temp</th><th>Pass Rate</th><th>Hard Stops</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>0.0</td><td>62.5% <span class="bar-wrap"><span class="bar-fill" style="width:63%;background:var(--danger)"></span></span></td><td>75</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.2</td><td>63.0% <span class="bar-wrap"><span class="bar-fill" style="width:63%;background:var(--danger)"></span></span></td><td>74</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.5</td><td>63.0% <span class="bar-wrap"><span class="bar-fill" style="width:63%;background:var(--danger)"></span></span></td><td>74</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>0.8</td><td>62.5% <span class="bar-wrap"><span class="bar-fill" style="width:63%;background:var(--danger)"></span></span></td><td>75</td><td><span class="grade grade-D">D</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 
   <!-- FULL LEADERBOARD — all 11 models with grade dividers -->
