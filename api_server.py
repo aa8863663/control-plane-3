@@ -288,7 +288,7 @@ def actuarial_page(request: Request, session: Optional[str] = Cookie(default=Non
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
     conn = get_db(); cur = conn.cursor()
-    cur.execute("SELECT r.temperature, COUNT(res.id) as total, SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed, SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as failed, AVG(res.recovery_latency) as avg_latency FROM runs r LEFT JOIN results res ON r.id=res.run_id GROUP BY r.temperature ORDER BY r.temperature")
+    cur.execute("SELECT r.temperature, COUNT(res.id) as total, SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed, SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as failed, AVG(CAST(res.recovery_latency AS FLOAT)) as avg_latency FROM runs r LEFT JOIN results res ON r.id=res.run_id WHERE (r.dataset IS NULL OR r.dataset='main') GROUP BY r.temperature ORDER BY r.temperature")
     data = []
     for row in cur.fetchall():
         r = dict(row); total = r['total'] or 0; passed = r['passed'] or 0

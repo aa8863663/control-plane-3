@@ -86,7 +86,7 @@ textarea.form-input{height:70px;resize:vertical;}
       <tr>
         <td><span class="badge">{{ probe.probe_id }}</span></td>
         <td style="color:var(--accent2)">{{ probe.vector }}</td>
-        <td style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">{{ probe.t1[:80] }}...</td>
+        <td style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">{{ probe.turn_1[:80] if probe.turn_1 else '' }}...</td>
         <td style="color:var(--muted)">{{ probe.constraint_type }}: {{ probe.constraint_value }}</td>
       </tr>
       {% endfor %}
