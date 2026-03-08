@@ -620,9 +620,26 @@ def certificate_download(model: str, temperature: str, session: Optional[str] = 
     user = current_user(session)
     if not user: return RedirectResponse("/login", status_code=302)
     from certificate_pdf import generate_certificate_pdf
-    path = generate_certificate_pdf(model=model, temperature=float(temperature))
-    return FileResponse(path, media_type="application/pdf",
-                        filename=f"MTCP_Certificate_{model}_T{temperature}.pdf")
+    import io
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("""
+        SELECT COUNT(res.id) as total,
+               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
+               SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
+               ROUND((100.0 * SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(res.id),0))::numeric, 1) as pass_rate
+        FROM runs r LEFT JOIN results res ON r.id=res.run_id
+        WHERE r.model=%s AND r.temperature=%s
+    """, (model, float(temperature)))
+    _r = cur.fetchone()
+    data = dict(_r) if _r else {"total": 0, "passed": 0, "hard_stops": 0, "pass_rate": 0}
+    conn.close()
+    pdf_bytes = generate_certificate_pdf(model=model, temperature=float(temperature), data=data)
+    from fastapi.responses import Response
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=MTCP_Certificate_{model}_T{temperature}.pdf"}
+    )
 
 @app.get("/settings/api-keys", response_class=HTMLResponse)
 def api_keys_settings_page(request: Request, session: Optional[str] = Cookie(default=None)):

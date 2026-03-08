@@ -115,7 +115,13 @@ def generate_certificate_pdf(model: str, temperature: float, data: dict) -> byte
     c.setFont("Helvetica-Bold", 18)
     c.drawCentredString(w/2, h - 103*mm, model)
 
-    provider = "Groq" if "llama" in model.lower() else "Anthropic" if "claude" in model.lower() else "Unknown"
+    if "llama" in model.lower() and "nvidia" not in model.lower(): provider = "Groq"
+    elif "claude" in model.lower(): provider = "Anthropic"
+    elif "gpt" in model.lower(): provider = "OpenAI"
+    elif "grok" in model.lower(): provider = "xAI"
+    elif "nvidia" in model.lower(): provider = "NVIDIA"
+    elif "gemini" in model.lower(): provider = "Google"
+    else: provider = "Unknown"
     c.setFillColor(colors.HexColor("#8a9ab5"))
     c.setFont("Helvetica", 9)
     c.drawCentredString(w/2, h - 111*mm, f"Provider: {provider}  ·  Temperature: {temperature}  ·  Protocol: MTCP v1.0")
@@ -165,9 +171,9 @@ def generate_certificate_pdf(model: str, temperature: float, data: dict) -> byte
     c.setFont("Helvetica", 7)
     c.drawString(20*mm, h - 186*mm, "KEY CONTEXT")
     findings = [
-        "No major LLM currently passes MTCP. The highest grade achieved across all evaluations is C.",
-        "Open source models (LLaMA 3.3 70B) outperform commercial Claude models on constraint persistence.",
-        "Results are independent, peer-reviewed, and registered with a permanent DOI.",
+        "Only one model achieves grade A on MTCP (90.5% avg). Most frontier models score grade D (60-68%).",
+        "Open source models (LLaMA 3.3 70B) outperform commercial Claude and GPT-4o on constraint persistence.",
+        "Results are independent, reproducible, and registered with a permanent DOI: 10.17605/OSF.IO/DXGK5.",
     ]
     c.setFillColor(colors.HexColor("#8a9ab5"))
     c.setFont("Helvetica", 8)
