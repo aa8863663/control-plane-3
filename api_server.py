@@ -482,7 +482,7 @@ def landing_page(request: Request):
 def public_leaderboard(request: Request):
     conn = get_db(); cur = conn.cursor()
     cur.execute("""
-        SELECT r.model,
+        SELECT r.model, r.temperature,
                COUNT(res.id) as total,
                SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
                SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
@@ -490,7 +490,8 @@ def public_leaderboard(request: Request):
                ROUND(AVG(res.recovery_latency::numeric), 2) as avg_latency
         FROM runs r LEFT JOIN results res ON r.id=res.run_id
         WHERE r.model IS NOT NULL AND r.model != ''
-        GROUP BY r.model ORDER BY pass_rate DESC
+        AND (r.dataset IS NULL OR r.dataset='main')
+        GROUP BY r.model, r.temperature ORDER BY pass_rate DESC
     """)
     rows = cur.fetchall()
     leaderboard = []
@@ -523,7 +524,7 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
     if not user: return RedirectResponse("/login", status_code=302)
     conn = get_db(); cur = conn.cursor()
     cur.execute("""
-        SELECT r.model,
+        SELECT r.model, r.temperature,
                COUNT(res.id) as total,
                SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
                SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
@@ -531,7 +532,8 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
                ROUND(AVG(res.recovery_latency::numeric), 2) as avg_latency
         FROM runs r LEFT JOIN results res ON r.id=res.run_id
         WHERE r.model IS NOT NULL AND r.model != ''
-        GROUP BY r.model ORDER BY pass_rate DESC
+        AND (r.dataset IS NULL OR r.dataset='main')
+        GROUP BY r.model, r.temperature ORDER BY pass_rate DESC
     """)
     rows = cur.fetchall()
     leaderboard = []

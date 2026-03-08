@@ -36,6 +36,8 @@
   <button class="filter-btn" onclick="filterTable('nvidia',this)">NVIDIA</button>
   <button class="filter-btn" onclick="filterTable('gemini',this)">Gemini</button>
   <button class="filter-btn" onclick="filterTable('t0',this)">T=0.0</button>
+  <button class="filter-btn" onclick="filterTable('t02',this)">T=0.2</button>
+  <button class="filter-btn" onclick="filterTable('t05',this)">T=0.5</button>
   <button class="filter-btn" onclick="filterTable('t08',this)">T=0.8</button>
 </div>
 
@@ -129,6 +131,8 @@ function filterTable(f, btn) {
     if(f==='nvidia' && !m.includes('nvidia')) show=false;
     if(f==='gemini' && !m.includes('gemini')) show=false;
     if(f==='t0' && t!=='0.0') show=false;
+    if(f==='t02' && t!=='0.2') show=false;
+    if(f==='t05' && t!=='0.5') show=false;
     if(f==='t08' && t!=='0.8') show=false;
     row.style.display = show ? '' : 'none';
   });
