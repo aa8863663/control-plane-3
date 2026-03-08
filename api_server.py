@@ -539,3 +539,28 @@ def api_keys_settings_page(request: Request, session: Optional[str] = Cookie(def
         "current_user": user,
         "keys": {}
     })
+
+@app.post("/api/user-keys/save")
+async def save_provider_key(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    if not user: return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+    body = await request.json()
+    provider, key = body.get("provider"), body.get("key")
+    conn = get_db(); cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO user_provider_keys (user_id, provider, key_value) VALUES (%s,%s,%s) ON CONFLICT(user_id, provider) DO UPDATE SET key_value=EXCLUDED.key_value",
+        (user["id"], provider, key)
+    )
+    conn.commit(); conn.close()
+    return JSONResponse({"ok": True})
+
+@app.post("/api/user-keys/remove")
+async def remove_provider_key(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    if not user: return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+    body = await request.json()
+    provider = body.get("provider")
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("DELETE FROM user_provider_keys WHERE user_id=%s AND provider=%s", (user["id"], provider))
+    conn.commit(); conn.close()
+    return JSONResponse({"ok": True})
