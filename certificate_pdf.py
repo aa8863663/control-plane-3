@@ -124,7 +124,7 @@ def generate_certificate_pdf(model: str, temperature: float, data: dict) -> byte
     else: provider = "Unknown"
     c.setFillColor(colors.HexColor("#8a9ab5"))
     c.setFont("Helvetica", 9)
-    c.drawCentredString(w/2, h - 111*mm, f"Provider: {provider}  ·  Temperature: {temperature}  ·  Protocol: MTCP v1.0")
+    c.drawCentredString(w/2, h - 111*mm, f"Provider: {provider}  ·  Temperature: {temperature}  ·  Protocol: MTCP v1.5")
 
     # --- GRADE BOX ---
     pass_rate = data.get("pass_rate") or 0
@@ -189,7 +189,7 @@ def generate_certificate_pdf(model: str, temperature: float, data: dict) -> byte
     c.setFont("Helvetica", 7)
     c.drawString(20*mm, 20*mm, f"DOI: 10.17605/OSF.IO/DXGK5")
     c.drawString(20*mm, 14*mm, f"© 2026 A. Abby · All Rights Reserved · Generated: {datetime.now().strftime('%d %b %Y')}")
-    c.drawRightString(w - 20*mm, 20*mm, "Control Plane 3 · MTCP v1.0")
+    c.drawRightString(w - 20*mm, 20*mm, "Control Plane 3 · MTCP v1.5")
     c.drawRightString(w - 20*mm, 14*mm, "control-plane-3.onrender.com")
 
     # --- BOTTOM ACCENT ---
