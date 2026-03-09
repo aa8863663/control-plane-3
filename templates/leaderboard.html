@@ -65,7 +65,7 @@
             <td style="color:var(--danger)">{{ row.hard_stops }}</td>
             <td>{% if row.breach_rate is not none %}{{ row.breach_rate }}%{% else %}—{% endif %}</td>
             <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
-            <td><a href="/certificate/download/{{ row.model }}/{{ row.temperature }}" class="btn btn-ghost" style="font-size:10px;padding:4px 10px">↓</a></td>
+            <td><a href="/certificate/download/{{ row.model }}/{{ row.temperature }}" target="_blank" class="btn btn-ghost" style="font-size:10px;padding:4px 10px" title="Download PDF Certificate">↓ PDF</a></td>
           </tr>
           {% endfor %}
         </tbody>

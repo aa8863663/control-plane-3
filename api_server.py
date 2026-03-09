@@ -91,6 +91,11 @@ def startup():
             id SERIAL PRIMARY KEY, user_id INTEGER NOT NULL,
             provider TEXT NOT NULL, key_value TEXT NOT NULL,
             UNIQUE(user_id, provider))""")
+        cur.execute("""CREATE TABLE IF NOT EXISTS api_keys (
+            id SERIAL PRIMARY KEY, user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+            key_hash TEXT NOT NULL, key_prefix TEXT NOT NULL,
+            label TEXT, is_active BOOLEAN DEFAULT TRUE,
+            created_at TIMESTAMP DEFAULT NOW(), last_used TIMESTAMP)""")
         conn.commit(); conn.close()
     except Exception as e:
         print(f"Startup warning: {e}")
@@ -325,23 +330,29 @@ def run_benchmark_page(request: Request, session: Optional[str] = Cookie(default
 # ── ADMIN ─────────────────────────────────────────────────────────────────────
 
 @app.get("/admin", response_class=HTMLResponse)
-def admin_page(request: Request, session: Optional[str] = Cookie(default=None)):
+def admin_page(request: Request, session: Optional[str] = Cookie(default=None), new_key: Optional[str] = None):
     user, redir = require_admin(session)
     if redir: return redir
     try:
         conn = get_db(); cur = conn.cursor()
         cur.execute("SELECT id, username, is_admin, is_active, created_at FROM users ORDER BY id")
-        users = [{"id": u["id"], "username": u["username"], "is_admin": u["is_admin"], "is_active": u["is_active"], "created_at": u["created_at"].strftime("%Y-%m-%d") if u["created_at"] else "—"} for u in cur.fetchall()]
+        users = [{"id": u["id"], "username": u["username"], "is_admin": u["is_admin"], "is_active": u["is_active"],
+                  "created_at": u["created_at"].strftime('%Y-%m-%d') if u["created_at"] else "—"} for u in cur.fetchall()]
         cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
         cur.execute("SELECT COUNT(*) AS n FROM results")
         total_results = cur.fetchone()['n'] or 0
+        cur.execute("SELECT id, key_prefix, label, is_active, created_at, last_used FROM api_keys ORDER BY created_at DESC")
+        api_keys = [{"id": k["id"], "key_prefix": k["key_prefix"], "label": k["label"],
+                     "is_active": k["is_active"],
+                     "created_at": k["created_at"].strftime('%Y-%m-%d') if k["created_at"] else "—",
+                     "last_used": k["last_used"].strftime('%Y-%m-%d') if k["last_used"] else None} for k in cur.fetchall()]
         conn.close()
     except Exception as e:
-        print(f"Admin error: {e}"); users=[]; total_runs=0; total_results=0
+        print(f"Admin error: {e}"); users=[]; total_runs=0; total_results=0; api_keys=[]
     return templates.TemplateResponse("admin.html", {
         "request": request, "user": user, "active": "admin",
-        "users": users, "total_runs": total_runs, "total_results": total_results})
+        "users": users, "total_runs": total_runs, "total_results": total_results, "api_keys": api_keys, "new_key": new_key})
 
 @app.post("/admin/create-user")
 def admin_create_user(session: Optional[str] = Cookie(default=None),
@@ -368,6 +379,38 @@ def admin_delete_user(user_id: int, session: Optional[str] = Cookie(default=None
         conn.commit(); conn.close()
     except Exception as e:
         print(f"Delete user error: {e}")
+    return RedirectResponse("/admin", status_code=302)
+
+
+@app.post("/admin/create-key")
+def admin_create_key(request: Request, session: Optional[str] = Cookie(default=None), label: str = Form(default="")):
+    user, redir = require_admin(session)
+    if redir: return redir
+    import secrets, hashlib
+    raw = "cp3_" + secrets.token_hex(24)
+    prefix = raw[:12]
+    hashed = hashlib.sha256(raw.encode()).hexdigest()
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("INSERT INTO api_keys (user_id, key_hash, key_prefix, label) VALUES (%s,%s,%s,%s)",
+                    (user["id"], hashed, prefix, label or None))
+        conn.commit(); conn.close()
+    except Exception as e:
+        print(f"Create key error: {e}")
+    from starlette.responses import RedirectResponse as RR
+    from urllib.parse import quote
+    return RR(f"/admin?new_key={quote(raw)}", status_code=302)
+
+@app.post("/admin/revoke-key")
+def admin_revoke_key(request: Request, key_id: int = Form(...), session: Optional[str] = Cookie(default=None)):
+    user, redir = require_admin(session)
+    if redir: return redir
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("UPDATE api_keys SET is_active=FALSE WHERE id=%s", (key_id,))
+        conn.commit(); conn.close()
+    except Exception as e:
+        print(f"Revoke key error: {e}")
     return RedirectResponse("/admin", status_code=302)
 
 @app.get("/ctrl-probes", response_class=HTMLResponse)
@@ -579,7 +622,9 @@ def download_certificate(model: str, temperature: float, session: Optional[str] 
     <div><div class="stat-val">{int(row['hard_stops'])}</div><div class="stat-lbl">Hard Stops</div></div>
   </div>
   <div class="doi">DOI: 10.17605/OSF.IO/DXGK5 · A. Abby · © 2026 · All Rights Reserved · Issued: {issued}</div>
-</div></body></html>"""
+</div>
+<script>window.onload=function(){{window.print();}}</script>
+</body></html>"""
         return HTMLResponse(content=html)
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
