@@ -63,6 +63,15 @@ def get_auth(session=None, x_api_key=None):
     if session:
         u = get_user_from_token(session)
         if u: return u
+    if x_api_key:
+        import hashlib
+        hashed = hashlib.sha256(x_api_key.encode()).hexdigest()
+        try:
+            conn = get_db(); cur = conn.cursor()
+            cur.execute("SELECT id FROM api_keys WHERE key_hash=%s AND is_active=TRUE", (hashed,))
+            row = cur.fetchone(); conn.close()
+            if row: return {"id": None, "username": "api", "is_admin": False}
+        except: pass
     return None
 
 # ── Grade helper ──────────────────────────────────────────────────────────────
