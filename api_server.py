@@ -7,22 +7,11 @@ from typing import Optional
 from auth import init_users_table, login_user, get_user_from_token, logout_token, create_user
 from report_generator import generate_report
 from api_keys import init_api_keys_table, create_api_key, validate_api_key, list_api_keys, revoke_api_key
-from user_api_keys import router as user_keys_router, init_user_keys_table
 
 init_users_table()
 init_api_keys_table()
-init_user_keys_table()
 
 app = FastAPI(title="Control Plane 3", description="MTCP LLM Safety Benchmarking Platform")
-
-# ── Weekly scheduled benchmark runs ──────────────────────────────────────────
-from scheduled_runs import start_scheduler
-from contextlib import asynccontextmanager
-
-@app.on_event("startup")
-def on_startup():
-    start_scheduler()
-app.include_router(user_keys_router)
 templates = Jinja2Templates(directory="templates")
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "controlplane.db")
 PROBES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "probes_200.json")
@@ -287,121 +276,3 @@ def export_report(session: Optional[str] = Cookie(default=None), x_api_key: Opti
     path = generate_report("/tmp/cp3_report.pdf")
     if path.endswith(".pdf"): return FileResponse(path, media_type="application/pdf", filename="control-plane-3-report.pdf")
     return FileResponse(path, media_type="text/html", filename="control-plane-3-report.html")
-
-# ── Leaderboard ───────────────────────────────────────────────────────────────
-
-from certification import generate_certificate
-
-@app.get("/public", response_class=HTMLResponse)
-def public_leaderboard(request: Request):
-    conn = get_db(); cur = conn.cursor()
-    cur.execute("""
-        SELECT r.model,
-               COUNT(res.id) as total,
-               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-               SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
-               AVG(CAST(res.recovery_latency AS FLOAT)) as avg_latency
-        FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        GROUP BY r.model ORDER BY passed DESC
-    """)
-    from certification import grade
-    leaderboard = []
-    for row in cur.fetchall():
-        r = dict(row)
-        total = r['total'] or 0
-        passed = r['passed'] or 0
-        r['pass_rate'] = round((passed / total * 100), 1) if total > 0 else 0.0
-        r['grade'], _ = grade(r['pass_rate'])
-        r['provider'] = (
-            'xAI' if 'grok' in r['model'].lower() else
-            'Anthropic' if 'claude' in r['model'].lower() else
-            'OpenAI' if 'gpt' in r['model'].lower() else
-            'NVIDIA NIM' if 'nvidia' in r['model'].lower() else
-            'Google' if 'gemini' in r['model'].lower() else
-            'Groq' if 'llama' in r['model'].lower() else 'Unknown'
-        )
-        leaderboard.append(r)
-    _r = cur.execute("SELECT COUNT(DISTINCT model) as c FROM runs").fetchone()
-    total_models = list(dict(_r).values())[0] if _r else 0
-    _r = cur.execute("SELECT COUNT(id) as c FROM results").fetchone()
-    total_evals = list(dict(_r).values())[0] if _r else 0
-    _r = cur.execute("SELECT COUNT(id) as c FROM runs").fetchone()
-    total_runs = list(dict(_r).values())[0] if _r else 0
-    conn.close()
-    return templates.TemplateResponse("public_leaderboard.html", {
-        "request": request,
-        "leaderboard": leaderboard,
-        "total_models": total_models,
-        "total_evals": total_evals,
-        "total_runs": total_runs,
-    })
-
-@app.get("/leaderboard", response_class=HTMLResponse)
-def leaderboard_page(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    if not user: return RedirectResponse("/login", status_code=302)
-    conn = get_db(); cur = conn.cursor()
-    cur.execute("""
-        SELECT r.model,
-               COUNT(res.id) as total,
-               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-               SUM(CASE WHEN res.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
-               AVG(res.recovery_latency) as avg_latency
-        FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        GROUP BY r.model ORDER BY passed DESC
-    """)
-    from certification import grade
-    leaderboard = []
-    for row in cur.fetchall():
-        r = dict(row)
-        total = r['total'] or 0
-        passed = r['passed'] or 0
-        r['pass_rate'] = round((passed/total*100),1) if total>0 else 0.0
-        r['avg_latency'] = round(r['avg_latency'],2) if r['avg_latency'] else 0
-        r['grade'], _ = grade(r['pass_rate'])
-        leaderboard.append(r)
-
-    # Vector breakdown per model
-    cur.execute("""
-        SELECT r.model, res.probe_id,
-               SUM(CASE WHEN res.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-               COUNT(res.id) as total
-        FROM runs r LEFT JOIN results res ON r.id=res.run_id
-        GROUP BY r.model, substr(res.probe_id,1,3)
-    """)
-    vb = {}
-    for row in cur.fetchall():
-        r = dict(row)
-        model = r['model']
-        vec = r['probe_id'][:3] if r['probe_id'] else 'UNK'
-        if model not in vb: vb[model] = {}
-        total = r['total'] or 0
-        passed = r['passed'] or 0
-        vb[model][vec] = round((passed/total*100),1) if total>0 else 0.0
-    conn.close()
-    return templates.TemplateResponse("leaderboard.html", {"request": request, "user": user, "leaderboard": leaderboard, "vector_breakdown": vb})
-
-@app.get("/certificate", response_class=HTMLResponse)
-def certificate_page(request: Request, session: Optional[str] = Cookie(default=None), model: str = ""):
-    user = current_user(session)
-    if not user: return RedirectResponse("/login", status_code=302)
-    conn = get_db()
-    models = [dict(r)['model'] for r in conn.execute("SELECT DISTINCT model FROM runs ORDER BY model").fetchall()]
-    conn.close()
-    cert = None
-    if model or request.query_params.get('model') is not None:
-        cert = generate_certificate(model=model or None)
-    return templates.TemplateResponse("certificate.html", {"request": request, "user": user, "models": models, "cert": cert, "selected_model": model})
-
-@app.get("/api/export-certificate")
-def export_certificate(model: str = "", session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
-    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
-    cert = generate_certificate(model=model or None)
-    return JSONResponse(cert)
-
-# ── API Keys Settings Page ─────────────────────────────────────────────────
-@app.get("/settings/api-keys", response_class=HTMLResponse)
-def api_keys_settings_page(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    if not user: return RedirectResponse("/login", status_code=302)
-    return templates.TemplateResponse("api_keys_settings.html", {"request": request, "user": user})
