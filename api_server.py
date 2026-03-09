@@ -143,7 +143,26 @@ def landing_page(request: Request):
 @app.get("/public-leaderboard", response_class=HTMLResponse)
 @app.get("/public", response_class=HTMLResponse)
 def public_leaderboard(request: Request):
-    return templates.TemplateResponse("public_leaderboard.html", {"request": request})
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("""
+            SELECT ru.model, ru.provider,
+                   ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as avg_pass_rate
+            FROM results r JOIN runs ru ON r.run_id=ru.id
+            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            GROUP BY ru.model, ru.provider ORDER BY avg_pass_rate DESC""")
+        rows = cur.fetchall(); conn.close()
+        leaderboard = []
+        for i, r in enumerate(rows, 1):
+            pr = float(r["avg_pass_rate"] or 0)
+            if pr >= 90: g = "A"
+            elif pr >= 80: g = "B"
+            elif pr >= 70: g = "C"
+            else: g = "D"
+            leaderboard.append({"rank": i, "model": r["model"], "provider": r["provider"] or "—", "pass_rate": pr, "grade": g})
+    except Exception as e:
+        print(f"Public leaderboard error: {e}"); leaderboard = []
+    return templates.TemplateResponse("public_leaderboard.html", {"request": request, "leaderboard": leaderboard})
 
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):

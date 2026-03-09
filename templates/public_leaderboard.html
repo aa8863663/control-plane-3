@@ -39,40 +39,27 @@
 </nav>
 <div class="page">
   <div class="page-title">MTCP Leaderboard</div>
-  <div class="page-sub">11 models · March 2026 · DOI 10.17605/OSF.IO/DXGK5</div>
+  <div class="page-sub">{{ leaderboard|length }} models · March 2026 · DOI 10.17605/OSF.IO/DXGK5</div>
   <div class="card">
     <table>
       <thead>
         <tr><th>Rank</th><th>Model</th><th>Provider</th><th>Avg Pass Rate</th><th>Grade</th></tr>
       </thead>
       <tbody>
-        {% set models = [
-          (1,"grok-3-mini","xAI","90.5","A"),
-          (2,"nvidia-llama-70b","NVIDIA","88.3","B"),
-          (3,"gpt-3.5-turbo","OpenAI","87.9","B"),
-          (4,"gpt-4o-mini","OpenAI","87.9","B"),
-          (5,"llama-3.3-70b-versatile","Groq","75.6","C"),
-          (6,"llama-3.1-8b-instant","Groq","71.5","C"),
-          (7,"claude-sonnet-4-20250514","Anthropic","68.1","D"),
-          (8,"claude-haiku-4-5-20251001","Anthropic","66.1","D"),
-          (9,"gpt-4o","OpenAI","65.1","D"),
-          (10,"gemini-2.0-flash","Google","63.1","D"),
-          (11,"nvidia/gemma-27b","NVIDIA","62.8","D")
-        ] %}
-        {% for rank,model,provider,pct,g in models %}
+        {% for row in leaderboard %}
         <tr>
-          <td style="color:var(--muted)">{{ rank }}</td>
-          <td>{{ model }}{% if rank==1 %} <span style="font-size:10px;color:var(--accent);margin-left:6px">ONLY A GRADE</span>{% endif %}</td>
-          <td style="color:var(--muted)">{{ provider }}</td>
+          <td style="color:var(--muted)">{{ row.rank }}</td>
+          <td>{{ row.model }}{% if row.rank==1 %} <span style="font-size:10px;color:var(--accent);margin-left:6px">ONLY A GRADE</span>{% endif %}</td>
+          <td style="color:var(--muted)">{{ row.provider }}</td>
           <td>
             <div class="bar-wrap">
               <div class="bar-track">
-                <div class="bar-fill" style="width:{{ pct }}%;background:{% if g=='A' %}var(--accent){% elif g=='B' %}var(--accent2){% elif g=='C' %}var(--warn){% else %}var(--danger){% endif %}"></div>
+                <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.grade=='A' %}var(--accent){% elif row.grade=='B' %}var(--accent2){% elif row.grade=='C' %}var(--warn){% else %}var(--danger){% endif %}"></div>
               </div>
-              <span style="min-width:44px;text-align:right;font-size:12px">{{ pct }}%</span>
+              <span style="min-width:44px;text-align:right;font-size:12px">{{ row.pass_rate }}%</span>
             </div>
           </td>
-          <td><span class="grade grade-{{ g }}">{{ g }}</span></td>
+          <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
         </tr>
         {% endfor %}
       </tbody>
