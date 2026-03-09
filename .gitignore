@@ -10,3 +10,4 @@ __pycache__/
 _bundle_tmp/
 .env
 backups/
+temp_*.csv
