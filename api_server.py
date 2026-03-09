@@ -365,7 +365,7 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
         "request": request, "user": user, "active": "stats",
         "total_runs": total_runs, "total_results": total_results, "hard_stops": hard_stops,
         "model_stats": model_stats, "ctrl_stats": ctrl_stats, "temp_breakdown": temp_breakdown,
-        "bis_stats": bis_stats, "tsi_stats": tsi_stats})
+        "bis_stats": bis_stats, "tsi_stats": tsi_stats, "model_count": len(model_stats)})
 
 @app.get("/certificate", response_class=HTMLResponse)
 def certificate_page(request: Request, session: Optional[str] = Cookie(default=None)):
