@@ -17,6 +17,7 @@
         <option value="xai">xAI (Grok)</option>
         <option value="google">Google</option>
         <option value="nvidia">NVIDIA</option>
+        <option value="huggingface">Hugging Face</option>
       </select>
     </div>
     <div class="form-group">
@@ -73,7 +74,8 @@ const MODELS = {
   anthropic: ['claude-sonnet-4-20250514', 'claude-haiku-4-5-20251001'],
   xai: ['grok-3-mini'],
   google: ['gemini-2.0-flash'],
-  nvidia: ['nvidia/llama-3.3-nemotron-70b-instruct', 'nvidia/gemma-27b-it']
+  nvidia: ['nvidia/llama-3.3-nemotron-70b-instruct', 'nvidia/gemma-27b-it'],
+  huggingface: ['meta-llama/Llama-3.3-70B-Instruct', 'mistralai/Mistral-7B-Instruct-v0.3', 'google/gemma-2-9b-it']
 };
 
 function updateModels() {

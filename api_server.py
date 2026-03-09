@@ -221,14 +221,14 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
     try:
         conn = get_db(); cur = conn.cursor()
         cur.execute("""
-            SELECT ru.model, ru.temperature,
+            SELECT ru.model, ru.temperature, ru.provider,
                    COUNT(*) as total,
                    SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
                    SUM(CASE WHEN r.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
             WHERE ru.dataset IS DISTINCT FROM 'ctrl'
-            GROUP BY ru.model, ru.temperature ORDER BY pass_rate DESC""")
+            GROUP BY ru.model, ru.temperature, ru.provider ORDER BY pass_rate DESC""")
         rows = cur.fetchall(); conn.close()
         lb = []
         for r in rows:
@@ -236,6 +236,7 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
             total = r["total"] or 0
             hard_stops = r["hard_stops"] or 0
             lb.append({"model": r["model"], "temperature": float(r["temperature"] or 0),
+                       "provider": r["provider"] or "—",
                        "pass_rate": pr, "grade": grade(pr), "passed": r["passed"] or 0,
                        "hard_stops": hard_stops, "total": total,
                        "breach_rate": round(100.0*hard_stops/total,1) if total>0 else None})
@@ -271,13 +272,22 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
             WHERE ru.dataset='ctrl'
             GROUP BY ru.model ORDER BY pass_rate DESC""")
         ctrl_stats = [{"model": r["model"], "total": r["total"], "passed": r["passed"], "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]
+        # Temperature breakdown: avg pass rate per temperature across all models
+        cur.execute("""
+            SELECT ru.temperature,
+                   ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate,
+                   COUNT(*) as total
+            FROM results r JOIN runs ru ON r.run_id=ru.id
+            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            GROUP BY ru.temperature ORDER BY ru.temperature""")
+        temp_breakdown = [{"temperature": float(r["temperature"] or 0), "pass_rate": float(r["pass_rate"] or 0), "total": r["total"]} for r in cur.fetchall()]
         conn.close()
     except Exception as e:
-        print(f"Stats error: {e}"); total_runs=0; total_results=0; hard_stops=0; model_stats=[]; ctrl_stats=[]
+        print(f"Stats error: {e}"); total_runs=0; total_results=0; hard_stops=0; model_stats=[]; ctrl_stats=[]; temp_breakdown=[]
     return templates.TemplateResponse("stats.html", {
         "request": request, "user": user, "active": "stats",
         "total_runs": total_runs, "total_results": total_results, "hard_stops": hard_stops,
-        "model_stats": model_stats, "ctrl_stats": ctrl_stats})
+        "model_stats": model_stats, "ctrl_stats": ctrl_stats, "temp_breakdown": temp_breakdown})
 
 @app.get("/certificate", response_class=HTMLResponse)
 def certificate_page(request: Request, session: Optional[str] = Cookie(default=None)):
