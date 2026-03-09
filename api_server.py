@@ -331,7 +331,7 @@ def admin_page(request: Request, session: Optional[str] = Cookie(default=None)):
     try:
         conn = get_db(); cur = conn.cursor()
         cur.execute("SELECT id, username, is_admin, is_active, created_at FROM users ORDER BY id")
-        users = [dict(u) for u in cur.fetchall()]
+        users = [{"id": u["id"], "username": u["username"], "is_admin": u["is_admin"], "is_active": u["is_active"], "created_at": u["created_at"].strftime("%Y-%m-%d") if u["created_at"] else "—"} for u in cur.fetchall()]
         cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
         cur.execute("SELECT COUNT(*) AS n FROM results")
@@ -425,7 +425,7 @@ def actuarial_page(request: Request, session: Optional[str] = Cookie(default=Non
             FROM results r JOIN runs ru ON r.run_id=ru.id
             WHERE ru.dataset IS DISTINCT FROM 'ctrl'
             GROUP BY ru.temperature, ru.model ORDER BY ru.temperature, pass_rate DESC""")
-        rows = [dict(r) for r in cur.fetchall()]; conn.close()
+        rows = [{"temperature": float(r["temperature"] or 0), "model": r["model"], "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]; conn.close()
     except Exception as e:
         print(f"Actuarial error: {e}"); rows=[]
     return templates.TemplateResponse("actuarial.html", {
