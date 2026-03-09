@@ -84,6 +84,8 @@ def grade(pct):
 
 # ── Startup ───────────────────────────────────────────────────────────────────
 
+from scheduled_runs import start_scheduler
+
 @app.on_event("startup")
 def startup():
     try:
@@ -108,6 +110,7 @@ def startup():
         conn.commit(); conn.close()
     except Exception as e:
         print(f"Startup warning: {e}")
+    start_scheduler()
 
 # ── PUBLIC ────────────────────────────────────────────────────────────────────
 

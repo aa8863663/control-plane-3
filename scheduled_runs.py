@@ -35,8 +35,8 @@ log = logging.getLogger("cp3_scheduler")
 # Update this list when new models are added.
 
 MODELS: List[Tuple[str, str]] = [
-    ("grok-3-mini-beta",            "openrouter"),
-    ("nvidia/llama-3.1-70b-instruct","nvidia"),
+    ("grok-3-mini",                 "openrouter"),
+    ("nvidia-llama-70b",            "nvidia"),
     ("gpt-4o-mini",                 "openai"),
     ("gpt-3.5-turbo",               "openai"),
     ("llama-3.3-70b-versatile",     "groq"),
@@ -44,8 +44,8 @@ MODELS: List[Tuple[str, str]] = [
     ("claude-sonnet-4-20250514",    "anthropic"),
     ("claude-haiku-4-5-20251001",   "anthropic"),
     ("gpt-4o",                      "openai"),
-    ("gemini-2.0-flash-001",        "openrouter"),
-    ("nvidia/gemma-3-27b-it",       "nvidia"),
+    ("gemini-2.0-flash",            "openrouter"),
+    ("nvidia-gemma-27b",            "nvidia"),
 ]
 
 TEMPERATURES = [0.0, 0.2, 0.5, 0.8]
