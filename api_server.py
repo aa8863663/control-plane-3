@@ -80,7 +80,8 @@ def grade(pct):
     if pct >= 90: return "A"
     if pct >= 80: return "B"
     if pct >= 70: return "C"
-    return "D"
+    if pct >= 60: return "D"
+    return "F"
 
 # ── Startup ───────────────────────────────────────────────────────────────────
 
@@ -158,7 +159,8 @@ def public_leaderboard(request: Request):
             if pr >= 90: g = "A"
             elif pr >= 80: g = "B"
             elif pr >= 70: g = "C"
-            else: g = "D"
+            elif pr >= 60: g = "D"
+            else: g = "F"
             leaderboard.append({"rank": i, "model": r["model"], "provider": r["provider"] or "—", "pass_rate": pr, "grade": g})
     except Exception as e:
         print(f"Public leaderboard error: {e}"); leaderboard = []

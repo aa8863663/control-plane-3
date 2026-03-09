@@ -26,6 +26,7 @@
     .grade-B{background:rgba(123,108,255,.15);color:var(--accent2);border:1px solid rgba(123,108,255,.3)}
     .grade-C{background:rgba(245,166,35,.15);color:var(--warn);border:1px solid rgba(245,166,35,.3)}
     .grade-D{background:rgba(255,79,79,.15);color:var(--danger);border:1px solid rgba(255,79,79,.3)}
+    .grade-F{background:rgba(120,0,0,.15);color:#cc0000;border:1px solid rgba(120,0,0,.3)}
     .bar-wrap{display:flex;align-items:center;gap:8px}
     .bar-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;min-width:80px}
     .bar-fill{height:100%;border-radius:2px}
@@ -54,7 +55,7 @@
           <td>
             <div class="bar-wrap">
               <div class="bar-track">
-                <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.grade=='A' %}var(--accent){% elif row.grade=='B' %}var(--accent2){% elif row.grade=='C' %}var(--warn){% else %}var(--danger){% endif %}"></div>
+                <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.grade=='A' %}var(--accent){% elif row.grade=='B' %}var(--accent2){% elif row.grade=='C' %}var(--warn){% elif row.grade=='D' %}var(--danger){% else %}#cc0000{% endif %}"></div>
               </div>
               <span style="min-width:44px;text-align:right;font-size:12px">{{ row.pass_rate }}%</span>
             </div>

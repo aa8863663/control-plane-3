@@ -64,6 +64,10 @@ class APIClient:
             'mistral': 'MISTRAL_API_KEY',
             'nvidia': 'NVIDIA_API_KEY',
             'google': 'GOOGLE_API_KEY',
+            'github': 'GITHUB_API_KEY',
+            'fireworks': 'FIREWORKS_API_KEY',
+            'cerebras': 'CEREBRAS_API_KEY',
+            'cohere': 'COHERE_API_KEY',
         }
         env_key = env_key_map.get(provider, f'{provider.upper()}_API_KEY')
         self.api_key = os.environ.get(env_key)
@@ -106,6 +110,34 @@ class APIClient:
         elif provider == 'anthropic':
             self.client = anthropic_sdk.Anthropic(api_key=self.api_key)
 
+        elif provider == 'github':
+            # GitHub Models is OpenAI-compatible
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://models.inference.ai.azure.com'
+            )
+
+        elif provider == 'fireworks':
+            # Fireworks is OpenAI-compatible
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://api.fireworks.ai/inference/v1'
+            )
+
+        elif provider == 'cerebras':
+            # Cerebras is OpenAI-compatible
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://api.cerebras.ai/v1'
+            )
+
+        elif provider == 'cohere':
+            # Cohere is OpenAI-compatible via v2 endpoint
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://api.cohere.com/compatibility/v1'
+            )
+
     def call(self, prompt: str, temperature: float = 0.0) -> tuple:
         # Google native
         if self.provider == 'google':
@@ -115,7 +147,7 @@ class APIClient:
             return text, 0, 0, 0
 
         # OpenAI-compatible providers
-        if self.provider in ['groq', 'openai', 'openrouter', 'mistral', 'nvidia']:
+        if self.provider in ['groq', 'openai', 'openrouter', 'mistral', 'nvidia', 'github', 'fireworks', 'cerebras', 'cohere']:
             resp = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{'role': 'user', 'content': prompt}],
@@ -202,6 +234,33 @@ class MTCPEvaluator:
         pass_rate = round(completed / len(all_results) * 100, 1)
         print(f'Results written to {output_path}')
         print(f'Done. Pass rate: {pass_rate}% | Hard stops: {hard_stops}')
+
+        # Auto-import to Neon DB
+        try:
+            import psycopg2
+            db_url = os.environ.get('DATABASE_URL')
+            if db_url:
+                db = psycopg2.connect(db_url)
+                cur = db.cursor()
+                cur.execute("SELECT id FROM runs WHERE model=%s AND temperature=%s AND probe_count=%s",
+                    (api_client.model, temperature, len(all_results)))
+                if not cur.fetchone():
+                    cur.execute("""INSERT INTO runs (model, temperature, provider, probe_count, dataset, created_at, python_version)
+                        VALUES (%s,%s,%s,%s,%s,NOW(),%s) RETURNING id""",
+                        (api_client.model, temperature, api_client.provider, len(all_results), 'probes_200', '3.9'))
+                    run_id = cur.fetchone()[0]
+                    for r in all_results:
+                        cur.execute("""INSERT INTO results (run_id, probe_id, outcome, recovery_latency, created_at)
+                            VALUES (%s,%s,%s,%s,NOW())""",
+                            (run_id, r['probe_id'], r['outcome'], r['recovery_latency']))
+                    db.commit()
+                    print(f'DB: imported {len(all_results)} results (run_id={run_id})')
+                else:
+                    print('DB: already exists, skipped')
+                db.close()
+        except Exception as e:
+            print(f'DB write failed: {e}')
+
         return all_results
 
 
