@@ -1,141 +1,115 @@
 {% extends "base.html" %}
 {% block title %}Leaderboard — Control Plane 3{% endblock %}
-{% block extra_styles %}
-.temp-pill{display:inline-block;padding:2px 7px;border-radius:3px;font-size:0.58rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);}
-.filter-bar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
-.filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.6rem;padding:5px 12px;border-radius:3px;cursor:pointer;transition:all 0.15s;letter-spacing:0.8px;text-transform:uppercase;}
-.filter-btn:hover,.filter-btn.on{border-color:var(--accent);color:var(--accent);background:rgba(0,229,160,0.05);}
-.best-row td{background:rgba(0,229,160,0.03);}
-.sub-row td{font-size:0.68rem;color:var(--muted);}
-.summary-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:18px;}
-.sum-item{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:12px 14px;}
-.sum-val{font-family:'DM Serif Display',serif;font-size:1.3rem;color:#fff;}
-.sum-lbl{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
-@media(max-width:900px){.col-hide{display:none;} .summary-bar{grid-template-columns:1fr 1fr;}}
-{% endblock %}
 {% block content %}
-<div class="page-header fade-up">
-  <h1>MTCP <span>Leaderboard</span></h1>
-  <p>All runs ranked by overall pass rate · 11 models · 4 temperatures · 44 runs</p>
-  <div class="doi-badge">DOI: 10.17605/OSF.IO/DXGK5</div>
-</div>
+<div class="page">
+  <div class="page-header">
+    <h1>Leaderboard</h1>
+    <p>11 models · 44 runs · 4 temperatures · 9,792 evaluations · March 2026</p>
+  </div>
 
-<div class="summary-bar fade-up">
-  <div class="sum-item"><div class="sum-val" style="color:var(--accent)">{{ best_grade }}</div><div class="sum-lbl">Best grade achieved</div></div>
-  <div class="sum-item"><div class="sum-val">{{ highest_pass }}%</div><div class="sum-lbl">Highest pass rate</div></div>
-  <div class="sum-item"><div class="sum-val" style="color:var(--danger)">{{ lowest_pass }}%</div><div class="sum-lbl">Lowest pass rate</div></div>
-  <div class="sum-item"><div class="sum-val" style="color:var(--accent)">{{ models_passing }}</div><div class="sum-lbl">Models grade A or above</div></div>
-</div>
+  <div class="filter-bar">
+    <button class="pill active" data-filter="all">All Models</button>
+    <button class="pill" data-filter="grok">Grok</button>
+    <button class="pill" data-filter="gpt">GPT</button>
+    <button class="pill" data-filter="claude">Claude</button>
+    <button class="pill" data-filter="llama">LLaMA</button>
+    <button class="pill" data-filter="nvidia">NVIDIA</button>
+    <button class="pill" data-filter="gemini">Gemini</button>
+    <button class="pill" data-temp="0.0">T=0.0</button>
+    <button class="pill" data-temp="0.2">T=0.2</button>
+    <button class="pill" data-temp="0.5">T=0.5</button>
+    <button class="pill" data-temp="0.8">T=0.8</button>
+  </div>
 
-<div class="filter-bar fade-up">
-  <button class="filter-btn on" onclick="filterTable('all',this)">All Models</button>
-  <button class="filter-btn" onclick="filterTable('llama',this)">LLaMA</button>
-  <button class="filter-btn" onclick="filterTable('claude',this)">Claude</button>
-  <button class="filter-btn" onclick="filterTable('gpt',this)">GPT</button>
-  <button class="filter-btn" onclick="filterTable('grok',this)">Grok</button>
-  <button class="filter-btn" onclick="filterTable('nvidia',this)">NVIDIA</button>
-  <button class="filter-btn" onclick="filterTable('gemini',this)">Gemini</button>
-  <button class="filter-btn" onclick="filterTable('t0',this)">T=0.0</button>
-  <button class="filter-btn" onclick="filterTable('t02',this)">T=0.2</button>
-  <button class="filter-btn" onclick="filterTable('t05',this)">T=0.5</button>
-  <button class="filter-btn" onclick="filterTable('t08',this)">T=0.8</button>
-</div>
-
-<div class="card fade-up fade-up-1" style="padding:0;overflow:hidden;margin-bottom:16px">
-  <div class="table-wrap">
-    <table id="lb-table">
-      <thead>
-        <tr>
-          <th style="width:44px">Rank</th>
-          <th>Model</th>
-          <th>Temp</th>
-          <th>Pass Rate</th>
-          <th>Grade</th>
-          <th>Passed</th>
-          <th>Hard Stops</th>
-          <th class="col-hide">Breach Rate</th>
-          <th class="col-hide">Enforcement</th>
-          <th class="col-hide">Turns to Breach</th>
-          <th>Probes</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% if leaderboard %}
+  <div class="card">
+    <div class="table-wrap">
+      <table id="lb-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Model</th>
+            <th>Provider</th>
+            <th>Temp</th>
+            <th>Pass Rate</th>
+            <th>Passed / Total</th>
+            <th>Hard Stops</th>
+            <th>Breach Rate</th>
+            <th>Grade</th>
+            <th>Cert</th>
+          </tr>
+        </thead>
+        <tbody>
           {% for row in leaderboard %}
-          <tr class="lb-row {% if loop.index==1 %}best-row{% endif %}"
-              data-model="{{ row.model|lower }}"
-              data-temp="{{ row.temperature }}">
-            <td>
-              <span class="rank {% if loop.index==1 %}rank-1{% elif loop.index==2 %}rank-2{% elif loop.index==3 %}rank-3{% endif %}">
-                {% if loop.index==1 %}🥇{% elif loop.index==2 %}🥈{% elif loop.index==3 %}🥉{% else %}{{ loop.index }}{% endif %}
-              </span>
+          <tr data-model="{{ row.model|lower }}" data-temp="{{ row.temperature }}">
+            <td style="color:var(--muted)">{{ loop.index }}</td>
+            <td style="font-size:12px">{{ row.model }}</td>
+            <td style="font-size:11px;color:var(--muted)">
+              {% if 'grok' in row.model %}xAI
+              {% elif 'gpt' in row.model %}OpenAI
+              {% elif 'claude' in row.model %}Anthropic
+              {% elif 'llama' in row.model and 'nvidia' not in row.model %}Groq
+              {% elif 'gemini' in row.model %}Google
+              {% elif 'nvidia' in row.model or 'nemotron' in row.model or 'gemma' in row.model %}NVIDIA
+              {% else %}—{% endif %}
             </td>
+            <td style="color:var(--muted);font-size:11px">{{ row.temperature }}</td>
             <td>
-              <span class="model-name">{{ row.model }}</span>
-              {% if 'llama' in row.model|lower %}<span class="model-provider">Groq</span>{% endif %}
-              {% if 'claude' in row.model|lower %}<span class="model-provider">Anthropic</span>{% endif %}
-              {% if 'gpt' in row.model|lower %}<span class="model-provider">OpenAI</span>{% endif %}
-            </td>
-            <td><span class="temp-pill">T={{ row.temperature }}</span></td>
-            <td>
-              <div class="progress-wrap">
-                <div class="progress-bar" style="max-width:70px">
-                  <div class="progress-fill" style="width:{{ row.pass_rate }}%"></div>
+              <div class="bar-wrap">
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate>=90 %}var(--accent){% elif row.pass_rate>=80 %}var(--accent2){% elif row.pass_rate>=70 %}var(--warn){% else %}var(--danger){% endif %}"></div>
                 </div>
-                <span style="font-size:0.7rem;color:var(--text)">{{ row.pass_rate }}%</span>
+                <span class="bar-label">{{ row.pass_rate }}%</span>
               </div>
             </td>
-            <td><span class="grade grade-{{ row.grade|replace('+','plus') }}">{{ row.grade }}</span></td>
-            <td style="color:var(--accent)">{{ row.passed }}</td>
+            <td>{{ row.passed }} / {{ row.total }}</td>
             <td style="color:var(--danger)">{{ row.hard_stops }}</td>
-            <td class="col-hide" style="font-size:0.68rem;color:var(--danger)">
-              {% if row.breach_rate is not none %}{{ row.breach_rate }}%{% else %}<span style="color:var(--muted)">—</span>{% endif %}
-            </td>
-            <td class="col-hide" style="font-size:0.68rem;color:var(--accent)">
-              {% if row.enforcement_reliability is not none %}{{ row.enforcement_reliability }}%{% else %}<span style="color:var(--muted)">—</span>{% endif %}
-            </td>
-            <td class="col-hide" style="font-size:0.68rem;color:var(--warn)">
-              {% if row.mean_turns_to_breach is not none %}{{ row.mean_turns_to_breach }}{% else %}<span style="color:var(--muted)">—</span>{% endif %}
-            </td>
-            <td style="color:var(--muted)">{{ row.total }}</td>
+            <td>{% if row.breach_rate is not none %}{{ row.breach_rate }}%{% else %}—{% endif %}</td>
+            <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
+            <td><a href="/certificate/download/{{ row.model }}/{{ row.temperature }}" class="btn btn-ghost" style="font-size:10px;padding:4px 10px">↓</a></td>
           </tr>
           {% endfor %}
-        {% else %}
-          <tr><td colspan="11" style="text-align:center;padding:48px;color:var(--muted)">
-            No results yet. <a href="/run-benchmark" style="color:var(--accent)">Run your first benchmark →</a>
-          </td></tr>
-        {% endif %}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<div style="display:flex;gap:8px;flex-wrap:wrap" class="fade-up fade-up-3">
-  <a href="/certificate" class="btn btn-primary">◎ Certificates</a>
-  <a href="/api/export-csv" class="btn btn-ghost">↓ Export CSV</a>
-  <a href="/stats" class="btn btn-ghost">◻ Stats</a>
-  <a href="/" class="btn btn-ghost">← Dashboard</a>
-</div>
-
 <script>
-function filterTable(f, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  document.querySelectorAll('.lb-row').forEach(row => {
-    const m = row.dataset.model; const t = row.dataset.temp;
-    let show = true;
-    if(f==='llama' && !m.includes('llama')) show=false;
-    if(f==='claude' && !m.includes('claude')) show=false;
-    if(f==='gpt' && !m.includes('gpt')) show=false;
-    if(f==='grok' && !m.includes('grok')) show=false;
-    if(f==='nvidia' && !m.includes('nvidia')) show=false;
-    if(f==='gemini' && !m.includes('gemini')) show=false;
-    if(f==='t0' && t!=='0.0') show=false;
-    if(f==='t02' && t!=='0.2') show=false;
-    if(f==='t05' && t!=='0.5') show=false;
-    if(f==='t08' && t!=='0.8') show=false;
-    row.style.display = show ? '' : 'none';
+const rows = document.querySelectorAll('#lb-table tbody tr');
+let activeFilter = 'all';
+let activeTemp = null;
+
+function applyFilters() {
+  rows.forEach(r => {
+    const model = r.dataset.model;
+    const temp = r.dataset.temp;
+    const matchFilter = activeFilter === 'all' || model.includes(activeFilter);
+    const matchTemp = !activeTemp || temp === activeTemp;
+    r.style.display = (matchFilter && matchTemp) ? '' : 'none';
   });
 }
+
+document.querySelectorAll('.pill[data-filter]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pill[data-filter]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter = btn.dataset.filter;
+    applyFilters();
+  });
+});
+
+document.querySelectorAll('.pill[data-temp]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.classList.contains('active')) {
+      btn.classList.remove('active');
+      activeTemp = null;
+    } else {
+      document.querySelectorAll('.pill[data-temp]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeTemp = btn.dataset.temp;
+    }
+    applyFilters();
+  });
+});
 </script>
 {% endblock %}

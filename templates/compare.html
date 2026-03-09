@@ -1,65 +1,40 @@
 {% extends "base.html" %}
 {% block title %}Compare — Control Plane 3{% endblock %}
-{% block extra_styles %}
-.compare-table{width:100%;border-collapse:collapse;font-size:0.72rem;}
-.compare-table th{color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.05em;padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;}
-.compare-table td{padding:9px 12px;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text);}
-.compare-table tr:last-child td{border-bottom:none;}
-.compare-table tr:hover td{background:rgba(255,255,255,0.02);}
-.chart-wrap{background:var(--surface2);border-radius:4px;padding:20px;margin-bottom:18px;}
-.rate-high{color:var(--accent);}
-.rate-mid{color:var(--warn);}
-.rate-low{color:var(--danger);}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 {% endblock %}
 {% block content %}
-<div class="page-header fade-up">
-  <h1>Model <span>Comparison</span></h1>
-  <p>Pass rate by model and temperature across all MTCP benchmark runs</p>
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Model Comparison</div>
+    <div class="page-subtitle">Pass rate by temperature across all 11 models</div>
+  </div>
+  <div class="card">
+    <canvas id="compareChart" height="60"></canvas>
+  </div>
 </div>
-<div class="card fade-up fade-up-1">
-  <div class="card-title">Pass Rate by Model & Temperature</div>
-  <div class="chart-wrap"><canvas id="compareChart" height="100"></canvas></div>
-</div>
-<div class="card fade-up fade-up-2">
-  <div class="card-title">Full Results Table</div>
-  <table class="compare-table" style="margin-top:10px;">
-    <thead><tr><th>Model</th><th>Temp</th><th>Total</th><th>Passed</th><th>Failed</th><th>Pass Rate</th></tr></thead>
-    <tbody>
-      {% for row in data %}
-      <tr>
-        <td>{{ row.model }}</td>
-        <td>{{ row.temperature }}</td>
-        <td>{{ row.total }}</td>
-        <td style="color:var(--accent)">{{ row.passed }}</td>
-        <td style="color:var(--danger)">{{ row.failed }}</td>
-        <td class="{% if row.pass_rate >= 80 %}rate-high{% elif row.pass_rate >= 70 %}rate-mid{% else %}rate-low{% endif %}">{{ row.pass_rate }}%</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-<div style="margin-top:16px;" class="fade-up fade-up-3">
-  <a href="/leaderboard" class="btn btn-primary">◈ Leaderboard</a>
-  <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-const rows = {{ data | tojson }};
-const labels = rows.map(r => r.model.split('/').pop() + ' @' + r.temperature);
+const raw = {{ compare_data | tojson }};
+const models = [...new Set(raw.map(r => r.model))];
+const temps = [0.0, 0.2, 0.5, 0.8];
+const palette = ['#00e5a0','#7b6cff','#f5a623','#ff4f4f','#38bdf8','#fb923c','#a3e635','#e879f9','#34d399','#818cf8','#f472b6'];
+const datasets = models.map((m,i) => ({
+  label: m,
+  data: temps.map(t => { const r = raw.find(x => x.model===m && x.temperature===t); return r ? r.pass_rate : null; }),
+  borderColor: palette[i % palette.length],
+  backgroundColor: palette[i % palette.length] + '20',
+  tension: 0.3, fill: false, pointRadius: 5,
+}));
 new Chart(document.getElementById('compareChart'), {
-  type: 'bar',
-  data: {
-    labels: labels,
-    datasets: [{ label: 'Pass Rate %', data: rows.map(r => r.pass_rate),
-      backgroundColor: rows.map(r => r.pass_rate >= 80 ? '#00e5a0' : r.pass_rate >= 70 ? '#f59e0b' : '#ef4444'),
-      borderRadius: 3 }]
-  },
+  type: 'line',
+  data: { labels: temps.map(t => 'T='+t), datasets },
   options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#d4dbe8', font: { family: 'JetBrains Mono', size: 10 }, boxWidth: 12 } } },
     scales: {
-      y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#6b7280' } },
-      x: { grid: { display: false }, ticks: { color: '#6b7280', maxRotation: 45, font: { size: 10 } } }
-    },
-    plugins: { legend: { labels: { color: '#9ca3af' } } }
+      x: { ticks: { color: '#5a6070', font: { family: 'JetBrains Mono' } }, grid: { color: '#1e2330' } },
+      y: { min: 0, max: 100, ticks: { color: '#5a6070', font: { family: 'JetBrains Mono' }, callback: v => v+'%' }, grid: { color: '#1e2330' } }
+    }
   }
 });
 </script>

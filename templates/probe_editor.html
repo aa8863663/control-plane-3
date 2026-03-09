@@ -1,19 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Probe Editor — Control Plane 3{% endblock %}
 {% block extra_styles %}
-.probe-table{width:100%;border-collapse:collapse;font-size:0.7rem;}
-.probe-table th{color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.05em;padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;}
-.probe-table td{padding:8px 12px;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text);vertical-align:top;}
-.probe-table tr:last-child td{border-bottom:none;}
-.probe-table tr:hover td{background:rgba(255,255,255,0.02);}
-.badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.65rem;font-weight:700;letter-spacing:0.05em;background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.2);}
-.form-label{display:block;font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;margin-top:14px;}
-.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:9px 12px;font-size:0.78rem;color:var(--text);box-sizing:border-box;margin-bottom:4px;font-family:'JetBrains Mono',monospace;}
-.form-input:focus{outline:none;border-color:var(--accent);}
-textarea.form-input{height:70px;resize:vertical;}
-.success-msg{background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.3);color:var(--accent);padding:10px 16px;border-radius:3px;font-size:0.75rem;margin-bottom:16px;}
-.two-col-form{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-@media(max-width:640px){.two-col-form{grid-template-columns:1fr;}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.danger-btn{background:rgba(255,79,79,0.1);color:var(--danger);border:1px solid rgba(255,79,79,0.2);font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.8px;text-transform:uppercase;padding:4px 10px;border-radius:3px;cursor:pointer;transition:all 0.15s;}
+.danger-btn:hover{background:rgba(255,79,79,0.2);}
+.success-box{background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.2);border-left:3px solid var(--accent);color:var(--text);padding:11px 15px;border-radius:4px;font-size:0.7rem;margin-bottom:16px;}
+.filter-row{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-row select,.filter-row input{width:auto;flex:0 0 auto;}
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
@@ -22,80 +15,107 @@ textarea.form-input{height:70px;resize:vertical;}
 </div>
 
 {% if success %}
-<div class="success-msg fade-up">✓ {{ success }}</div>
+<div class="success-box fade-up">✓ {{ success }}</div>
 {% endif %}
 
-<div class="card fade-up fade-up-1">
+<div class="card fade-up fade-up-1" style="margin-bottom:24px">
   <div class="card-title">Add New Probe</div>
-  <form method="post" action="/probes/add" style="margin-top:12px;">
-    <div class="two-col-form">
+  <form method="post" action="/probes/add">
+    <div class="grid2" style="margin-bottom:14px">
       <div>
-        <label class="form-label">Probe ID</label>
-        <input class="form-input" name="probe_id" placeholder="e.g. NCA-031" required>
+        <label>Probe ID</label>
+        <input type="text" name="probe_id" placeholder="e.g. NCA-031" required>
       </div>
       <div>
-        <label class="form-label">Vector</label>
-        <select class="form-input" name="vector">
-          <option value="NCA">Negative Constraint Adherence</option>
-          <option value="SFC">Structural Format Compliance</option>
-          <option value="IDL">Information Density & Length</option>
-          <option value="CG">Contextual Grounding</option>
-          <option value="LANG">Multilingual</option>
+        <label>Vector</label>
+        <select name="vector">
+          <option>Negative Constraint Adherence</option>
+          <option>Structural Format Compliance</option>
+          <option>Information Density &amp; Length</option>
+          <option>Contextual Grounding</option>
         </select>
       </div>
     </div>
-    <label class="form-label">Turn 1 — Initial prompt with constraint</label>
-    <textarea class="form-input" name="t1" required></textarea>
-    <label class="form-label">Turn 2 — First correction</label>
-    <textarea class="form-input" name="t2" required></textarea>
-    <label class="form-label">Turn 3 — Second correction</label>
-    <textarea class="form-input" name="t3" required></textarea>
-    <div class="two-col-form">
+    <div style="margin-bottom:10px">
+      <label>Turn 1 — Initial prompt with constraint</label>
+      <textarea name="turn_1" rows="3" required style="resize:vertical"></textarea>
+    </div>
+    <div style="margin-bottom:10px">
+      <label>Turn 2 — First correction</label>
+      <textarea name="turn_2_correction" rows="2" required style="resize:vertical"></textarea>
+    </div>
+    <div style="margin-bottom:14px">
+      <label>Turn 3 — Second correction</label>
+      <textarea name="turn_3_correction" rows="2" required style="resize:vertical"></textarea>
+    </div>
+    <div class="grid2" style="margin-bottom:16px">
       <div>
-        <label class="form-label">Constraint Type</label>
-        <select class="form-input" name="constraint_type">
+        <label>Constraint Type</label>
+        <select name="constraint_type">
           <option value="no_word">no_word (forbidden words)</option>
-          <option value="json">json (valid JSON output)</option>
-          <option value="word_count">word_count (exact length)</option>
-          <option value="phrase">phrase (required phrase)</option>
-          <option value="language">language (output language)</option>
+          <option value="word_count:exact">word_count:exact</option>
+          <option value="json_schema">json_schema (valid JSON)</option>
+          <option value="regex_match">regex_match (pattern)</option>
         </select>
       </div>
       <div>
-        <label class="form-label">Constraint Value</label>
-        <input class="form-input" name="constraint_value" placeholder='e.g. war or ["war","battle"] or 20'>
+        <label>Constraint Value</label>
+        <input type="text" name="constraint_value" placeholder='e.g. war  or  ["war","battle"]  or  20'>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary" style="margin-top:16px;">+ Add Probe</button>
+    <button type="submit" class="btn btn-primary">+ Add Probe</button>
   </form>
 </div>
 
 <div class="card fade-up fade-up-2">
-  <div class="card-title">All Probes <span style="color:var(--muted);font-size:0.75rem;margin-left:8px;">{{ probes|length }} total</span></div>
-  <table class="probe-table" style="margin-top:10px;">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Vector</th>
-        <th>Turn 1</th>
-        <th>Constraint</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for probe in probes %}
-      <tr>
-        <td><span class="badge">{{ probe.probe_id }}</span></td>
-        <td style="color:var(--accent2)">{{ probe.vector }}</td>
-        <td style="max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)">{{ probe.turn_1[:80] if probe.turn_1 else '' }}...</td>
-        <td style="color:var(--muted)">{{ probe.constraint_type }}: {{ probe.constraint_value }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="card-title" style="margin-bottom:12px">All Probes</div>
+  <div class="filter-row">
+    <select id="vectorFilter" onchange="filterProbes()" style="width:240px">
+      <option value="">All vectors</option>
+      <option>Negative Constraint Adherence</option>
+      <option>Structural Format Compliance</option>
+      <option>Information Density &amp; Length</option>
+      <option>Contextual Grounding</option>
+    </select>
+    <input type="text" id="searchFilter" placeholder="Search probe ID..." oninput="filterProbes()" style="width:200px">
+  </div>
+  <div class="table-wrap">
+    <table id="probeTable">
+      <thead><tr><th>ID</th><th>Vector</th><th>Turn 1 Preview</th><th>Constraint</th><th></th></tr></thead>
+      <tbody>
+        {% for probe in probes %}
+        <tr data-vector="{{ probe.vector }}" data-id="{{ probe.probe_id }}">
+          <td><strong style="color:var(--accent)">{{ probe.probe_id }}</strong></td>
+          <td><span style="font-size:0.6rem;background:var(--surface2);border:1px solid var(--border);color:var(--muted);padding:2px 7px;border-radius:3px">{{ probe.vector[:3] }}</span></td>
+          <td style="color:var(--muted);font-size:0.68rem">{{ probe.turn_1[:80] }}{% if probe.turn_1|length > 80 %}…{% endif %}</td>
+          <td><code style="color:var(--accent2);font-size:0.65rem">{{ probe.constraints | tojson | truncate(40) }}</code></td>
+          <td>
+            <form method="post" action="/probes/delete" style="display:inline">
+              <input type="hidden" name="probe_id" value="{{ probe.probe_id }}">
+              <button type="submit" class="danger-btn" onclick="return confirm('Delete {{ probe.probe_id }}?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<div style="margin-top:16px;" class="fade-up fade-up-3">
-  <a href="/admin" class="btn btn-ghost">← Admin</a>
-  <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
+<div style="margin-top:16px" class="fade-up fade-up-3">
+  <a href="/" class="btn btn-ghost">← Dashboard</a>
+  <a href="/admin" class="btn btn-ghost" style="margin-left:8px">Admin</a>
 </div>
+
+<script>
+function filterProbes() {
+  const vector = document.getElementById('vectorFilter').value.toLowerCase();
+  const search = document.getElementById('searchFilter').value.toLowerCase();
+  document.querySelectorAll('#probeTable tbody tr').forEach(row => {
+    const matchV = !vector || row.dataset.vector.toLowerCase().includes(vector);
+    const matchS = !search || row.dataset.id.toLowerCase().includes(search);
+    row.style.display = matchV && matchS ? '' : 'none';
+  });
+}
+</script>
 {% endblock %}

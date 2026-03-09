@@ -1,123 +1,83 @@
 {% extends "base.html" %}
 {% block title %}Dashboard — Control Plane 3{% endblock %}
-{% block extra_styles %}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
-.model-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(30,34,41,0.6);gap:10px;}
-.model-row:last-child{border-bottom:none;}
-.finding-item{padding:10px 0;border-bottom:1px solid rgba(30,34,41,0.5);display:flex;gap:12px;align-items:flex-start;}
-.finding-item:last-child{border-bottom:none;}
-.finding-num{font-family:'DM Serif Display',serif;font-size:1.2rem;color:var(--border2);line-height:1.2;flex-shrink:0;width:24px;}
-.finding-text{font-size:0.7rem;color:var(--muted);line-height:1.75;}
-.finding-text strong{color:var(--text);}
-.action-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin:20px 0 8px;padding-bottom:7px;border-bottom:1px solid var(--border);}
-.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:6px;}
-.action-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:13px 15px;text-decoration:none;color:var(--text);transition:border-color 0.15s,background 0.15s;}
-.action-card:hover{border-color:var(--accent);background:rgba(0,229,160,0.02);}
-.action-card.primary{border-color:rgba(0,229,160,0.2);background:rgba(0,229,160,0.03);}
-.action-card.primary:hover{border-color:rgba(0,229,160,0.45);}
-.action-icon{font-size:0.95rem;margin-bottom:5px;display:block;}
-.action-title{font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:2px;}
-.action-desc{font-size:0.62rem;color:var(--muted);line-height:1.4;}
-.summary-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.15);border-radius:4px;padding:6px 12px;font-size:0.65rem;color:var(--muted);margin-bottom:18px;}
-.summary-pill span{color:var(--accent);font-weight:600;}
-@media(max-width:900px){.grid-2,.action-grid{grid-template-columns:1fr;}}
-{% endblock %}
 {% block content %}
-<div class="page-header fade-up">
-  <h1>MTCP Evaluation <span>Platform</span></h1>
-  <p>Multi-Turn Constraint Persistence · LLM Safety Benchmark · v1.4.1</p>
-  <div class="doi-badge">DOI: 10.17605/OSF.IO/DXGK5</div>
-</div>
+<div class="page">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p>MTCP Multi-Turn Constraint Persistence · v1.5 · DOI 10.17605/OSF.IO/DXGK5</p>
+  </div>
 
-<div class="summary-pill fade-up">
-  <span>{{ total_runs }}</span> benchmark runs ·
-  <span>{{ total_models }}</span> model families ·
-  <span>{{ total_results }}</span> probe evaluations · Best grade: <span>{{ best_grade }}</span>
-</div>
-
-<div class="stats-grid">
-  <div class="stat-card fade-up fade-up-1">
-    <div class="stat-label">Total Evaluations</div>
-    <div class="stat-value" style="color:var(--accent)">{{ total_results }}</div>
-    <div class="stat-sub">across all runs and models</div>
-  </div>
-  <div class="stat-card fade-up fade-up-2">
-    <div class="stat-label">Benchmark Runs</div>
-    <div class="stat-value">{{ total_runs }}</div>
-    <div class="stat-sub">252 probes per run</div>
-  </div>
-  <div class="stat-card fade-up fade-up-3">
-    <div class="stat-label">Models Tested</div>
-    <div class="stat-value">{{ total_models }}</div>
-    <div class="stat-sub">11 models · 44 benchmark runs</div>
-  </div>
-  <div class="stat-card fade-up fade-up-4">
-    <div class="stat-label">Best Grade</div>
-    <div class="stat-value" style="color:var(--accent)">{{ best_grade }}</div>
-    <div class="stat-sub">grok-3-mini · 90.5% · Only pass</div>
-  </div>
-</div>
-
-<div class="grid-2">
-  <div class="card fade-up fade-up-2">
-    <div class="card-title">Model Performance</div>
-    {% for m in model_rows %}
-    <div class="model-row">
-      <span class="model-name">{{ m.model }}</span>
-      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0">
-        <div class="progress-wrap">
-          <div class="progress-bar">
-            <div class="progress-fill" style="width:{{ m.pass_rate }}%"></div>
-          </div>
-          <span style="font-size:0.68rem;color:var(--muted);min-width:34px">{{ m.pass_rate }}%</span>
-        </div>
-        <span class="grade grade-{{ m.grade|replace('+','plus') }}">{{ m.grade }}</span>
-      </div>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value">{{ total_results }}</div>
+      <div class="stat-label">Total Evaluations</div>
     </div>
-    {% endfor %}
-  </div>
-  <div class="card fade-up fade-up-3">
-    <div class="card-title">Key Findings</div>
-    <div class="finding-item">
-      <div class="finding-num">01</div>
-      <div class="finding-text"><strong>grok-3-mini is the only passing model.</strong> 90.5% grade A — the only result above 80% across all 11 models. GPT-4o, Claude, and Gemini all fail.</div>
+    <div class="stat-card">
+      <div class="stat-value">{{ total_runs }}</div>
+      <div class="stat-label">Benchmark Runs</div>
     </div>
-    <div class="finding-item">
-      <div class="finding-num">02</div>
-      <div class="finding-text"><strong>GPT-4o scores D — below GPT-3.5-turbo.</strong> OpenAI's flagship at 65.1% is outperformed by GPT-3.5-turbo (87.9%) and GPT-4o-mini (87.9%). Bigger is not better on MTCP.</div>
+    <div class="stat-card">
+      <div class="stat-value">{{ total_models }}</div>
+      <div class="stat-label">Models Tested</div>
     </div>
-    <div class="finding-item">
-      <div class="finding-num">03</div>
-      <div class="finding-text"><strong>Claude shows systematic failure.</strong> Entire Claude family clusters 65–69% with under 2% temperature variance — architecture-level failure, not noise.</div>
-    </div>
-    <div class="finding-item">
-      <div class="finding-num">04</div>
-      <div class="finding-text"><strong>Open source beats paid Claude.</strong> LLaMA 3.3 70B (75.6%) outperforms Claude Sonnet 4 (68.1%). NVIDIA Nemotron 70B (88.3%) outperforms every paid model except grok-3-mini.</div>
+    <div class="stat-card">
+      <div class="stat-value" style="color:{% if best_grade=='A' %}var(--accent){% elif best_grade=='B' %}var(--accent2){% elif best_grade=='C' %}var(--warn){% else %}var(--danger){% endif %}">{{ best_grade }}</div>
+      <div class="stat-label">Best Grade (grok-3-mini)</div>
     </div>
   </div>
-</div>
 
-<div class="action-label fade-up">Benchmarking</div>
-<div class="action-grid fade-up fade-up-1">
-  <a class="action-card primary" href="/run-benchmark"><span class="action-icon">▶</span><div class="action-title">Run Benchmark</div><div class="action-desc">Execute a new evaluation run against any model</div></a>
-  <a class="action-card" href="/probes"><span class="action-icon">≡</span><div class="action-title">Probe Editor</div><div class="action-desc">252 probes across 5 vectors — NCA, SFC, IDL, CG, LANG</div></a>
-  <a class="action-card" href="/api/export-csv"><span class="action-icon">↓</span><div class="action-title">Export CSV</div><div class="action-desc">Download all benchmark results as CSV</div></a>
-</div>
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-title">Model Performance — All {{ total_models }} Models · Avg Pass Rate</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Model</th>
+            <th>Avg Pass Rate</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in model_rows %}
+          <tr>
+            <td style="color:var(--muted)">{{ loop.index }}</td>
+            <td>{{ row.model }}</td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate>=90 %}var(--accent){% elif row.pass_rate>=80 %}var(--accent2){% elif row.pass_rate>=70 %}var(--warn){% else %}var(--danger){% endif %}"></div>
+                </div>
+                <span class="bar-label">{{ row.pass_rate }}%</span>
+              </div>
+            </td>
+            <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <a href="/leaderboard" class="btn btn-primary">Full Leaderboard →</a>
+      <a href="/stats" class="btn btn-ghost">Stats &amp; Charts</a>
+      <a href="/api/compare" class="btn btn-ghost">Compare Models</a>
+      <a href="/certificate" class="btn btn-ghost">Certificates</a>
+      <a href="/run-benchmark" class="btn btn-ghost">Run Benchmark</a>
+    </div>
+  </div>
 
-<div class="action-label fade-up">Results & Leaderboard</div>
-<div class="action-grid fade-up fade-up-2">
-  <a class="action-card primary" href="/leaderboard"><span class="action-icon">◈</span><div class="action-title">Leaderboard</div><div class="action-desc">All 16 runs ranked by MTCP pass rate</div></a>
-  <a class="action-card primary" href="/certificate"><span class="action-icon">◎</span><div class="action-title">Certificates</div><div class="action-desc">MTCP compliance certificates per model + temperature</div></a>
-  <a class="action-card" href="/api/compare"><span class="action-icon">⇄</span><div class="action-title">Compare</div><div class="action-desc">Side-by-side model comparison view</div></a>
-</div>
-
-<div class="action-label fade-up">Analytics & System</div>
-<div class="action-grid fade-up fade-up-3">
-  <a class="action-card" href="/stats"><span class="action-icon">◻</span><div class="action-title">Stats</div><div class="action-desc">Aggregate outcome breakdown and grading reference</div></a>
-  <a class="action-card" href="/api/actuarial"><span class="action-icon">∿</span><div class="action-title">Actuarial</div><div class="action-desc">Pass rates and recovery latency over time</div></a>
-  <a class="action-card" href="/api/costs"><span class="action-icon">◆</span><div class="action-title">Costs</div><div class="action-desc">Token usage and cost metrics per run</div></a>
-  <a class="action-card" href="/health"><span class="action-icon">❤</span><div class="action-title">Health</div><div class="action-desc">System and database status</div></a>
-  <a class="action-card" href="/settings/api-keys"><span class="action-icon">⚙</span><div class="action-title">API Keys</div><div class="action-desc">Store and manage LLM provider credentials</div></a>
-  <a class="action-card" href="/landing"><span class="action-icon">⬡</span><div class="action-title">Landing Page</div><div class="action-desc">Public research and enquiry page</div></a>
+  {% if user.is_admin %}
+  <div class="card">
+    <div class="card-title">Admin Quick Links</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+      <a href="/ctrl-probes" class="btn btn-ghost">Control Probes</a>
+      <a href="/api/actuarial" class="btn btn-ghost">Actuarial</a>
+      <a href="/api/costs" class="btn btn-ghost">Costs</a>
+      <a href="/health" class="btn btn-ghost">DB Health</a>
+      <a href="/probes" class="btn btn-ghost">Probe Editor</a>
+      <a href="/admin" class="btn btn-ghost">User Admin</a>
+    </div>
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

@@ -1,125 +1,122 @@
 {% extends "base.html" %}
 {% block title %}Run Benchmark — Control Plane 3{% endblock %}
-{% block extra_styles %}
-.run-form{display:flex;flex-direction:column;gap:14px;max-width:580px;}
-.form-group{display:flex;flex-direction:column;gap:6px;}
-.hint{font-size:0.62rem;color:var(--muted);margin-top:4px;line-height:1.5;}
-.hint code{background:rgba(0,229,160,0.08);color:var(--accent);padding:1px 5px;border-radius:3px;font-size:0.85em;}
-#output{background:#060810;border:1px solid var(--border);border-radius:4px;color:#a8d8a8;font-family:'JetBrains Mono',monospace;font-size:0.72rem;padding:16px;min-height:80px;white-space:pre-wrap;display:none;margin-top:16px;line-height:1.7;}
-#output.error{color:var(--danger);}
-.spinner{display:none;font-size:0.7rem;color:var(--muted);margin-top:12px;letter-spacing:1px;}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-@media(max-width:600px){.two-col{grid-template-columns:1fr;}}
-{% endblock %}
 {% block content %}
-<div class="page-header fade-up">
-  <h1>Run <span>Benchmark</span></h1>
-  <p>Execute a new MTCP evaluation run against any supported model</p>
-</div>
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Run Benchmark</div>
+    <div class="page-subtitle">Execute a new MTCP evaluation session against any supported model</div>
+  </div>
 
-<div class="card fade-up fade-up-1">
-  <div class="card-title">Benchmark Configuration</div>
-  <div class="run-form" style="margin-top:14px;">
-
+  <div class="card" style="max-width:580px">
     <div class="form-group">
-      <label>Dataset</label>
-      <select id="data">
-        <option value="probes_200.json">probes_200.json — 200 probes (main benchmark)</option>
+      <label class="form-label">Provider</label>
+      <select class="form-input" id="rb-provider" onchange="updateModels()">
+        <option value="groq">Groq (LLaMA)</option>
+        <option value="openai">OpenAI</option>
+        <option value="anthropic">Anthropic</option>
+        <option value="xai">xAI (Grok)</option>
+        <option value="google">Google</option>
+        <option value="nvidia">NVIDIA</option>
       </select>
     </div>
-
-    <div class="two-col">
-      <div class="form-group">
-        <label>API Provider</label>
-        <select id="api" onchange="updateModelHint()">
-          <option value="groq">Groq</option>
-          <option value="openai">OpenAI</option>
-          <option value="anthropic">Anthropic</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Model</label>
-        <input type="text" id="model" value="llama-3.3-70b-versatile" placeholder="model name">
-        <div class="hint" id="model-hint">
-          Groq: <code>llama-3.3-70b-versatile</code> · <code>llama-3.1-8b-instant</code>
-        </div>
-      </div>
+    <div class="form-group">
+      <label class="form-label">Model</label>
+      <select class="form-input" id="rb-model"></select>
     </div>
-
-    <div class="two-col">
-      <div class="form-group">
-        <label>Temperature(s)</label>
-        <input type="text" id="temperature" value="0.0" placeholder="e.g. 0.0 or 0.0,0.2,0.5,0.8">
-        <div class="hint">Comma-separated for multiple runs</div>
-      </div>
-      <div class="form-group">
-        <label>Repetitions per temperature</label>
-        <input type="number" id="runs" value="1" min="1" max="10">
-      </div>
+    <div class="form-group">
+      <label class="form-label">Temperature</label>
+      <select class="form-input" id="rb-temp">
+        <option value="0.0">0.0</option>
+        <option value="0.2">0.2</option>
+        <option value="0.5">0.5</option>
+        <option value="0.8">0.8</option>
+      </select>
     </div>
-
-    <div>
-      <button class="btn btn-primary" onclick="runBenchmark()" id="run-btn">▶ Run Benchmark</button>
-      <div class="spinner" id="spinner">⏳ Running… this may take several minutes</div>
+    <div class="form-group">
+      <label class="form-label">Dataset</label>
+      <select class="form-input" id="rb-dataset">
+        <option value="main">main — 200 probes (standard benchmark)</option>
+        <option value="ctrl">ctrl — 20 control probes (harder edge cases)</option>
+      </select>
     </div>
+    <button class="btn btn-primary" onclick="startRun()" id="run-btn">▶ Start Run</button>
+    <div id="run-status" style="margin-top:16px;font-size:12px;color:var(--muted);line-height:1.6"></div>
+  </div>
 
-    <div id="output"></div>
+  <div class="card" style="max-width:580px;margin-top:24px">
+    <div class="card-title">Benchmarked Models — March 2026</div>
+    <div class="table-wrap" style="margin-top:8px">
+      <table>
+        <thead><tr><th>Model</th><th>Provider</th><th>Avg</th><th>Grade</th></tr></thead>
+        <tbody>
+          <tr><td>grok-3-mini</td><td style="color:var(--muted)">xAI</td><td>90.5%</td><td><span class="grade grade-A">A</span></td></tr>
+          <tr><td>nvidia/llama-3.3-nemotron-70b</td><td style="color:var(--muted)">NVIDIA</td><td>88.3%</td><td><span class="grade grade-B">B</span></td></tr>
+          <tr><td>gpt-3.5-turbo</td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td><span class="grade grade-B">B</span></td></tr>
+          <tr><td>gpt-4o-mini</td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td><span class="grade grade-B">B</span></td></tr>
+          <tr><td>llama-3.3-70b-versatile</td><td style="color:var(--muted)">Groq</td><td>75.6%</td><td><span class="grade grade-C">C</span></td></tr>
+          <tr><td>llama-3.1-8b-instant</td><td style="color:var(--muted)">Groq</td><td>71.5%</td><td><span class="grade grade-C">C</span></td></tr>
+          <tr><td>claude-sonnet-4-20250514</td><td style="color:var(--muted)">Anthropic</td><td>68.1%</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>claude-haiku-4-5-20251001</td><td style="color:var(--muted)">Anthropic</td><td>66.1%</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>gpt-4o</td><td style="color:var(--muted)">OpenAI</td><td>65.1%</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>gemini-2.0-flash</td><td style="color:var(--muted)">Google</td><td>63.1%</td><td><span class="grade grade-D">D</span></td></tr>
+          <tr><td>nvidia/gemma-27b</td><td style="color:var(--muted)">NVIDIA</td><td>62.8%</td><td><span class="grade grade-D">D</span></td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<div style="margin-top:16px;" class="fade-up fade-up-2">
-  <a href="/" class="btn btn-ghost">← Dashboard</a>
-  <a href="/leaderboard" class="btn btn-ghost" style="margin-left:8px;">◈ Leaderboard</a>
-</div>
-
 <script>
-const hints = {
-  groq: 'Groq: <code>llama-3.3-70b-versatile</code> · <code>llama-3.1-8b-instant</code>',
-  openai: 'OpenAI: <code>gpt-4o</code> · <code>gpt-4o-mini</code> · <code>gpt-3.5-turbo</code>',
-  anthropic: 'Anthropic: <code>claude-sonnet-4-20250514</code> · <code>claude-haiku-4-5-20251001</code>'
+const MODELS = {
+  groq: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'],
+  openai: ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo'],
+  anthropic: ['claude-sonnet-4-20250514', 'claude-haiku-4-5-20251001'],
+  xai: ['grok-3-mini'],
+  google: ['gemini-2.0-flash'],
+  nvidia: ['nvidia/llama-3.3-nemotron-70b-instruct', 'nvidia/gemma-27b-it']
 };
-const defaults = { groq: 'llama-3.3-70b-versatile', openai: 'gpt-4o-mini', anthropic: 'claude-haiku-4-5-20251001' };
-function updateModelHint() {
-  const api = document.getElementById('api').value;
-  document.getElementById('model-hint').innerHTML = hints[api];
-  document.getElementById('model').value = defaults[api];
+
+function updateModels() {
+  const provider = document.getElementById('rb-provider').value;
+  const sel = document.getElementById('rb-model');
+  sel.innerHTML = '';
+  MODELS[provider].forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    sel.appendChild(opt);
+  });
 }
-async function runBenchmark() {
+
+async function startRun() {
+  const model = document.getElementById('rb-model').value;
+  const temperature = parseFloat(document.getElementById('rb-temp').value);
+  const dataset = document.getElementById('rb-dataset').value;
   const btn = document.getElementById('run-btn');
-  const spinner = document.getElementById('spinner');
-  const output = document.getElementById('output');
+  const status = document.getElementById('run-status');
   btn.disabled = true;
-  spinner.style.display = 'block';
-  output.style.display = 'none';
-  output.className = '';
+  status.style.color = 'var(--muted)';
+  status.textContent = 'Starting run — this may take several minutes...';
   try {
-    const resp = await fetch('/run', {
+    const res = await fetch('/run', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: document.getElementById('data').value,
-        api: document.getElementById('api').value,
-        model: document.getElementById('model').value,
-        temperature: parseFloat(document.getElementById('temperature').value.split(',')[0]),
-        runs: parseInt(document.getElementById('runs').value)
-      })
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({model, temperature, dataset})
     });
-    const data = await resp.json();
-    output.style.display = 'block';
-    if (data.success) {
-      output.textContent = '✅ Benchmark complete!\n\n' + data.stdout;
+    const data = await res.json();
+    if (res.ok && data.success) {
+      status.style.color = 'var(--accent)';
+      status.textContent = '✓ Run complete. Reload leaderboard to see results.';
     } else {
-      output.className = 'error';
-      output.textContent = '❌ Error:\n\n' + (data.stderr || data.error || 'Unknown error');
+      status.style.color = 'var(--danger)';
+      status.textContent = 'Error: ' + (data.stderr || data.error || JSON.stringify(data));
     }
   } catch(e) {
-    output.style.display = 'block';
-    output.className = 'error';
-    output.textContent = '❌ Request failed: ' + e.message;
-  } finally {
-    btn.disabled = false;
-    spinner.style.display = 'none';
+    status.style.color = 'var(--danger)';
+    status.textContent = 'Error: ' + e.message;
   }
+  btn.disabled = false;
 }
+
+updateModels();
 </script>
 {% endblock %}

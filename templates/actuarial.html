@@ -1,64 +1,64 @@
 {% extends "base.html" %}
 {% block title %}Actuarial — Control Plane 3{% endblock %}
-{% block extra_styles %}
-.act-table{width:100%;border-collapse:collapse;font-size:0.72rem;}
-.act-table th{color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.05em;padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;}
-.act-table td{padding:9px 12px;border-bottom:1px solid rgba(30,34,41,0.5);color:var(--text);}
-.act-table tr:last-child td{border-bottom:none;}
-.chart-wrap{background:var(--surface2);border-radius:4px;padding:20px;margin-bottom:18px;}
-.rate-high{color:var(--accent);}
-.rate-mid{color:var(--warn);}
-.rate-low{color:var(--danger);}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 {% endblock %}
 {% block content %}
-<div class="page-header fade-up">
-  <h1>Actuarial <span>Metrics</span></h1>
-  <p>Pass rate and latency breakdown by temperature setting across all benchmark runs</p>
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Actuarial Analysis</div>
+    <div class="page-subtitle">Pass rate by temperature across all models</div>
+  </div>
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-title">Pass Rate by Temperature</div>
+    <canvas id="actChart" height="70"></canvas>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Temp</th><th>Model</th><th>Pass Rate</th></tr></thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td style="color:var(--muted)">{{ row.temperature }}</td>
+            <td>{{ row.model }}</td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate|float>=90 %}var(--accent){% elif row.pass_rate|float>=80 %}var(--accent2){% elif row.pass_rate|float>=70 %}var(--warn){% else %}var(--danger){% endif %}"></div>
+                </div>
+                <span class="bar-label">{{ row.pass_rate }}%</span>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
-<div class="card fade-up fade-up-1">
-  <div class="card-title">Pass Rate by Temperature</div>
-  <div class="chart-wrap"><canvas id="passChart" height="80"></canvas></div>
-</div>
-<div class="card fade-up fade-up-2">
-  <div class="card-title">Temperature Breakdown</div>
-  <table class="act-table" style="margin-top:10px;">
-    <thead><tr><th>Temperature</th><th>Total</th><th>Passed</th><th>Failed</th><th>Pass Rate</th><th>Avg Latency</th></tr></thead>
-    <tbody>
-      {% for row in data %}
-      <tr>
-        <td>{{ row.temperature }}</td>
-        <td>{{ row.total }}</td>
-        <td style="color:var(--accent)">{{ row.passed }}</td>
-        <td style="color:var(--danger)">{{ row.failed }}</td>
-        <td class="{% if row.pass_rate >= 80 %}rate-high{% elif row.pass_rate >= 70 %}rate-mid{% else %}rate-low{% endif %}">{{ row.pass_rate }}%</td>
-        <td style="color:var(--muted)">{{ row.avg_latency if row.avg_latency is not none else 'N/A' }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-<div style="margin-top:16px;" class="fade-up fade-up-3">
-  <a href="/stats" class="btn btn-primary">◈ Stats</a>
-  <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-const rows = {{ data | tojson }};
-new Chart(document.getElementById('passChart'), {
-  type: 'bar',
-  data: {
-    labels: rows.map(r => 'T=' + r.temperature),
-    datasets: [
-      { label: 'Pass Rate %', data: rows.map(r => r.pass_rate), backgroundColor: '#00e5a0', borderRadius: 3 },
-      { label: 'Fail Rate %', data: rows.map(r => 100 - r.pass_rate), backgroundColor: '#ef4444', borderRadius: 3 }
-    ]
-  },
+const raw = {{ rows | tojson }};
+const temps = [...new Set(raw.map(r => r.temperature))].sort((a,b)=>a-b);
+const models = [...new Set(raw.map(r => r.model))];
+const palette = ['#00e5a0','#7b6cff','#f5a623','#ff4f4f','#38bdf8','#fb923c','#a3e635','#e879f9','#34d399','#818cf8','#f472b6'];
+const datasets = models.map((m,i) => ({
+  label: m,
+  data: temps.map(t => { const r = raw.find(x => x.model===m && x.temperature==t); return r ? parseFloat(r.pass_rate) : null; }),
+  borderColor: palette[i % palette.length],
+  backgroundColor: palette[i % palette.length] + '20',
+  tension: 0.3, fill: false, pointRadius: 4,
+}));
+new Chart(document.getElementById('actChart'), {
+  type: 'line',
+  data: { labels: temps.map(t => 'T='+t), datasets },
   options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#d4dbe8', font: { family: 'JetBrains Mono', size: 10 }, boxWidth: 12 } } },
     scales: {
-      y: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#6b7280' } },
-      x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
-    },
-    plugins: { legend: { labels: { color: '#9ca3af' } } }
+      x: { ticks: { color: '#5a6070' }, grid: { color: '#1e2330' } },
+      y: { min: 0, max: 100, ticks: { color: '#5a6070', callback: v => v+'%' }, grid: { color: '#1e2330' } }
+    }
   }
 });
 </script>

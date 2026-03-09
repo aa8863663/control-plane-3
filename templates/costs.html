@@ -1,101 +1,26 @@
 {% extends "base.html" %}
 {% block title %}Costs — Control Plane 3{% endblock %}
-{% block extra_styles %}
-.note-bar {
-  background: rgba(245,158,11,0.08);
-  border: 1px solid rgba(245,158,11,0.2);
-  color: #f59e0b;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 11px;
-  margin-bottom: 24px;
-  letter-spacing: 0.02em;
-}
-.breakdown-model { font-size: 13px; font-weight: 500; color: var(--text); }
-.breakdown-temp {
-  display: inline-block; padding: 2px 7px; border-radius: 4px;
-  font-size: 10px; background: var(--surface2); border: 1px solid var(--border);
-  color: var(--text3); margin-left: 8px;
-}
-.pass-bar { height: 4px; border-radius: 2px; background: var(--border); overflow: hidden; width: 80px; }
-.pass-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--green), #34d399); }
-.stop-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--red), #f87171); }
-{% endblock %}
 {% block content %}
-<div class="page-header fade-up">
-  <h1>Usage & Costs</h1>
-  <p>Benchmark run statistics and result breakdown by model</p>
-</div>
-
-{% if data.note %}
-<div class="note-bar fade-up fade-up-1">⚠ {{ data.note }}</div>
-{% endif %}
-
-<div class="stats-grid fade-up fade-up-1">
-  <div class="stat-card">
-    <div class="stat-label">Total Runs</div>
-    <div class="stat-value">{{ data.total_runs }}</div>
-    <div class="stat-sub">benchmark sessions</div>
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Cost Breakdown</div>
+    <div class="page-subtitle">Runs and probe counts by model</div>
   </div>
-  <div class="stat-card">
-    <div class="stat-label">Total Results</div>
-    <div class="stat-value">{{ data.total_results }}</div>
-    <div class="stat-sub">probe evaluations</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">Token Tracking</div>
-    <div class="stat-value" style="font-size:20px;color:var(--text3)">{{ data.total_tokens }}</div>
-    <div class="stat-sub">not available for imported runs</div>
-  </div>
-</div>
-
-<div class="card fade-up fade-up-2">
-  <div class="card-title">Breakdown by Model & Temperature</div>
-  <div class="table-wrap" style="margin-top:12px">
-    <table>
-      <thead>
-        <tr>
-          <th>Model</th>
-          <th>Temp</th>
-          <th>Results</th>
-          <th>Passed</th>
-          <th>Pass Rate</th>
-          <th>Hard Stops</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% if data.breakdown %}
-          {% for row in data.breakdown %}
-          <tr class="fade-up" style="animation-delay:{{ loop.index * 0.03 }}s;opacity:0">
-            <td>
-              <span class="breakdown-model">{{ row.model }}</span>
-              {% if 'llama' in row.model %}<span class="breakdown-temp" style="color:var(--accent2);border-color:rgba(14,165,233,0.2)">Groq</span>{% endif %}
-              {% if 'claude' in row.model %}<span class="breakdown-temp" style="color:#c084fc;border-color:rgba(192,132,252,0.2)">Anthropic</span>{% endif %}
-            </td>
-            <td><span class="breakdown-temp">T={{ row.temperature }}</span></td>
-            <td style="color:var(--text2)">{{ row.results }}</td>
-            <td style="color:var(--green)">{{ row.passed }}</td>
-            <td>
-              {% if row.results and row.results > 0 %}
-              <div style="display:flex;align-items:center;gap:8px">
-                <div class="pass-bar"><div class="pass-fill" style="width:{{ (row.passed / row.results * 100)|round(0) }}%"></div></div>
-                <span style="font-size:11px;color:var(--text2)">{{ (row.passed / row.results * 100)|round(1) }}%</span>
-              </div>
-              {% else %}—{% endif %}
-            </td>
-            <td style="color:var(--red)">{{ row.hard_stops }}</td>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Model</th><th>Runs</th><th>Probes</th></tr></thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td>{{ row.model }}</td>
+            <td>{{ row.runs }}</td>
+            <td>{{ row.probes }}</td>
           </tr>
           {% endfor %}
-        {% else %}
-          <tr><td colspan="6" style="text-align:center;padding:48px;color:var(--text3)">No data available.</td></tr>
-        {% endif %}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
-</div>
-
-<div style="margin-top:24px;display:flex;gap:12px" class="fade-up fade-up-4">
-  <a href="/api/export-csv" class="btn btn-primary">↓ Export CSV</a>
-  <a href="/" class="btn btn-ghost">← Dashboard</a>
 </div>
 {% endblock %}

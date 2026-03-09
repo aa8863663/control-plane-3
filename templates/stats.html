@@ -1,176 +1,96 @@
 {% extends "base.html" %}
 {% block title %}Stats — Control Plane 3{% endblock %}
-{% block extra_styles %}
-.chart-wrap{background:var(--surface2);border-radius:4px;padding:16px;margin-top:10px;}
-.bar-chart{display:flex;flex-direction:column;gap:10px;}
-.bar-row{display:flex;align-items:center;gap:10px;font-size:0.68rem;}
-.bar-label{width:140px;color:var(--muted);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.bar-track{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
-.bar-val{width:48px;text-align:right;flex-shrink:0;color:var(--text);}
-.proto-row{display:flex;align-items:center;gap:12px;font-size:0.7rem;color:var(--muted);padding:9px 0;border-bottom:1px solid rgba(30,34,41,0.5);}
-.proto-row:last-child{border-bottom:none;}
-.proto-key{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--accent);min-width:46px;}
-.grade-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid rgba(30,34,41,0.5);font-size:0.7rem;color:var(--muted);}
-.grade-row:last-child{border-bottom:none;}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
-@media(max-width:640px){.two-col{grid-template-columns:1fr;}}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 {% endblock %}
 {% block content %}
-<div class="page-header fade-up">
-  <h1>Run <span>Statistics</span></h1>
-  <p>Aggregate metrics, outcome breakdown, and protocol reference across all MTCP benchmark evaluations</p>
-</div>
+<div class="page">
+  <div class="page-header">
+    <h1>Statistics</h1>
+    <p>Aggregate metrics across all benchmark runs · 9,792 evaluations · 11 models</p>
+  </div>
 
-<div class="stats-grid fade-up fade-up-1">
-  <div class="stat-card">
-    <div class="stat-label">Total Runs</div>
-    <div class="stat-value">{{ data.total_runs if data else total_runs }}</div>
-    <div class="stat-sub">benchmark sessions</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">Total Results</div>
-    <div class="stat-value">{{ data.total_results if data else total_results }}</div>
-    <div class="stat-sub">probe evaluations logged</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">Hard Stops</div>
-    <div class="stat-value" style="color:var(--danger)">{{ data.hard_stops if data else hard_stops }}</div>
-    <div class="stat-sub">SAFETY_HARD_STOP events</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-label">Overall Pass Rate</div>
-    <div class="stat-value" style="color:var(--warn)">
-      {% if data and data.total_results and data.total_results > 0 %}
-        {{ "%.1f"|format(100 * (data.total_results - data.hard_stops) / data.total_results) }}%
-      {% else %}—{% endif %}
+  <div class="stats-grid" style="margin-bottom:28px">
+    <div class="stat-card">
+      <div class="stat-value">{{ total_runs }}</div>
+      <div class="stat-label">Total Runs</div>
     </div>
-    <div class="stat-sub">across all models and runs</div>
-  </div>
-</div>
-
-<div class="two-col fade-up fade-up-2">
-  <div class="card">
-    <div class="card-title">Pass Rate by Model</div>
-    <div class="chart-wrap">
-      <div class="bar-chart">
-        {% for row in model_rows %}
-        <div class="bar-row" title="{{ row.model }}">
-          <span class="bar-label" style="font-size:0.62rem;">
-            {% if 'grok' in row.model %}grok-3-mini
-            {% elif 'nvidia-llama' in row.model %}nvidia/llama-70b
-            {% elif 'gpt-3.5' in row.model %}gpt-3.5-turbo
-            {% elif 'gpt-4o-mini' in row.model %}gpt-4o-mini
-            {% elif 'gpt-4o' in row.model %}gpt-4o
-            {% elif 'llama-3.3' in row.model %}llama-3.3-70b
-            {% elif 'llama-3.1' in row.model %}llama-3.1-8b
-            {% elif 'sonnet' in row.model %}claude-sonnet-4
-            {% elif 'haiku' in row.model %}claude-haiku-4.5
-            {% elif 'gemini' in row.model %}gemini-2.0-flash
-            {% elif 'gemma' in row.model %}nvidia/gemma-27b
-            {% else %}{{ row.model[:18] }}{% endif %}
-          </span>
-          <div class="bar-track"><div style="height:100%;width:{{ row.pass_rate }}%;background:{% if row.pass_rate >= 90 %}var(--accent){% elif row.pass_rate >= 80 %}#4ade80{% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %};border-radius:3px;transition:width 0.6s ease;"></div></div>
-          <span class="bar-val" style="color:{% if row.pass_rate >= 90 %}var(--accent){% elif row.pass_rate >= 80 %}#4ade80{% elif row.pass_rate >= 70 %}var(--warn){% else %}var(--danger){% endif %}">{{ row.pass_rate }}%</span>
-        </div>
-        {% endfor %}
-      </div>
+    <div class="stat-card">
+      <div class="stat-value">{{ total_results }}</div>
+      <div class="stat-label">Evaluations</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color:var(--danger)">{{ hard_stops }}</div>
+      <div class="stat-label">Safety Hard Stops</div>
     </div>
   </div>
+
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-title">Average Pass Rate by Model</div>
+    <canvas id="modelChart" height="80"></canvas>
+  </div>
+
+  {% if ctrl_stats %}
   <div class="card">
-    <div class="card-title">Grading Scale</div>
-    <div style="margin-top:4px;">
-      <div class="grade-row"><span class="grade grade-Aplus" style="width:22px;height:20px;font-size:0.65rem">A+</span>95%+ — Exceptional persistence</div>
-      <div class="grade-row"><span class="grade grade-A" style="width:22px;height:20px;font-size:0.65rem">A</span>90%+ — Excellent compliance</div>
-      <div class="grade-row"><span class="grade grade-B" style="width:22px;height:20px;font-size:0.65rem">B</span>80%+ — Good with minor lapses</div>
-      <div class="grade-row"><span class="grade grade-C" style="width:22px;height:20px;font-size:0.65rem">C</span>70%+ — Acceptable, correction-dependent</div>
-      <div class="grade-row"><span class="grade grade-D" style="width:22px;height:20px;font-size:0.65rem">D</span>60%+ — Poor persistence</div>
-      <div class="grade-row"><span class="grade grade-F" style="width:22px;height:20px;font-size:0.65rem">F</span>&lt;60% — Failing</div>
+    <div class="card-title">Control Probe Results — 20 Harder Edge-Case Probes (dataset='ctrl')</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:16px">Control probes are deliberately harder. Results are NOT comparable to main benchmark pass rates.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Passed</th>
+            <th>Total</th>
+            <th>Pass Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in ctrl_stats %}
+          <tr>
+            <td>{{ row.model }}</td>
+            <td>{{ row.passed }}</td>
+            <td>{{ row.total }}</td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate>=50 %}var(--warn){% else %}var(--danger){% endif %}"></div>
+                </div>
+                <span class="bar-label">{{ row.pass_rate }}%</span>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
   </div>
+  {% endif %}
 </div>
 
-<div class="card fade-up fade-up-3">
-  <div class="card-title">Evaluation Vectors</div>
-  <div style="margin-top:4px;">
-    <div class="proto-row"><span class="proto-key">NCA</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Negative Constraint Adherence</div><div>Forbidden words + semantic synonym detection. Tests lexical and semantic restraint.</div></div></div>
-    <div class="proto-row"><span class="proto-key">SFC</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Structural Format Compliance</div><div>Valid JSON output with required schema fields. Machine-verifiable deterministically.</div></div></div>
-    <div class="proto-row"><span class="proto-key">IDL</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Information Density & Length</div><div>Exact word count constraints. Verified deterministically — no ambiguity in pass/fail.</div></div></div>
-    <div class="proto-row"><span class="proto-key">CG</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Contextual Grounding</div><div>Required phrase inclusion from supplied context. Tests retrieval-to-output fidelity.</div></div></div>
-    <div class="proto-row"><span class="proto-key" style="color:var(--accent2)">LANG</span><div><div style="color:var(--text);font-size:0.72rem;margin-bottom:2px;">Multilingual Constraint Persistence</div><div>FR · ES · AR · DE. First multilingual benchmark of this type. Language-switching failure modes exposed.</div></div></div>
-  </div>
-</div>
+<script>
+const labels = {{ model_stats | map(attribute='model') | list | tojson }};
+const data = {{ model_stats | map(attribute='pass_rate') | list | tojson }};
+const colors = data.map(v => v >= 90 ? '#00e5a0' : v >= 80 ? '#7b6cff' : v >= 70 ? '#f5a623' : '#ff4f4f');
 
-
-<div class="two-col fade-up fade-up-3b" style="margin-bottom:18px;">
-  <div class="card">
-    <div class="card-title">Results by Temperature</div>
-    <table style="width:100%;border-collapse:collapse;font-size:0.72rem;margin-top:8px;">
-      <thead>
-        <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
-          <th style="text-align:left;padding:5px 0;">Temp</th>
-          <th style="text-align:right;padding:5px 0;">Runs</th>
-          <th style="text-align:right;padding:5px 0;">Evaluations</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in data.by_temperature %}
-        <tr style="border-bottom:1px solid rgba(30,34,41,0.5);">
-          <td style="padding:6px 0;color:var(--accent2);">T={{ row.temperature }}</td>
-          <td style="text-align:right;color:var(--text);">{{ row.num_runs }}</td>
-          <td style="text-align:right;color:var(--muted);">{{ row.total_results }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-  <div class="card">
-    <div class="card-title">Outcome Breakdown</div>
-    <table style="width:100%;border-collapse:collapse;font-size:0.72rem;margin-top:8px;">
-      <thead>
-        <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
-          <th style="text-align:left;padding:5px 0;">Outcome</th>
-          <th style="text-align:right;padding:5px 0;">Count</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in data.outcomes %}
-        <tr style="border-bottom:1px solid rgba(30,34,41,0.5);">
-          <td style="padding:6px 0;color:{% if row.outcome == 'COMPLETED' %}var(--accent){% elif row.outcome == 'SAFETY_HARD_STOP' %}var(--danger){% else %}var(--warn){% endif %};">{{ row.outcome }}</td>
-          <td style="text-align:right;color:var(--text);">{{ row.count }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div class="card fade-up fade-up-4">
-  <div class="card-title">Control Probe Validation <span style="font-size:0.7rem;color:var(--muted);margin-left:8px;">20 probes · edge case baseline · T=0.0</span></div>
-  <p style="font-size:0.7rem;color:var(--muted);margin:8px 0 12px;">Control probes are deliberately harder edge cases used to validate the MTCP methodology. Results are not comparable to main benchmark scores.</p>
-  <table style="width:100%;border-collapse:collapse;font-size:0.72rem;">
-    <thead>
-      <tr style="color:var(--muted);border-bottom:1px solid var(--border);">
-        <th style="text-align:left;padding:6px 0;">Model</th>
-        <th style="text-align:right;padding:6px 0;">Passed</th>
-        <th style="text-align:right;padding:6px 0;">Total</th>
-        <th style="text-align:right;padding:6px 0;">Pass Rate</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in ctrl_rows %}
-      <tr style="border-bottom:1px solid rgba(30,34,41,0.5);">
-        <td style="padding:7px 0;color:var(--text);">{{ row.model }}</td>
-        <td style="text-align:right;color:var(--accent);">{{ row.passed }}</td>
-        <td style="text-align:right;color:var(--muted);">{{ row.total }}</td>
-        <td style="text-align:right;color:{% if row.pass_rate >= 50 %}var(--warn){% else %}var(--danger){% endif %};">{{ row.pass_rate }}%</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-
-<div style="margin-top:16px;" class="fade-up fade-up-5">
-  <a href="/leaderboard" class="btn btn-primary">◈ Leaderboard</a>
-  <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
-</div>
+new Chart(document.getElementById('modelChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      data,
+      backgroundColor: colors,
+      borderRadius: 4,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: '#1e2330' } },
+      y: { min: 0, max: 100, ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' }, grid: { color: '#1e2330' } }
+    }
+  }
+});
+</script>
 {% endblock %}
