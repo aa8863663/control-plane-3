@@ -8,19 +8,19 @@
 
 <div class="stats-grid fade-up fade-up-1">
   <div class="stat-card">
-    <div class="stat-value" style="color:{% if status=='ok' %}var(--accent){% else %}var(--danger){% endif %}">
-      {{ '✓' if status=='ok' else '✕' }}
+    <div class="stat-value" style="color:{% if status=='OK' %}var(--accent){% else %}var(--danger){% endif %}">
+      {{ '✓' if status=='OK' else '✕' }}
     </div>
     <div class="stat-label">DB Status</div>
     <div class="stat-sub">{{ status }}</div>
   </div>
   {% if db_info %}
   <div class="stat-card">
-    <div class="stat-value">{{ db_info.run_count }}</div>
+    <div class="stat-value">{{ db_info.runs }}</div>
     <div class="stat-label">Total Runs</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value">{{ db_info.result_count }}</div>
+    <div class="stat-value">{{ db_info.results }}</div>
     <div class="stat-label">Total Results</div>
   </div>
   {% endif %}
