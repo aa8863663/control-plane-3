@@ -312,13 +312,60 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
             WHERE ru.dataset IS DISTINCT FROM 'ctrl'
             GROUP BY ru.temperature ORDER BY ru.temperature""")
         temp_breakdown = [{"temperature": float(r["temperature"] or 0), "pass_rate": float(r["pass_rate"] or 0), "total": r["total"]} for r in cur.fetchall()]
+
+        # BIS — Benchmark Integrity Score
+        cur.execute("""
+            SELECT ru.model,
+                   ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as main_rate
+            FROM results r JOIN runs ru ON r.run_id=ru.id
+            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            GROUP BY ru.model""")
+        main_map = {r["model"]: float(r["main_rate"] or 0) for r in cur.fetchall()}
+        cur.execute("""
+            SELECT ru.model,
+                   ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as ctrl_rate
+            FROM results r JOIN runs ru ON r.run_id=ru.id
+            WHERE ru.dataset='ctrl'
+            GROUP BY ru.model""")
+        bis_stats = []
+        for r in cur.fetchall():
+            model = r["model"]
+            ctrl = float(r["ctrl_rate"] or 0)
+            main = main_map.get(model, 0)
+            gap = round(main - ctrl, 1)
+            bis = round(max(0, 100 - gap), 1)
+            bis_stats.append({"model": model, "main_rate": main, "ctrl_rate": ctrl, "gap": gap, "bis": bis})
+        bis_stats.sort(key=lambda x: x["bis"], reverse=True)
+
+        # TSI — Temperature Stability Index
+        cur.execute("""
+            SELECT ru.model, ru.temperature,
+                   ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
+            FROM results r JOIN runs ru ON r.run_id=ru.id
+            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            GROUP BY ru.model, ru.temperature ORDER BY ru.model, ru.temperature""")
+        from collections import defaultdict
+        import statistics
+        temp_map = defaultdict(list)
+        for r in cur.fetchall():
+            temp_map[r["model"]].append(float(r["pass_rate"] or 0))
+        tsi_stats = []
+        for model, rates in temp_map.items():
+            if len(rates) >= 2:
+                stdev = round(statistics.stdev(rates), 1)
+                tsi = round(max(0, 100 - stdev * 2), 1)
+                tsi_stats.append({"model": model, "rates": rates, "stdev": stdev, "tsi": tsi,
+                                   "min_rate": min(rates), "max_rate": max(rates)})
+        tsi_stats.sort(key=lambda x: x["tsi"], reverse=True)
+
         conn.close()
     except Exception as e:
-        print(f"Stats error: {e}"); total_runs=0; total_results=0; hard_stops=0; model_stats=[]; ctrl_stats=[]; temp_breakdown=[]
+        print(f"Stats error: {e}"); total_runs=0; total_results=0; hard_stops=0; model_stats=[]; ctrl_stats=[]; temp_breakdown=[]; bis_stats=[]; tsi_stats=[]
     return templates.TemplateResponse("stats.html", {
         "request": request, "user": user, "active": "stats",
         "total_runs": total_runs, "total_results": total_results, "hard_stops": hard_stops,
-        "model_stats": model_stats, "ctrl_stats": ctrl_stats, "temp_breakdown": temp_breakdown})
+        "model_stats": model_stats, "ctrl_stats": ctrl_stats, "temp_breakdown": temp_breakdown,
+        "bis_stats": bis_stats, "tsi_stats": tsi_stats})
 
 @app.get("/certificate", response_class=HTMLResponse)
 def certificate_page(request: Request, session: Optional[str] = Cookie(default=None)):
