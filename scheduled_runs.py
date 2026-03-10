@@ -36,7 +36,7 @@ log = logging.getLogger("cp3_scheduler")
 
 MODELS: List[Tuple[str, str]] = [
     # === ORIGINAL 11 ===
-    ("grok-3-mini",                                 "openrouter"),
+    ("x-ai/grok-3-mini",                            "openrouter"),
     ("nvidia/llama-3.3-nemotron-super-49b-v1",      "nvidia"),
     ("gpt-4o-mini",                                 "openai"),
     ("gpt-3.5-turbo",                               "openai"),
@@ -45,18 +45,18 @@ MODELS: List[Tuple[str, str]] = [
     ("claude-sonnet-4-20250514",                    "anthropic"),
     ("claude-haiku-4-5-20251001",                   "anthropic"),
     ("gpt-4o",                                      "openai"),
-    ("gemini-2.0-flash",                            "openrouter"),
-    ("nvidia/gemma-3-27b-it",                       "nvidia"),
+    ("google/gemini-2.0-flash-001",                 "openrouter"),
+    ("google/gemma-3-27b-it",                       "openrouter"),
     # === NEW MODELS ===
     ("meta/llama-4-maverick-17b-128e-instruct",     "nvidia"),
     ("meta-llama/llama-4-scout",                    "openrouter"),
-    ("cohere-command-r-plus",                       "openrouter"),
+    ("command-r-plus-08-2024",                      "cohere"),
     ("mistral-large-latest",                        "mistral"),
     ("mistral-small-latest",                        "mistral"),
     ("deepseek/deepseek-r1",                        "openrouter"),
     ("microsoft/phi-4-mini-instruct",               "nvidia"),
     ("qwen/qwen2.5-7b-instruct",                    "nvidia"),
-    ("ibm/granite-3.3-8b-instruct",                "nvidia"),
+    ("ibm/granite-3.3-8b-instruct",                 "nvidia"),
     ("qwen/qwq-32b",                                "nvidia"),
     ("amazon.nova-lite-v1:0",                       "bedrock"),
     ("amazon.nova-pro-v1:0",                        "bedrock"),
