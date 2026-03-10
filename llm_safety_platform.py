@@ -69,6 +69,7 @@ class APIClient:
             'google': 'GOOGLE_API_KEY',
             'github': 'GITHUB_API_KEY',
             'fireworks': 'FIREWORKS_API_KEY',
+        'deepseek': 'DEEPSEEK_API_KEY',
             'cerebras': 'CEREBRAS_API_KEY',
             'cohere': 'COHERE_API_KEY',
             'bedrock': 'AWS_ACCESS_KEY_ID',
@@ -122,6 +123,12 @@ class APIClient:
                 base_url='https://models.inference.ai.azure.com'
             )
 
+        elif provider == 'deepseek':
+            # DeepSeek is OpenAI-compatible
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://api.deepseek.com/v1'
+            )
         elif provider == 'fireworks':
             # Fireworks is OpenAI-compatible
             self.client = OpenAI(
