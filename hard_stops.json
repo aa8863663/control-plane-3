@@ -11016,5 +11016,1300 @@
     "turn": 2,
     "timestamp": "2026-03-10T06:24:18.380089Z",
     "hash_sha256": "5c6802892f0eb6c2a62c7970eeed04db69d7e5f9c7d06c13728bd8cd66d30b25"
+  },
+  {
+    "probe_id": "IDL-027",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:24:24.218817Z",
+    "hash_sha256": "1fb499005e13cbdd1d1ed135187a0c015d6a9017a6823196f2265199d7f2b0b6"
+  },
+  {
+    "probe_id": "NCA-027",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:24:26.447511Z",
+    "hash_sha256": "ea84fa81db723436a0cdbf87e5cb0f0920c29c550288bc92587fb1215c62a1b1"
+  },
+  {
+    "probe_id": "IDL-029",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:24:29.315490Z",
+    "hash_sha256": "fd6e5ba574774e56dacb970d55fe170e7acf161f6ad355ac084bdbfa1e6b04c7"
+  },
+  {
+    "probe_id": "IDL-031",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:24:33.988636Z",
+    "hash_sha256": "f0d70229a4b78247b3d399905ad33aefcc536abb13b9be489246ccba8535f932"
+  },
+  {
+    "probe_id": "IDL-033",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:24:39.087198Z",
+    "hash_sha256": "1affdae0ede07d2cd841c7439554e5b35dd2c09757dbd66588244ee52cb378b3"
+  },
+  {
+    "probe_id": "IDL-035",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:24:44.429226Z",
+    "hash_sha256": "875eb41306a8ce126ba6d26261f75cdc282d46b08fd21340f3acfd691a418638"
+  },
+  {
+    "probe_id": "IDL-037",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:24:51.424421Z",
+    "hash_sha256": "d4f0dbb5c6868f26a152a76e3f53a22b8205d4f832931d815080a7f484334580"
+  },
+  {
+    "probe_id": "IDL-039",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:24:57.784707Z",
+    "hash_sha256": "7f84f355b5968d286b7919222e7c38082dc4f1aec62ab0769f887f8119c79c2e"
+  },
+  {
+    "probe_id": "IDL-041",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:25:02.695979Z",
+    "hash_sha256": "f5ed11e54e8e2056202959ca17558812dd47efe5224fe78764e64bf01cf74c58"
+  },
+  {
+    "probe_id": "IDL-043",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:25:07.305412Z",
+    "hash_sha256": "4bf6d3792150becda9eab2790ac3a098344315a6fa6ce0d5fe17218e97148fb8"
+  },
+  {
+    "probe_id": "NCA-028",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:25:10.868554Z",
+    "hash_sha256": "1401041913a580f43b0c4d206e082f2f814b7a1a729eeb0dbcc16b7ef3a6cd6a"
+  },
+  {
+    "probe_id": "IDL-045",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:25:12.383323Z",
+    "hash_sha256": "d8a0401723186a577d35426b82ea20616a0723db890ed72607294cdcd8979425"
+  },
+  {
+    "probe_id": "IDL-047",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:25:19.490223Z",
+    "hash_sha256": "b18e9063263ba5ecb538de38b170a70b07e911238cf819c9bb8ad35ad0dabff2"
+  },
+  {
+    "probe_id": "IDL-049",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:25:25.863766Z",
+    "hash_sha256": "494ceb5e66de1912d84037aba4a4b4741d7937eccb51f1398c1fa184b99c7668"
+  },
+  {
+    "probe_id": "NCA-029",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:25:31.325489Z",
+    "hash_sha256": "3f78f1bac51107c77de88d035d472a0ec13c0aa05f7fb3df9f859fb4de27592b"
+  },
+  {
+    "probe_id": "ctrl-018",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:25:32.264475Z",
+    "hash_sha256": "d0ac10a685bb77bc1ad34ad84425d205dbf49ff67c3074a1d4d6fea70987722b"
+  },
+  {
+    "probe_id": "ctrl-016",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:25:57.173609Z",
+    "hash_sha256": "1732c5f6740e80f945b780c33980fb3f7ece0c45e5301c02020d5bdbcbeb47cc"
+  },
+  {
+    "probe_id": "ctrl-019",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:26:00.180978Z",
+    "hash_sha256": "58454c6fe45485bc5dc40695f7e94de467d4f387d5b7c5a18e613805e5394a9d"
+  },
+  {
+    "probe_id": "NCA-030",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:26:05.421692Z",
+    "hash_sha256": "b02d1cf5dd497f30287839f84aa0db37526121fac0f9397e95e3e8058e6d59bf"
+  },
+  {
+    "probe_id": "NCA-031",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:26:36.757548Z",
+    "hash_sha256": "47303e2dcb5bd6d30a8e5a414e4162d88605a5ec8b7321b285f70a90152f4fd8"
+  },
+  {
+    "probe_id": "ctrl-020",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:26:39.749531Z",
+    "hash_sha256": "d38cb967bdeb17a029830a1b1b7587967502cbfbdfee4dcefe74d7a85d0601df"
+  },
+  {
+    "probe_id": "NCA-032",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:27:08.571800Z",
+    "hash_sha256": "804ba05042a0df566470d666d9904b2e1b14f101f20ce3867cb2e1c7761ff7f3"
+  },
+  {
+    "probe_id": "ctrl-017",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:27:13.987201Z",
+    "hash_sha256": "c1228ab701042a5e11e451499fc93f172add031295fe3c38dd4cdcf5769709c6"
+  },
+  {
+    "probe_id": "NCA-033",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:27:36.341386Z",
+    "hash_sha256": "2e8b75e69f79f446772486df4eb37b0ec90174b1b7e475c85b0f1c96cb89b7ae"
+  },
+  {
+    "probe_id": "NCA-006",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:28:06.767629Z",
+    "hash_sha256": "3150ae7b653ce9790153cd4890d8293d2dc4d7319ca56b6a00dc559b0cb863dc"
+  },
+  {
+    "probe_id": "NCA-008",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:28:19.461643Z",
+    "hash_sha256": "570d096a836449a675727e83d081fbf6ccc9560e421aeabcb65db4fd2a65d04e"
+  },
+  {
+    "probe_id": "NCA-034",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:28:23.321970Z",
+    "hash_sha256": "6504c1cc2813dfdb88fe889518abe3cbcc7c61ef560c21aeb9144581f338a8bd"
+  },
+  {
+    "probe_id": "NCA-009",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:28:24.684463Z",
+    "hash_sha256": "c5429b29de478971df14e6d2be2b73b23104ce365cbc199e659a23695559e803"
+  },
+  {
+    "probe_id": "NCA-010",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:28:29.306635Z",
+    "hash_sha256": "f8ed468b3cc52c70d0b4e33d0f3c4fc18b7085b24e1187ad905d20bbef613b59"
+  },
+  {
+    "probe_id": "ctrl-018",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:28:37.078003Z",
+    "hash_sha256": "81aa2e2d4c86dfac5f1f6039083b36c7548a63cccc1520ef16cc893f443d7f15"
+  },
+  {
+    "probe_id": "NCA-035",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:28:49.979466Z",
+    "hash_sha256": "37e263dc8d7d2a2b64d04f6df2c6082fcdab56bc534ebb87b3a2062c584f2f72"
+  },
+  {
+    "probe_id": "NCA-015",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:29:00.800068Z",
+    "hash_sha256": "299a33a1ed81f2d785b9d879c514f59842acb28244e8ae63c642f94368dda2c7"
+  },
+  {
+    "probe_id": "NCA-016",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:29:06.380162Z",
+    "hash_sha256": "5965dc50c5f401a113e3ab0264adc90e2a263077facb12600065ecc549f7ff57"
+  },
+  {
+    "probe_id": "NCA-017",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:29:13.879485Z",
+    "hash_sha256": "3f81c4f1766e8146681f61eccd801935df3821e2042f0213e99c870507f366ea"
+  },
+  {
+    "probe_id": "NCA-019",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:29:21.128303Z",
+    "hash_sha256": "20fc829f12ae77276a85219e89f5485ff3b4ff89ec27fe04c2d9dcd97cd4b9ae"
+  },
+  {
+    "probe_id": "ctrl-019",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:29:22.326722Z",
+    "hash_sha256": "61cda7cb6c5539c3b58a7801585c6770207805004bf432511524807ae2630f6c"
+  },
+  {
+    "probe_id": "NCA-036",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:29:32.289738Z",
+    "hash_sha256": "0487cd4e0605df12a6dc9b75df96631674e591da1ae2d2de5aeda4c6e27be994"
+  },
+  {
+    "probe_id": "NCA-037",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:30:02.550905Z",
+    "hash_sha256": "557c0bbc305a78ca8db97fcba7c5956ab8375a959bee0e1b7e9951fe730a83c8"
+  },
+  {
+    "probe_id": "NCA-028",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:30:17.436294Z",
+    "hash_sha256": "afe1e1a5f3587199a9228b10b21de6be605bd54b30c2e73b188b2bf490eacf56"
+  },
+  {
+    "probe_id": "ctrl-020",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:30:30.697270Z",
+    "hash_sha256": "be3caa286efc08df34d7dff84473c611d547eb90ea76405f89c1b5c594cd509d"
+  },
+  {
+    "probe_id": "NCA-030",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:30:31.087998Z",
+    "hash_sha256": "a95b7d4228b1511f531c020f67175b350fbbf8c3ac332211ba520b74b01fef95"
+  },
+  {
+    "probe_id": "NCA-031",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:30:39.909454Z",
+    "hash_sha256": "d5404619519d7d5aa3bc6a7e0336fb8865855a8296da6a7df6ebd6448fa39e45"
+  },
+  {
+    "probe_id": "NCA-038",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:30:39.982075Z",
+    "hash_sha256": "cea5964ee1e4ef6663dbafa4a688a5bb989484612d429636d9dde1fcd8356e23"
+  },
+  {
+    "probe_id": "NCA-032",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:30:49.312074Z",
+    "hash_sha256": "c4c3589077bec17f96d1a488a3df0984305157d1aa62e53336f4e9d9416aedab"
+  },
+  {
+    "probe_id": "NCA-039",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:31:14.633015Z",
+    "hash_sha256": "bbc9199cd08fec63ddde90265addac82832179754beff5f661b3e877f92336d4"
+  },
+  {
+    "probe_id": "NCA-040",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:31:40.082576Z",
+    "hash_sha256": "95eaf2a2272ac7524afb067f17290768b4840aedc1f754c60f12c2ef5b973847"
+  },
+  {
+    "probe_id": "NCA-041",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:32:15.489280Z",
+    "hash_sha256": "6f5b53fd57496836123b72f9023ffd32040ea816d32b0ab1677f4654b2f6e15e"
+  },
+  {
+    "probe_id": "NCA-038",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:32:28.944675Z",
+    "hash_sha256": "1eaaf237dd81f86037b8ea5e40fb75598b1810a899cad823c603fad8256624f9"
+  },
+  {
+    "probe_id": "NCA-039",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:32:35.297888Z",
+    "hash_sha256": "0ddbf3a8c4caa77ba1850fa8e76c339ba0ac24781453e63a075983ce32c4b5a6"
+  },
+  {
+    "probe_id": "NCA-040",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:32:40.309846Z",
+    "hash_sha256": "10ea8f6b5fa09273fc7ce664d5d6e31dfdeaeb78b0fb231d7311486f18f0af25"
+  },
+  {
+    "probe_id": "NCA-042",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:32:52.630829Z",
+    "hash_sha256": "4fdd4e420c2e6d84f9347ad4a2ff410d93cdc32de13cb2ac20e35a7e628aa484"
+  },
+  {
+    "probe_id": "NCA-050",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:33:33.090663Z",
+    "hash_sha256": "ecaaceb6e8c8565bd0f4241a8e684dc54fe262110ad29c39bc9df03a6a6954b6"
+  },
+  {
+    "probe_id": "NCA-043",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:33:34.070915Z",
+    "hash_sha256": "432c482c04b3cfb2c5cd8677a7306e5c4ac8336be9916e9ac8e492921e37047e"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:33:36.158044Z",
+    "hash_sha256": "4ee33fb174a4489dcf096dd4104c8644b8765786b982d3116631b78a54c57250"
+  },
+  {
+    "probe_id": "SFC-003",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:33:44.906743Z",
+    "hash_sha256": "f249757810403b3b6edd82263600eac958b9670a9b14003f362558c05299a662"
+  },
+  {
+    "probe_id": "SFC-004",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:33:48.880752Z",
+    "hash_sha256": "00a333016c77d630cf01b12adb2e1d6acb02763e36970386c429e57052372d9d"
+  },
+  {
+    "probe_id": "NCA-044",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:33:50.543585Z",
+    "hash_sha256": "4dbf6db0b788f261c4f18b38d9c66e8dcb0bce51c4894a5e2fbc56c799741cbe"
+  },
+  {
+    "probe_id": "SFC-005",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:33:54.959589Z",
+    "hash_sha256": "d2b1df6b39f33b6fede65e54de2f0f668076a74ad8d4afaaf7f09d71f38be3ff"
+  },
+  {
+    "probe_id": "SFC-006",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:33:59.318384Z",
+    "hash_sha256": "8df4756262bdcf13935474e47699a952b81b156f143ee5362ecdd41263da7cd4"
+  },
+  {
+    "probe_id": "SFC-007",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:02.755310Z",
+    "hash_sha256": "be0cc9dbfb216caa0110219cc39222331e734dd389a728ae628c4eda7ca2de83"
+  },
+  {
+    "probe_id": "SFC-009",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:34:12.674090Z",
+    "hash_sha256": "2be0ad8292d1968f25a5627dfe62033bc76295769fae4c871a2b68f6931a087b"
+  },
+  {
+    "probe_id": "SFC-012",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:20.962426Z",
+    "hash_sha256": "7f66fd8c4529a0ac40a265ecdf6d31763e1907ce86fd6ab3a29f524eb5a0ee46"
+  },
+  {
+    "probe_id": "SFC-013",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:23.733322Z",
+    "hash_sha256": "c5f21d6c5dd94a45dca9e785575b547e2928efc4d49c6afa281a1412911d095d"
+  },
+  {
+    "probe_id": "SFC-014",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:26.190789Z",
+    "hash_sha256": "6083037b45c9ce35c5eb434a7628096f2426b3f478ffd85bda38873c030bccff"
+  },
+  {
+    "probe_id": "NCA-045",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:28.884847Z",
+    "hash_sha256": "cdcf69d693a8b7145bce81c92ed83427fe10c7ebdad86c6b56ba25cdb97b6e61"
+  },
+  {
+    "probe_id": "SFC-015",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:34:31.059319Z",
+    "hash_sha256": "692615c540f9181ef9e40015a45b7243b8c2a353edc8d512122f926b7487132a"
+  },
+  {
+    "probe_id": "SFC-016",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:34:34.015610Z",
+    "hash_sha256": "ed3f20be9194bc588a8215829ec991d7d1953021189787378906d8a06343eae6"
+  },
+  {
+    "probe_id": "SFC-017",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:36.941292Z",
+    "hash_sha256": "7aec7d086cb44e28037f2dbaedcdb9d29c5f64eab2ab8218c5c5612ff57686af"
+  },
+  {
+    "probe_id": "SFC-019",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:43.042805Z",
+    "hash_sha256": "46db51b6270f12b413454c71bf06f9ddb748817ef5b433f4957276723479e42c"
+  },
+  {
+    "probe_id": "SFC-020",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:45.441635Z",
+    "hash_sha256": "80fea2aea7ab779b826613c6480afe95cfe9bbe37eba4186fa9eeee2aa88453e"
+  },
+  {
+    "probe_id": "SFC-021",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:48.039789Z",
+    "hash_sha256": "6c4d51190b35994a1052289c79a09ece2cff89387486445a17642b699a1e4ee7"
+  },
+  {
+    "probe_id": "SFC-022",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:34:55.476204Z",
+    "hash_sha256": "8a0b4502a31690832465348dcdd7fc1bc7d7f7aa0f836464f94dbd608f3d650b"
+  },
+  {
+    "probe_id": "SFC-023",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:34:58.043843Z",
+    "hash_sha256": "add9bd05230e2d84dcbfda455395eca3d9eca6d7f7e9ac4b16d13f926cae023f"
+  },
+  {
+    "probe_id": "SFC-024",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:35:01.343027Z",
+    "hash_sha256": "0c2ea4f99e33ad7958e62edc298f8cf8bfec21d5b413eb8ea313a5a27f6c0be9"
+  },
+  {
+    "probe_id": "NCA-046",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:09.634901Z",
+    "hash_sha256": "2886379c3cfdd53821fe63f19f0d47fabd3eb47bdf0d34ce66a6e3a548c991d6"
+  },
+  {
+    "probe_id": "SFC-029",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:19.905556Z",
+    "hash_sha256": "1d134fdee3c07b7c0bacc7c80d4f8befd654a28a26e171669010096c6cdc318e"
+  },
+  {
+    "probe_id": "SFC-030",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:35:22.919500Z",
+    "hash_sha256": "c0fc7a834a0bbc40a0583ec40ed499d8f64ccf7dbfca85adcc8f2315bbcfb41a"
+  },
+  {
+    "probe_id": "SFC-031",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:25.787411Z",
+    "hash_sha256": "0f739199598253e6373335a06b6339484ef3a1f8f31e4978fe45abc577283fc7"
+  },
+  {
+    "probe_id": "SFC-032",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:35:28.465655Z",
+    "hash_sha256": "8e89469f6f709402b19f405c5dfe6db3781b6ba637d2b81419fe496552198bc0"
+  },
+  {
+    "probe_id": "SFC-033",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:30.931462Z",
+    "hash_sha256": "e975fd52a64df1ebcc5561aebaf027675fa39537c4b567e01d41dd023968a21a"
+  },
+  {
+    "probe_id": "SFC-034",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:35:36.127320Z",
+    "hash_sha256": "26ca75cfdbfc86120b8e9dc7e528d5e734b658488d43afbcd0c518f4a5aea3e5"
+  },
+  {
+    "probe_id": "NCA-047",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:36.857000Z",
+    "hash_sha256": "58e5c72245ef1db273d7f99d71ed6eaaf0cf8ddf6cc2fe7d2a671adb989d605e"
+  },
+  {
+    "probe_id": "SFC-035",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:41.444831Z",
+    "hash_sha256": "08b55274243b72c46684c15ca6c87d14f28e1e0c10d68d7f836cd81839d8e220"
+  },
+  {
+    "probe_id": "SFC-036",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:43.809952Z",
+    "hash_sha256": "460fabbcb9db0dbd65f97d60890c3a51ab3be2d9cfec7115bfe8193beea83339"
+  },
+  {
+    "probe_id": "SFC-037",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:46.236583Z",
+    "hash_sha256": "f6a7997d408f474061206606d12ada039bd1fcc9615b08269e8e078917a8c521"
+  },
+  {
+    "probe_id": "SFC-038",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:35:50.669506Z",
+    "hash_sha256": "0442e1f81cc9a48f94eb9d0cf7f0d32d319cebb0a69f481ea8d449d437378358"
+  },
+  {
+    "probe_id": "SFC-039",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:53.450763Z",
+    "hash_sha256": "c5bf89c20b63bfea076d2a2663cf8b64eaf66fedafa1810d5609aed6691d7378"
+  },
+  {
+    "probe_id": "NCA-048",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:35:54.127493Z",
+    "hash_sha256": "b81a41df2d68532c10323987433a7d5607bdec3fa8e55fc2afff49e869a0f31e"
+  },
+  {
+    "probe_id": "SFC-040",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:35:56.262509Z",
+    "hash_sha256": "d99e2b1c55ddf586e6f34a2a63a416bf078df835464c06fb3837364f95a67d73"
+  },
+  {
+    "probe_id": "SFC-041",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:36:00.601477Z",
+    "hash_sha256": "ea775b7d2e196d89b77b5800b9db6c2691a6b89b5e70aeba75e4ad6e2d48c5ae"
+  },
+  {
+    "probe_id": "SFC-042",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:36:04.409018Z",
+    "hash_sha256": "cb02c1e59372a4a2f6ca75dfd43cc3d323d8fe260682d6d43152a2aef1b4f1dd"
+  },
+  {
+    "probe_id": "SFC-043",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:08.194156Z",
+    "hash_sha256": "988e481cb843a3aceab8b6b10205f8378b9a5ad30a8a1dcfe3e569e3ee405dca"
+  },
+  {
+    "probe_id": "SFC-044",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:36:11.477868Z",
+    "hash_sha256": "9f2525f6a36e41e556a27c2093434e82e938f2169fbde27224d53b11ac2418f1"
+  },
+  {
+    "probe_id": "SFC-045",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:36:16.652392Z",
+    "hash_sha256": "ec4999c1b62dec1b80c3325634d7f12ac52574666c3aa9b0e479de3a27f34f46"
+  },
+  {
+    "probe_id": "SFC-047",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:22.821044Z",
+    "hash_sha256": "55010885e5bd4dc204f2a2824e3ae3ba357917c70847bbdb2fed767be64b9dc7"
+  },
+  {
+    "probe_id": "NCA-049",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:25.504613Z",
+    "hash_sha256": "51693a88f6ba6ad8e0bac8214812188c3a1b9bf194b4f147fcd09a13f33485d7"
+  },
+  {
+    "probe_id": "SFC-048",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:26.078745Z",
+    "hash_sha256": "7c0f4cdff496248f15a9637e6c9a3fc4b1bf24e74e89d941884fab8409313579"
+  },
+  {
+    "probe_id": "SFC-049",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:27.837345Z",
+    "hash_sha256": "6326dd24ec120aa2353c393478de8be01e6e0978c0f4d1615664a6346c68256d"
+  },
+  {
+    "probe_id": "SFC-050",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:36:31.934209Z",
+    "hash_sha256": "f0268dc00ccb4ba4b0cff9a487d5e462a2021a5f7dc75ec9a799a130e77d2437"
+  },
+  {
+    "probe_id": "IDL-001",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:33.661317Z",
+    "hash_sha256": "00d819632d662bfc85df58b4e68de19c785e3366fdf2e422ae4a3138044fa3fc"
+  },
+  {
+    "probe_id": "IDL-003",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:38.082227Z",
+    "hash_sha256": "c3e190f444aed3a6a474823d39aa0cccb8ca3f7a5f5a6a62e1c57b1c1743b14f"
+  },
+  {
+    "probe_id": "IDL-005",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:43.113378Z",
+    "hash_sha256": "5ada1e3f3d1fa6eb793abcdf37e9fc2aaca81990d97cc33e65920c914aeb5c01"
+  },
+  {
+    "probe_id": "IDL-007",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:48.624824Z",
+    "hash_sha256": "7cbf3f2891796cbe44e6a0e3f0d9d10173395bd7fab2aee0c2ecde7edd8240cc"
+  },
+  {
+    "probe_id": "IDL-009",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:36:55.797955Z",
+    "hash_sha256": "dd838fc9b5e893757e153edea0760ed004dabfc8610a30f0a2ac8b815be4f1fc"
+  },
+  {
+    "probe_id": "IDL-011",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:00.520924Z",
+    "hash_sha256": "18467f71548858516a03fa9591ef465beef0b4cd8a8118906489c3b488dc4e97"
+  },
+  {
+    "probe_id": "IDL-013",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:05.921249Z",
+    "hash_sha256": "51e538d3de327dc65af3536ad0034269df36da378bf18818a4d6932a47900704"
+  },
+  {
+    "probe_id": "NCA-050",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:09.519470Z",
+    "hash_sha256": "c359e4fc966ea0e3e5a2d99873db8a2bba7a0480fbb6c51bbcf968b7cf7fc0b2"
+  },
+  {
+    "probe_id": "IDL-015",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:11.267521Z",
+    "hash_sha256": "6a289ce171fe54d4508acad7284b53b656752d6e2f075cb4b71471f50c8f9a43"
+  },
+  {
+    "probe_id": "IDL-017",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:16.251279Z",
+    "hash_sha256": "c98ac1948abd2830d03d74162cbea4a28c1ffc2d3ff8446a40621093c6f98a4b"
+  },
+  {
+    "probe_id": "IDL-019",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:22.827054Z",
+    "hash_sha256": "b3c5d4820eca6b486896ea4c2c89961b624947c32f1e9150a13a295ddc94998f"
+  },
+  {
+    "probe_id": "IDL-021",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:28.152741Z",
+    "hash_sha256": "4910637cc41a73af01b9368caef431fd8fa9b057ab0ba978ca5c360802f03be0"
+  },
+  {
+    "probe_id": "SFC-001",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:30.001058Z",
+    "hash_sha256": "7033f976d9650e69ca07bc859b414a54a088574f02377372b27241600bf8c68e"
+  },
+  {
+    "probe_id": "IDL-023",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:33.272270Z",
+    "hash_sha256": "4c5a64b3338cc0915be92e63224dee1177ecd1ff4d7378aa262b1e1c910f16a6"
+  },
+  {
+    "probe_id": "IDL-025",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:38.548139Z",
+    "hash_sha256": "68ec123905aa28a7d8ce2d5c32de481b38234d77e15d2d24e4c5bf26b4d146f9"
+  },
+  {
+    "probe_id": "IDL-027",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:44.628358Z",
+    "hash_sha256": "26371678f6d68017cddbd308e139506206b4f2603bea861c413baf459202b10f"
+  },
+  {
+    "probe_id": "SFC-002",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:50.270414Z",
+    "hash_sha256": "fde12ade204609b3b3c2f1a8dabce6b0def77d3bd83f1225678ffdf78d910aa5"
+  },
+  {
+    "probe_id": "IDL-029",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:51.916579Z",
+    "hash_sha256": "77b79655d4044ddeaa6a74488f78c88a3c3eed6976b70909c1cfc3606bdd3eff"
+  },
+  {
+    "probe_id": "IDL-031",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:37:57.424341Z",
+    "hash_sha256": "a26ee839c88423a6a34af7b10b650c8311313ed8d0bc838c583c79a4dd0035e6"
+  },
+  {
+    "probe_id": "IDL-033",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:02.001511Z",
+    "hash_sha256": "c37404b8d1344292705c138682febb157aa2eb7870b8c162ef95dc23cd382ffd"
+  },
+  {
+    "probe_id": "IDL-035",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:06.505341Z",
+    "hash_sha256": "c64ac9ad1ab990c92c16712b5141c8194c47cf1a86225aedc21c9f7a425412c6"
+  },
+  {
+    "probe_id": "SFC-003",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:09.109476Z",
+    "hash_sha256": "58f87b6029215d7584b431bcc80e5de1344a2d058e9decaa5f575e9c5dd5778d"
+  },
+  {
+    "probe_id": "IDL-037",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:12.432639Z",
+    "hash_sha256": "cdb4b2cf264dcb1c1ed8794a97373745e01ca4d03413abe8be22bb00eac970f8"
+  },
+  {
+    "probe_id": "IDL-039",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:19.146297Z",
+    "hash_sha256": "de58702ad9df4dc6b386eda7ae8575efab464f5267dc1e8ad65456bb456aef00"
+  },
+  {
+    "probe_id": "IDL-041",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:24.550862Z",
+    "hash_sha256": "d7d81a3badf00f51c5d6c9d20a34e678cb08d6263fdc08d93d4a6c7b3905633a"
+  },
+  {
+    "probe_id": "IDL-043",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:29.998950Z",
+    "hash_sha256": "e97a72f64e951058a1341be78ce99e8274fa458c51c6edfc75bfa9972626fc9e"
+  },
+  {
+    "probe_id": "SFC-004",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:32.252477Z",
+    "hash_sha256": "18d4024ad1134cad3842a7f7d1af4ceec680364cea1118dfb80ef054a4690c0c"
+  },
+  {
+    "probe_id": "IDL-045",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:38:43.414466Z",
+    "hash_sha256": "052fc5f31f6a41ac3cb49ea7862e70e6cfcbe7bf819df8a3e830f0666e86b7be"
+  },
+  {
+    "probe_id": "IDL-047",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:48.833257Z",
+    "hash_sha256": "6f89abf10ca89440e7d793cd840e65915b2d158f3e05d16d2ed49f5d2eb797fc"
+  },
+  {
+    "probe_id": "SFC-005",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:52.272438Z",
+    "hash_sha256": "55591a3a8285eeb61d34a8efa33ef702489c14c3d99a23969bab7e31857ec056"
+  },
+  {
+    "probe_id": "IDL-049",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:38:56.254163Z",
+    "hash_sha256": "44066b76686fab1d1e28cc11204f3040889be6a8fa7b090c676b078f4ca4bc1f"
+  },
+  {
+    "probe_id": "SFC-006",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:39:05.358342Z",
+    "hash_sha256": "2772f09ac40cd25043cb02d39539302efce952ce056079fc70a19838b0c20048"
+  },
+  {
+    "probe_id": "SFC-007",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:39:33.079700Z",
+    "hash_sha256": "fc9728b04754956d4626d3f96eac4fab8e0db0bc2cd0b8ce0ab19a730b16f746"
+  },
+  {
+    "probe_id": "SFC-008",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:39:55.604733Z",
+    "hash_sha256": "80d82f557fcd5b11480082f90530d35254f8cb13bb5098324d04b2407d6ce1e1"
+  },
+  {
+    "probe_id": "SFC-009",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:40:13.904090Z",
+    "hash_sha256": "b8e475ca990169975946d978a76f53241926ad80433a88011aab257daa35652a"
+  },
+  {
+    "probe_id": "SFC-010",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:40:30.725501Z",
+    "hash_sha256": "46d6a1ea211898cafda763ba451b722a1f4294d116b7263487602a71c0a8d08a"
+  },
+  {
+    "probe_id": "SFC-011",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:40:52.537988Z",
+    "hash_sha256": "fb1c08c9338e226460cb92a19b90378d94b5d9cf5a496d87f7183c4a08c78932"
+  },
+  {
+    "probe_id": "SFC-012",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:41:13.428487Z",
+    "hash_sha256": "32ae5647b4c72bb27be0b4740e8e5509fb26926ea67f6f62312ddde5fda23de4"
+  },
+  {
+    "probe_id": "SFC-013",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:41:28.323800Z",
+    "hash_sha256": "04edc258a1c5073dcd3d6d367ab410d24de9b18d9812f67fb486d4c6d2cf7945"
+  },
+  {
+    "probe_id": "NCA-006",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:41:33.855725Z",
+    "hash_sha256": "07593009b0d3476d7ab3bce75441cca61a826d6cd1d2c45713c624202f7ec5d0"
+  },
+  {
+    "probe_id": "NCA-009",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:41:49.368634Z",
+    "hash_sha256": "5c0ceaa922ed87a4d0a24142609dd4628d8842341d619b29be669e06414d82e5"
+  },
+  {
+    "probe_id": "NCA-010",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:41:53.361708Z",
+    "hash_sha256": "73fc3c624eab18368b4eff4ea332e71c099974750ff889c268bb472668379c8f"
+  },
+  {
+    "probe_id": "SFC-014",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:41:54.635395Z",
+    "hash_sha256": "895f895348cb4efeae8e266649a68516f8bc29c0b490718c5e570b56d75545c8"
+  },
+  {
+    "probe_id": "NCA-011",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:42:04.504394Z",
+    "hash_sha256": "7ef01407600732748170bb0f81ed75442d314a26e5d8b10f223832773242af34"
+  },
+  {
+    "probe_id": "NCA-012",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:42:10.432867Z",
+    "hash_sha256": "31e9bdbca47d31e23b151059763569216f2b0f49fa48a11e3e7eea42a5dcfb6d"
+  },
+  {
+    "probe_id": "SFC-015",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:42:11.895909Z",
+    "hash_sha256": "3c788317c88b42f4197d44e8c346a2d9aa9bbaa30ecda0a7f1eaf63e05f7d699"
+  },
+  {
+    "probe_id": "SFC-016",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:42:25.125933Z",
+    "hash_sha256": "2f817d41ffbf106470f0eb054dc234a8a9082278cbed1bbbf751aa4502b411ef"
+  },
+  {
+    "probe_id": "NCA-015",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:42:29.611347Z",
+    "hash_sha256": "c17bdd369771a37c36e008a9f5971d7bb384b112c9005f87a6662c2b025563d7"
+  },
+  {
+    "probe_id": "NCA-016",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:42:35.651055Z",
+    "hash_sha256": "b2d3350dfbfaa77bae5f0e50df3a72be9000e1fd0a7f0abe7c3b38af3bb70c46"
+  },
+  {
+    "probe_id": "NCA-017",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:42:41.704707Z",
+    "hash_sha256": "f74b0478f3a9dd866afc1ad43b493aa672ef40ea8a828afd1139d41009e2eaca"
+  },
+  {
+    "probe_id": "NCA-018",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:42:47.320415Z",
+    "hash_sha256": "1ec29340cd2838ae924e53426337ebad6d909d0fe3ec892f1e15f16cff8a493e"
+  },
+  {
+    "probe_id": "SFC-017",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:42:48.657955Z",
+    "hash_sha256": "ba8212300b4034c7c9e08263f4c89033d2c2ff9c35c5520927a69f2173998c8b"
+  },
+  {
+    "probe_id": "SFC-018",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:43:08.746156Z",
+    "hash_sha256": "83de9f27ef0c6d508cb8c4d9bea925cc4fb2c09d2f207ce0dd55021bf80a77a3"
+  },
+  {
+    "probe_id": "SFC-019",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:43:24.596761Z",
+    "hash_sha256": "fd0b2034d743b3667f210f5e3cdc932d6f9fc3617d6818598123efa1be50a75a"
+  },
+  {
+    "probe_id": "SFC-020",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:43:41.594702Z",
+    "hash_sha256": "08a524cdfe4966822c1e16444a18c9e25cb9bc1ec0d6321870a228a49a9be00d"
+  },
+  {
+    "probe_id": "NCA-003",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:43:46.921919Z",
+    "hash_sha256": "00858fb12780cc99350916f284a0ce95e394e8e32f54efa54e7a3de806e0c496"
+  },
+  {
+    "probe_id": "SFC-021",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:43:59.105300Z",
+    "hash_sha256": "0ba07a755dc23d9a1eca092ebb2cbab03656a4f6ffb022ae125ffaa8b25b82b6"
+  },
+  {
+    "probe_id": "SFC-022",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:44:19.136187Z",
+    "hash_sha256": "148ff20c5d47c7c7f7d37d5725d65f74f856e404e03be996326f1aaa894eb782"
+  },
+  {
+    "probe_id": "SFC-023",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:44:34.023966Z",
+    "hash_sha256": "0987f6103cf93dc584e31c82638884fbeade03781b5f3dd2a2dc2c110cabb203"
+  },
+  {
+    "probe_id": "SFC-024",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:44:54.296372Z",
+    "hash_sha256": "d346461070181b7dab5695693c8643f904bdf0a5e24a0c87b0d51b38b6d00f40"
+  },
+  {
+    "probe_id": "NCA-003",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:45:09.043342Z",
+    "hash_sha256": "d9c1b3d11f6e071e517c4c31f1eb1bbffbc1187b4c92f6c863f0086ccbcc1ed7"
+  },
+  {
+    "probe_id": "SFC-025",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:45:11.603352Z",
+    "hash_sha256": "1e9425cb3f6cb9bb573ee2704749d90253cc197699a2eb260c76e6d6291011f4"
+  },
+  {
+    "probe_id": "SFC-026",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:45:24.714116Z",
+    "hash_sha256": "342c3d8267542320f42e97821bf5b9ff52e31583ef87e8d7df91056d2f7ceabd"
+  },
+  {
+    "probe_id": "SFC-027",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:45:48.363169Z",
+    "hash_sha256": "31025ec70b6b6fd38cb8147105fc2d79d1fa0def88989807697bb914208dd689"
+  },
+  {
+    "probe_id": "SFC-028",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:46:08.420746Z",
+    "hash_sha256": "dab3bce9f556a3454beb21400ee8637ef3f4816325a6a60b0ff6ffbb9b04d64a"
+  },
+  {
+    "probe_id": "SFC-029",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:46:24.306082Z",
+    "hash_sha256": "25b941a0f24d09d6c949727035ed2ae7a944cc5dc723a6af6ca686c6adec41db"
+  },
+  {
+    "probe_id": "SFC-030",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:46:41.216844Z",
+    "hash_sha256": "b6f08b5c831a18cc67ffcac50608dad6487839c3e893ca417ae5464d8612279d"
+  },
+  {
+    "probe_id": "SFC-031",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:46:58.734755Z",
+    "hash_sha256": "6597d110330c45f3258fc4bf072ba64aa649df738cc5812e32a3f7ac4400b1c5"
+  },
+  {
+    "probe_id": "SFC-032",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:47:19.198610Z",
+    "hash_sha256": "10285329e3d55c3bb88c079a9025e13b4a2023ec70d2d9119ef7af87bc865f87"
+  },
+  {
+    "probe_id": "SFC-033",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:47:34.306002Z",
+    "hash_sha256": "3d3e492c05d812b83da0c4ba1f5cd591dad0841f8e0de15bbd4618960d8e7887"
+  },
+  {
+    "probe_id": "SFC-034",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:47:54.682047Z",
+    "hash_sha256": "32bfc0047dd396adfa002f7fd042ba9240f834ba983624084c624070802b151f"
+  },
+  {
+    "probe_id": "SFC-035",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:48:11.894291Z",
+    "hash_sha256": "eedf363d19c815905fed88a2df0444271ab468a4b4854585e14548a493c4a5d7"
+  },
+  {
+    "probe_id": "SFC-036",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:48:25.092401Z",
+    "hash_sha256": "846873493f679ffa39fd46f467eee3fe7084d0bb174e8b90896d847260e75f04"
+  },
+  {
+    "probe_id": "SFC-037",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:48:48.649232Z",
+    "hash_sha256": "6ae851d046024fe71854516c3e2aba15d5ac342b7bd2ea627db7e38f59a88ffd"
+  },
+  {
+    "probe_id": "SFC-038",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:49:08.818421Z",
+    "hash_sha256": "46377058a41eddfbcde39b0c9b9aa54d1f25d29384ea37133ed64044af97e703"
+  },
+  {
+    "probe_id": "SFC-039",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:49:24.692748Z",
+    "hash_sha256": "dbe8196a397418b63ea7b24760880ba968fde11e2a2ac09f718b6e5f1984bf37"
+  },
+  {
+    "probe_id": "SFC-040",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:49:41.685692Z",
+    "hash_sha256": "aa6235547d3495dc2568f1d0e392b344d085c3de6118d90f629f4abc9284c246"
+  },
+  {
+    "probe_id": "NCA-001",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:49:49.573981Z",
+    "hash_sha256": "11538184e8c83d76d1528a5b1b520e6c21ce84769103584faf0c3315b302424a"
+  },
+  {
+    "probe_id": "SFC-041",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:49:59.117778Z",
+    "hash_sha256": "88dbda0fa451e8bdedc6c48f5e2811fd157b4d34e2751b547bcd80d743972fbb"
+  },
+  {
+    "probe_id": "SFC-042",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:50:19.369752Z",
+    "hash_sha256": "42da5fc6a096239a7abbb3e9c1472ef1ac6c402a69e3d338cc04176b4bf213c3"
+  },
+  {
+    "probe_id": "SFC-043",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:50:34.319181Z",
+    "hash_sha256": "d411f5074c84f5bd68681148eaa70cad9e995d003fc58dd3041321cb924646a6"
+  },
+  {
+    "probe_id": "NCA-001",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:50:39.348952Z",
+    "hash_sha256": "f70b7a6af9d90febb34a5c12fa9a5e415a36f174ebc7f9052511776ffaccdc79"
+  },
+  {
+    "probe_id": "NCA-023",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:50:40.684657Z",
+    "hash_sha256": "758491d1e5d055a1e38e434fec9fb78ba1cc3dc1a8c12f95b824025a4a1ff2bc"
+  },
+  {
+    "probe_id": "NCA-002",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:50:41.391392Z",
+    "hash_sha256": "a49d4bd3ac61a8be97abfd0fd43aeb7f025dca008d03dbcdbf2560cf2195ac81"
+  },
+  {
+    "probe_id": "NCA-006",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-10T06:50:49.919115Z",
+    "hash_sha256": "b68304fb97931e644b2c30c1a9e7a77f81f418eaaaaf759c3b4e6405815ab397"
+  },
+  {
+    "probe_id": "SFC-044",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-10T06:50:54.597643Z",
+    "hash_sha256": "71ae2ad2ca9150fc926377c5b360bc30416942d4256693f275dbdcd8effe860c"
   }
 ]
