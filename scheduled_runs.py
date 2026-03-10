@@ -1,7 +1,7 @@
 """
 scheduled_runs.py — Weekly automated benchmark runner for Control Plane 3
 
-Runs all 11 models at all 4 temperatures every Monday at 02:00 UTC.
+Runs all models at all 4 temperatures every Monday at 02:00 UTC.
 Import and call start_scheduler() from api_server.py on startup.
 
 Each model runs one at a time to avoid API rate limits.
@@ -35,17 +35,32 @@ log = logging.getLogger("cp3_scheduler")
 # Update this list when new models are added.
 
 MODELS: List[Tuple[str, str]] = [
-    ("grok-3-mini",                 "openrouter"),
-    ("nvidia-llama-70b",            "nvidia"),
-    ("gpt-4o-mini",                 "openai"),
-    ("gpt-3.5-turbo",               "openai"),
-    ("llama-3.3-70b-versatile",     "groq"),
-    ("llama-3.1-8b-instant",        "groq"),
-    ("claude-sonnet-4-20250514",    "anthropic"),
-    ("claude-haiku-4-5-20251001",   "anthropic"),
-    ("gpt-4o",                      "openai"),
-    ("gemini-2.0-flash",            "openrouter"),
-    ("nvidia-gemma-27b",            "nvidia"),
+    # === ORIGINAL 11 ===
+    ("grok-3-mini",                                 "openrouter"),
+    ("nvidia/llama-3.3-nemotron-super-49b-v1",      "nvidia"),
+    ("gpt-4o-mini",                                 "openai"),
+    ("gpt-3.5-turbo",                               "openai"),
+    ("llama-3.3-70b-versatile",                     "groq"),
+    ("llama-3.1-8b-instant",                        "groq"),
+    ("claude-sonnet-4-20250514",                    "anthropic"),
+    ("claude-haiku-4-5-20251001",                   "anthropic"),
+    ("gpt-4o",                                      "openai"),
+    ("gemini-2.0-flash",                            "openrouter"),
+    ("nvidia/gemma-3-27b-it",                       "nvidia"),
+    # === NEW MODELS ===
+    ("meta/llama-4-maverick-17b-128e-instruct",     "nvidia"),
+    ("meta-llama/llama-4-scout",                    "openrouter"),
+    ("cohere-command-r-plus",                       "openrouter"),
+    ("mistral-large-latest",                        "mistral"),
+    ("mistral-small-latest",                        "mistral"),
+    ("deepseek/deepseek-r1",                        "openrouter"),
+    ("microsoft/phi-4-mini-instruct",               "nvidia"),
+    ("qwen/qwen2.5-7b-instruct",                    "nvidia"),
+    ("ibm/granite-3.3-8b-instruct",                "nvidia"),
+    ("qwen/qwq-32b",                                "nvidia"),
+    ("amazon.nova-lite-v1:0",                       "bedrock"),
+    ("amazon.nova-pro-v1:0",                        "bedrock"),
+    ("amazon.nova-micro-v1:0",                      "bedrock"),
 ]
 
 TEMPERATURES = [0.0, 0.2, 0.5, 0.8]
