@@ -22,6 +22,9 @@ except ImportError: pass
 try:
     import google.generativeai as genai
 except ImportError: pass
+try:
+    import boto3
+except ImportError: pass
 
 def get_file_hash(filepath):
     sha256_hash = hashlib.sha256()
@@ -68,6 +71,8 @@ class APIClient:
             'fireworks': 'FIREWORKS_API_KEY',
             'cerebras': 'CEREBRAS_API_KEY',
             'cohere': 'COHERE_API_KEY',
+            'bedrock': 'AWS_ACCESS_KEY_ID',
+            'watsonx': 'IBM_WATSONX_API_KEY',
         }
         env_key = env_key_map.get(provider, f'{provider.upper()}_API_KEY')
         self.api_key = os.environ.get(env_key)
@@ -138,6 +143,22 @@ class APIClient:
                 base_url='https://api.cohere.com/compatibility/v1'
             )
 
+        elif provider == 'bedrock':
+            # AWS Bedrock via boto3
+            self.client = boto3.client(
+                service_name='bedrock-runtime',
+                region_name=os.environ.get('AWS_REGION', 'eu-west-2'),
+                aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+                aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
+            )
+
+        elif provider == 'watsonx':
+            # IBM Watsonx - OpenAI-compatible endpoint
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://eu-gb.ml.cloud.ibm.com/ml/v1-beta/generation/text?version=2023-05-29'
+            )
+
     def call(self, prompt: str, temperature: float = 0.0) -> tuple:
         # Google native
         if self.provider == 'google':
@@ -147,7 +168,7 @@ class APIClient:
             return text, 0, 0, 0
 
         # OpenAI-compatible providers
-        if self.provider in ['groq', 'openai', 'openrouter', 'mistral', 'nvidia', 'github', 'fireworks', 'cerebras', 'cohere']:
+        if self.provider in ['groq', 'openai', 'openrouter', 'mistral', 'nvidia', 'github', 'fireworks', 'cerebras', 'cohere', 'watsonx']:
             resp = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{'role': 'user', 'content': prompt}],
@@ -172,6 +193,14 @@ class APIClient:
             ct = resp.usage.output_tokens if resp.usage else 0
             tt = pt + ct
             return text, pt, ct, tt
+
+        elif self.provider == 'bedrock':
+            import json as _json
+            body = _json.dumps({"messages": [{"role": "user", "content": prompt}], "max_tokens": 1024, "temperature": temperature})
+            resp = self.client.invoke_model(modelId=self.model, body=body, contentType='application/json', accept='application/json')
+            resp_body = _json.loads(resp['body'].read())
+            text = resp_body.get('content', [{}])[0].get('text', '') if 'content' in resp_body else resp_body.get('outputs', [{}])[0].get('text', '')
+            return text, 0, 0, 0
 
         return '', 0, 0, 0
 
