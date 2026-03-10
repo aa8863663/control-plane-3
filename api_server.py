@@ -200,9 +200,9 @@ def register_post(request: Request, username: str = Form(...), password: str = F
         return templates.TemplateResponse("register.html", {"request": request, "error": "Password must be at least 6 characters.", "success": None})
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("INSERT INTO users (username, password_hash) VALUES (%s,%s)", (username, hash_password(password)))
+        cur.execute("INSERT INTO users (username, password_hash, is_active) VALUES (%s,%s,FALSE)", (username, hash_password(password)))
         conn.commit(); conn.close()
-        return templates.TemplateResponse("register.html", {"request": request, "error": None, "success": "Account created! You can now log in."})
+        return templates.TemplateResponse("register.html", {"request": request, "error": None, "success": "Account request submitted. You will be notified when approved."})
     except:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Username already taken.", "success": None})
 
@@ -428,6 +428,7 @@ def admin_page(request: Request, session: Optional[str] = Cookie(default=None), 
         cur.execute("SELECT id, username, is_admin, is_active, created_at FROM users ORDER BY id")
         users = [{"id": u["id"], "username": u["username"], "is_admin": u["is_admin"], "is_active": u["is_active"],
                   "created_at": u["created_at"].strftime('%Y-%m-%d') if u["created_at"] else "—"} for u in cur.fetchall()]
+        pending_users = [u for u in users if not u["is_active"] and not u["is_admin"]]
         cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
         cur.execute("SELECT COUNT(*) AS n FROM results")
@@ -442,7 +443,7 @@ def admin_page(request: Request, session: Optional[str] = Cookie(default=None), 
         print(f"Admin error: {e}"); users=[]; total_runs=0; total_results=0; api_keys=[]
     return templates.TemplateResponse("admin.html", {
         "request": request, "user": user, "active": "admin",
-        "users": users, "total_runs": total_runs, "total_results": total_results, "api_keys": api_keys, "new_key": new_key})
+        "users": users, "pending_users": pending_users, "total_runs": total_runs, "total_results": total_results, "api_keys": api_keys, "new_key": new_key})
 
 @app.post("/admin/create-user")
 def admin_create_user(session: Optional[str] = Cookie(default=None),

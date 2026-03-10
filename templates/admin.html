@@ -78,6 +78,37 @@
   </div>
 </div>
 
+{% if pending_users %}
+<div class="card admin-section fade-up fade-up-3" style="border:1px solid rgba(245,166,35,0.4)">
+  <div class="card-title" style="color:var(--warn)">⚠ Pending Approval ({{ pending_users|length }})</div>
+  <p style="font-size:0.7rem;color:var(--muted);margin-bottom:14px">These users have registered and are waiting for your approval.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Username</th><th>Registered</th><th></th></tr></thead>
+      <tbody>
+        {% for u in pending_users %}
+        <tr>
+          <td style="color:var(--muted)">{{ u.id }}</td>
+          <td>{{ u.username }}</td>
+          <td style="color:var(--muted)">{{ u.created_at[:10] }}</td>
+          <td style="display:flex;gap:8px">
+            <form method="post" action="/admin/approve-user" style="display:inline">
+              <input type="hidden" name="user_id" value="{{ u.id }}">
+              <button type="submit" class="btn btn-primary" style="padding:4px 14px;font-size:0.6rem">✓ Approve</button>
+            </form>
+            <form method="post" action="/admin/reject-user" style="display:inline">
+              <input type="hidden" name="user_id" value="{{ u.id }}">
+              <button type="submit" class="btn btn-danger" style="padding:4px 14px;font-size:0.6rem">✗ Reject</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
 <div class="card admin-section fade-up fade-up-3">
   <div class="card-title">Users</div>
   <div class="table-wrap">
