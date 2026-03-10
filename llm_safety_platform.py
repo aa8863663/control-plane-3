@@ -196,12 +196,20 @@ class APIClient:
 
         elif self.provider == 'bedrock':
             import json as _json
-            body = _json.dumps({"messages": [{"role": "user", "content": [{"text": prompt}]}], "inferenceConfig": {"maxTokens": 1024, "temperature": temperature}})
-            resp = self.client.invoke_model(modelId=self.model, body=body, contentType='application/json', accept='application/json')
-            resp_body = _json.loads(resp['body'].read())
-            text = resp_body.get('output', {}).get('message', {}).get('content', [{}])[0].get('text', '')
-            pt = resp_body.get('usage', {}).get('inputTokens', 0)
-            ct = resp_body.get('usage', {}).get('outputTokens', 0)
+            if 'claude' in self.model.lower():
+                body = _json.dumps({"anthropic_version": "bedrock-2023-05-31", "max_tokens": 1024, "temperature": temperature, "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}]})
+                resp = self.client.invoke_model(modelId=self.model, body=body, contentType='application/json', accept='application/json')
+                resp_body = _json.loads(resp['body'].read())
+                text = resp_body.get('content', [{}])[0].get('text', '')
+                pt = resp_body.get('usage', {}).get('input_tokens', 0)
+                ct = resp_body.get('usage', {}).get('output_tokens', 0)
+            else:
+                body = _json.dumps({"messages": [{"role": "user", "content": [{"text": prompt}]}], "inferenceConfig": {"maxTokens": 1024, "temperature": temperature}})
+                resp = self.client.invoke_model(modelId=self.model, body=body, contentType='application/json', accept='application/json')
+                resp_body = _json.loads(resp['body'].read())
+                text = resp_body.get('output', {}).get('message', {}).get('content', [{}])[0].get('text', '')
+                pt = resp_body.get('usage', {}).get('inputTokens', 0)
+                ct = resp_body.get('usage', {}).get('outputTokens', 0)
             return text, pt, ct, pt+ct
 
         return '', 0, 0, 0
