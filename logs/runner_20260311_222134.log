@@ -1,0 +1,74 @@
+2026-03-11 22:21:34,173 [INFO] Lock acquired by PID 34363
+2026-03-11 22:21:47,598 [INFO] Loaded 41 jobs across 11 providers
+2026-03-11 22:21:47,599 [INFO] === START xai queue ===
+2026-03-11 22:21:47,599 [INFO] === START nvidia queue ===
+2026-03-11 22:21:47,600 [INFO] === START openai queue ===
+2026-03-11 22:21:47,600 [INFO] === START bedrock queue ===
+2026-03-11 22:21:47,601 [INFO] === START groq queue ===
+2026-03-11 22:21:47,601 [INFO] === START cohere queue ===
+2026-03-11 22:21:47,602 [INFO] === START google queue ===
+2026-03-11 22:21:47,602 [INFO] === START openrouter queue ===
+2026-03-11 22:21:47,602 [INFO] === START mistral queue ===
+2026-03-11 22:21:47,603 [INFO] === START cerebras queue ===
+2026-03-11 22:21:47,604 [INFO] === START fireworks queue ===
+2026-03-11 22:21:57,863 [INFO] === END cohere queue ===
+2026-03-11 22:22:02,886 [INFO] === END cerebras queue ===
+2026-03-11 22:22:07,887 [INFO] === END openrouter queue ===
+2026-03-11 22:22:08,069 [INFO] === END xai queue ===
+2026-03-11 22:22:18,095 [INFO] === END fireworks queue ===
+2026-03-11 22:22:18,275 [INFO] === END openai queue ===
+2026-03-11 22:22:28,468 [INFO] === END groq queue ===
+2026-03-11 22:22:28,501 [INFO] === END google queue ===
+2026-03-11 22:22:28,525 [INFO] === END mistral queue ===
+2026-03-11 22:24:49,593 [INFO] === END nvidia queue ===
+2026-03-11 22:26:50,243 [INFO] === END bedrock queue ===
+2026-03-11 22:26:50,264 [INFO] ============================================================
+2026-03-11 22:26:50,265 [INFO] EXECUTION SUMMARY
+2026-03-11 22:26:50,265 [INFO] ============================================================
+2026-03-11 22:26:50,265 [INFO] Total jobs: 62
+2026-03-11 22:26:50,266 [INFO] By status: {'failed': 41, 'done': 19, 'disabled': 2}
+2026-03-11 22:26:50,266 [INFO] By phase: {'ctrl': 31, 'main': 31}
+2026-03-11 22:26:50,266 [INFO] Failed jobs:
+2026-03-11 22:26:50,266 [INFO]   - bedrock/amazon.nova-lite-v1:0/ctrl
+2026-03-11 22:26:50,266 [INFO]   - bedrock/amazon.nova-lite-v1:0/main
+2026-03-11 22:26:50,267 [INFO]   - bedrock/amazon.nova-micro-v1:0/ctrl
+2026-03-11 22:26:50,267 [INFO]   - bedrock/amazon.nova-micro-v1:0/main
+2026-03-11 22:26:50,267 [INFO]   - bedrock/amazon.nova-pro-v1:0/ctrl
+2026-03-11 22:26:50,267 [INFO]   - bedrock/amazon.nova-pro-v1:0/main
+2026-03-11 22:26:50,267 [INFO]   - bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0/ctrl
+2026-03-11 22:26:50,267 [INFO]   - bedrock/eu.anthropic.claude-haiku-4-5-20251001-v1:0/main
+2026-03-11 22:26:50,267 [INFO]   - bedrock/eu.anthropic.claude-sonnet-4-20250514-v1:0/ctrl
+2026-03-11 22:26:50,267 [INFO]   - bedrock/eu.anthropic.claude-sonnet-4-20250514-v1:0/main
+2026-03-11 22:26:50,267 [INFO]   - cerebras/cerebras-llama-8b/main
+2026-03-11 22:26:50,268 [INFO]   - cohere/cohere-command-r-plus/main
+2026-03-11 22:26:50,268 [INFO]   - fireworks/accounts/fireworks/models/kimi-k2-instruct-0905/ctrl
+2026-03-11 22:26:50,268 [INFO]   - fireworks/accounts/fireworks/models/kimi-k2-instruct-0905/main
+2026-03-11 22:26:50,268 [INFO]   - google/gemini-2.0-flash/ctrl
+2026-03-11 22:26:50,268 [INFO]   - google/gemini-2.0-flash/main
+2026-03-11 22:26:50,269 [INFO]   - google/gemini-2.5-flash/ctrl
+2026-03-11 22:26:50,269 [INFO]   - google/gemini-2.5-flash/main
+2026-03-11 22:26:50,269 [INFO]   - groq/llama-3.1-8b-instant/ctrl
+2026-03-11 22:26:50,269 [INFO]   - groq/llama-3.1-8b-instant/main
+2026-03-11 22:26:50,269 [INFO]   - groq/llama-3.3-70b-versatile/ctrl
+2026-03-11 22:26:50,269 [INFO]   - groq/llama-3.3-70b-versatile/main
+2026-03-11 22:26:50,269 [INFO]   - mistral/magistral-medium-latest/ctrl
+2026-03-11 22:26:50,269 [INFO]   - mistral/magistral-medium-latest/main
+2026-03-11 22:26:50,269 [INFO]   - mistral/mistral-large/main
+2026-03-11 22:26:50,270 [INFO]   - mistral/mistral-small-3.2/main
+2026-03-11 22:26:50,270 [INFO]   - nvidia/deepseek-ai/deepseek-r1-distill-qwen-32b/ctrl
+2026-03-11 22:26:50,270 [INFO]   - nvidia/deepseek-ai/deepseek-r1-distill-qwen-32b/main
+2026-03-11 22:26:50,270 [INFO]   - nvidia/llama-4-maverick/main
+2026-03-11 22:26:50,270 [INFO]   - nvidia/moonshotai/kimi-k2-thinking/ctrl
+2026-03-11 22:26:50,270 [INFO]   - nvidia/moonshotai/kimi-k2-thinking/main
+2026-03-11 22:26:50,270 [INFO]   - nvidia/nvidia-gemma-27b/ctrl
+2026-03-11 22:26:50,270 [INFO]   - nvidia/nvidia-gemma-27b/main
+2026-03-11 22:26:50,270 [INFO]   - nvidia/nvidia-llama-70b/ctrl
+2026-03-11 22:26:50,270 [INFO]   - nvidia/nvidia-llama-70b/main
+2026-03-11 22:26:50,270 [INFO]   - openai/gpt-3.5-turbo/main
+2026-03-11 22:26:50,271 [INFO]   - openai/gpt-4o-mini/main
+2026-03-11 22:26:50,271 [INFO]   - openai/gpt-4o/main
+2026-03-11 22:26:50,271 [INFO]   - openrouter/llama-4-scout/main
+2026-03-11 22:26:50,271 [INFO]   - xai/grok-3-mini/ctrl
+2026-03-11 22:26:50,271 [INFO]   - xai/grok-3-mini/main
+2026-03-11 22:26:50,271 [INFO] Duration: 5267s (87.8m)
+2026-03-11 22:26:50,272 [INFO] Lock released

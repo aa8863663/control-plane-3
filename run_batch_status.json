@@ -1,0 +1,49 @@
+{
+  "jobs": {
+    "fireworks::accounts/fireworks/models/kimi-k2-instruct-0905": {
+      "attempt": 1,
+      "ctrl": "pending",
+      "last_error": "",
+      "main": "running",
+      "model": "accounts/fireworks/models/kimi-k2-instruct-0905",
+      "provider": "fireworks",
+      "updated_at": "2026-03-11T20:09:10.519252Z"
+    },
+    "google::gemini-2.5-flash": {
+      "attempt": 3,
+      "ctrl": "pending",
+      "last_error": "return_code=1",
+      "main": "failed",
+      "model": "gemini-2.5-flash",
+      "provider": "google",
+      "updated_at": "2026-03-11T20:10:48.841947Z"
+    },
+    "mistral::magistral-medium-latest": {
+      "attempt": 3,
+      "ctrl": "pending",
+      "last_error": "return_code=1",
+      "main": "failed",
+      "model": "magistral-medium-latest",
+      "provider": "mistral",
+      "updated_at": "2026-03-11T20:10:37.514608Z"
+    },
+    "nvidia::deepseek-ai/deepseek-r1-distill-qwen-32b": {
+      "attempt": 1,
+      "ctrl": "pending",
+      "last_error": "",
+      "main": "running",
+      "model": "deepseek-ai/deepseek-r1-distill-qwen-32b",
+      "provider": "nvidia",
+      "updated_at": "2026-03-11T20:09:10.520557Z"
+    },
+    "watsonx::meta-llama/llama-3-405b-instruct": {
+      "ctrl": "disabled",
+      "last_error": "",
+      "main": "disabled",
+      "model": "meta-llama/llama-3-405b-instruct",
+      "provider": "watsonx",
+      "updated_at": "2026-03-11T20:09:10.521505Z"
+    }
+  },
+  "updated_at": "2026-03-11T20:10:48.841967Z"
+}

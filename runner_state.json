@@ -1,0 +1,1759 @@
+{
+  "completed_at": "2026-03-11T22:26:50.250183Z",
+  "events": [
+    {
+      "message": "watsonx / meta-llama/llama-3-405b-instruct / main: pending -> disabled",
+      "timestamp": "2026-03-11T20:59:05.896014Z"
+    },
+    {
+      "message": "watsonx / meta-llama/llama-3-405b-instruct / ctrl: pending -> disabled",
+      "timestamp": "2026-03-11T20:59:05.897803Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / main: pending -> running",
+      "timestamp": "2026-03-11T21:06:11.584492Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / main: pending -> running",
+      "timestamp": "2026-03-11T21:06:11.587957Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / main: pending -> running",
+      "timestamp": "2026-03-11T21:06:11.590081Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / main: pending -> running",
+      "timestamp": "2026-03-11T21:06:11.591283Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / main: running -> failed",
+      "timestamp": "2026-03-11T21:06:11.794748Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / main: running -> failed",
+      "timestamp": "2026-03-11T21:06:11.797176Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / main: running -> failed",
+      "timestamp": "2026-03-11T21:06:11.799441Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / main: running -> failed",
+      "timestamp": "2026-03-11T21:06:11.801800Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / main: failed -> running",
+      "timestamp": "2026-03-11T21:07:17.037669Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / main: running -> failed",
+      "timestamp": "2026-03-11T21:07:17.262405Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / main: failed -> running",
+      "timestamp": "2026-03-11T21:07:22.034101Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / main: running -> failed",
+      "timestamp": "2026-03-11T21:07:22.242447Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / main: failed -> running",
+      "timestamp": "2026-03-11T21:07:25.038221Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / main: running -> failed",
+      "timestamp": "2026-03-11T21:07:25.249059Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / main: failed -> running",
+      "timestamp": "2026-03-11T21:07:26.042985Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / main: running -> failed",
+      "timestamp": "2026-03-11T21:07:26.257357Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / main: failed -> running",
+      "timestamp": "2026-03-11T21:09:26.489937Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / main: running -> failed",
+      "timestamp": "2026-03-11T21:09:26.697222Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / main: failed -> running",
+      "timestamp": "2026-03-11T21:09:31.457329Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / main: running -> failed",
+      "timestamp": "2026-03-11T21:09:31.654926Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / main: failed -> running",
+      "timestamp": "2026-03-11T21:09:36.457323Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / main: running -> failed",
+      "timestamp": "2026-03-11T21:09:36.648439Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / main: failed -> running",
+      "timestamp": "2026-03-11T21:09:38.472728Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / main: running -> failed",
+      "timestamp": "2026-03-11T21:09:38.692869Z"
+    },
+    {
+      "message": "deepseek / deepseek-r1 / main: pending -> done",
+      "timestamp": "2026-03-11T21:09:52.217016Z"
+    },
+    {
+      "message": "deepseek / deepseek-r1 / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:09:52.443470Z"
+    },
+    {
+      "message": "openai / gpt-4o-mini / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:09:53.718398Z"
+    },
+    {
+      "message": "openai / gpt-3.5-turbo / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:09:54.139445Z"
+    },
+    {
+      "message": "nvidia / qwen-2.5-7b / main: pending -> done",
+      "timestamp": "2026-03-11T21:09:54.342852Z"
+    },
+    {
+      "message": "nvidia / qwen-2.5-7b / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:09:54.553257Z"
+    },
+    {
+      "message": "nvidia / llama-4-maverick / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:09:55.390865Z"
+    },
+    {
+      "message": "cohere / cohere-command-r-plus / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:09:55.827956Z"
+    },
+    {
+      "message": "nvidia / granite-3.3-8b / main: pending -> done",
+      "timestamp": "2026-03-11T21:09:56.893510Z"
+    },
+    {
+      "message": "nvidia / granite-3.3-8b / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:09:57.105646Z"
+    },
+    {
+      "message": "openai / gpt-4o / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:09:58.387006Z"
+    },
+    {
+      "message": "openrouter / llama-4-scout / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:09:58.781799Z"
+    },
+    {
+      "message": "nvidia / phi-4-mini / main: pending -> done",
+      "timestamp": "2026-03-11T21:10:00.265638Z"
+    },
+    {
+      "message": "nvidia / phi-4-mini / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:10:00.483950Z"
+    },
+    {
+      "message": "mistral / mistral-large / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:10:00.919554Z"
+    },
+    {
+      "message": "mistral / mistral-small-3.2 / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:10:01.352093Z"
+    },
+    {
+      "message": "cohere / command-r / main: pending -> done",
+      "timestamp": "2026-03-11T21:10:01.569277Z"
+    },
+    {
+      "message": "cohere / command-r / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:10:01.787794Z"
+    },
+    {
+      "message": "cerebras / cerebras-llama-8b / ctrl: pending -> done",
+      "timestamp": "2026-03-11T21:10:02.643109Z"
+    },
+    {
+      "message": "xai / grok-3-mini / main: pending -> running",
+      "timestamp": "2026-03-11T21:10:05.063751Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / main: pending -> running",
+      "timestamp": "2026-03-11T21:10:05.066590Z"
+    },
+    {
+      "message": "openai / gpt-4o-mini / main: pending -> running",
+      "timestamp": "2026-03-11T21:10:05.078132Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / main: pending -> running",
+      "timestamp": "2026-03-11T21:10:05.080138Z"
+    },
+    {
+      "message": "cerebras / cerebras-llama-8b / main: pending -> running",
+      "timestamp": "2026-03-11T21:10:05.086629Z"
+    },
+    {
+      "message": "openrouter / llama-4-scout / main: pending -> running",
+      "timestamp": "2026-03-11T21:10:05.088377Z"
+    },
+    {
+      "message": "cohere / cohere-command-r-plus / main: pending -> running",
+      "timestamp": "2026-03-11T21:10:05.090444Z"
+    },
+    {
+      "message": "xai / grok-3-mini / main: running -> failed",
+      "timestamp": "2026-03-11T21:10:05.278175Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:10:05.283162Z"
+    },
+    {
+      "message": "openai / gpt-4o-mini / main: running -> failed",
+      "timestamp": "2026-03-11T21:10:05.287862Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / main: running -> failed",
+      "timestamp": "2026-03-11T21:10:05.291822Z"
+    },
+    {
+      "message": "cohere / cohere-command-r-plus / main: running -> failed",
+      "timestamp": "2026-03-11T21:10:05.295200Z"
+    },
+    {
+      "message": "openrouter / llama-4-scout / main: running -> failed",
+      "timestamp": "2026-03-11T21:10:05.298348Z"
+    },
+    {
+      "message": "cerebras / cerebras-llama-8b / main: running -> failed",
+      "timestamp": "2026-03-11T21:10:05.301214Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / main: failed -> running",
+      "timestamp": "2026-03-11T21:16:26.909292Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / main: running -> failed",
+      "timestamp": "2026-03-11T21:16:27.853077Z"
+    },
+    {
+      "message": "xai / grok-3-mini / main: failed -> running",
+      "timestamp": "2026-03-11T21:16:28.896720Z"
+    },
+    {
+      "message": "xai / grok-3-mini / main: running -> failed",
+      "timestamp": "2026-03-11T21:16:29.128293Z"
+    },
+    {
+      "message": "openrouter / llama-4-scout / main: failed -> running",
+      "timestamp": "2026-03-11T21:16:29.916911Z"
+    },
+    {
+      "message": "openrouter / llama-4-scout / main: running -> failed",
+      "timestamp": "2026-03-11T21:16:30.146977Z"
+    },
+    {
+      "message": "openai / gpt-4o-mini / main: failed -> running",
+      "timestamp": "2026-03-11T21:16:30.903923Z"
+    },
+    {
+      "message": "openai / gpt-4o-mini / main: running -> failed",
+      "timestamp": "2026-03-11T21:16:31.120654Z"
+    },
+    {
+      "message": "cerebras / cerebras-llama-8b / main: failed -> running",
+      "timestamp": "2026-03-11T21:16:31.921501Z"
+    },
+    {
+      "message": "cerebras / cerebras-llama-8b / main: running -> failed",
+      "timestamp": "2026-03-11T21:16:32.147505Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T21:16:35.900102Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:16:36.150946Z"
+    },
+    {
+      "message": "cohere / cohere-command-r-plus / main: failed -> running",
+      "timestamp": "2026-03-11T21:16:37.914522Z"
+    },
+    {
+      "message": "cohere / cohere-command-r-plus / main: running -> failed",
+      "timestamp": "2026-03-11T21:16:38.139378Z"
+    },
+    {
+      "message": "openrouter / llama-4-scout / main: failed -> running",
+      "timestamp": "2026-03-11T21:19:03.895755Z"
+    },
+    {
+      "message": "openrouter / llama-4-scout / main: running -> failed",
+      "timestamp": "2026-03-11T21:19:04.131138Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T21:19:07.916812Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:19:08.152803Z"
+    },
+    {
+      "message": "openai / gpt-4o-mini / main: failed -> running",
+      "timestamp": "2026-03-11T21:19:08.889101Z"
+    },
+    {
+      "message": "cerebras / cerebras-llama-8b / main: failed -> running",
+      "timestamp": "2026-03-11T21:19:08.894135Z"
+    },
+    {
+      "message": "cerebras / cerebras-llama-8b / main: running -> failed",
+      "timestamp": "2026-03-11T21:19:09.103918Z"
+    },
+    {
+      "message": "openai / gpt-4o-mini / main: running -> failed",
+      "timestamp": "2026-03-11T21:19:09.121271Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / main: failed -> running",
+      "timestamp": "2026-03-11T21:19:11.616506Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / main: running -> failed",
+      "timestamp": "2026-03-11T21:19:11.841475Z"
+    },
+    {
+      "message": "xai / grok-3-mini / main: failed -> running",
+      "timestamp": "2026-03-11T21:19:11.875004Z"
+    },
+    {
+      "message": "xai / grok-3-mini / main: running -> failed",
+      "timestamp": "2026-03-11T21:19:12.099974Z"
+    },
+    {
+      "message": "cohere / cohere-command-r-plus / main: failed -> running",
+      "timestamp": "2026-03-11T21:19:17.898671Z"
+    },
+    {
+      "message": "cohere / cohere-command-r-plus / main: running -> failed",
+      "timestamp": "2026-03-11T21:19:18.111137Z"
+    },
+    {
+      "message": "openai / gpt-3.5-turbo / main: pending -> running",
+      "timestamp": "2026-03-11T21:19:19.467332Z"
+    },
+    {
+      "message": "openai / gpt-3.5-turbo / main: running -> failed",
+      "timestamp": "2026-03-11T21:19:19.675259Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:19:22.057546Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:19:22.275691Z"
+    },
+    {
+      "message": "xai / grok-3-mini / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:19:22.303876Z"
+    },
+    {
+      "message": "xai / grok-3-mini / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:19:22.500275Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:19:38.396616Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:19:38.609289Z"
+    },
+    {
+      "message": "openai / gpt-3.5-turbo / main: failed -> running",
+      "timestamp": "2026-03-11T21:20:20.886599Z"
+    },
+    {
+      "message": "openai / gpt-3.5-turbo / main: running -> failed",
+      "timestamp": "2026-03-11T21:20:21.116027Z"
+    },
+    {
+      "message": "xai / grok-3-mini / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:20:26.750791Z"
+    },
+    {
+      "message": "xai / grok-3-mini / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:20:26.980798Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:20:37.483625Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:20:37.715779Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:20:38.841042Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:20:39.064274Z"
+    },
+    {
+      "message": "xai / grok-3-mini / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:22:33.191830Z"
+    },
+    {
+      "message": "xai / grok-3-mini / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:22:33.413384Z"
+    },
+    {
+      "message": "openai / gpt-3.5-turbo / main: failed -> running",
+      "timestamp": "2026-03-11T21:22:36.347186Z"
+    },
+    {
+      "message": "openai / gpt-3.5-turbo / main: running -> failed",
+      "timestamp": "2026-03-11T21:22:36.566295Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:22:43.272556Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-micro-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:22:43.516521Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:22:45.919813Z"
+    },
+    {
+      "message": "groq / llama-3.3-70b-versatile / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:22:46.137798Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:41:49.386300Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:41:49.400559Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:41:49.612322Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:41:49.617896Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:41:54.404389Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:41:54.616271Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:41:59.407304Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / main: pending -> running",
+      "timestamp": "2026-03-11T21:41:59.613813Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:41:59.630600Z"
+    },
+    {
+      "message": "openai / gpt-4o / main: pending -> running",
+      "timestamp": "2026-03-11T21:41:59.634167Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / main: running -> failed",
+      "timestamp": "2026-03-11T21:41:59.823512Z"
+    },
+    {
+      "message": "openai / gpt-4o / main: running -> failed",
+      "timestamp": "2026-03-11T21:41:59.859517Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / main: pending -> running",
+      "timestamp": "2026-03-11T21:42:39.612321Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:42:39.843740Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:42:56.853446Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:42:57.079288Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:42:58.836151Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:42:59.044483Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:42:59.853665Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:42:59.861382Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:43:00.073883Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:43:00.076173Z"
+    },
+    {
+      "message": "openai / gpt-4o / main: failed -> running",
+      "timestamp": "2026-03-11T21:43:03.101949Z"
+    },
+    {
+      "message": "openai / gpt-4o / main: running -> failed",
+      "timestamp": "2026-03-11T21:43:04.344170Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / main: failed -> running",
+      "timestamp": "2026-03-11T21:43:13.042526Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / main: running -> failed",
+      "timestamp": "2026-03-11T21:43:13.278789Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T21:43:52.060384Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:43:52.344092Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:44:58.291358Z"
+    },
+    {
+      "message": "mistral / magistral-medium-latest / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:44:58.501035Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:44:59.269133Z"
+    },
+    {
+      "message": "fireworks / accounts/fireworks/models/kimi-k2-instruct-0905 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:44:59.487972Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:45:01.275566Z"
+    },
+    {
+      "message": "google / gemini-2.5-flash / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:45:01.505106Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:45:07.290802Z"
+    },
+    {
+      "message": "nvidia / deepseek-ai/deepseek-r1-distill-qwen-32b / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:45:07.515113Z"
+    },
+    {
+      "message": "mistral / mistral-large / main: pending -> running",
+      "timestamp": "2026-03-11T21:45:08.724462Z"
+    },
+    {
+      "message": "mistral / mistral-large / main: running -> failed",
+      "timestamp": "2026-03-11T21:45:08.944349Z"
+    },
+    {
+      "message": "openai / gpt-4o / main: failed -> running",
+      "timestamp": "2026-03-11T21:45:10.587178Z"
+    },
+    {
+      "message": "openai / gpt-4o / main: running -> failed",
+      "timestamp": "2026-03-11T21:45:10.835063Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / main: pending -> running",
+      "timestamp": "2026-03-11T21:45:11.750547Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / main: running -> failed",
+      "timestamp": "2026-03-11T21:45:11.968590Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / main: failed -> running",
+      "timestamp": "2026-03-11T21:45:13.517025Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / main: running -> failed",
+      "timestamp": "2026-03-11T21:45:13.716170Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:45:23.959574Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:45:24.199316Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / main: pending -> running",
+      "timestamp": "2026-03-11T21:45:27.739005Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / main: running -> failed",
+      "timestamp": "2026-03-11T21:45:27.933778Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T21:45:59.735488Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:46:00.046149Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / main: failed -> running",
+      "timestamp": "2026-03-11T21:46:13.188962Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / main: running -> failed",
+      "timestamp": "2026-03-11T21:46:13.399427Z"
+    },
+    {
+      "message": "mistral / mistral-large / main: failed -> running",
+      "timestamp": "2026-03-11T21:46:14.181803Z"
+    },
+    {
+      "message": "mistral / mistral-large / main: running -> failed",
+      "timestamp": "2026-03-11T21:46:14.396996Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / main: failed -> running",
+      "timestamp": "2026-03-11T21:46:29.155038Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / main: running -> failed",
+      "timestamp": "2026-03-11T21:46:29.387660Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:46:30.274379Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:46:30.420083Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:46:30.475506Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:46:30.624886Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:47:38.709948Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:47:38.994945Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / main: failed -> running",
+      "timestamp": "2026-03-11T21:48:15.626587Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / main: running -> failed",
+      "timestamp": "2026-03-11T21:48:15.866857Z"
+    },
+    {
+      "message": "mistral / mistral-large / main: failed -> running",
+      "timestamp": "2026-03-11T21:48:18.627798Z"
+    },
+    {
+      "message": "mistral / mistral-large / main: running -> failed",
+      "timestamp": "2026-03-11T21:48:18.854031Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:48:26.174638Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:48:26.392740Z"
+    },
+    {
+      "message": "mistral / mistral-small-3.2 / main: pending -> running",
+      "timestamp": "2026-03-11T21:48:29.092298Z"
+    },
+    {
+      "message": "mistral / mistral-small-3.2 / main: running -> failed",
+      "timestamp": "2026-03-11T21:48:29.314188Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / main: failed -> running",
+      "timestamp": "2026-03-11T21:48:35.614925Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / main: running -> failed",
+      "timestamp": "2026-03-11T21:48:35.835219Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:48:35.846425Z"
+    },
+    {
+      "message": "groq / llama-3.1-8b-instant / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:48:36.069445Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:48:56.125078Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:48:56.350669Z"
+    },
+    {
+      "message": "mistral / mistral-small-3.2 / main: failed -> running",
+      "timestamp": "2026-03-11T21:49:30.597008Z"
+    },
+    {
+      "message": "mistral / mistral-small-3.2 / main: running -> failed",
+      "timestamp": "2026-03-11T21:49:30.838507Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:49:40.711840Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:49:41.062007Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:49:49.282634Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-sonnet-4-20250514-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:49:49.522550Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:49:59.579532Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:49:59.810360Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / main: pending -> running",
+      "timestamp": "2026-03-11T21:50:19.804512Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:50:20.024473Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T21:51:34.257358Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:51:34.647182Z"
+    },
+    {
+      "message": "mistral / mistral-small-3.2 / main: failed -> running",
+      "timestamp": "2026-03-11T21:51:36.072922Z"
+    },
+    {
+      "message": "mistral / mistral-small-3.2 / main: running -> failed",
+      "timestamp": "2026-03-11T21:51:36.295674Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:51:54.347054Z"
+    },
+    {
+      "message": "google / gemini-2.0-flash / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:51:54.606308Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:52:07.039571Z"
+    },
+    {
+      "message": "nvidia / nvidia-llama-70b / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:52:07.293475Z"
+    },
+    {
+      "message": "nvidia / llama-4-maverick / main: pending -> running",
+      "timestamp": "2026-03-11T21:52:27.517836Z"
+    },
+    {
+      "message": "nvidia / llama-4-maverick / main: running -> failed",
+      "timestamp": "2026-03-11T21:52:27.756990Z"
+    },
+    {
+      "message": "nvidia / llama-4-maverick / main: failed -> running",
+      "timestamp": "2026-03-11T21:53:36.993630Z"
+    },
+    {
+      "message": "nvidia / llama-4-maverick / main: running -> failed",
+      "timestamp": "2026-03-11T21:53:37.222984Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T21:53:42.875232Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:53:43.099129Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:54:13.350783Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:54:13.592286Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:55:25.843454Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:55:26.086485Z"
+    },
+    {
+      "message": "nvidia / llama-4-maverick / main: failed -> running",
+      "timestamp": "2026-03-11T21:55:48.432188Z"
+    },
+    {
+      "message": "nvidia / llama-4-maverick / main: running -> failed",
+      "timestamp": "2026-03-11T21:55:48.644457Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / main: pending -> running",
+      "timestamp": "2026-03-11T21:56:08.882772Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / main: running -> failed",
+      "timestamp": "2026-03-11T21:56:09.104345Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / main: failed -> running",
+      "timestamp": "2026-03-11T21:57:09.307948Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / main: running -> failed",
+      "timestamp": "2026-03-11T21:57:09.552539Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T21:57:31.319184Z"
+    },
+    {
+      "message": "bedrock / eu.anthropic.claude-haiku-4-5-20251001-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:57:31.548893Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / main: pending -> running",
+      "timestamp": "2026-03-11T21:58:01.803161Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:58:02.011127Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / main: failed -> running",
+      "timestamp": "2026-03-11T21:59:10.776182Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / main: running -> failed",
+      "timestamp": "2026-03-11T21:59:11.032820Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T21:59:17.235166Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T21:59:17.467860Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / ctrl: pending -> running",
+      "timestamp": "2026-03-11T21:59:31.268367Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / ctrl: running -> failed",
+      "timestamp": "2026-03-11T21:59:31.491965Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / ctrl: failed -> running",
+      "timestamp": "2026-03-11T22:00:45.720801Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:00:45.980942Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T22:01:32.681121Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T22:01:32.905333Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / ctrl: pending -> running",
+      "timestamp": "2026-03-11T22:02:03.144113Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:02:03.342204Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / ctrl: failed -> running",
+      "timestamp": "2026-03-11T22:02:50.218923Z"
+    },
+    {
+      "message": "nvidia / moonshotai/kimi-k2-thinking / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:02:50.446093Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T22:03:03.554625Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:03:03.817334Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / main: pending -> running",
+      "timestamp": "2026-03-11T22:03:10.685918Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / main: running -> failed",
+      "timestamp": "2026-03-11T22:03:10.905062Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / main: failed -> running",
+      "timestamp": "2026-03-11T22:04:12.121563Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / main: running -> failed",
+      "timestamp": "2026-03-11T22:04:12.388788Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T22:05:11.064967Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-lite-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:05:11.436108Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / main: pending -> running",
+      "timestamp": "2026-03-11T22:05:41.678454Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T22:05:41.903299Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / main: failed -> running",
+      "timestamp": "2026-03-11T22:06:16.627182Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / main: running -> failed",
+      "timestamp": "2026-03-11T22:06:16.851084Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / ctrl: pending -> running",
+      "timestamp": "2026-03-11T22:06:37.066975Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:06:37.276165Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T22:06:52.128264Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T22:06:52.349543Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / ctrl: failed -> running",
+      "timestamp": "2026-03-11T22:07:49.509052Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:07:49.751530Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / main: failed -> running",
+      "timestamp": "2026-03-11T22:09:05.576979Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / main: running -> failed",
+      "timestamp": "2026-03-11T22:09:05.935697Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / ctrl: pending -> running",
+      "timestamp": "2026-03-11T22:09:36.159005Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:09:36.381711Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / ctrl: failed -> running",
+      "timestamp": "2026-03-11T22:10:04.981457Z"
+    },
+    {
+      "message": "nvidia / nvidia-gemma-27b / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:10:05.234157Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T22:10:50.614915Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:10:50.838382Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / ctrl: failed -> running",
+      "timestamp": "2026-03-11T22:13:03.087172Z"
+    },
+    {
+      "message": "bedrock / amazon.nova-pro-v1:0 / ctrl: running -> failed",
+      "timestamp": "2026-03-11T22:13:03.325018Z"
+    }
+  ],
+  "jobs": {
+    "bedrock::amazon.nova-lite-v1:0::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:25:19.751497Z",
+      "error": "max retries exceeded",
+      "model": "amazon.nova-lite-v1:0",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T22:02:03.144036Z",
+      "status": "failed"
+    },
+    "bedrock::amazon.nova-lite-v1:0::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:24:49.500396Z",
+      "error": "max retries exceeded",
+      "model": "amazon.nova-lite-v1:0",
+      "phase": "main",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T21:58:01.803150Z",
+      "status": "failed"
+    },
+    "bedrock::amazon.nova-micro-v1:0::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:18.082583Z",
+      "error": "max retries exceeded",
+      "model": "amazon.nova-micro-v1:0",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T21:19:38.396604Z",
+      "status": "failed"
+    },
+    "bedrock::amazon.nova-micro-v1:0::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.854349Z",
+      "error": "max retries exceeded",
+      "model": "amazon.nova-micro-v1:0",
+      "phase": "main",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T21:10:05.066570Z",
+      "status": "failed"
+    },
+    "bedrock::amazon.nova-pro-v1:0::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:26:20.234884Z",
+      "error": "max retries exceeded",
+      "model": "amazon.nova-pro-v1:0",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T22:09:36.158996Z",
+      "status": "failed"
+    },
+    "bedrock::amazon.nova-pro-v1:0::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:25:49.985973Z",
+      "error": "max retries exceeded",
+      "model": "amazon.nova-pro-v1:0",
+      "phase": "main",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T22:05:41.678439Z",
+      "status": "failed"
+    },
+    "bedrock::eu.anthropic.claude-haiku-4-5-20251001-v1:0::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:24:19.155439Z",
+      "error": "max retries exceeded",
+      "model": "eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T21:54:13.350770Z",
+      "status": "failed"
+    },
+    "bedrock::eu.anthropic.claude-haiku-4-5-20251001-v1:0::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:23:48.924364Z",
+      "error": "max retries exceeded",
+      "model": "eu.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "phase": "main",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T21:50:19.804490Z",
+      "status": "failed"
+    },
+    "bedrock::eu.anthropic.claude-sonnet-4-20250514-v1:0::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:23:18.696881Z",
+      "error": "max retries exceeded",
+      "model": "eu.anthropic.claude-sonnet-4-20250514-v1:0",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T21:46:30.274366Z",
+      "status": "failed"
+    },
+    "bedrock::eu.anthropic.claude-sonnet-4-20250514-v1:0::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:48.309028Z",
+      "error": "max retries exceeded",
+      "model": "eu.anthropic.claude-sonnet-4-20250514-v1:0",
+      "phase": "main",
+      "pid": null,
+      "provider": "bedrock",
+      "started_at": "2026-03-11T21:42:39.612303Z",
+      "status": "failed"
+    },
+    "cerebras::cerebras-llama-8b::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:45.439488Z",
+      "error": null,
+      "model": "cerebras-llama-8b",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "cerebras",
+      "started_at": null,
+      "status": "done"
+    },
+    "cerebras::cerebras-llama-8b::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.875489Z",
+      "error": "max retries exceeded",
+      "model": "cerebras-llama-8b",
+      "phase": "main",
+      "pid": null,
+      "provider": "cerebras",
+      "started_at": "2026-03-11T21:10:05.086618Z",
+      "status": "failed"
+    },
+    "cohere::cohere-command-r-plus::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:38.475743Z",
+      "error": null,
+      "model": "cohere-command-r-plus",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "cohere",
+      "started_at": null,
+      "status": "done"
+    },
+    "cohere::cohere-command-r-plus::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.843489Z",
+      "error": "max retries exceeded",
+      "model": "cohere-command-r-plus",
+      "phase": "main",
+      "pid": null,
+      "provider": "cohere",
+      "started_at": "2026-03-11T21:10:05.090426Z",
+      "status": "failed"
+    },
+    "cohere::command-r::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:44.626592Z",
+      "error": null,
+      "model": "command-r",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "cohere",
+      "started_at": null,
+      "status": "done"
+    },
+    "cohere::command-r::main": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:44.397527Z",
+      "error": null,
+      "model": "command-r",
+      "phase": "main",
+      "pid": null,
+      "provider": "cohere",
+      "started_at": null,
+      "status": "done"
+    },
+    "deepseek::deepseek-r1::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:35.073842Z",
+      "error": null,
+      "model": "deepseek-r1",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "deepseek",
+      "started_at": null,
+      "status": "done"
+    },
+    "deepseek::deepseek-r1::main": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:34.851308Z",
+      "error": null,
+      "model": "deepseek-r1",
+      "phase": "main",
+      "pid": null,
+      "provider": "deepseek",
+      "started_at": null,
+      "status": "done"
+    },
+    "fireworks::accounts/fireworks/models/kimi-k2-instruct-0905::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:03.087725Z",
+      "error": "max retries exceeded",
+      "model": "accounts/fireworks/models/kimi-k2-instruct-0905",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "fireworks",
+      "started_at": "2026-03-11T21:41:54.404371Z",
+      "status": "failed"
+    },
+    "fireworks::accounts/fireworks/models/kimi-k2-instruct-0905::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.839647Z",
+      "error": "max retries exceeded",
+      "model": "accounts/fireworks/models/kimi-k2-instruct-0905",
+      "phase": "main",
+      "pid": null,
+      "provider": "fireworks",
+      "started_at": "2026-03-11T21:06:11.584473Z",
+      "status": "failed"
+    },
+    "google::gemini-2.0-flash::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:18.493924Z",
+      "error": "max retries exceeded",
+      "model": "gemini-2.0-flash",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "google",
+      "started_at": "2026-03-11T21:48:26.174624Z",
+      "status": "failed"
+    },
+    "google::gemini-2.0-flash::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:08.279567Z",
+      "error": "max retries exceeded",
+      "model": "gemini-2.0-flash",
+      "phase": "main",
+      "pid": null,
+      "provider": "google",
+      "started_at": "2026-03-11T21:45:11.750526Z",
+      "status": "failed"
+    },
+    "google::gemini-2.5-flash::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:58.074832Z",
+      "error": "max retries exceeded",
+      "model": "gemini-2.5-flash",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "google",
+      "started_at": "2026-03-11T21:41:49.386282Z",
+      "status": "failed"
+    },
+    "google::gemini-2.5-flash::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.850402Z",
+      "error": "max retries exceeded",
+      "model": "gemini-2.5-flash",
+      "phase": "main",
+      "pid": null,
+      "provider": "google",
+      "started_at": "2026-03-11T21:06:11.590066Z",
+      "status": "failed"
+    },
+    "groq::llama-3.1-8b-instant::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:18.461790Z",
+      "error": "max retries exceeded",
+      "model": "llama-3.1-8b-instant",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "groq",
+      "started_at": "2026-03-11T21:45:23.959559Z",
+      "status": "failed"
+    },
+    "groq::llama-3.1-8b-instant::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:08.242695Z",
+      "error": "max retries exceeded",
+      "model": "llama-3.1-8b-instant",
+      "phase": "main",
+      "pid": null,
+      "provider": "groq",
+      "started_at": "2026-03-11T21:41:59.613804Z",
+      "status": "failed"
+    },
+    "groq::llama-3.3-70b-versatile::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:58.037535Z",
+      "error": "max retries exceeded",
+      "model": "llama-3.3-70b-versatile",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "groq",
+      "started_at": "2026-03-11T21:19:22.057536Z",
+      "status": "failed"
+    },
+    "groq::llama-3.3-70b-versatile::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.809118Z",
+      "error": "max retries exceeded",
+      "model": "llama-3.3-70b-versatile",
+      "phase": "main",
+      "pid": null,
+      "provider": "groq",
+      "started_at": "2026-03-11T21:10:05.080123Z",
+      "status": "failed"
+    },
+    "mistral::magistral-medium-latest::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:58.088970Z",
+      "error": "max retries exceeded",
+      "model": "magistral-medium-latest",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "mistral",
+      "started_at": "2026-03-11T21:41:49.400545Z",
+      "status": "failed"
+    },
+    "mistral::magistral-medium-latest::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.870063Z",
+      "error": "max retries exceeded",
+      "model": "magistral-medium-latest",
+      "phase": "main",
+      "pid": null,
+      "provider": "mistral",
+      "started_at": "2026-03-11T21:06:11.591247Z",
+      "status": "failed"
+    },
+    "mistral::mistral-large::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:43.771369Z",
+      "error": null,
+      "model": "mistral-large",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "mistral",
+      "started_at": null,
+      "status": "done"
+    },
+    "mistral::mistral-large::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:08.305691Z",
+      "error": "max retries exceeded",
+      "model": "mistral-large",
+      "phase": "main",
+      "pid": null,
+      "provider": "mistral",
+      "started_at": "2026-03-11T21:45:08.724452Z",
+      "status": "failed"
+    },
+    "mistral::mistral-small-3.2::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:44.181754Z",
+      "error": null,
+      "model": "mistral-small-3.2",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "mistral",
+      "started_at": null,
+      "status": "done"
+    },
+    "mistral::mistral-small-3.2::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:18.516202Z",
+      "error": "max retries exceeded",
+      "model": "mistral-small-3.2",
+      "phase": "main",
+      "pid": null,
+      "provider": "mistral",
+      "started_at": "2026-03-11T21:48:29.092281Z",
+      "status": "failed"
+    },
+    "nvidia::deepseek-ai/deepseek-r1-distill-qwen-32b::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:08.032194Z",
+      "error": "max retries exceeded",
+      "model": "deepseek-ai/deepseek-r1-distill-qwen-32b",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": "2026-03-11T21:41:59.407286Z",
+      "status": "failed"
+    },
+    "nvidia::deepseek-ai/deepseek-r1-distill-qwen-32b::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.822166Z",
+      "error": "max retries exceeded",
+      "model": "deepseek-ai/deepseek-r1-distill-qwen-32b",
+      "phase": "main",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": "2026-03-11T21:06:11.587943Z",
+      "status": "failed"
+    },
+    "nvidia::granite-3.3-8b::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:39.720291Z",
+      "error": null,
+      "model": "granite-3.3-8b",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": null,
+      "status": "done"
+    },
+    "nvidia::granite-3.3-8b::main": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:39.500560Z",
+      "error": null,
+      "model": "granite-3.3-8b",
+      "phase": "main",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": null,
+      "status": "done"
+    },
+    "nvidia::llama-4-maverick::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:38.070611Z",
+      "error": null,
+      "model": "llama-4-maverick",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": null,
+      "status": "done"
+    },
+    "nvidia::llama-4-maverick::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:23:08.655714Z",
+      "error": "max retries exceeded",
+      "model": "llama-4-maverick",
+      "phase": "main",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": "2026-03-11T21:52:27.517819Z",
+      "status": "failed"
+    },
+    "nvidia::moonshotai/kimi-k2-thinking::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:23:49.112412Z",
+      "error": "max retries exceeded",
+      "model": "moonshotai/kimi-k2-thinking",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": "2026-03-11T21:59:31.268333Z",
+      "status": "failed"
+    },
+    "nvidia::moonshotai/kimi-k2-thinking::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:23:28.886880Z",
+      "error": "max retries exceeded",
+      "model": "moonshotai/kimi-k2-thinking",
+      "phase": "main",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": "2026-03-11T21:56:08.882758Z",
+      "status": "failed"
+    },
+    "nvidia::nvidia-gemma-27b::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:24:29.587874Z",
+      "error": "max retries exceeded",
+      "model": "nvidia-gemma-27b",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": "2026-03-11T22:06:37.066963Z",
+      "status": "failed"
+    },
+    "nvidia::nvidia-gemma-27b::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:24:09.361510Z",
+      "error": "max retries exceeded",
+      "model": "nvidia-gemma-27b",
+      "phase": "main",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": "2026-03-11T22:03:10.685903Z",
+      "status": "failed"
+    },
+    "nvidia::nvidia-llama-70b::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:48.451973Z",
+      "error": "max retries exceeded",
+      "model": "nvidia-llama-70b",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": "2026-03-11T21:48:56.125059Z",
+      "status": "failed"
+    },
+    "nvidia::nvidia-llama-70b::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:28.241687Z",
+      "error": "max retries exceeded",
+      "model": "nvidia-llama-70b",
+      "phase": "main",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": "2026-03-11T21:45:27.738994Z",
+      "status": "failed"
+    },
+    "nvidia::phi-4-mini::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:43.336080Z",
+      "error": null,
+      "model": "phi-4-mini",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": null,
+      "status": "done"
+    },
+    "nvidia::phi-4-mini::main": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:43.055311Z",
+      "error": null,
+      "model": "phi-4-mini",
+      "phase": "main",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": null,
+      "status": "done"
+    },
+    "nvidia::qwen-2.5-7b::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:37.223877Z",
+      "error": null,
+      "model": "qwen-2.5-7b",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": null,
+      "status": "done"
+    },
+    "nvidia::qwen-2.5-7b::main": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:37.003168Z",
+      "error": null,
+      "model": "qwen-2.5-7b",
+      "phase": "main",
+      "pid": null,
+      "provider": "nvidia",
+      "started_at": null,
+      "status": "done"
+    },
+    "openai::gpt-3.5-turbo::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:36.782772Z",
+      "error": null,
+      "model": "gpt-3.5-turbo",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "openai",
+      "started_at": null,
+      "status": "done"
+    },
+    "openai::gpt-3.5-turbo::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:58.078310Z",
+      "error": "max retries exceeded",
+      "model": "gpt-3.5-turbo",
+      "phase": "main",
+      "pid": null,
+      "provider": "openai",
+      "started_at": "2026-03-11T21:19:19.467323Z",
+      "status": "failed"
+    },
+    "openai::gpt-4o-mini::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:36.328621Z",
+      "error": null,
+      "model": "gpt-4o-mini",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "openai",
+      "started_at": null,
+      "status": "done"
+    },
+    "openai::gpt-4o-mini::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.832157Z",
+      "error": "max retries exceeded",
+      "model": "gpt-4o-mini",
+      "phase": "main",
+      "pid": null,
+      "provider": "openai",
+      "started_at": "2026-03-11T21:10:05.078121Z",
+      "status": "failed"
+    },
+    "openai::gpt-4o::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:40.970154Z",
+      "error": null,
+      "model": "gpt-4o",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "openai",
+      "started_at": null,
+      "status": "done"
+    },
+    "openai::gpt-4o::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:22:08.271443Z",
+      "error": "max retries exceeded",
+      "model": "gpt-4o",
+      "phase": "main",
+      "pid": null,
+      "provider": "openai",
+      "started_at": "2026-03-11T21:41:59.634147Z",
+      "status": "failed"
+    },
+    "openrouter::llama-4-scout::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:41.372339Z",
+      "error": null,
+      "model": "llama-4-scout",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "openrouter",
+      "started_at": null,
+      "status": "done"
+    },
+    "openrouter::llama-4-scout::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.860514Z",
+      "error": "max retries exceeded",
+      "model": "llama-4-scout",
+      "phase": "main",
+      "pid": null,
+      "provider": "openrouter",
+      "started_at": "2026-03-11T21:10:05.088365Z",
+      "status": "failed"
+    },
+    "watsonx::meta-llama/llama-3-405b-instruct::ctrl": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:47.594346Z",
+      "error": null,
+      "model": "meta-llama/llama-3-405b-instruct",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "watsonx",
+      "started_at": null,
+      "status": "disabled"
+    },
+    "watsonx::meta-llama/llama-3-405b-instruct::main": {
+      "attempt": 0,
+      "completed_at": "2026-03-11T22:21:47.590728Z",
+      "error": null,
+      "model": "meta-llama/llama-3-405b-instruct",
+      "phase": "main",
+      "pid": null,
+      "provider": "watsonx",
+      "started_at": null,
+      "status": "disabled"
+    },
+    "xai::grok-3-mini::ctrl": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:58.065912Z",
+      "error": "max retries exceeded",
+      "model": "grok-3-mini",
+      "phase": "ctrl",
+      "pid": null,
+      "provider": "xai",
+      "started_at": "2026-03-11T21:19:22.303866Z",
+      "status": "failed"
+    },
+    "xai::grok-3-mini::main": {
+      "attempt": 3,
+      "completed_at": "2026-03-11T22:21:47.827432Z",
+      "error": "max retries exceeded",
+      "model": "grok-3-mini",
+      "phase": "main",
+      "pid": null,
+      "provider": "xai",
+      "started_at": "2026-03-11T21:10:05.063726Z",
+      "status": "failed"
+    }
+  },
+  "last_heartbeat": "2026-03-11T22:26:47.682253Z",
+  "started_at": "2026-03-11T20:59:03.749296Z"
+}

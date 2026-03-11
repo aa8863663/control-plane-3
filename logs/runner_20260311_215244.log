@@ -1,0 +1,55 @@
+2026-03-11 21:52:44,431 [INFO] Lock acquired by PID 34179
+2026-03-11 21:52:57,410 [INFO] Loaded 41 jobs across 11 providers
+2026-03-11 21:52:57,410 [INFO] [xai] 2 jobs
+2026-03-11 21:52:57,411 [INFO]   - grok-3-mini / main (priority 100)
+2026-03-11 21:52:57,411 [INFO]   - grok-3-mini / ctrl (priority 100)
+2026-03-11 21:52:57,411 [INFO] [nvidia] 9 jobs
+2026-03-11 21:52:57,411 [INFO]   - deepseek-ai/deepseek-r1-distill-qwen-32b / main (priority 100)
+2026-03-11 21:52:57,411 [INFO]   - deepseek-ai/deepseek-r1-distill-qwen-32b / ctrl (priority 100)
+2026-03-11 21:52:57,411 [INFO]   - nvidia-llama-70b / main (priority 95)
+2026-03-11 21:52:57,411 [INFO]   - nvidia-llama-70b / ctrl (priority 95)
+2026-03-11 21:52:57,412 [INFO]   - llama-4-maverick / main (priority 90)
+2026-03-11 21:52:57,412 [INFO]   - moonshotai/kimi-k2-thinking / main (priority 90)
+2026-03-11 21:52:57,412 [INFO]   - moonshotai/kimi-k2-thinking / ctrl (priority 90)
+2026-03-11 21:52:57,412 [INFO]   - nvidia-gemma-27b / main (priority 75)
+2026-03-11 21:52:57,412 [INFO]   - nvidia-gemma-27b / ctrl (priority 75)
+2026-03-11 21:52:57,412 [INFO] [openai] 3 jobs
+2026-03-11 21:52:57,412 [INFO]   - gpt-4o-mini / main (priority 95)
+2026-03-11 21:52:57,412 [INFO]   - gpt-3.5-turbo / main (priority 95)
+2026-03-11 21:52:57,412 [INFO]   - gpt-4o / main (priority 80)
+2026-03-11 21:52:57,412 [INFO] [bedrock] 10 jobs
+2026-03-11 21:52:57,413 [INFO]   - amazon.nova-micro-v1:0 / main (priority 90)
+2026-03-11 21:52:57,413 [INFO]   - amazon.nova-micro-v1:0 / ctrl (priority 90)
+2026-03-11 21:52:57,413 [INFO]   - eu.anthropic.claude-sonnet-4-20250514-v1:0 / main (priority 80)
+2026-03-11 21:52:57,413 [INFO]   - eu.anthropic.claude-sonnet-4-20250514-v1:0 / ctrl (priority 80)
+2026-03-11 21:52:57,413 [INFO]   - eu.anthropic.claude-haiku-4-5-20251001-v1:0 / main (priority 80)
+2026-03-11 21:52:57,413 [INFO]   - eu.anthropic.claude-haiku-4-5-20251001-v1:0 / ctrl (priority 80)
+2026-03-11 21:52:57,413 [INFO]   - amazon.nova-lite-v1:0 / main (priority 70)
+2026-03-11 21:52:57,413 [INFO]   - amazon.nova-lite-v1:0 / ctrl (priority 70)
+2026-03-11 21:52:57,413 [INFO]   - amazon.nova-pro-v1:0 / main (priority 70)
+2026-03-11 21:52:57,414 [INFO]   - amazon.nova-pro-v1:0 / ctrl (priority 70)
+2026-03-11 21:52:57,414 [INFO] [cohere] 1 jobs
+2026-03-11 21:52:57,414 [INFO]   - cohere-command-r-plus / main (priority 90)
+2026-03-11 21:52:57,414 [INFO] [groq] 4 jobs
+2026-03-11 21:52:57,414 [INFO]   - llama-3.3-70b-versatile / main (priority 85)
+2026-03-11 21:52:57,414 [INFO]   - llama-3.3-70b-versatile / ctrl (priority 85)
+2026-03-11 21:52:57,414 [INFO]   - llama-3.1-8b-instant / main (priority 85)
+2026-03-11 21:52:57,415 [INFO]   - llama-3.1-8b-instant / ctrl (priority 85)
+2026-03-11 21:52:57,415 [INFO] [openrouter] 1 jobs
+2026-03-11 21:52:57,415 [INFO]   - llama-4-scout / main (priority 75)
+2026-03-11 21:52:57,415 [INFO] [google] 4 jobs
+2026-03-11 21:52:57,415 [INFO]   - gemini-2.5-flash / main (priority 100)
+2026-03-11 21:52:57,416 [INFO]   - gemini-2.5-flash / ctrl (priority 100)
+2026-03-11 21:52:57,416 [INFO]   - gemini-2.0-flash / main (priority 75)
+2026-03-11 21:52:57,416 [INFO]   - gemini-2.0-flash / ctrl (priority 75)
+2026-03-11 21:52:57,416 [INFO] [mistral] 4 jobs
+2026-03-11 21:52:57,416 [INFO]   - magistral-medium-latest / main (priority 100)
+2026-03-11 21:52:57,416 [INFO]   - magistral-medium-latest / ctrl (priority 100)
+2026-03-11 21:52:57,416 [INFO]   - mistral-large / main (priority 70)
+2026-03-11 21:52:57,417 [INFO]   - mistral-small-3.2 / main (priority 70)
+2026-03-11 21:52:57,417 [INFO] [cerebras] 1 jobs
+2026-03-11 21:52:57,417 [INFO]   - cerebras-llama-8b / main (priority 70)
+2026-03-11 21:52:57,417 [INFO] [fireworks] 2 jobs
+2026-03-11 21:52:57,417 [INFO]   - accounts/fireworks/models/kimi-k2-instruct-0905 / main (priority 95)
+2026-03-11 21:52:57,417 [INFO]   - accounts/fireworks/models/kimi-k2-instruct-0905 / ctrl (priority 95)
+2026-03-11 21:52:57,418 [INFO] Lock released

@@ -1,0 +1,61 @@
+2026-03-11 21:06:08,567 [INFO] Lock acquired by PID 33771
+2026-03-11 21:06:11,364 [INFO] Loaded 10 jobs across 4 providers
+2026-03-11 21:06:11,365 [INFO] === START mistral queue ===
+2026-03-11 21:06:11,367 [INFO] === START google queue ===
+2026-03-11 21:06:11,367 [INFO] === START fireworks queue ===
+2026-03-11 21:06:11,368 [INFO] === START nvidia queue ===
+2026-03-11 21:06:11,585 [INFO] [fireworks] starting accounts/fireworks/models/kimi-k2-instruct-0905 / main
+2026-03-11 21:06:11,585 [INFO] [fireworks] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/accounts_fireworks_models_kimi-k2-instruct-0905_31ce89bc_main_20260311_210611.csv
+2026-03-11 21:06:11,588 [INFO] [nvidia] starting deepseek-ai/deepseek-r1-distill-qwen-32b / main
+2026-03-11 21:06:11,589 [INFO] [nvidia] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/deepseek-ai_deepseek-r1-distill-qwen-32b_e76abc15_main_20260311_210611.csv
+2026-03-11 21:06:11,591 [INFO] [google] starting gemini-2.5-flash / main
+2026-03-11 21:06:11,592 [INFO] [google] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/gemini-2_5-flash_aa7d5e28_main_20260311_210611.csv
+2026-03-11 21:06:11,592 [INFO] [mistral] starting magistral-medium-latest / main
+2026-03-11 21:06:11,593 [INFO] [mistral] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/magistral-medium-latest_792f632a_main_20260311_210611.csv
+2026-03-11 21:06:12,028 [INFO] [fireworks] retrying accounts/fireworks/models/kimi-k2-instruct-0905 / main in 70s
+2026-03-11 21:06:12,030 [INFO] [nvidia] retrying deepseek-ai/deepseek-r1-distill-qwen-32b / main in 73s
+2026-03-11 21:06:12,033 [INFO] [google] retrying gemini-2.5-flash / main in 65s
+2026-03-11 21:06:12,034 [INFO] [mistral] retrying magistral-medium-latest / main in 74s
+2026-03-11 21:07:17,039 [INFO] [google] starting gemini-2.5-flash / main
+2026-03-11 21:07:17,041 [INFO] [google] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/gemini-2_5-flash_aa7d5e28_main_20260311_210717.csv
+2026-03-11 21:07:17,486 [INFO] [google] retrying gemini-2.5-flash / main in 129s
+2026-03-11 21:07:22,037 [INFO] [fireworks] starting accounts/fireworks/models/kimi-k2-instruct-0905 / main
+2026-03-11 21:07:22,038 [INFO] [fireworks] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/accounts_fireworks_models_kimi-k2-instruct-0905_31ce89bc_main_20260311_210722.csv
+2026-03-11 21:07:22,453 [INFO] [fireworks] retrying accounts/fireworks/models/kimi-k2-instruct-0905 / main in 134s
+2026-03-11 21:07:25,041 [INFO] [nvidia] starting deepseek-ai/deepseek-r1-distill-qwen-32b / main
+2026-03-11 21:07:25,042 [INFO] [nvidia] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/deepseek-ai_deepseek-r1-distill-qwen-32b_e76abc15_main_20260311_210725.csv
+2026-03-11 21:07:25,455 [INFO] [nvidia] retrying deepseek-ai/deepseek-r1-distill-qwen-32b / main in 126s
+2026-03-11 21:07:26,045 [INFO] [mistral] starting magistral-medium-latest / main
+2026-03-11 21:07:26,045 [INFO] [mistral] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/magistral-medium-latest_792f632a_main_20260311_210726.csv
+2026-03-11 21:07:26,468 [INFO] [mistral] retrying magistral-medium-latest / main in 132s
+2026-03-11 21:07:45,995 [INFO] Stop requested. Finishing current subprocess and exiting cleanly...
+2026-03-11 21:08:04,929 [INFO] Stop requested. Finishing current subprocess and exiting cleanly...
+2026-03-11 21:09:26,492 [INFO] [google] starting gemini-2.5-flash / main
+2026-03-11 21:09:26,493 [INFO] [google] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/gemini-2_5-flash_aa7d5e28_main_20260311_210926.csv
+2026-03-11 21:09:31,458 [INFO] [nvidia] starting deepseek-ai/deepseek-r1-distill-qwen-32b / main
+2026-03-11 21:09:31,458 [INFO] [nvidia] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/deepseek-ai_deepseek-r1-distill-qwen-32b_e76abc15_main_20260311_210931.csv
+2026-03-11 21:09:36,458 [INFO] [fireworks] starting accounts/fireworks/models/kimi-k2-instruct-0905 / main
+2026-03-11 21:09:36,458 [INFO] [fireworks] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/accounts_fireworks_models_kimi-k2-instruct-0905_31ce89bc_main_20260311_210936.csv
+2026-03-11 21:09:36,704 [INFO] [google] stop requested; halting queue
+2026-03-11 21:09:36,704 [INFO] === END google queue ===
+2026-03-11 21:09:38,475 [INFO] [mistral] starting magistral-medium-latest / main
+2026-03-11 21:09:38,475 [INFO] [mistral] output -> /Users/aimeestanyer/Projects/control-plane-3/runner_outputs/magistral-medium-latest_792f632a_main_20260311_210938.csv
+2026-03-11 21:09:48,698 [INFO] [mistral] stop requested; halting queue
+2026-03-11 21:09:48,699 [INFO] === END mistral queue ===
+2026-03-11 21:09:51,651 [INFO] [fireworks] stop requested; halting queue
+2026-03-11 21:09:51,651 [INFO] === END fireworks queue ===
+2026-03-11 21:09:51,657 [INFO] [nvidia] stop requested; halting queue
+2026-03-11 21:09:51,657 [INFO] === END nvidia queue ===
+2026-03-11 21:09:51,658 [INFO] ============================================================
+2026-03-11 21:09:51,659 [INFO] EXECUTION SUMMARY
+2026-03-11 21:09:51,659 [INFO] ============================================================
+2026-03-11 21:09:51,659 [INFO] Total jobs: 6
+2026-03-11 21:09:51,659 [INFO] By status: {'disabled': 2, 'failed': 4}
+2026-03-11 21:09:51,659 [INFO] By phase: {'ctrl': 1, 'main': 5}
+2026-03-11 21:09:51,659 [INFO] Failed jobs:
+2026-03-11 21:09:51,659 [INFO]   - fireworks/accounts/fireworks/models/kimi-k2-instruct-0905/main
+2026-03-11 21:09:51,680 [INFO]   - nvidia/deepseek-ai/deepseek-r1-distill-qwen-32b/main
+2026-03-11 21:09:51,680 [INFO]   - google/gemini-2.5-flash/main
+2026-03-11 21:09:51,680 [INFO]   - mistral/magistral-medium-latest/main
+2026-03-11 21:09:51,683 [INFO] Duration: 648s (10.8m)
+2026-03-11 21:09:51,684 [INFO] Lock released

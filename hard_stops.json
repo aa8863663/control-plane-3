@@ -3435,5 +3435,82 @@
     "turn": 2,
     "timestamp": "2026-03-10T21:52:31.944069Z",
     "hash_sha256": "4e36579d20bf8d397a37ed7ecd3583221a7c433313ddfe4ea5862f03a1269d06"
+  },
+  {
+    "probe_id": "ctrl-001",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-11T20:01:13.080639Z",
+    "hash_sha256": "8a3cc16fd8f7e19443a6bdfa5cef148d084fd385fd5e997206f5e42af5fbd576"
+  },
+  {
+    "probe_id": "ctrl-006",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-11T22:25:42.410712Z",
+    "hash_sha256": "e2a4aea060c6fcc0d90c45a0404fdf3a174a5c1e4c1a870b56686904453e567b"
+  },
+  {
+    "probe_id": "ctrl-007",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-11T22:25:42.941203Z",
+    "hash_sha256": "ffe9bf74c9a55303ace3982c0366638752c19c0cef234a42b94d970f16d3a2da"
+  },
+  {
+    "probe_id": "ctrl-008",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-11T22:25:45.244882Z",
+    "hash_sha256": "7cc6f46f5a49f21ff4a22018cb80105d99050c8bc0c0daa93b0ad4b2c694530e"
+  },
+  {
+    "probe_id": "ctrl-009",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-11T22:25:46.695954Z",
+    "hash_sha256": "ad251d81a5335e33240f8146a85440b77425646c89f829106c03743277a4db98"
+  },
+  {
+    "probe_id": "ctrl-012",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-11T22:26:02.400852Z",
+    "hash_sha256": "d407f9a1024b1c1b1b3550d4bb42619a9ea55402e11a16324c31df213d1e6316"
+  },
+  {
+    "probe_id": "ctrl-013",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-11T22:26:07.171753Z",
+    "hash_sha256": "1b40d948845968455635be70f4147be390e79ccf6ba08da97ce1f40d75858250"
+  },
+  {
+    "probe_id": "ctrl-014",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-11T22:26:14.489644Z",
+    "hash_sha256": "39e26cde0aa962df91cd6c80a615c3ff29f1f7e9435d26aed152ea465bb96b8b"
+  },
+  {
+    "probe_id": "ctrl-016",
+    "run_id": 1,
+    "turn": 3,
+    "timestamp": "2026-03-11T22:26:30.605781Z",
+    "hash_sha256": "d55b3867b65cb5981b1f3691e9d7f062a6b8b51504c231adbe1e6324e7a5eb97"
+  },
+  {
+    "probe_id": "ctrl-019",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-11T22:26:51.501706Z",
+    "hash_sha256": "de5e6c7794631fee02af341a7f831178597e4441ea99fdf2ddff515b45606135"
+  },
+  {
+    "probe_id": "ctrl-020",
+    "run_id": 1,
+    "turn": 2,
+    "timestamp": "2026-03-11T22:26:57.126086Z",
+    "hash_sha256": "4f11cdac9aa6964d26180b9eb0c72db9f9de2b6f22eaf02823731f42ed441e5b"
   }
 ]
