@@ -1,56 +1,65 @@
-{% extends "base_v2.html" %}
-{% set active = 'evidence' %}
-{% block title %}Public Findings — MTCP{% endblock %}
+{% extends "base.html" %}
+{% block title %}Evidence — Public Findings{% endblock %}
 {% block content %}
-<div class="page-wrap">
-  <div class="page-header">
-    <div class="section-label">Evidence</div>
-    <h1>Public Benchmark Findings</h1>
-    <p>25 production models evaluated across 21,352 probe sequences. Results verified and permanently archived. DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5" style="color:#2563eb;">10.17605/OSF.IO/DXGK5</a></p>
-  </div>
+<div class="page-header fade-up">
+  <h1>Evidence <span>· Public Findings</span></h1>
+  <p>
+    This page exposes the current benchmark evidence layer: main pass rate, control pass rate, degradation, and temperature breakdowns.
+    It is designed as a supporting evidence surface rather than the full platform story.
+  </p>
+</div>
 
-  <div class="stat-grid" style="margin-bottom:32px;">
-    <div class="stat-card"><div class="stat-value">21,352</div><div class="stat-label">Total Evaluations</div></div>
-    <div class="stat-card"><div class="stat-value">25</div><div class="stat-label">Models Tested</div></div>
-    <div class="stat-card"><div class="stat-value">11</div><div class="stat-label">Providers</div></div>
-    <div class="stat-card"><div class="stat-value">126</div><div class="stat-label">Benchmark Runs</div></div>
-  </div>
+<div class="stats-grid fade-up fade-up-1">
+  <div class="stat-card"><div class="stat-value">{{ models|length }}</div><div class="stat-label">Models listed</div></div>
+  <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Main temperatures</div></div>
+  <div class="stat-card"><div class="stat-value">1</div><div class="stat-label">Control temperature</div></div>
+  <div class="stat-card"><div class="stat-value">MTCP</div><div class="stat-label">Framework</div></div>
+</div>
 
-  <div class="card" style="margin-bottom:32px;">
-    <div class="card-title">Key Findings</div>
-    <div style="font-size:14px;color:#475569;line-height:2;margin-top:8px;">
-      No model achieves Grade A+ (≥95%). Post-correction reliability is not demonstrated at scale by any current production system.<br/>
-      GPT-4o scores 22.8pp below GPT-4o-mini — newer flagship models do not outperform predecessors on constraint persistence.<br/>
-      Claude models show temperature-invariant failure — consistent with architectural constraint suppression.<br/>
-      LLaMA models show temperature-sensitive failure — consistent with stochastic sampling-induced reversion.<br/>
-      DeepSeek-R1 shows the smallest control probe degradation (5.0pp) — only model indicating genuine generalised persistence.
+<div class="card fade-up fade-up-2">
+  <div class="section-head">
+    <div>
+      <h2>Canonical leaderboard</h2>
+      <p>Ordered by average main benchmark performance. Control columns surface degradation against fresh targeted probes.</p>
     </div>
+    <a href="/methodology" class="btn btn-ghost">Methodology →</a>
   </div>
-
   <div class="table-wrap">
     <table>
-      <thead><tr>
-        <th>#</th><th>Model</th><th>Provider</th>
-        <th class="center">T=0.0</th><th class="center">T=0.2</th>
-        <th class="center">T=0.5</th><th class="center">T=0.8</th>
-        <th class="center">Mean</th><th class="center">Ctrl</th>
-        <th class="center">Drop</th><th class="center">Grade</th>
-      </tr></thead>
-      <tbody>
-        {% for i, m in models %}
+      <thead>
         <tr>
-          <td style="color:#94a3b8;font-size:13px;">{{ i+1 }}</td>
-          <td class="mono"><a href="/model-cards/{{ m.model }}" style="color:#2563eb;text-decoration:none;">{{ m.model }}</a></td>
-          <td><span class="badge badge-grey">{{ m.provider }}</span></td>
-          <td class="center mono">{{ m.t0 }}%</td>
-          <td class="center mono">{{ m.t2 }}%</td>
-          <td class="center mono">{{ m.t5 }}%</td>
-          <td class="center mono">{{ m.t8 }}%</td>
-          <td class="center mono" style="font-weight:600;">{{ m.pass_rate }}%</td>
-          <td class="center mono">{{ m.ctrl_rate }}%</td>
-          <td class="center mono" style="color:#dc2626;">{{ m.drop }}pp</td>
-          <td class="center"><span class="grade grade-{{ m.grade }}">{{ m.grade }}</span></td>
+          <th>#</th>
+          <th>Model</th>
+          <th>Provider</th>
+          <th>Main</th>
+          <th>Ctrl</th>
+          <th>Drop</th>
+          <th>T=0.0</th>
+          <th>T=0.2</th>
+          <th>T=0.5</th>
+          <th>T=0.8</th>
+          <th>Variance</th>
+          <th>Grade</th>
         </tr>
+      </thead>
+      <tbody>
+        {% for row in models %}
+        <tr>
+          <td class="subtle">{{ loop.index }}</td>
+          <td><a class="muted-link" href="/model-cards/{{ row.model }}">{{ row.model }}</a></td>
+          <td class="subtle">{{ row.provider }}</td>
+          <td>{{ row.pass_rate }}%</td>
+          <td>{{ row.ctrl_rate }}%</td>
+          <td class="{% if row.drop < -20 %}subtle{% endif %}">{{ row.drop }}pp</td>
+          <td>{{ row.t0 }}%</td>
+          <td>{{ row.t2 }}%</td>
+          <td>{{ row.t5 }}%</td>
+          <td>{{ row.t8 }}%</td>
+          <td>{{ row.variance }}pp</td>
+          <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="12"><div class="empty-state">No public findings available.</div></td></tr>
         {% endfor %}
       </tbody>
     </table>

@@ -1,68 +1,78 @@
-{% extends "base_v2.html" %}
-{% set active = 'models' %}
-{% block title %}{{ model.model }} — MTCP Model Card{% endblock %}
+{% extends "base.html" %}
+{% block title %}{{ model.model }} — Model Card{% endblock %}
 {% block content %}
-<div class="page-wrap" style="max-width:900px;">
-  <div style="margin-bottom:8px;"><a href="/model-cards" style="font-size:14px;color:#2563eb;text-decoration:none;">← All Models</a></div>
-  <div class="page-header">
-    <div class="section-label">Model Card</div>
-    <h1 style="font-family:var(--mono);">{{ model.model }}</h1>
-    <p>Provider: {{ model.provider }} &nbsp;·&nbsp; Evaluated March 2026 &nbsp;·&nbsp; 800 primary evaluations + 20 control</p>
-  </div>
+<div class="page-header fade-up">
+  <h1>{{ model.model }}</h1>
+  <p>{{ model.provider }} · Detailed model card showing benchmark performance, control degradation, and temperature profile.</p>
+</div>
 
-  <div class="stat-grid" style="margin-bottom:32px;">
-    <div class="stat-card"><div class="stat-value">{{ model.pass_rate }}%</div><div class="stat-label">Mean Pass Rate</div></div>
-    <div class="stat-card"><div class="stat-value">{{ model.ctrl_rate }}%</div><div class="stat-label">Control Pass Rate</div></div>
-    <div class="stat-card" style="border-color:#fecaca;"><div class="stat-value" style="color:#dc2626;">{{ model.drop }}pp</div><div class="stat-label">Control Degradation</div></div>
-    <div class="stat-card"><div class="stat-value"><span class="grade grade-{{ model.grade }}" style="font-size:28px;">{{ model.grade }}</span></div><div class="stat-label">MTCP Grade</div></div>
-  </div>
+<div class="kpi-row fade-up fade-up-1">
+  <div class="kpi-card"><div class="kpi-label">Main score</div><div class="kpi-value">{{ model.pass_rate }}%</div></div>
+  <div class="kpi-card"><div class="kpi-label">Control score</div><div class="kpi-value">{{ model.ctrl_rate }}%</div></div>
+  <div class="kpi-card"><div class="kpi-label">Control degradation</div><div class="kpi-value">{{ model.drop }}pp</div></div>
+  <div class="kpi-card"><div class="kpi-label">Grade</div><div class="kpi-value">{{ model.grade }}</div></div>
+</div>
 
-  <div class="card" style="margin-bottom:20px;">
-    <div class="card-title">Temperature Profile</div>
-    <div class="card-sub">Pass rate stability across sampling temperatures</div>
-    <div class="table-wrap" style="border:none;">
+<div class="grid-2 fade-up fade-up-2">
+  <div class="card">
+    <div class="section-head">
+      <div>
+        <h2>Temperature profile</h2>
+        <p>Performance across the four benchmark temperatures used in the canonical run set.</p>
+      </div>
+    </div>
+    <div class="table-wrap">
       <table>
-        <thead><tr><th>T=0.0</th><th>T=0.2</th><th>T=0.5</th><th>T=0.8</th><th>Variance</th><th>Profile</th></tr></thead>
-        <tbody><tr>
-          <td class="mono center">{{ model.t0 }}%</td>
-          <td class="mono center">{{ model.t2 }}%</td>
-          <td class="mono center">{{ model.t5 }}%</td>
-          <td class="mono center">{{ model.t8 }}%</td>
-          <td class="mono center">{{ model.variance }}pp</td>
-          <td><span class="badge {% if model.variance < 3 %}badge-amber{% else %}badge-blue{% endif %}">
-            {% if model.variance < 3 %}Temperature Invariant{% else %}Temperature Sensitive{% endif %}
-          </span></td>
-        </tr></tbody>
+        <thead>
+          <tr><th>Temperature</th><th>Pass rate</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>T=0.0</td><td>{{ model.t0 }}%</td></tr>
+          <tr><td>T=0.2</td><td>{{ model.t2 }}%</td></tr>
+          <tr><td>T=0.5</td><td>{{ model.t5 }}%</td></tr>
+          <tr><td>T=0.8</td><td>{{ model.t8 }}%</td></tr>
+        </tbody>
       </table>
     </div>
   </div>
 
-  <div class="card" style="margin-bottom:20px;">
-    <div class="card-title">Control Probe Analysis</div>
-    <div class="card-sub">Performance on 20 previously undisclosed probes (T=0.0)</div>
-    <div style="font-size:14px;color:#475569;line-height:1.8;margin-top:8px;">
-      Primary set pass rate: <strong>{{ model.pass_rate }}%</strong><br/>
-      Control probe pass rate: <strong>{{ model.ctrl_rate }}%</strong><br/>
-      Degradation: <strong style="color:#dc2626;">{{ model.drop }}pp</strong><br/>
-      {% if model.drop|float < 10 %}
-      Interpretation: <span class="badge badge-green">Minimal degradation — consistent with genuine generalised constraint persistence</span>
-      {% elif model.drop|float < 30 %}
-      Interpretation: <span class="badge badge-amber">Moderate degradation — partial probe-structure familiarity likely</span>
-      {% else %}
-      Interpretation: <span class="badge badge-red">Substantial degradation — primary score partially reflects probe-structure familiarity</span>
-      {% endif %}
-    </div>
-  </div>
-
   <div class="card">
-    <div class="card-title">Failure Classification</div>
-    <div style="font-size:14px;color:#475569;line-height:1.8;margin-top:8px;">
-      {% if model.variance < 3 %}
-      <span class="badge badge-amber">Architectural / IGS</span> &nbsp; Temperature-invariant failure pattern. Consistent with alignment-level constraint suppression. Remediation requires retraining — not addressable through temperature regulation or prompt engineering.
+    <div class="section-head">
+      <div>
+        <h2>Failure classification</h2>
+        <p>Simple variance-based classification to distinguish temperature-sensitive drift from stable but structurally weak behaviour.</p>
+      </div>
+    </div>
+    {% set class_name = 'stochastic' if model.variance >= 5 else 'architectural' %}
+    {% set badge_class = 'warn' if class_name == 'stochastic' else 'danger' %}
+    <div style="margin-bottom:16px;">
+      <span class="badge {{ badge_class }}">{{ class_name }}</span>
+    </div>
+    <div class="notice {% if class_name == 'stochastic' %}success{% else %}error{% endif %}">
+      {% if class_name == 'stochastic' %}
+      This model shows higher temperature variance ({{ model.variance }}pp). Performance appears more sensitive to sampling conditions, which is consistent with a stochastic failure profile.
       {% else %}
-      <span class="badge badge-blue">Stochastic</span> &nbsp; Temperature-sensitive failure pattern. Consistent with sampling-induced constraint reversion. May be partially addressable through temperature regulation and prompt engineering.
+      This model shows lower temperature variance ({{ model.variance }}pp). Performance is comparatively stable across temperatures, which is consistent with a more architectural or training-linked failure profile.
       {% endif %}
     </div>
+    <ul class="list-clean" style="margin-top:14px;">
+      <li><strong class="subtle">Main benchmark</strong><br>{{ model.pass_rate }}%</li>
+      <li><strong class="subtle">Control benchmark</strong><br>{{ model.ctrl_rate }}%</li>
+      <li><strong class="subtle">Control degradation</strong><br>{{ model.drop }}pp</li>
+      <li><strong class="subtle">Provider</strong><br>{{ model.provider }}</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card fade-up fade-up-3" style="margin-top:16px;">
+  <div class="section-head">
+    <div>
+      <h2>Interpretation</h2>
+      <p>
+        MTCP scores show how well the model maintains explicit constraints after correction. The control score estimates how much performance survives on fresher targeted probes. Large negative drop indicates weaker generalisation beyond the main benchmark set.
+      </p>
+    </div>
+    <a href="/evidence/public-findings" class="btn btn-ghost">Back to findings →</a>
   </div>
 </div>
 {% endblock %}

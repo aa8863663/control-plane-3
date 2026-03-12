@@ -1,30 +1,37 @@
-{% extends "base_v2.html" %}
-{% set active = 'models' %}
+{% extends "base.html" %}
 {% block title %}Model Cards — MTCP{% endblock %}
 {% block content %}
-<div class="page-wrap">
-  <div class="page-header">
-    <div class="section-label">Models</div>
-    <h1>Model Cards</h1>
-    <p>Detailed constraint persistence profiles for all 25 evaluated models.</p>
+<div class="page-header fade-up">
+  <h1>Model <span>Cards</span></h1>
+  <p>Per-model summaries showing provider, benchmark performance, control performance, and grade. Open a card for temperature profile and failure classification.</p>
+</div>
+
+<div class="model-grid fade-up fade-up-1">
+  {% for model in models %}
+  <div class="model-card">
+    <div>
+      <h3>{{ model.model }}</h3>
+      <div class="model-sub">{{ model.provider }}</div>
+    </div>
+    <div class="meta-row">
+      <span>Main</span><strong>{{ model.pass_rate }}%</strong>
+    </div>
+    <div class="meta-row">
+      <span>Ctrl</span><strong>{{ model.ctrl_rate }}%</strong>
+    </div>
+    <div class="meta-row">
+      <span>Grade</span><span class="grade grade-{{ model.grade }}">{{ model.grade }}</span>
+    </div>
+    <div class="meta-row">
+      <span>Drop</span><strong>{{ model.drop }}pp</strong>
+    </div>
+    <div class="meta-row">
+      <span>Variance</span><strong>{{ model.variance }}pp</strong>
+    </div>
+    <a class="btn btn-ghost" href="/model-cards/{{ model.model }}">Open Model Card →</a>
   </div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
-    {% for m in models %}
-    <a href="/model-cards/{{ m.model }}" style="text-decoration:none;">
-      <div class="card" style="transition:box-shadow 0.15s;cursor:pointer;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow=''">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
-          <span class="badge badge-grey">{{ m.provider }}</span>
-          <span class="grade grade-{{ m.grade }}" style="font-size:20px;">{{ m.grade }}</span>
-        </div>
-        <div style="font-family:var(--mono);font-size:13px;font-weight:600;color:#0f172a;margin-bottom:8px;">{{ m.model }}</div>
-        <div style="display:flex;gap:16px;">
-          <div><div style="font-family:var(--mono);font-size:20px;font-weight:600;">{{ m.pass_rate }}%</div><div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;">Main</div></div>
-          <div><div style="font-family:var(--mono);font-size:20px;font-weight:600;">{{ m.ctrl_rate }}%</div><div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;">Ctrl</div></div>
-          <div><div style="font-family:var(--mono);font-size:20px;font-weight:600;color:#dc2626;">{{ m.drop }}pp</div><div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;">Drop</div></div>
-        </div>
-      </div>
-    </a>
-    {% endfor %}
-  </div>
+  {% else %}
+  <div class="empty-state" style="grid-column:1/-1;">No models available.</div>
+  {% endfor %}
 </div>
 {% endblock %}

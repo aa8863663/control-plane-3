@@ -1,83 +1,118 @@
 {% extends "base.html" %}
-{% block title %}Dashboard — Control Plane 3{% endblock %}
+{% block title %}MTCP — Model Assurance Platform{% endblock %}
 {% block content %}
-<div class="page">
-  <div class="page-header">
-    <h1>Dashboard</h1>
-    <p>MTCP Multi-Turn Constraint Persistence · v1.5 · DOI 10.17605/OSF.IO/DXGK5</p>
+<div class="hero-card fade-up">
+  <div class="hero-kicker">MTCP · assurance-first evaluation system</div>
+  <h1 class="hero-title">Independent assurance for <span>model reliability</span>, constraint persistence, and deployment readiness.</h1>
+  <p class="hero-copy">
+    MTCP evaluates language models under multi-turn correction pressure, measures degradation on targeted control probes,
+    and turns benchmark evidence into an operational assurance workflow. The benchmark is still here, but the platform is built
+    to support evaluation, evidence gathering, and decision-making before deployment.
+  </p>
+  <div class="hero-actions">
+    <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
+    <a href="/evidence/public-findings" class="btn btn-ghost">View Public Findings</a>
+    <a href="/methodology" class="btn btn-ghost">Read Methodology</a>
   </div>
+</div>
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-value">{{ total_results }}</div>
-      <div class="stat-label">Total Evaluations</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">{{ total_runs }}</div>
-      <div class="stat-label">Benchmark Runs</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">{{ total_models }}</div>
-      <div class="stat-label">Models Tested</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value" style="color:{% if best_grade=='A' %}var(--accent){% elif best_grade=='B' %}var(--accent2){% elif best_grade=='C' %}var(--warn){% else %}var(--danger){% endif %}">{{ best_grade }}</div>
-      <div class="stat-label">Best Grade (grok-3-mini)</div>
-    </div>
+<div class="kpi-row fade-up fade-up-1">
+  <div class="kpi-card">
+    <div class="kpi-label">Canonical models evaluated</div>
+    <div class="kpi-value">{{ stats.total_models or models|length or 25 }}</div>
   </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Main probe structure</div>
+    <div class="kpi-value">200</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Control probe structure</div>
+    <div class="kpi-value">20</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Evaluation mode</div>
+    <div class="kpi-value">Multi‑turn</div>
+  </div>
+</div>
 
-  <div class="card" style="margin-bottom:24px">
-    <div class="card-title">Model Performance — All {{ total_models }} Models · Avg Pass Rate</div>
+<div class="grid-3 fade-up fade-up-2" style="margin-bottom:28px;">
+  <div class="feature-card">
+    <h3>Evaluate</h3>
+    <p>
+      Run structured model evaluations against private boundary probes, correction sequences, and control checks. Use the platform
+      to test how models behave when constraints must persist across turns rather than in a single-shot prompt.
+    </p>
+    <div class="feature-meta">Execution + scoring + evidence capture</div>
+  </div>
+  <div class="feature-card">
+    <h3>Evidence</h3>
+    <p>
+      Use the public findings as supporting evidence, not the entire story. Temperature breakdowns, control degradation, and
+      comparative results help turn raw benchmark output into something useful for deployment review and model selection.
+    </p>
+    <div class="feature-meta">Leaderboard + control degradation</div>
+  </div>
+  <div class="feature-card">
+    <h3>Methodology</h3>
+    <p>
+      MTCP focuses on post-correction reliability: whether a model can keep following an explicit instruction after it has already
+      failed once. The system measures persistence, variance, and degradation without exposing the underlying probe set.
+    </p>
+    <div class="feature-meta">Framework + vectors + grading</div>
+  </div>
+</div>
+
+<div class="grid-2 fade-up fade-up-3">
+  <div class="card">
+    <div class="section-head">
+      <div>
+        <h2>Public findings preview</h2>
+        <p>Top five models from the current public evidence layer. Full results, temperature breakdowns, and control figures are available in the findings section.</p>
+      </div>
+      <a href="/evidence/public-findings" class="btn btn-ghost">Full Findings →</a>
+    </div>
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
             <th>#</th>
             <th>Model</th>
-            <th>Avg Pass Rate</th>
+            <th>Provider</th>
+            <th>Main</th>
+            <th>Ctrl</th>
             <th>Grade</th>
           </tr>
         </thead>
         <tbody>
-          {% for row in model_rows %}
+          {% for row in models[:5] %}
           <tr>
-            <td style="color:var(--muted)">{{ loop.index }}</td>
+            <td class="subtle">{{ loop.index }}</td>
             <td>{{ row.model }}</td>
-            <td>
-              <div class="bar-wrap">
-                <div class="bar-track">
-                  <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate>=90 %}var(--accent){% elif row.pass_rate>=80 %}var(--accent2){% elif row.pass_rate>=70 %}var(--warn){% else %}var(--danger){% endif %}"></div>
-                </div>
-                <span class="bar-label">{{ row.pass_rate }}%</span>
-              </div>
-            </td>
+            <td class="subtle">{{ row.provider }}</td>
+            <td>{{ row.pass_rate }}%</td>
+            <td>{{ row.ctrl_rate }}%</td>
             <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
           </tr>
+          {% else %}
+          <tr><td colspan="6"><div class="empty-state">No leaderboard data available.</div></td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-      <a href="/leaderboard" class="btn btn-primary">Full Leaderboard →</a>
-      <a href="/stats" class="btn btn-ghost">Stats &amp; Charts</a>
-      <a href="/api/compare" class="btn btn-ghost">Compare Models</a>
-      <a href="/certificate" class="btn btn-ghost">Certificates</a>
-      <a href="/run-benchmark" class="btn btn-ghost">Run Benchmark</a>
-    </div>
   </div>
-
-  {% if user.is_admin %}
   <div class="card">
-    <div class="card-title">Admin Quick Links</div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
-      <a href="/ctrl-probes" class="btn btn-ghost">Control Probes</a>
-      <a href="/api/actuarial" class="btn btn-ghost">Actuarial</a>
-      <a href="/api/costs" class="btn btn-ghost">Costs</a>
-      <a href="/health" class="btn btn-ghost">DB Health</a>
-      <a href="/probes" class="btn btn-ghost">Probe Editor</a>
-      <a href="/admin" class="btn btn-ghost">User Admin</a>
+    <div class="section-head">
+      <div>
+        <h2>What this site now does</h2>
+        <p>The benchmark remains intact, but the primary workflow is shifting toward evaluation intake, methodology transparency, and model-specific evidence pages.</p>
+      </div>
     </div>
+    <ul class="list-clean">
+      <li><strong class="subtle">Evaluation intake</strong><br>Capture deployment context, objectives, and required vectors before testing begins.</li>
+      <li><strong class="subtle">Evidence pages</strong><br>Keep public findings accessible without making the leaderboard the homepage identity.</li>
+      <li><strong class="subtle">Model cards</strong><br>Show each model’s main score, control score, temperature profile, and degradation pattern.</li>
+      <li><strong class="subtle">Methodology layer</strong><br>Explain the MTCP framework without exposing private probes.</li>
+    </ul>
   </div>
-  {% endif %}
 </div>
 {% endblock %}

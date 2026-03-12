@@ -10,24 +10,24 @@
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-value">{{ total_results }}</div>
-      <div class="stat-label">Main Evaluations</div>
+      <div class="stat-label">Total Evaluations</div>
     </div>
     <div class="stat-card">
       <div class="stat-value">{{ total_runs }}</div>
-      <div class="stat-label">Main Benchmark Runs</div>
+      <div class="stat-label">Benchmark Runs</div>
     </div>
     <div class="stat-card">
       <div class="stat-value">{{ total_models }}</div>
-      <div class="stat-label">Models Evaluated</div>
+      <div class="stat-label">Models Tested</div>
     </div>
     <div class="stat-card">
       <div class="stat-value" style="color:{% if best_grade=='A' %}var(--accent){% elif best_grade=='B' %}var(--accent2){% elif best_grade=='C' %}var(--warn){% else %}var(--danger){% endif %}">{{ best_grade }}</div>
-      <div class="stat-label">Top Model · grok-3-mini</div>
+      <div class="stat-label">Best Grade (grok-3-mini)</div>
     </div>
   </div>
 
   <div class="card" style="margin-bottom:24px">
-    <div class="card-title">Model Performance — {{ total_models }} Models · Main Benchmark Avg</div>
+    <div class="card-title">Model Performance — All {{ total_models }} Models · Avg Pass Rate</div>
     <div class="table-wrap">
       <table>
         <thead>
