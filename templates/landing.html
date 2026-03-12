@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MTCP — Model Trust &amp; Compliance Platform</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
   <style>
@@ -29,7 +28,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);backdrop-fi
 .nav-cta{border:1px solid rgba(0,229,160,0.25);color:var(--accent)!important;background:rgba(0,229,160,0.05);}
 .nav-cta:hover{background:rgba(0,229,160,0.10)!important;border-color:rgba(0,229,160,0.45)!important;}
 .page{max-width:1100px;margin:0 auto;padding:36px 20px 80px;position:relative;z-index:1;}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;border-radius:4px;
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:4px;
   border:1px solid var(--border);text-decoration:none;cursor:pointer;font-size:0.68rem;
   letter-spacing:1.1px;text-transform:uppercase;transition:all 0.15s;font-family:'JetBrains Mono',monospace;}
 .btn-primary{background:var(--accent);border-color:var(--accent);color:#07110d;font-weight:700;}
@@ -52,8 +51,7 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .fade-up-1{animation-delay:0.05s;opacity:0;}.fade-up-2{animation-delay:0.10s;opacity:0;}
 .fade-up-3{animation-delay:0.15s;opacity:0;}.fade-up-4{animation-delay:0.20s;opacity:0;}
 
-/* HERO */
-.hero{padding:60px 28px;border-radius:10px;background:linear-gradient(180deg,rgba(0,229,160,0.05),rgba(17,19,24,0.94));
+.hero{padding:60px 32px;border-radius:10px;background:linear-gradient(180deg,rgba(0,229,160,0.05),rgba(17,19,24,0.94));
   border:1px solid rgba(0,229,160,0.12);margin-bottom:28px;}
 .hero-kicker{display:inline-flex;gap:8px;align-items:center;color:var(--accent);font-size:0.6rem;
   letter-spacing:1.6px;text-transform:uppercase;margin-bottom:16px;}
@@ -62,13 +60,11 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .hero-copy{margin-top:16px;color:var(--muted);font-size:0.82rem;line-height:1.8;max-width:720px;}
 .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;}
 
-/* KPI */
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px;}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
 .kpi-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
 .kpi-value{font-family:'DM Serif Display',serif;font-size:1.45rem;color:#fff;margin-top:10px;}
 
-/* FEATURE CARDS */
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
 .feature-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px;position:relative;overflow:hidden;}
 .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
@@ -76,16 +72,13 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .feature-card p{color:var(--muted);font-size:0.72rem;line-height:1.8;}
 .feature-meta{margin-top:14px;font-size:0.6rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);}
 .feature-card a{display:inline-block;margin-top:14px;font-size:0.65rem;color:var(--accent);text-decoration:none;letter-spacing:1px;text-transform:uppercase;}
-.feature-card a:hover{text-decoration:underline;}
 
-/* FINDINGS */
 .finding-banner{background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.12);border-radius:8px;
   padding:24px 28px;margin-bottom:28px;}
 .finding-banner h3{font-family:'DM Serif Display',serif;font-size:1.25rem;color:#fff;margin-bottom:12px;}
 .finding-banner p{font-size:0.74rem;color:var(--muted);line-height:2;}
 .finding-banner strong{color:var(--text);}
 
-/* GRID-2 */
 .grid-2{display:grid;grid-template-columns:1.1fr 0.9fr;gap:16px;margin-bottom:28px;}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
 .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
@@ -136,8 +129,8 @@ footer a{color:var(--accent);text-decoration:none;}
     <h1 class="hero-title">Independent assurance for <span>model reliability</span> and constraint persistence.</h1>
     <p class="hero-copy">
       MTCP evaluates whether production language models maintain compliance with explicit constraints after correction.
-      25 models tested across 21,352 evaluations. The benchmark is complete. The platform now provides structured evaluation
-      services, evidence documentation, and assurance workflows for deployment-critical use cases.
+      {{ total_models or 25 }} models tested across {{ total_results or '21,352' }} evaluations. The benchmark is complete.
+      The platform now provides structured evaluation services, evidence documentation, and assurance workflows for deployment-critical use cases.
     </p>
     <div class="hero-actions">
       <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
@@ -149,19 +142,19 @@ footer a{color:var(--accent);text-decoration:none;}
   <div class="kpi-row fade-up fade-up-1">
     <div class="kpi-card">
       <div class="kpi-label">Models evaluated</div>
-      <div class="kpi-value">25</div>
+      <div class="kpi-value">{{ total_models or 25 }}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Total evaluations</div>
-      <div class="kpi-value">21,352</div>
+      <div class="kpi-value">{{ total_results or '21,352' }}</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Providers tested</div>
-      <div class="kpi-value">11</div>
+      <div class="kpi-label">Benchmark runs</div>
+      <div class="kpi-value">{{ total_runs or 100 }}</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Evaluation vectors</div>
-      <div class="kpi-value">5</div>
+      <div class="kpi-label">Pass rate range</div>
+      <div class="kpi-value">{{ pass_range or '47–91%' }}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Models achieving A+</div>
@@ -215,18 +208,11 @@ footer a{color:var(--accent);text-decoration:none;}
             <tr><th>#</th><th>Model</th><th>Provider</th><th>Main</th><th>Ctrl</th><th>Grade</th></tr>
           </thead>
           <tbody>
-            {% for row in models[:5] %}
-            <tr>
-              <td style="color:var(--muted);font-size:0.65rem;">{{ loop.index }}</td>
-              <td><a class="muted-link" href="/model-cards/{{ row.model }}">{{ row.model }}</a></td>
-              <td style="color:var(--muted);font-size:0.68rem;">{{ row.provider }}</td>
-              <td>{{ row.pass_rate }}%</td>
-              <td>{{ row.ctrl_rate }}%</td>
-              <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
-            </tr>
-            {% else %}
-            <tr><td colspan="6" style="color:var(--muted);text-align:center;padding:24px;">No data available.</td></tr>
-            {% endfor %}
+            <tr><td style="color:var(--muted);font-size:0.65rem">1</td><td><a class="muted-link" href="/model-cards/grok-3-mini">grok-3-mini</a></td><td style="color:var(--muted)">xai</td><td>90.5%</td><td>30.0%</td><td><span class="grade grade-A">A</span></td></tr>
+            <tr><td style="color:var(--muted);font-size:0.65rem">2</td><td><a class="muted-link" href="/model-cards/nvidia-llama-70b">nvidia-llama-70b</a></td><td style="color:var(--muted)">nvidia</td><td>88.3%</td><td>25.0%</td><td><span class="grade grade-B">B</span></td></tr>
+            <tr><td style="color:var(--muted);font-size:0.65rem">3</td><td><a class="muted-link" href="/model-cards/gpt-4o-mini">gpt-4o-mini</a></td><td style="color:var(--muted)">openai</td><td>87.9%</td><td>50.0%</td><td><span class="grade grade-B">B</span></td></tr>
+            <tr><td style="color:var(--muted);font-size:0.65rem">4</td><td><a class="muted-link" href="/model-cards/qwen-2.5-7b">qwen-2.5-7b</a></td><td style="color:var(--muted)">alibaba</td><td>87.1%</td><td>55.0%</td><td><span class="grade grade-B">B</span></td></tr>
+            <tr><td style="color:var(--muted);font-size:0.65rem">5</td><td><a class="muted-link" href="/model-cards/command-r">command-r</a></td><td style="color:var(--muted)">cohere</td><td>85.1%</td><td>10.0%</td><td><span class="grade grade-B">B</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -236,11 +222,11 @@ footer a{color:var(--accent);text-decoration:none;}
         <div><h2>What this platform does</h2></div>
       </div>
       <ul class="list-clean">
-        <li><strong style="color:var(--text);">Evaluation intake</strong><br>Capture deployment context, objectives, and required vectors before testing begins.</li>
-        <li><strong style="color:var(--text);">Evidence pages</strong><br>Public findings accessible without making the leaderboard the platform identity.</li>
-        <li><strong style="color:var(--text);">Model cards</strong><br>Main score, control score, temperature profile, and degradation per model.</li>
-        <li><strong style="color:var(--text);">Methodology layer</strong><br>MTCP framework explained without exposing the private probe dataset.</li>
-        <li><strong style="color:var(--text);">Assurance reports</strong><br>Structured evaluation outputs for compliance, audit, and deployment review.</li>
+        <li><strong style="color:var(--text)">Evaluation intake</strong><br>Capture deployment context, objectives, and required vectors before testing begins.</li>
+        <li><strong style="color:var(--text)">Evidence pages</strong><br>Public findings accessible without making the leaderboard the platform identity.</li>
+        <li><strong style="color:var(--text)">Model cards</strong><br>Main score, control score, temperature profile, and degradation per model.</li>
+        <li><strong style="color:var(--text)">Methodology layer</strong><br>MTCP framework explained without exposing the private probe dataset.</li>
+        <li><strong style="color:var(--text)">Assurance reports</strong><br>Structured evaluation outputs for compliance, audit, and deployment review.</li>
       </ul>
     </div>
   </div>

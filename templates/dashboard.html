@@ -3,32 +3,33 @@
 {% block content %}
 <div class="page-header fade-up">
   <h1>Dashboard</h1>
-  <p>MTCP · Multi-Turn Constraint Persistence · v1.5 · DOI 10.17605/OSF.IO/DXGK5</p>
+  <p>MTCP · Multi-Turn Constraint Persistence · v1.5 · <a href="https://doi.org/10.17605/OSF.IO/DXGK5" style="color:var(--accent);text-decoration:none">DOI 10.17605/OSF.IO/DXGK5</a></p>
 </div>
 
 <div class="stats-grid fade-up fade-up-1" style="margin-bottom:24px">
   <div class="stat-card">
-    <div class="stat-value">{{ total_results }}</div>
+    <div class="stat-value">{{ total_results | default(0) }}</div>
     <div class="stat-label">Main Evaluations</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value">{{ total_runs }}</div>
-    <div class="stat-label">Main Benchmark Runs</div>
+    <div class="stat-value">{{ total_runs | default(0) }}</div>
+    <div class="stat-label">Benchmark Runs</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value">{{ total_models }}</div>
+    <div class="stat-value">{{ total_models | default(0) }}</div>
     <div class="stat-label">Models Evaluated</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value" style="color:var(--accent)">A</div>
-    <div class="stat-label">Top Model · grok-3-mini</div>
+    <div class="stat-value" style="color:var(--accent)">{{ best_grade | default('—') }}</div>
+    <div class="stat-label">Top Grade · grok-3-mini</div>
   </div>
 </div>
 
-<div class="card fade-up fade-up-2" style="margin-bottom:24px">
+<div class="card fade-up fade-up-2" style="margin-bottom:20px">
   <div class="section-head">
     <div>
-      <h2>Model Performance — {{ total_models }} Models · Main Benchmark Avg</h2>
+      <h2>Model Performance</h2>
+      <p>{{ total_models | default(0) }} models · main benchmark average pass rate</p>
     </div>
     <a href="/leaderboard" class="btn btn-ghost" style="font-size:0.65rem">Full Leaderboard →</a>
   </div>
@@ -43,22 +44,24 @@
         </tr>
       </thead>
       <tbody>
-        {% for row in model_stats %}
+        {% for row in model_rows %}
         <tr>
           <td style="color:var(--muted);font-size:0.65rem">{{ loop.index }}</td>
-          <td style="font-size:0.7rem">{{ row.model }}</td>
+          <td style="font-size:0.7rem;font-family:'JetBrains Mono',monospace">
+            <a href="/model-cards/{{ row.model }}" style="color:var(--text);text-decoration:none">{{ row.model }}</a>
+          </td>
           <td>
             <div class="bar-wrap">
               <div class="bar-track">
-                <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate>=80 %}var(--accent){% elif row.pass_rate>=70 %}var(--warn){% else %}var(--danger){% endif %}"></div>
+                <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate >= 80 %}var(--accent){% elif row.pass_rate >= 70 %}var(--accent2){% elif row.pass_rate >= 60 %}var(--warn){% else %}var(--danger){% endif %}"></div>
               </div>
               <span style="font-size:0.7rem;min-width:38px;text-align:right">{{ row.pass_rate }}%</span>
             </div>
           </td>
-          <td>
-            <span class="grade grade-{{ row.grade }}">{{ row.grade }}</span>
-          </td>
+          <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
         </tr>
+        {% else %}
+        <tr><td colspan="4" style="color:var(--muted);text-align:center;padding:24px">No data available.</td></tr>
         {% endfor %}
       </tbody>
     </table>
@@ -66,16 +69,20 @@
 </div>
 
 <div class="card fade-up fade-up-3">
-  <h2 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;margin-bottom:16px">Admin Quick Links</h2>
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;margin-bottom:14px">Quick Links</h2>
   <div style="display:flex;flex-wrap:wrap;gap:8px">
-    <a href="/dashboard" class="btn btn-ghost">Dashboard</a>
     <a href="/leaderboard" class="btn btn-ghost">Leaderboard</a>
     <a href="/stats" class="btn btn-ghost">Stats</a>
     <a href="/api/compare" class="btn btn-ghost">Compare</a>
     <a href="/api/actuarial" class="btn btn-ghost">Actuarial</a>
-    <a href="/costs" class="btn btn-ghost">Costs</a>
+    <a href="/api/costs" class="btn btn-ghost">Costs</a>
+    <a href="/ctrl-probes" class="btn btn-ghost">Ctrl Probes</a>
+    <a href="/certificate" class="btn btn-ghost">Certificates</a>
+    <a href="/model-cards" class="btn btn-ghost">Model Cards</a>
+    {% if user and user.is_admin %}
     <a href="/admin" class="btn btn-ghost">Admin</a>
     <a href="/health" class="btn btn-ghost">Health</a>
+    {% endif %}
     <a href="/logout" class="btn btn-ghost" style="color:var(--danger)">Logout</a>
   </div>
 </div>
