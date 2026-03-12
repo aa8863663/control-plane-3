@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Run Assurance Evaluation — MTCP Assurance Platform 3{% endblock %}
+{% block title %}Run Benchmark — Control Plane 3{% endblock %}
 {% block content %}
 <div class="page">
   <div class="page-header">
-    <div class="page-title">Run Assurance Evaluation</div>
+    <div class="page-title">Run Benchmark</div>
     <div class="page-subtitle">Execute a new MTCP evaluation session against any supported model</div>
   </div>
 
@@ -36,7 +36,7 @@
     <div class="form-group">
       <label class="form-label">Dataset</label>
       <select class="form-input" id="rb-dataset">
-        <option value="main">main — 200 probes (standard assurance evaluation)</option>
+        <option value="main">main — 200 probes (standard benchmark)</option>
         <option value="ctrl">ctrl — 20 control probes (harder edge cases)</option>
       </select>
     </div>
@@ -45,7 +45,7 @@
   </div>
 
   <div class="card" style="max-width:580px;margin-top:24px">
-    <div class="card-title">Assurance Evaluationed Models — March 2026</div>
+    <div class="card-title">Benchmarked Models — March 2026</div>
     <div class="table-wrap" style="margin-top:8px">
       <table>
         <thead><tr><th>Model</th><th>Provider</th><th>Avg</th><th>Grade</th></tr></thead>
@@ -107,7 +107,7 @@ async function startRun() {
     const data = await res.json();
     if (res.ok && data.success) {
       status.style.color = 'var(--accent)';
-      status.textContent = '✓ Run complete. Reload evidence board to see results.';
+      status.textContent = '✓ Run complete. Reload leaderboard to see results.';
     } else {
       status.style.color = 'var(--danger)';
       status.textContent = 'Error: ' + (data.stderr || data.error || JSON.stringify(data));

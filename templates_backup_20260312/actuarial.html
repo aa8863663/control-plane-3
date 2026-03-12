@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Actuarial Analysis — MTCP{% endblock %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Actuarial <span>Analysis</span></h1>
+  <p>Pass rate by temperature across all models — visual and tabular breakdown of constraint persistence stability.</p>
+</div>
+
+<div class="card fade-up fade-up-1" style="margin-bottom:20px;">
+  <div class="section-head">
+    <div>
+      <h2>Temperature stability — all models</h2>
+      <p>Each line is one model. Flat lines indicate temperature-invariant (architectural) failure. Steep lines indicate stochastic (sampling-sensitive) failure.</p>
+    </div>
+  </div>
+  <canvas id="actChart" height="65"></canvas>
+</div>
+
+<div class="card fade-up fade-up-2" style="margin-bottom:20px;">
+  <div class="section-head">
+    <div>
+      <h2>Per-model temperature profile</h2>
+      <p>Ordered by average pass rate. Variance column shows T=0.0 to T=0.8 swing — lower variance = more architectural failure profile.</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table id="actTable">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th class="center">T=0.0</th>
+          <th class="center">T=0.2</th>
+          <th class="center">T=0.5</th>
+          <th class="center">T=0.8</th>
+          <th class="center">Variance</th>
+          <th class="center">Profile</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set seen = [] %}
+        {% for row in rows %}
+        {% if row.model not in seen %}
+        {% set _ = seen.append(row.model) %}
+        {# Collect per-temp values for this model #}
+        {% set t0 = rows | selectattr('model','eq',row.model) | selectattr('temperature','eq',0.0) | map(attribute='pass_rate') | first | default(0) %}
+        {% set t2 = rows | selectattr('model','eq',row.model) | selectattr('temperature','eq',0.2) | map(attribute='pass_rate') | first | default(0) %}
+        {% set t5 = rows | selectattr('model','eq',row.model) | selectattr('temperature','eq',0.5) | map(attribute='pass_rate') | first | default(0) %}
+        {% set t8 = rows | selectattr('model','eq',row.model) | selectattr('temperature','eq',0.8) | map(attribute='pass_rate') | first | default(0) %}
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;">{{ row.model }}</td>
+          <td style="text-align:center;">{{ t0 }}%</td>
+          <td style="text-align:center;">{{ t2 }}%</td>
+          <td style="text-align:center;">{{ t5 }}%</td>
+          <td style="text-align:center;">{{ t8 }}%</td>
+          <td style="text-align:center;font-size:0.68rem;color:var(--muted);">
+            {{ (t0|float - t8|float)|abs|round(1) }}pp
+          </td>
+          <td style="text-align:center;">
+            {% if (t0|float - t8|float)|abs < 5 %}
+            <span class="badge danger">Architectural</span>
+            {% else %}
+            <span class="badge warn">Stochastic</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div style="display:flex;gap:10px;flex-wrap:wrap;" class="fade-up fade-up-3">
+  <a href="/evidence/public-findings" class="btn btn-ghost">Full Findings →</a>
+  <a href="/model-cards" class="btn btn-ghost">Model Cards →</a>
+  <a href="/stats" class="btn btn-ghost">Stats &amp; Charts →</a>
+</div>
+
+<script>
+const raw = {{ rows | tojson }};
+const temps = [0.0, 0.2, 0.5, 0.8];
+const modelNames = [...new Set(raw.map(r => r.model))];
+const palette = ['#00e5a0','#7b6cff','#f5a623','#ff4f4f','#38bdf8','#fb923c','#a3e635','#e879f9','#34d399','#818cf8','#f472b6','#facc15','#60a5fa','#c084fc','#4ade80','#f97316','#06b6d4','#84cc16','#e11d48','#8b5cf6','#14b8a6','#f43f5e','#0ea5e9','#d946ef','#22c55e'];
+
+const datasets = modelNames.map((m, i) => {
+  const points = temps.map(t => {
+    const r = raw.find(x => x.model === m && parseFloat(x.temperature) === t);
+    return r ? parseFloat(r.pass_rate) : null;
+  });
+  return {
+    label: m,
+    data: points,
+    borderColor: palette[i % palette.length],
+    backgroundColor: 'transparent',
+    tension: 0.3,
+    pointRadius: 4,
+    pointHoverRadius: 6,
+    borderWidth: 1.5,
+  };
+});
+
+new Chart(document.getElementById('actChart'), {
+  type: 'line',
+  data: { labels: ['T=0.0', 'T=0.2', 'T=0.5', 'T=0.8'], datasets },
+  options: {
+    responsive: true,
+    interaction: { mode: 'index', intersect: false },
+    plugins: {
+      legend: {
+        labels: {
+          color: '#5a6070',
+          font: { family: 'JetBrains Mono', size: 10 },
+          boxWidth: 10,
+          padding: 12,
+        }
+      },
+      tooltip: {
+        backgroundColor: '#111318',
+        borderColor: '#1e2229',
+        borderWidth: 1,
+        titleColor: '#d4dbe8',
+        bodyColor: '#5a6070',
+        titleFont: { family: 'JetBrains Mono', size: 11 },
+        bodyFont: { family: 'JetBrains Mono', size: 11 },
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 } },
+        grid: { color: '#1e2229' }
+      },
+      y: {
+        min: 0, max: 100,
+        ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' },
+        grid: { color: '#1e2229' }
+      }
+    }
+  }
+});
+</script>
+{% endblock %}

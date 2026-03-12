@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Request Evaluation — MTCP{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Request <span>Evaluation</span></h1>
+  <p>
+    Use this form to submit an evaluation request for a model, deployment context, or assurance review. Submissions are stored for follow-up in the platform workflow.
+  </p>
+</div>
+
+{% if success %}
+<div class="notice success fade-up fade-up-1" style="margin-bottom:18px;">
+  Request submitted successfully. We have recorded the request{% if contact_email %} for {{ contact_email }}{% endif %}.
+</div>
+{% endif %}
+{% if error %}
+<div class="notice error fade-up fade-up-1" style="margin-bottom:18px;">
+  {{ error }}
+</div>
+{% endif %}
+
+<div class="card fade-up fade-up-2">
+  <form method="post" action="/request-evaluation">
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="organisation">Organisation</label>
+        <input id="organisation" name="organisation" required>
+      </div>
+      <div class="form-group">
+        <label for="contact_email">Contact Email</label>
+        <input id="contact_email" name="contact_email" type="email" required>
+      </div>
+      <div class="form-group">
+        <label for="model_identifier">Model Identifier</label>
+        <input id="model_identifier" name="model_identifier" required placeholder="e.g. provider/model-name">
+      </div>
+      <div class="form-group">
+        <label for="timeline">Timeline</label>
+        <input id="timeline" name="timeline" required placeholder="e.g. Immediate, This month, Q2">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="deployment_context">Deployment Context</label>
+      <textarea id="deployment_context" name="deployment_context" rows="4" required placeholder="Describe the intended product or deployment environment."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="evaluation_objective">Evaluation Objective</label>
+      <textarea id="evaluation_objective" name="evaluation_objective" rows="4" required placeholder="What do you need to learn or validate?"></textarea>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="vectors">Vectors</label>
+        <select id="vectors" name="vectors">
+          <option value="full">Full evaluation surface</option>
+          <option value="instruction-persistence">Instruction persistence</option>
+          <option value="boundary-integrity">Boundary integrity</option>
+          <option value="format-discipline">Format discipline</option>
+          <option value="control-degradation">Control degradation</option>
+          <option value="temperature-stability">Temperature stability</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <input id="notes" name="notes" placeholder="Optional extra context">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+      <button type="submit" class="btn btn-primary">Submit Request</button>
+      <a href="/methodology" class="btn btn-ghost">Review Methodology</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

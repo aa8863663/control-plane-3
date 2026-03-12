@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Stats — MTCP Assurance Platform 3{% endblock %}
+{% block title %}Stats — MTCP{% endblock %}
 {% block head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
   <h1>Statistics</h1>
-  <p>Aggregate metrics across all assurance evaluation runs · {{ total_results }} evaluations · {{ model_count }} models</p>
+  <p>Aggregate metrics across all benchmark runs · {{ total_results }} evaluations · {{ model_count }} models</p>
 </div>
 
 <div class="stats-grid fade-up fade-up-1" style="margin-bottom:28px">
@@ -67,7 +67,7 @@
 {% if ctrl_stats %}
 <div class="card fade-up fade-up-4">
   <div class="card-title">Control Probe Results — 20 Harder Edge-Case Probes</div>
-  <p style="font-size:0.68rem;color:var(--muted);margin-bottom:16px">Control probes are deliberately harder. Results are NOT comparable to main assurance evaluation pass rates. Notable: grok-3-mini drops from 90.5% (main) → 25% (ctrl).</p>
+  <p style="font-size:0.68rem;color:var(--muted);margin-bottom:16px">Control probes are deliberately harder. Results are NOT comparable to main benchmark pass rates. Notable: grok-3-mini drops from 90.5% (main) → 25% (ctrl).</p>
   <div class="table-wrap">
     <table>
       <thead>

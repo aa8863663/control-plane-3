@@ -822,50 +822,6 @@ def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
         print(f"Costs error: {e}"); rows=[]
     return templates.TemplateResponse("costs.html", {"request": request, "user": user, "rows": rows})
 
-@app.get("/probes", response_class=HTMLResponse)
-def probe_editor(request: Request, session: Optional[str] = Cookie(default=None)):
-    user, redir = require_admin(session)
-    if redir: return redir
-    probes = []
-    for path in [PROBES_PATH, PROBES_CTRL_PATH]:
-        if os.path.exists(path):
-            with open(path) as f: probes = json.load(f)
-            break
-    return templates.TemplateResponse("probe_editor.html", {
-        "request": request, "user": user, "probes": probes,
-        "probe_count": len(probes), "success": None})
-
-@app.post("/probes/add")
-def probe_add(request: Request, session: Optional[str] = Cookie(default=None),
-              probe_id: str = Form(...), vector: str = Form(...),
-              turn_1: str = Form(...), turn_2_correction: str = Form(...),
-              turn_3_correction: str = Form(...), constraint_type: str = Form(...),
-              constraint_value: str = Form(...)):
-    user, redir = require_admin(session)
-    if redir: return redir
-    if not os.path.exists(PROBES_PATH):
-        probes = []
-    else:
-        with open(PROBES_PATH) as f: probes = json.load(f)
-    try: val = json.loads(constraint_value)
-    except: val = constraint_value
-    probes.append({"probe_id": probe_id, "vector": vector, "turn_1": turn_1,
-                   "turn_2_correction": turn_2_correction, "turn_3_correction": turn_3_correction,
-                   "constraints": {constraint_type: val}})
-    with open(PROBES_PATH, "w") as f: json.dump(probes, f, indent=2)
-    return templates.TemplateResponse("probe_editor.html", {
-        "request": request, "user": user, "probes": probes,
-        "probe_count": len(probes), "success": f"Probe {probe_id} added."})
-
-@app.post("/probes/delete")
-def probe_delete(session: Optional[str] = Cookie(default=None), probe_id: str = Form(...)):
-    user, redir = require_admin(session)
-    if redir: return redir
-    if os.path.exists(PROBES_PATH):
-        with open(PROBES_PATH) as f: probes = json.load(f)
-        probes = [p for p in probes if p.get("probe_id") != probe_id]
-        with open(PROBES_PATH, "w") as f: json.dump(probes, f, indent=2)
-    return RedirectResponse("/probes", status_code=302)
 
 @app.get("/settings/api-keys", response_class=HTMLResponse)
 def api_keys_page(request: Request, session: Optional[str] = Cookie(default=None)):

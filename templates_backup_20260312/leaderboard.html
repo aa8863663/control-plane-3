@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Evidence Board — MTCP Assurance Platform 3{% endblock %}
+{% block title %}Leaderboard — MTCP{% endblock %}
 {% block extra_styles %}
 .filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
 .pill{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:3px;cursor:pointer;transition:all 0.15s;}
@@ -15,8 +15,8 @@
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
-  <h1>Evidence Board</h1>
-  <p>11 models · 4 temperatures · 44 runs · {{ evidence board|length }} entries · March 2026</p>
+  <h1>Leaderboard</h1>
+  <p>25 models · 4 temperatures · 100 runs · {{ leaderboard|length }} entries · March 2026</p>
 </div>
 
 <div class="filter-bar fade-up fade-up-1">
@@ -56,7 +56,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for row in evidence board %}
+        {% for row in leaderboard %}
         <tr class="{% if row.grade == 'A' %}row-pass{% endif %}"
             data-model="{{ row.model|lower }}"
             data-temp="{{ row.temperature }}"

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Control Probes — MTCP Assurance Platform 3{% endblock %}
+{% block title %}Control Probes — Control Plane 3{% endblock %}
 {% block extra_styles %}
 .ctrl-table{width:100%;border-collapse:collapse;font-size:0.72rem;}
 .ctrl-table th{color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:0.05em;padding:8px 12px;border-bottom:1px solid var(--border);text-align:left;}
@@ -19,7 +19,7 @@
 </div>
 
 <div class="info-box fade-up fade-up-1">
-  <strong>What are control probes?</strong> Control probes are a set of 20 deliberately harder edge cases designed to stress-test the assurance evaluation methodology. They are <strong>not comparable</strong> to main assurance evaluation scores (200/252 probes). Lower pass rates here are expected — these probes expose failure modes at the extremes of constraint persistence.
+  <strong>What are control probes?</strong> Control probes are a set of 20 deliberately harder edge cases designed to stress-test the benchmark methodology. They are <strong>not comparable</strong> to main benchmark scores (200/252 probes). Lower pass rates here are expected — these probes expose failure modes at the extremes of constraint persistence.
 </div>
 
 <div class="card fade-up fade-up-2">
@@ -31,7 +31,7 @@
         <th>Passed</th>
         <th>Total</th>
         <th>Pass Rate</th>
-        <th>vs Main Assurance Evaluation</th>
+        <th>vs Main Benchmark</th>
       </tr>
     </thead>
     <tbody>
@@ -51,8 +51,8 @@
 <div class="card fade-up fade-up-3">
   <div class="card-title">Key Observations</div>
   <div style="font-size:0.75rem;color:var(--muted);line-height:1.8;margin-top:10px;">
-    <p>• All models score lower on control probes than on the main assurance evaluation — as expected by design.</p>
-    <p>• Control probe results confirm the main assurance evaluation is not trivially easy — models that score highly on the main assurance evaluation also tend to score higher on control probes.</p>
+    <p>• All models score lower on control probes than on the main benchmark — as expected by design.</p>
+    <p>• Control probe results confirm the main benchmark is not trivially easy — models that score highly on the main benchmark also tend to score higher on control probes.</p>
     <p>• The control probe set is kept private alongside <code style="color:var(--accent);font-size:0.7rem;">probes_200.json</code> to prevent gaming.</p>
     <p>• Control probes will expand to 50 probes in the next dataset version.</p>
   </div>
@@ -60,7 +60,7 @@
 
 <div style="margin-top:16px;" class="fade-up fade-up-4">
   <a href="/stats" class="btn btn-primary">◈ Stats</a>
-  <a href="/evidence/public-findings" class="btn btn-ghost" style="margin-left:8px;">◈ Evidence Board</a>
+  <a href="/leaderboard" class="btn btn-ghost" style="margin-left:8px;">◈ Leaderboard</a>
   <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
 </div>
 {% endblock %}

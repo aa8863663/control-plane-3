@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Certificates — MTCP Assurance Platform 3{% endblock %}
+{% block title %}Certificates — Control Plane 3{% endblock %}
 {% block extra_styles %}
 .cert-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:24px;margin-bottom:12px;position:relative;overflow:hidden;}
 .cert-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
@@ -67,12 +67,12 @@
 
 {% else %}
 <div class="card" style="text-align:center;padding:52px;color:var(--muted)">
-  No assurance evaluation results yet. <a href="/run-assurance evaluation" style="color:var(--accent)">Run your first assurance evaluation →</a>
+  No benchmark results yet. <a href="/run-benchmark" style="color:var(--accent)">Run your first benchmark →</a>
 </div>
 {% endif %}
 
 <div style="margin-top:10px" class="fade-up">
-  <a href="/evidence/public-findings" class="btn btn-ghost">← Evidence Board</a>
+  <a href="/leaderboard" class="btn btn-ghost">← Leaderboard</a>
   <a href="/" class="btn btn-ghost" style="margin-left:8px;">← Dashboard</a>
 </div>
 {% endblock %}
