@@ -83,106 +83,6 @@ def grade(pct):
     if pct >= 60: return "D"
     return "F"
 
-
-# ── Leaderboard / Evidence Helpers ───────────────────────────────────────────
-
-def get_leaderboard_data():
-    conn = get_db()
-    cur = conn.cursor()
-
-    cur.execute("""
-        SELECT
-            ru.model,
-            COALESCE(NULLIF(ru.provider, ''), 'Unknown') AS provider,
-            ROUND(
-                CAST(
-                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END)
-                    AS NUMERIC
-                ) / NULLIF(COUNT(*), 0),
-                1
-            ) AS pass_rate,
-            ROUND(
-                CAST(
-                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' AND ru.temperature = 0.0 THEN 1 ELSE 0 END)
-                    AS NUMERIC
-                ) / NULLIF(SUM(CASE WHEN ru.temperature = 0.0 THEN 1 ELSE 0 END), 0),
-                1
-            ) AS t0,
-            ROUND(
-                CAST(
-                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' AND ru.temperature = 0.2 THEN 1 ELSE 0 END)
-                    AS NUMERIC
-                ) / NULLIF(SUM(CASE WHEN ru.temperature = 0.2 THEN 1 ELSE 0 END), 0),
-                1
-            ) AS t2,
-            ROUND(
-                CAST(
-                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' AND ru.temperature = 0.5 THEN 1 ELSE 0 END)
-                    AS NUMERIC
-                ) / NULLIF(SUM(CASE WHEN ru.temperature = 0.5 THEN 1 ELSE 0 END), 0),
-                1
-            ) AS t5,
-            ROUND(
-                CAST(
-                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' AND ru.temperature = 0.8 THEN 1 ELSE 0 END)
-                    AS NUMERIC
-                ) / NULLIF(SUM(CASE WHEN ru.temperature = 0.8 THEN 1 ELSE 0 END), 0),
-                1
-            ) AS t8
-        FROM results r
-        JOIN runs ru ON r.run_id = ru.id
-        WHERE ru.dataset IS DISTINCT FROM 'ctrl'
-        GROUP BY ru.model, COALESCE(NULLIF(ru.provider, ''), 'Unknown')
-        ORDER BY pass_rate DESC, ru.model
-    """)
-    rows = cur.fetchall()
-
-    cur.execute("""
-        SELECT
-            ru.model,
-            ROUND(
-                CAST(
-                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END)
-                    AS NUMERIC
-                ) / NULLIF(COUNT(*), 0),
-                1
-            ) AS ctrl_rate
-        FROM results r
-        JOIN runs ru ON r.run_id = ru.id
-        WHERE ru.dataset = 'ctrl'
-        GROUP BY ru.model
-    """)
-    ctrl_map = {}
-    for row in cur.fetchall():
-        ctrl_map[row["model"]] = float(row["ctrl_rate"] or 0)
-
-    conn.close()
-
-    models = []
-    for row in rows:
-        main_rate = float(row["pass_rate"] or 0)
-        ctrl_rate = float(ctrl_map.get(row["model"], 0))
-        t0 = float(row["t0"] or 0)
-        t2 = float(row["t2"] or 0)
-        t5 = float(row["t5"] or 0)
-        t8 = float(row["t8"] or 0)
-        variance = round(max(t0, t2, t5, t8) - min(t0, t2, t5, t8), 1)
-        models.append({
-            "model": row["model"],
-            "provider": row["provider"],
-            "pass_rate": round(main_rate, 1),
-            "ctrl_rate": round(ctrl_rate, 1),
-            "drop": round(ctrl_rate - main_rate, 1),
-            "t0": round(t0, 1),
-            "t2": round(t2, 1),
-            "t5": round(t5, 1),
-            "t8": round(t8, 1),
-            "variance": variance,
-            "grade": grade(main_rate),
-        })
-
-    return models
-
 # ── Startup ───────────────────────────────────────────────────────────────────
 
 from scheduled_runs import start_scheduler
@@ -208,16 +108,6 @@ def startup():
             key_hash TEXT NOT NULL, key_prefix TEXT NOT NULL,
             label TEXT, is_active BOOLEAN DEFAULT TRUE,
             created_at TIMESTAMP DEFAULT NOW(), last_used TIMESTAMP)""")
-        cur.execute("""CREATE TABLE IF NOT EXISTS evaluation_requests (
-            id SERIAL PRIMARY KEY,
-            company TEXT NOT NULL,
-            contact_email TEXT NOT NULL,
-            models_of_interest TEXT NOT NULL,
-            use_case TEXT NOT NULL,
-            timeline TEXT NOT NULL,
-            status TEXT DEFAULT 'pending',
-            created_at TIMESTAMP DEFAULT NOW()
-        )""")
         conn.commit(); conn.close()
     except Exception as e:
         print(f"Startup warning: {e}")
@@ -253,22 +143,28 @@ def landing_page(request: Request):
 
 @app.get("/public-leaderboard", response_class=HTMLResponse)
 @app.get("/public", response_class=HTMLResponse)
-def public_redirect():
-    return RedirectResponse(url="/evidence/public-findings", status_code=301)
-
-@app.get("/evidence/public-findings", response_class=HTMLResponse)
-def evidence_page(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    models = get_leaderboard_data()
-    return templates.TemplateResponse(
-        "evidence.html",
-        {
-            "request": request,
-            "user": user,
-            "active": "evidence",
-            "models": models
-        }
-    )
+def public_leaderboard(request: Request):
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("""
+            SELECT ru.model, ru.provider,
+                   ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as avg_pass_rate
+            FROM results r JOIN runs ru ON r.run_id=ru.id
+            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            GROUP BY ru.model, ru.provider ORDER BY avg_pass_rate DESC""")
+        rows = cur.fetchall(); conn.close()
+        leaderboard = []
+        for i, r in enumerate(rows, 1):
+            pr = float(r["avg_pass_rate"] or 0)
+            if pr >= 90: g = "A"
+            elif pr >= 80: g = "B"
+            elif pr >= 70: g = "C"
+            elif pr >= 60: g = "D"
+            else: g = "F"
+            leaderboard.append({"rank": i, "model": r["model"], "provider": r["provider"] or "—", "pass_rate": pr, "grade": g})
+    except Exception as e:
+        print(f"Public leaderboard error: {e}"); leaderboard = []
+    return templates.TemplateResponse("public_leaderboard.html", {"request": request, "leaderboard": leaderboard})
 
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
@@ -324,26 +220,9 @@ def logout(session: Optional[str] = Cookie(default=None)):
 # ── AUTHENTICATED ─────────────────────────────────────────────────────────────
 
 @app.get("/", response_class=HTMLResponse)
-def homepage(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    models = get_leaderboard_data()
-    stats = {"total_models": len(models)}
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "user": user,
-            "active": "platform",
-            "models": models,
-            "stats": stats
-        }
-    )
-
-@app.get("/dashboard", response_class=HTMLResponse)
-def dashboard(request: Request, session: Optional[str] = Cookie(default=None)):
+def home(request: Request, session: Optional[str] = Cookie(default=None)):
     user, redir = require_login(session)
-    if redir:
-        return redir
+    if redir: return redir
     try:
         conn = get_db(); cur = conn.cursor()
         cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset IS DISTINCT FROM 'ctrl')")
@@ -361,132 +240,12 @@ def dashboard(request: Request, session: Optional[str] = Cookie(default=None)):
         model_rows = [{"model": r["model"], "pass_rate": float(r["pass_rate"] or 0), "grade": grade(float(r["pass_rate"] or 0))} for r in rows]
         best_grade = model_rows[0]["grade"] if model_rows else "N/A"
     except Exception as e:
-        print("Dashboard error: {0}".format(e))
-        total_results = 0; total_runs = 0; total_models = 0; model_rows = []; best_grade = "N/A"
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request, "user": user, "active": "dashboard",
+        print(f"Dashboard error: {e}")
+        total_results=0; total_runs=0; total_models=0; model_rows=[]; best_grade="N/A"
+    return templates.TemplateResponse("index.html", {
+        "request": request, "user": user, "active": "home",
         "total_results": total_results, "total_runs": total_runs,
         "total_models": total_models, "best_grade": best_grade, "model_rows": model_rows})
-
-@app.get("/model-cards", response_class=HTMLResponse)
-def model_cards(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    models = get_leaderboard_data()
-    return templates.TemplateResponse(
-        "model_cards.html",
-        {
-            "request": request,
-            "user": user,
-            "active": "models",
-            "models": models
-        }
-    )
-
-@app.get("/model-cards/{model_name}", response_class=HTMLResponse)
-def model_card_single(request: Request, model_name: str, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    models = get_leaderboard_data()
-    model = None
-    for item in models:
-        if item["model"] == model_name:
-            model = item
-            break
-    if model is None:
-        return HTMLResponse("Model not found", status_code=404)
-    return templates.TemplateResponse(
-        "model_card_single.html",
-        {
-            "request": request,
-            "user": user,
-            "active": "models",
-            "model": model
-        }
-    )
-
-@app.get("/methodology", response_class=HTMLResponse)
-def methodology_page(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    return templates.TemplateResponse(
-        "methodology.html",
-        {
-            "request": request,
-            "user": user,
-            "active": "methodology"
-        }
-    )
-
-@app.get("/request-evaluation", response_class=HTMLResponse)
-def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
-    return templates.TemplateResponse(
-        "request_evaluation.html",
-        {
-            "request": request,
-            "user": user,
-            "active": "request",
-            "success": False,
-            "contact_email": None,
-            "error": None
-        }
-    )
-
-@app.post("/request-evaluation", response_class=HTMLResponse)
-def request_evaluation_post(
-    request: Request,
-    organisation: str = Form(...),
-    contact_email: str = Form(...),
-    model_identifier: str = Form(...),
-    deployment_context: str = Form(...),
-    evaluation_objective: str = Form(...),
-    timeline: str = Form(...),
-    vectors: str = Form("full"),
-    notes: str = Form(""),
-    session: Optional[str] = Cookie(default=None)
-):
-    user = current_user(session)
-    try:
-        conn = get_db(); cur = conn.cursor()
-        cur.execute(
-            """
-            INSERT INTO evaluation_requests
-                (company, contact_email, models_of_interest, use_case, timeline, status)
-            VALUES (%s, %s, %s, %s, %s, %s)
-            """,
-            (
-                organisation,
-                contact_email,
-                model_identifier,
-                "Context: {0}\nObjective: {1}\nVectors: {2}\nNotes: {3}".format(
-                    deployment_context, evaluation_objective, vectors, notes
-                ),
-                timeline,
-                "pending"
-            )
-        )
-        conn.commit(); conn.close()
-        return templates.TemplateResponse(
-            "request_evaluation.html",
-            {
-                "request": request,
-                "user": user,
-                "active": "request",
-                "success": True,
-                "contact_email": contact_email,
-                "error": None
-            }
-        )
-    except Exception as e:
-        return templates.TemplateResponse(
-            "request_evaluation.html",
-            {
-                "request": request,
-                "user": user,
-                "active": "request",
-                "success": False,
-                "contact_email": None,
-                "error": "Submission failed: {0}".format(str(e))
-            }
-        )
 
 @app.get("/leaderboard", response_class=HTMLResponse)
 def leaderboard(request: Request, session: Optional[str] = Cookie(default=None)):
