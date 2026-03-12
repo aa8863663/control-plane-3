@@ -1,83 +1,82 @@
 {% extends "base.html" %}
 {% block title %}Dashboard — MTCP{% endblock %}
 {% block content %}
-<div class="page">
-  <div class="page-header">
-    <h1>Dashboard</h1>
-    <p>MTCP Multi-Turn Constraint Persistence · v1.5 · DOI 10.17605/OSF.IO/DXGK5</p>
-  </div>
+<div class="page-header fade-up">
+  <h1>Dashboard</h1>
+  <p>MTCP · Multi-Turn Constraint Persistence · v1.5 · DOI 10.17605/OSF.IO/DXGK5</p>
+</div>
 
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-value">{{ total_results }}</div>
-      <div class="stat-label">Total Evaluations</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">{{ total_runs }}</div>
-      <div class="stat-label">Benchmark Runs</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value">{{ total_models }}</div>
-      <div class="stat-label">Models Tested</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-value" style="color:{% if best_grade=='A' %}var(--accent){% elif best_grade=='B' %}var(--accent2){% elif best_grade=='C' %}var(--warn){% else %}var(--danger){% endif %}">{{ best_grade }}</div>
-      <div class="stat-label">Best Grade (grok-3-mini)</div>
-    </div>
+<div class="stats-grid fade-up fade-up-1" style="margin-bottom:24px">
+  <div class="stat-card">
+    <div class="stat-value">{{ total_results }}</div>
+    <div class="stat-label">Main Evaluations</div>
   </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_runs }}</div>
+    <div class="stat-label">Main Benchmark Runs</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_models }}</div>
+    <div class="stat-label">Models Evaluated</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--accent)">A</div>
+    <div class="stat-label">Top Model · grok-3-mini</div>
+  </div>
+</div>
 
-  <div class="card" style="margin-bottom:24px">
-    <div class="card-title">Model Performance — All {{ total_models }} Models · Avg Pass Rate</div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Model</th>
-            <th>Avg Pass Rate</th>
-            <th>Grade</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in model_rows %}
-          <tr>
-            <td style="color:var(--muted)">{{ loop.index }}</td>
-            <td>{{ row.model }}</td>
-            <td>
-              <div class="bar-wrap">
-                <div class="bar-track">
-                  <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate>=90 %}var(--accent){% elif row.pass_rate>=80 %}var(--accent2){% elif row.pass_rate>=70 %}var(--warn){% else %}var(--danger){% endif %}"></div>
-                </div>
-                <span class="bar-label">{{ row.pass_rate }}%</span>
+<div class="card fade-up fade-up-2" style="margin-bottom:24px">
+  <div class="section-head">
+    <div>
+      <h2>Model Performance — {{ total_models }} Models · Main Benchmark Avg</h2>
+    </div>
+    <a href="/leaderboard" class="btn btn-ghost" style="font-size:0.65rem">Full Leaderboard →</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Model</th>
+          <th>Pass Rate</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in model_stats %}
+        <tr>
+          <td style="color:var(--muted);font-size:0.65rem">{{ loop.index }}</td>
+          <td style="font-size:0.7rem">{{ row.model }}</td>
+          <td>
+            <div class="bar-wrap">
+              <div class="bar-track">
+                <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate>=80 %}var(--accent){% elif row.pass_rate>=70 %}var(--warn){% else %}var(--danger){% endif %}"></div>
               </div>
-            </td>
-            <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-      <a href="/leaderboard" class="btn btn-primary">Full Leaderboard →</a>
-      <a href="/stats" class="btn btn-ghost">Stats &amp; Charts</a>
-      <a href="/api/compare" class="btn btn-ghost">Compare Models</a>
-      <a href="/certificate" class="btn btn-ghost">Certificates</a>
-      <a href="/run-benchmark" class="btn btn-ghost">Run Benchmark</a>
-    </div>
+              <span style="font-size:0.7rem;min-width:38px;text-align:right">{{ row.pass_rate }}%</span>
+            </div>
+          </td>
+          <td>
+            <span class="grade grade-{{ row.grade }}">{{ row.grade }}</span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
+</div>
 
-  {% if user.is_admin %}
-  <div class="card">
-    <div class="card-title">Admin Quick Links</div>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
-      <a href="/ctrl-probes" class="btn btn-ghost">Control Probes</a>
-      <a href="/api/actuarial" class="btn btn-ghost">Actuarial</a>
-      <a href="/api/costs" class="btn btn-ghost">Costs</a>
-      <a href="/health" class="btn btn-ghost">DB Health</a>
-      
-      <a href="/admin" class="btn btn-ghost">User Admin</a>
-    </div>
+<div class="card fade-up fade-up-3">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;margin-bottom:16px">Admin Quick Links</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:8px">
+    <a href="/dashboard" class="btn btn-ghost">Dashboard</a>
+    <a href="/leaderboard" class="btn btn-ghost">Leaderboard</a>
+    <a href="/stats" class="btn btn-ghost">Stats</a>
+    <a href="/api/compare" class="btn btn-ghost">Compare</a>
+    <a href="/api/actuarial" class="btn btn-ghost">Actuarial</a>
+    <a href="/costs" class="btn btn-ghost">Costs</a>
+    <a href="/admin" class="btn btn-ghost">Admin</a>
+    <a href="/health" class="btn btn-ghost">Health</a>
+    <a href="/logout" class="btn btn-ghost" style="color:var(--danger)">Logout</a>
   </div>
-  {% endif %}
 </div>
 {% endblock %}

@@ -1,206 +1,92 @@
 {% extends "base.html" %}
-{% block title %}Reliability Analysis — MTCP{% endblock %}
-
-{% block extra_styles %}
-.act-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
-.act-kpi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
-.act-kpi-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);}
-.act-kpi-value{font-family:'DM Serif Display',serif;font-size:1.45rem;color:#fff;margin-top:10px;}
-.act-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.act-tbl{width:100%;border-collapse:collapse;min-width:940px;}
-.act-tbl th{background:var(--surface2);color:var(--muted);font-size:0.62rem;font-weight:700;letter-spacing:0.8px;padding:9px 10px;text-align:left;white-space:nowrap;text-transform:uppercase;}
-.act-tbl td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.72rem;vertical-align:middle;}
-.act-tbl .mc{font-family:'JetBrains Mono',monospace;font-size:0.66rem;word-break:break-word;max-width:220px;color:#fff;}
-.act-note{font-size:0.72rem;color:var(--muted);line-height:1.8;}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;font-size:0.58rem;text-transform:uppercase;letter-spacing:1.4px;border:1px solid var(--border);}
-.badge.good{color:var(--accent);border-color:rgba(0,229,160,0.22);background:rgba(0,229,160,0.06);}
-.badge.warn{color:var(--warn);border-color:rgba(245,166,35,0.22);background:rgba(245,166,35,0.06);}
-.badge.danger{color:var(--danger);border-color:rgba(255,79,79,0.22);background:rgba(255,79,79,0.06);}
-.act-sections{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px;}
-.act-list{list-style:none;padding:0;margin:0;}
-.act-list li{padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:0.72rem;color:var(--muted);}
-.act-list li:last-child{border-bottom:none;}
-@media(max-width:900px){
-  .act-grid{grid-template-columns:1fr 1fr;}
-  .act-sections{grid-template-columns:1fr;}
-}
-@media(max-width:768px){
-  .act-grid{grid-template-columns:1fr;}
-  .act-tbl{min-width:760px;}
-}
+{% block title %}Actuarial Analysis — MTCP{% endblock %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 {% endblock %}
-
 {% block content %}
 <div class="page-header fade-up">
-  <h1>Reliability <span>Analysis</span></h1>
-  <p>
-    This view focuses on performance stability across temperatures. Instead of a dense chart, it surfaces the models that remain consistent and the models that swing most under sampling variation.
-  </p>
+  <h1>Actuarial <span>Analysis</span></h1>
+  <p>Temperature stability and failure classification across all 25 models</p>
 </div>
 
-{% set ns = namespace(models=[]) %}
-{% for row in rows %}
-  {% set found = false %}
-  {% for m in ns.models %}
-    {% if m.model == row.model %}
-      {% set _ = m.update({('t' ~ row.temperature|string): row.pass_rate|float}) %}
-      {% set found = true %}
-    {% endif %}
-  {% endfor %}
-  {% if not found %}
-    {% set _ = ns.models.append({
-      'model': row.model,
-      't0.0': none,
-      't0.2': none,
-      't0.5': none,
-      't0.8': none
-    }) %}
-    {% set _ = ns.models[-1].update({('t' ~ row.temperature|string): row.pass_rate|float}) %}
-  {% endif %}
-{% endfor %}
-
-{% set calc = namespace(final=[]) %}
-{% for m in ns.models %}
-  {% set vals = [] %}
-  {% if m['t0.0'] is not none %}{% set _ = vals.append(m['t0.0']) %}{% endif %}
-  {% if m['t0.2'] is not none %}{% set _ = vals.append(m['t0.2']) %}{% endif %}
-  {% if m['t0.5'] is not none %}{% set _ = vals.append(m['t0.5']) %}{% endif %}
-  {% if m['t0.8'] is not none %}{% set _ = vals.append(m['t0.8']) %}{% endif %}
-  {% if vals|length > 0 %}
-    {% set avg = (vals|sum / vals|length)|round(1) %}
-    {% set variance = (vals|max - vals|min)|round(1) %}
-    {% if variance < 2 %}
-      {% set stability = 'High stability' %}
-      {% set badge_class = 'good' %}
-    {% elif variance < 5 %}
-      {% set stability = 'Moderate stability' %}
-      {% set badge_class = 'warn' %}
-    {% else %}
-      {% set stability = 'Low stability' %}
-      {% set badge_class = 'danger' %}
-    {% endif %}
-    {% set _ = calc.final.append({
-      'model': m.model,
-      'avg': avg,
-      't0': m['t0.0'],
-      't2': m['t0.2'],
-      't5': m['t0.5'],
-      't8': m['t0.8'],
-      'variance': variance,
-      'stability': stability,
-      'badge_class': badge_class
-    }) %}
-  {% endif %}
-{% endfor %}
-
-<div class="card fade-up fade-up-1" style="margin-bottom:18px;">
-  <div class="card-title">What this page shows</div>
-  <p class="act-note">
-    Temperature stability is used here as a quick reliability signal. Lower variance suggests more consistent behaviour under changing sampling conditions. Higher variance suggests performance is more sensitive to temperature.
-  </p>
-</div>
-
-<div class="act-grid fade-up fade-up-2">
-  <div class="act-kpi">
-    <div class="act-kpi-label">Models analysed</div>
-    <div class="act-kpi-value">{{ calc.final|length }}</div>
-  </div>
-  <div class="act-kpi">
-    <div class="act-kpi-label">Most stable variance</div>
-    <div class="act-kpi-value">
-      {% if calc.final|length > 0 %}{{ (calc.final|map(attribute='variance')|min) }}pp{% else %}0pp{% endif %}
-    </div>
-  </div>
-  <div class="act-kpi">
-    <div class="act-kpi-label">Widest variance</div>
-    <div class="act-kpi-value">
-      {% if calc.final|length > 0 %}{{ (calc.final|map(attribute='variance')|max) }}pp{% else %}0pp{% endif %}
-    </div>
-  </div>
-  <div class="act-kpi">
-    <div class="act-kpi-label">Best average rate</div>
-    <div class="act-kpi-value">
-      {% if calc.final|length > 0 %}{{ (calc.final|map(attribute='avg')|max) }}%{% else %}0%{% endif %}
-    </div>
-  </div>
-</div>
-
-<div class="act-sections fade-up fade-up-3">
-  <div class="card">
-    <div class="card-title">Most stable models</div>
-    <ul class="act-list">
-      {% for item in calc.final|sort(attribute='variance')[:5] %}
-      <li><strong>{{ item.model }}</strong><br>{{ item.variance }}pp variance · {{ item.avg }}% average</li>
-      {% else %}
-      <li>No data available.</li>
-      {% endfor %}
-    </ul>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Largest temperature swings</div>
-    <ul class="act-list">
-      {% for item in calc.final|sort(attribute='variance', reverse=true)[:5] %}
-      <li><strong>{{ item.model }}</strong><br>{{ item.variance }}pp variance · {{ item.avg }}% average</li>
-      {% else %}
-      <li>No data available.</li>
-      {% endfor %}
-    </ul>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Interpretation</div>
-    <ul class="act-list">
-      <li><strong>High stability</strong><br>Variance under 2 percentage points.</li>
-      <li><strong>Moderate stability</strong><br>Variance between 2 and 5 percentage points.</li>
-      <li><strong>Low stability</strong><br>Variance above 5 percentage points.</li>
-    </ul>
-  </div>
-</div>
-
-<div class="card fade-up fade-up-4">
+<div class="card fade-up fade-up-1" style="margin-bottom:24px">
   <div class="section-head">
     <div>
-      <h2>Temperature stability table</h2>
-      <p>Per-model temperature breakdown with average pass rate and simple stability classification.</p>
+      <h2>Pass Rate by Temperature</h2>
+      <p>Each line is a model. Flat lines = architectural failure. Volatile lines = stochastic failure.</p>
     </div>
   </div>
+  <canvas id="actChart" height="70"></canvas>
+</div>
 
-  <div class="act-wrap">
-    <table class="act-tbl">
+<div class="card fade-up fade-up-2">
+  <div class="section-head">
+    <div>
+      <h2>Per-model temperature profile</h2>
+      <p>Variance = max(T0,T2,T5,T8) − min(T0,T2,T5,T8). &lt;5pp = architectural. ≥5pp = stochastic.</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
       <thead>
         <tr>
           <th>Model</th>
-          <th>Average</th>
           <th>T=0.0</th>
           <th>T=0.2</th>
           <th>T=0.5</th>
           <th>T=0.8</th>
           <th>Variance</th>
-          <th>Stability</th>
+          <th>Classification</th>
+          <th>Grade</th>
         </tr>
       </thead>
       <tbody>
-        {% for item in calc.final|sort(attribute='avg', reverse=true) %}
+        {% for row in models %}
         <tr>
-          <td class="mc">{{ item.model }}</td>
-          <td>{{ item.avg }}%</td>
-          <td>{{ item.t0 if item.t0 is not none else '—' }}</td>
-          <td>{{ item.t2 if item.t2 is not none else '—' }}</td>
-          <td>{{ item.t5 if item.t5 is not none else '—' }}</td>
-          <td>{{ item.t8 if item.t8 is not none else '—' }}</td>
-          <td>{{ item.variance }}pp</td>
-          <td><span class="badge {{ item.badge_class }}">{{ item.stability }}</span></td>
-        </tr>
-        {% else %}
-        <tr>
-          <td colspan="8">
-            <div class="empty-state">No reliability data is available for this view.</div>
+          <td style="font-size:0.7rem;font-family:'JetBrains Mono',monospace">{{ row.model }}</td>
+          <td style="font-size:0.68rem">{{ row.t0 }}%</td>
+          <td style="font-size:0.68rem">{{ row.t2 }}%</td>
+          <td style="font-size:0.68rem">{{ row.t5 }}%</td>
+          <td style="font-size:0.68rem">{{ row.t8 }}%</td>
+          <td style="font-size:0.68rem;color:{% if row.variance < 5 %}var(--muted){% else %}var(--warn){% endif %}">{{ row.variance }}pp</td>
+          <td>
+            {% if row.variance < 5 %}
+            <span style="font-size:0.6rem;background:rgba(59,158,255,0.1);color:var(--blue);border:1px solid rgba(59,158,255,0.2);padding:2px 8px;border-radius:3px;letter-spacing:0.8px;text-transform:uppercase">Architectural</span>
+            {% else %}
+            <span style="font-size:0.6rem;background:rgba(245,166,35,0.1);color:var(--warn);border:1px solid rgba(245,166,35,0.2);padding:2px 8px;border-radius:3px;letter-spacing:0.8px;text-transform:uppercase">Stochastic</span>
+            {% endif %}
           </td>
+          <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
+
+<script>
+const raw = {{ actdata | tojson }};
+const models = [...new Set(raw.map(r => r.model))];
+const temps = [0.0, 0.2, 0.5, 0.8];
+const palette = ['#00e5a0','#7b6cff','#f5a623','#ff4f4f','#38bdf8','#fb923c','#a3e635','#e879f9','#34d399','#818cf8','#f472b6','#fbbf24','#60a5fa','#f87171','#4ade80','#c084fc','#fb7185','#34d399','#a78bfa','#facc15','#2dd4bf','#f97316','#e879f9','#22d3ee','#86efac'];
+const datasets = models.map((m,i) => ({
+  label: m,
+  data: temps.map(t => { const r = raw.find(x => x.model===m && parseFloat(x.temperature)===t); return r ? parseFloat(r.pass_rate) : null; }),
+  borderColor: palette[i % palette.length],
+  backgroundColor: 'transparent',
+  tension: 0.3, pointRadius: 4, borderWidth: 1.5,
+}));
+new Chart(document.getElementById('actChart'), {
+  type: 'line',
+  data: { labels: ['T=0.0','T=0.2','T=0.5','T=0.8'], datasets },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 9 }, boxWidth: 10 } } },
+    scales: {
+      x: { ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: '#1e2330' } },
+      y: { min: 0, max: 100, ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v+'%' }, grid: { color: '#1e2330' } }
+    }
+  }
+});
+</script>
 {% endblock %}

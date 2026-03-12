@@ -1,26 +1,34 @@
 {% extends "base.html" %}
-{% block title %}Costs — MTCP Assurance Platform 3{% endblock %}
+{% block title %}Costs — MTCP{% endblock %}
 {% block content %}
-<div class="page">
-  <div class="page-header">
-    <div class="page-title">Cost Breakdown</div>
-    <div class="page-subtitle">Runs and probe counts by model</div>
+<div class="page-header fade-up">
+  <h1>Cost <span>Breakdown</span></h1>
+  <p>Runs and probe counts by model across all benchmark activity</p>
+</div>
+
+<div class="card fade-up fade-up-1">
+  <div class="section-head">
+    <div><h2>Runs and probes by model</h2></div>
   </div>
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Model</th><th>Runs</th><th>Probes</th></tr></thead>
-        <tbody>
-          {% for row in rows %}
-          <tr>
-            <td>{{ row.model }}</td>
-            <td>{{ row.runs }}</td>
-            <td>{{ row.probes }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Runs</th>
+          <th>Probes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td style="font-size:0.7rem;font-family:'JetBrains Mono',monospace">{{ row.model }}</td>
+          <td style="font-size:0.7rem">{{ row.runs }}</td>
+          <td style="font-size:0.7rem;color:var(--muted)">{{ row.probes }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
 {% endblock %}

@@ -1,23 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Compare — MTCP Assurance Platform 3{% endblock %}
+{% block title %}Compare — MTCP{% endblock %}
 {% block head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 {% endblock %}
 {% block content %}
-<div class="page">
-  <div class="page-header">
-    <div class="page-title">Model Comparison</div>
-    <div class="page-subtitle">Pass rate by temperature across all 11 models</div>
-  </div>
-  <div class="card">
-    <canvas id="compareChart" height="60"></canvas>
-  </div>
+<div class="page-header fade-up">
+  <h1>Model <span>Comparison</span></h1>
+  <p>Pass rate by temperature across all 25 models</p>
 </div>
+
+<div class="card fade-up fade-up-1">
+  <div class="section-head">
+    <div><h2>Temperature response curves</h2><p>How each model's pass rate changes across T=0.0, 0.2, 0.5, 0.8</p></div>
+  </div>
+  <canvas id="compareChart" height="60"></canvas>
+</div>
+
 <script>
 const raw = {{ compare_data | tojson }};
 const models = [...new Set(raw.map(r => r.model))];
 const temps = [0.0, 0.2, 0.5, 0.8];
-const palette = ['#00e5a0','#7b6cff','#f5a623','#ff4f4f','#38bdf8','#fb923c','#a3e635','#e879f9','#34d399','#818cf8','#f472b6'];
+const palette = ['#00e5a0','#7b6cff','#f5a623','#ff4f4f','#38bdf8','#fb923c','#a3e635','#e879f9','#34d399','#818cf8','#f472b6','#fbbf24','#60a5fa','#f87171','#4ade80','#c084fc','#fb7185','#34d399','#a78bfa','#facc15','#2dd4bf','#f97316','#e879f9','#22d3ee','#86efac'];
 const datasets = models.map((m,i) => ({
   label: m,
   data: temps.map(t => { const r = raw.find(x => x.model===m && x.temperature===t); return r ? r.pass_rate : null; }),

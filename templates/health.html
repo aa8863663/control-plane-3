@@ -1,18 +1,17 @@
 {% extends "base.html" %}
-{% block title %}System Health — MTCP Assurance Platform 3{% endblock %}
+{% block title %}System Health — MTCP{% endblock %}
 {% block content %}
 <div class="page-header fade-up">
   <h1>System <span>Health</span></h1>
   <p>Neon PostgreSQL connection status and database diagnostics</p>
 </div>
 
-<div class="stats-grid fade-up fade-up-1">
+<div class="stats-grid fade-up fade-up-1" style="margin-bottom:24px">
   <div class="stat-card">
     <div class="stat-value" style="color:{% if status=='OK' %}var(--accent){% else %}var(--danger){% endif %}">
       {{ '✓' if status=='OK' else '✕' }}
     </div>
     <div class="stat-label">DB Status</div>
-    <div class="stat-sub">{{ status }}</div>
   </div>
   {% if db_info %}
   <div class="stat-card">
@@ -23,30 +22,29 @@
     <div class="stat-value">{{ db_info.results }}</div>
     <div class="stat-label">Total Results</div>
   </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ db_info.models }}</div>
+    <div class="stat-label">Distinct Models</div>
+  </div>
   {% endif %}
 </div>
 
-{% if db_info %}
+{% if status == 'OK' %}
 <div class="card fade-up fade-up-2">
-  <div class="card-title">Database Info</div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Key</th><th>Value</th></tr></thead>
-      <tbody>
-        {% for key, val in db_info.items() %}
-        <tr>
-          <td style="color:var(--muted)">{{ key }}</td>
-          <td style="color:var(--text)">{{ val }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <div class="section-head">
+    <div><h2>Connection details</h2></div>
   </div>
+  <p style="font-size:0.72rem;color:var(--muted)">Database: Neon PostgreSQL · Status: Connected · {{ status }}</p>
+  {% if error %}
+  <p style="font-size:0.72rem;color:var(--danger);margin-top:8px">{{ error }}</p>
+  {% endif %}
+</div>
+{% else %}
+<div class="card fade-up fade-up-2" style="border-color:rgba(255,79,79,0.3)">
+  <div class="section-head">
+    <div><h2>Connection error</h2></div>
+  </div>
+  <p style="font-size:0.72rem;color:var(--danger)">{{ error or 'Database connection failed' }}</p>
 </div>
 {% endif %}
-
-<div style="margin-top:16px" class="fade-up fade-up-3">
-  <a href="/" class="btn btn-ghost">← Dashboard</a>
-  <a href="/admin" class="btn btn-ghost" style="margin-left:8px">Admin</a>
-</div>
 {% endblock %}
