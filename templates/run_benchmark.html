@@ -1,124 +1,44 @@
 {% extends "base.html" %}
-{% block title %}Run Assurance Evaluation — MTCP Assurance Platform 3{% endblock %}
+{% block title %}Run Benchmark — MTCP{% endblock %}
 {% block content %}
-<div class="page">
-  <div class="page-header">
-    <div class="page-title">Run Assurance Evaluation</div>
-    <div class="page-subtitle">Execute a new MTCP evaluation session against any supported model</div>
-  </div>
-
-  <div class="card" style="max-width:580px">
-    <div class="form-group">
-      <label class="form-label">Provider</label>
-      <select class="form-input" id="rb-provider" onchange="updateModels()">
-        <option value="groq">Groq (LLaMA)</option>
-        <option value="openai">OpenAI</option>
-        <option value="anthropic">Anthropic</option>
-        <option value="xai">xAI (Grok)</option>
-        <option value="google">Google</option>
-        <option value="nvidia">NVIDIA</option>
-        <option value="huggingface">Hugging Face</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Model</label>
-      <select class="form-input" id="rb-model"></select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Temperature</label>
-      <select class="form-input" id="rb-temp">
-        <option value="0.0">0.0</option>
-        <option value="0.2">0.2</option>
-        <option value="0.5">0.5</option>
-        <option value="0.8">0.8</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Dataset</label>
-      <select class="form-input" id="rb-dataset">
-        <option value="main">main — 200 probes (standard assurance evaluation)</option>
-        <option value="ctrl">ctrl — 20 control probes (harder edge cases)</option>
-      </select>
-    </div>
-    <button class="btn btn-primary" onclick="startRun()" id="run-btn">▶ Start Run</button>
-    <div id="run-status" style="margin-top:16px;font-size:12px;color:var(--muted);line-height:1.6"></div>
-  </div>
-
-  <div class="card" style="max-width:580px;margin-top:24px">
-    <div class="card-title">Assurance Evaluationed Models — March 2026</div>
-    <div class="table-wrap" style="margin-top:8px">
-      <table>
-        <thead><tr><th>Model</th><th>Provider</th><th>Avg</th><th>Grade</th></tr></thead>
-        <tbody>
-          <tr><td>grok-3-mini</td><td style="color:var(--muted)">xAI</td><td>90.5%</td><td><span class="grade grade-A">A</span></td></tr>
-          <tr><td>nvidia/llama-3.3-nemotron-70b</td><td style="color:var(--muted)">NVIDIA</td><td>88.3%</td><td><span class="grade grade-B">B</span></td></tr>
-          <tr><td>gpt-3.5-turbo</td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td><span class="grade grade-B">B</span></td></tr>
-          <tr><td>gpt-4o-mini</td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td><span class="grade grade-B">B</span></td></tr>
-          <tr><td>llama-3.3-70b-versatile</td><td style="color:var(--muted)">Groq</td><td>75.6%</td><td><span class="grade grade-C">C</span></td></tr>
-          <tr><td>llama-3.1-8b-instant</td><td style="color:var(--muted)">Groq</td><td>71.5%</td><td><span class="grade grade-C">C</span></td></tr>
-          <tr><td>claude-sonnet-4-20250514</td><td style="color:var(--muted)">Anthropic</td><td>68.1%</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>claude-haiku-4-5-20251001</td><td style="color:var(--muted)">Anthropic</td><td>66.1%</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>gpt-4o</td><td style="color:var(--muted)">OpenAI</td><td>65.1%</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>gemini-2.0-flash</td><td style="color:var(--muted)">Google</td><td>63.1%</td><td><span class="grade grade-D">D</span></td></tr>
-          <tr><td>nvidia/gemma-27b</td><td style="color:var(--muted)">NVIDIA</td><td>62.8%</td><td><span class="grade grade-D">D</span></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+<div class="page-header fade-up">
+  <h1>Run <span>Benchmark</span></h1>
+  <p>Trigger a new evaluation run via the API</p>
 </div>
 
-<script>
-const MODELS = {
-  groq: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'],
-  openai: ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo'],
-  anthropic: ['claude-sonnet-4-20250514', 'claude-haiku-4-5-20251001'],
-  xai: ['grok-3-mini'],
-  google: ['gemini-2.0-flash'],
-  nvidia: ['nvidia/llama-3.3-nemotron-70b-instruct', 'nvidia/gemma-27b-it'],
-  huggingface: ['meta-llama/Llama-3.3-70B-Instruct', 'mistralai/Mistral-7B-Instruct-v0.3', 'google/gemma-2-9b-it']
-};
+<div class="card fade-up fade-up-1" style="margin-bottom:20px;background:rgba(245,166,35,0.04);border-color:rgba(245,166,35,0.2)">
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.8">Benchmark runs are executed via the command line. Use the terminal to run <code style="color:var(--accent)">python3 llm_safety_platform.py</code> with the appropriate flags. This page is a reference for run parameters.</p>
+</div>
 
-function updateModels() {
-  const provider = document.getElementById('rb-provider').value;
-  const sel = document.getElementById('rb-model');
-  sel.innerHTML = '';
-  MODELS[provider].forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m; opt.textContent = m;
-    sel.appendChild(opt);
-  });
-}
+<div class="card fade-up fade-up-2" style="margin-bottom:20px">
+  <div class="section-head"><div><h2>Main benchmark run</h2></div></div>
+  <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px">Run against probes_200.json at all 4 temperatures:</p>
+  <code style="display:block;background:#0a0c10;border:1px solid var(--border);border-radius:4px;padding:14px 16px;font-size:0.72rem;color:var(--accent);line-height:1.8">
+    python3 llm_safety_platform.py --data probes_200.json --api &lt;provider&gt; --model &lt;model-id&gt; --temperature 0.0,0.2,0.5,0.8 --out output.csv --runs 1
+  </code>
+</div>
 
-async function startRun() {
-  const model = document.getElementById('rb-model').value;
-  const temperature = parseFloat(document.getElementById('rb-temp').value);
-  const dataset = document.getElementById('rb-dataset').value;
-  const btn = document.getElementById('run-btn');
-  const status = document.getElementById('run-status');
-  btn.disabled = true;
-  status.style.color = 'var(--muted)';
-  status.textContent = 'Starting run — this may take several minutes...';
-  try {
-    const res = await fetch('/run', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({model, temperature, dataset})
-    });
-    const data = await res.json();
-    if (res.ok && data.success) {
-      status.style.color = 'var(--accent)';
-      status.textContent = '✓ Run complete. Reload evidence board to see results.';
-    } else {
-      status.style.color = 'var(--danger)';
-      status.textContent = 'Error: ' + (data.stderr || data.error || JSON.stringify(data));
-    }
-  } catch(e) {
-    status.style.color = 'var(--danger)';
-    status.textContent = 'Error: ' + e.message;
-  }
-  btn.disabled = false;
-}
+<div class="card fade-up fade-up-3" style="margin-bottom:20px">
+  <div class="section-head"><div><h2>Control run</h2></div></div>
+  <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px">Run after every main run — control probes at T=0.0 only:</p>
+  <code style="display:block;background:#0a0c10;border:1px solid var(--border);border-radius:4px;padding:14px 16px;font-size:0.72rem;color:var(--accent);line-height:1.8">
+    python3 llm_safety_platform.py --data probes_control_20.json --api &lt;provider&gt; --model &lt;model-id&gt; --temperature 0.0 --out ctrl_output.csv --runs 1
+  </code>
+</div>
 
-updateModels();
-</script>
+<div class="card fade-up fade-up-4">
+  <div class="section-head"><div><h2>Pending runs</h2></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Model</th><th>Provider</th><th>Status</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">magistral-medium-latest</td><td style="font-size:0.7rem;color:var(--muted)">Mistral</td><td><span style="font-size:0.6rem;background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.2);padding:2px 8px;border-radius:3px">READY</span></td><td style="font-size:0.68rem;color:var(--muted)">No blockers</td></tr>
+        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">gemini-2.5-flash</td><td style="font-size:0.7rem;color:var(--muted)">Google</td><td><span style="font-size:0.6rem;background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.2);padding:2px 8px;border-radius:3px">READY</span></td><td style="font-size:0.68rem;color:var(--muted)">No blockers</td></tr>
+        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">deepseek-r1-distill-qwen-32b</td><td style="font-size:0.7rem;color:var(--muted)">NVIDIA</td><td><span style="font-size:0.6rem;background:rgba(255,79,79,0.1);color:var(--danger);border:1px solid rgba(255,79,79,0.2);padding:2px 8px;border-radius:3px">FIX FIRST</span></td><td style="font-size:0.68rem;color:var(--muted)">Fix constraint_detector.py line 31</td></tr>
+        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">kimi-k2-instruct-0905</td><td style="font-size:0.7rem;color:var(--muted)">Fireworks</td><td><span style="font-size:0.6rem;background:rgba(245,166,35,0.1);color:var(--warn);border:1px solid rgba(245,166,35,0.2);padding:2px 8px;border-radius:3px">RETRY</span></td><td style="font-size:0.68rem;color:var(--muted)">Was rate limited</td></tr>
+        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">llama-3-405b-instruct</td><td style="font-size:0.7rem;color:var(--muted)">Watsonx</td><td><span style="font-size:0.6rem;background:rgba(255,79,79,0.1);color:var(--danger);border:1px solid rgba(255,79,79,0.2);padding:2px 8px;border-radius:3px">BLOCKED</span></td><td style="font-size:0.68rem;color:var(--muted)">IBM IAM 401</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}
