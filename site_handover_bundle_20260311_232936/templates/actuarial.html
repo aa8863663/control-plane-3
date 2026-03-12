@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Actuarial — Control Plane 3{% endblock %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Actuarial Analysis</div>
+    <div class="page-subtitle">Pass rate by temperature across all models</div>
+  </div>
+  <div class="card" style="margin-bottom:24px">
+    <div class="card-title">Pass Rate by Temperature</div>
+    <canvas id="actChart" height="70"></canvas>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+    <style>
+      .act-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+      .act-tbl{width:100%;border-collapse:collapse;min-width:320px;}
+      .act-tbl th{background:var(--surface2);color:var(--muted);font-size:0.65rem;font-weight:700;letter-spacing:0.5px;padding:8px 10px;text-align:left;white-space:nowrap;}
+      .act-tbl td{padding:7px 10px;border-bottom:1px solid rgba(255,255,255,0.04);font-size:0.72rem;vertical-align:middle;}
+      .act-tbl .mc{font-family:"JetBrains Mono",monospace;font-size:0.65rem;word-break:break-all;max-width:160px;}
+      .act-tbl .tc{color:var(--muted);font-size:0.68rem;white-space:nowrap;}
+      .bar-wrap{display:flex;align-items:center;gap:8px;}
+      .bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;min-width:50px;}
+      .bar-fill{height:100%;border-radius:3px;}
+      .bar-label{font-size:0.68rem;white-space:nowrap;min-width:36px;text-align:right;}
+      @media(max-width:600px){.act-tbl .mc{max-width:100px;font-size:0.6rem;}.act-tbl td,.act-tbl th{padding:5px 6px;}.bar-track{min-width:30px;}}
+    </style>
+    <div class="act-wrap"><table class="act-tbl">
+        <thead><tr><th>Model</th><th>T</th><th>Pass Rate</th></tr></thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td class="mc">{{ row.model }}</td>
+            <td class="tc">{{ row.temperature }}</td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track">
+                  <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate|float>=90 %}var(--accent){% elif row.pass_rate|float>=80 %}var(--accent2){% elif row.pass_rate|float>=70 %}var(--warn){% else %}var(--danger){% endif %}"></div>
+                </div>
+                <span class="bar-label">{{ row.pass_rate }}%</span>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </table></div>
+  </div>
+</div>
+<script>
+const raw = {{ rows | tojson }};
+const temps = [...new Set(raw.map(r => r.temperature))].sort((a,b)=>a-b);
+const models = [...new Set(raw.map(r => r.model))];
+const palette = ['#00e5a0','#7b6cff','#f5a623','#ff4f4f','#38bdf8','#fb923c','#a3e635','#e879f9','#34d399','#818cf8','#f472b6'];
+const datasets = models.map((m,i) => ({
+  label: m,
+  data: temps.map(t => { const r = raw.find(x => x.model===m && x.temperature==t); return r ? parseFloat(r.pass_rate) : null; }),
+  borderColor: palette[i % palette.length],
+  backgroundColor: palette[i % palette.length] + '20',
+  tension: 0.3, fill: false, pointRadius: 4,
+}));
+new Chart(document.getElementById('actChart'), {
+  type: 'line',
+  data: { labels: temps.map(t => 'T='+t), datasets },
+  options: {
+    responsive: true,
+    plugins: { legend: { labels: { color: '#d4dbe8', font: { family: 'JetBrains Mono', size: 10 }, boxWidth: 12 } } },
+    scales: {
+      x: { ticks: { color: '#5a6070' }, grid: { color: '#1e2330' } },
+      y: { min: 0, max: 100, ticks: { color: '#5a6070', callback: v => v+'%' }, grid: { color: '#1e2330' } }
+    }
+  }
+});
+</script>
+{% endblock %}

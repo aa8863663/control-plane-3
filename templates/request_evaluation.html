@@ -1,0 +1,97 @@
+{% extends "base_v2.html" %}
+{% set active = 'request' %}
+{% block title %}Request Evaluation — MTCP{% endblock %}
+{% block content %}
+<div class="page-wrap" style="max-width:760px;">
+  <div class="page-header">
+    <div class="section-label">Evaluation Services</div>
+    <h1>Request a Model Evaluation</h1>
+    <p>Submit your model for structured MTCP constraint persistence evaluation. We will review your request and respond within 2 business days.</p>
+  </div>
+
+  {% if success %}
+  <div class="alert alert-success">Request received. We will be in touch at {{ contact_email }} shortly.</div>
+  {% endif %}
+  {% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+  {% endif %}
+
+  <div class="card">
+    <div class="card-title">Evaluation Request</div>
+    <div class="card-sub">All fields required. Information is used only to scope and schedule your evaluation.</div>
+    <form method="POST" action="/request-evaluation">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="organisation">Organisation</label>
+          <input type="text" id="organisation" name="organisation" placeholder="Acme Corp" required/>
+        </div>
+        <div class="form-group">
+          <label for="contact_email">Contact Email</label>
+          <input type="email" id="contact_email" name="contact_email" placeholder="you@company.com" required/>
+        </div>
+        <div class="form-group full">
+          <label for="model_identifier">Model Identifier</label>
+          <input type="text" id="model_identifier" name="model_identifier" placeholder="e.g. gpt-4o, claude-3-5-sonnet, your-internal-model-name" required/>
+          <span class="form-hint">Provider API model name, or description of internal model if proprietary.</span>
+        </div>
+        <div class="form-group full">
+          <label for="deployment_context">Deployment Context</label>
+          <textarea id="deployment_context" name="deployment_context" placeholder="Describe how and where the model is deployed — e.g. customer support, document processing, internal assistant..." required></textarea>
+        </div>
+        <div class="form-group full">
+          <label for="evaluation_objective">Evaluation Objective</label>
+          <textarea id="evaluation_objective" name="evaluation_objective" placeholder="What do you need to demonstrate — e.g. EU AI Act compliance, internal safety audit, vendor comparison..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="timeline">Timeline</label>
+          <select id="timeline" name="timeline" required>
+            <option value="">Select timeline...</option>
+            <option value="urgent">Urgent — within 1 week</option>
+            <option value="standard">Standard — 2–4 weeks</option>
+            <option value="flexible">Flexible — no fixed deadline</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="vectors">Evaluation Vectors</label>
+          <select id="vectors" name="vectors">
+            <option value="full">Full — all 5 vectors (recommended)</option>
+            <option value="nca_sfc">NCA + SFC only</option>
+            <option value="custom">Custom — specify in notes</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label for="notes">Additional Notes</label>
+          <textarea id="notes" name="notes" placeholder="Any additional context, constraints, or requirements..."></textarea>
+        </div>
+      </div>
+      <div style="margin-top:24px;display:flex;gap:12px;align-items:center;">
+        <button type="submit" class="btn btn-primary">Submit Request →</button>
+        <span style="font-size:13px;color:#64748b;">We will confirm receipt by email.</span>
+      </div>
+    </form>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;">
+    <div class="card">
+      <div class="card-title">What You Receive</div>
+      <div style="font-size:14px;color:#475569;margin-top:8px;line-height:1.8;">
+        Full MTCP evaluation report<br/>
+        SHA-256 verified evaluation records<br/>
+        Temperature stability profile<br/>
+        Control probe degradation analysis<br/>
+        EU AI Act Annex IV documentation
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Evaluation Vectors</div>
+      <div style="font-size:14px;color:#475569;margin-top:8px;line-height:1.8;">
+        NCA — Negative Constraint Adherence<br/>
+        SFC — Structural Format Compliance<br/>
+        IDL — Information Density &amp; Length<br/>
+        CG — Contextual Grounding<br/>
+        LANG — Multilingual Consistency
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

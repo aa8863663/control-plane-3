@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Stats — Control Plane 3{% endblock %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Statistics</h1>
+  <p>Aggregate metrics across all benchmark runs · {{ total_results }} evaluations · {{ model_count }} models</p>
+</div>
+
+<div class="stats-grid fade-up fade-up-1" style="margin-bottom:28px">
+  <div class="stat-card">
+    <div class="stat-value">{{ total_runs }}</div>
+    <div class="stat-label">Total Runs</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_results }}</div>
+    <div class="stat-label">Evaluations</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--danger)">{{ hard_stops }}</div>
+    <div class="stat-label">Safety Hard Stops</div>
+  </div>
+</div>
+
+<div class="card fade-up fade-up-2" style="margin-bottom:24px">
+  <div class="card-title">Average Pass Rate by Model</div>
+  <canvas id="modelChart" height="80"></canvas>
+</div>
+
+{% if temp_breakdown %}
+<div class="card fade-up fade-up-3" style="margin-bottom:24px">
+  <div class="card-title">Pass Rate by Temperature</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Temperature</th>
+          <th>Avg Pass Rate</th>
+          <th>Total Evaluations</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in temp_breakdown %}
+        <tr>
+          <td style="font-family:'JetBrains Mono',monospace;color:var(--muted)">T={{ "%.1f"|format(row.temperature) }}</td>
+          <td>
+            <div class="bar-wrap">
+              <div class="bar-track">
+                <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate>=80 %}var(--accent){% elif row.pass_rate>=70 %}var(--warn){% else %}var(--danger){% endif %}"></div>
+              </div>
+              <span class="bar-label">{{ row.pass_rate }}%</span>
+            </div>
+          </td>
+          <td style="color:var(--muted);font-size:0.7rem">{{ row.total }}</td>
+          <td></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+{% if ctrl_stats %}
+<div class="card fade-up fade-up-4">
+  <div class="card-title">Control Probe Results — 20 Harder Edge-Case Probes</div>
+  <p style="font-size:0.68rem;color:var(--muted);margin-bottom:16px">Control probes are deliberately harder. Results are NOT comparable to main benchmark pass rates. Notable: grok-3-mini drops from 90.5% (main) → 25% (ctrl).</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Passed</th>
+          <th>Total</th>
+          <th>Ctrl Pass Rate</th>
+          <th>vs Main</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in ctrl_stats %}
+        <tr>
+          <td style="font-size:0.7rem;font-family:'JetBrains Mono',monospace">{{ row.model }}</td>
+          <td style="font-size:0.7rem">{{ row.passed }}</td>
+          <td style="font-size:0.7rem;color:var(--muted)">{{ row.total }}</td>
+          <td>
+            <div class="bar-wrap">
+              <div class="bar-track">
+                <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.pass_rate>=50 %}var(--warn){% else %}var(--danger){% endif %}"></div>
+              </div>
+              <span class="bar-label" style="color:var(--danger)">{{ row.pass_rate }}%</span>
+            </div>
+          </td>
+          <td style="font-size:0.65rem;color:var(--muted)">—</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<script>
+const labels = {{ model_stats | map(attribute='model') | list | tojson }};
+const data = {{ model_stats | map(attribute='pass_rate') | list | tojson }};
+const colors = data.map(v => v >= 90 ? '#00e5a0' : v >= 80 ? '#7b6cff' : v >= 70 ? '#f5a623' : '#ff4f4f');
+
+new Chart(document.getElementById('modelChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      data,
+      backgroundColor: colors,
+      borderRadius: 4,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 }, maxRotation: 45 }, grid: { color: '#1e2330' } },
+      y: { min: 0, max: 100, ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' }, grid: { color: '#1e2330' } }
+    }
+  }
+});
+</script>
+{% endblock %}

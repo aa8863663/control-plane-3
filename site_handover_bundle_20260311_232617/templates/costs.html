@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Costs — Control Plane 3{% endblock %}
+{% block content %}
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">Cost Breakdown</div>
+    <div class="page-subtitle">Runs and probe counts by model</div>
+  </div>
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Model</th><th>Runs</th><th>Probes</th></tr></thead>
+        <tbody>
+          {% for row in rows %}
+          <tr>
+            <td>{{ row.model }}</td>
+            <td>{{ row.runs }}</td>
+            <td>{{ row.probes }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

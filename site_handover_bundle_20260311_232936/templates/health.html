@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}System Health — Control Plane 3{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>System <span>Health</span></h1>
+  <p>Neon PostgreSQL connection status and database diagnostics</p>
+</div>
+
+<div class="stats-grid fade-up fade-up-1">
+  <div class="stat-card">
+    <div class="stat-value" style="color:{% if status=='OK' %}var(--accent){% else %}var(--danger){% endif %}">
+      {{ '✓' if status=='OK' else '✕' }}
+    </div>
+    <div class="stat-label">DB Status</div>
+    <div class="stat-sub">{{ status }}</div>
+  </div>
+  {% if db_info %}
+  <div class="stat-card">
+    <div class="stat-value">{{ db_info.runs }}</div>
+    <div class="stat-label">Total Runs</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ db_info.results }}</div>
+    <div class="stat-label">Total Results</div>
+  </div>
+  {% endif %}
+</div>
+
+{% if db_info %}
+<div class="card fade-up fade-up-2">
+  <div class="card-title">Database Info</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Key</th><th>Value</th></tr></thead>
+      <tbody>
+        {% for key, val in db_info.items() %}
+        <tr>
+          <td style="color:var(--muted)">{{ key }}</td>
+          <td style="color:var(--text)">{{ val }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<div style="margin-top:16px" class="fade-up fade-up-3">
+  <a href="/" class="btn btn-ghost">← Dashboard</a>
+  <a href="/admin" class="btn btn-ghost" style="margin-left:8px">Admin</a>
+</div>
+{% endblock %}

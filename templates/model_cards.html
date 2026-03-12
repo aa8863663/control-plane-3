@@ -1,0 +1,30 @@
+{% extends "base_v2.html" %}
+{% set active = 'models' %}
+{% block title %}Model Cards — MTCP{% endblock %}
+{% block content %}
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="section-label">Models</div>
+    <h1>Model Cards</h1>
+    <p>Detailed constraint persistence profiles for all 25 evaluated models.</p>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+    {% for m in models %}
+    <a href="/model-cards/{{ m.model }}" style="text-decoration:none;">
+      <div class="card" style="transition:box-shadow 0.15s;cursor:pointer;" onmouseover="this.style.boxShadow='0 4px 16px rgba(0,0,0,0.08)'" onmouseout="this.style.boxShadow=''">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <span class="badge badge-grey">{{ m.provider }}</span>
+          <span class="grade grade-{{ m.grade }}" style="font-size:20px;">{{ m.grade }}</span>
+        </div>
+        <div style="font-family:var(--mono);font-size:13px;font-weight:600;color:#0f172a;margin-bottom:8px;">{{ m.model }}</div>
+        <div style="display:flex;gap:16px;">
+          <div><div style="font-family:var(--mono);font-size:20px;font-weight:600;">{{ m.pass_rate }}%</div><div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;">Main</div></div>
+          <div><div style="font-family:var(--mono);font-size:20px;font-weight:600;">{{ m.ctrl_rate }}%</div><div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;">Ctrl</div></div>
+          <div><div style="font-family:var(--mono);font-size:20px;font-weight:600;color:#dc2626;">{{ m.drop }}pp</div><div style="font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;">Drop</div></div>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
