@@ -2,85 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Public Leaderboard — Control Plane 3</title>
+  <title>Public Leaderboard — MTCP</title>
+  <meta http-equiv="refresh" content="0;url=/evidence/public-findings"/>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--bg:#0a0c10;--surface:#111318;--border:#1e2330;--accent:#00e5a0;--accent2:#7b6cff;--warn:#f5a623;--danger:#ff4f4f;--text:#d4dbe8;--muted:#5a6070}
-    body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);font-size:13px;line-height:1.6;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,229,160,.025) 39px,rgba(0,229,160,.025) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,229,160,.025) 39px,rgba(0,229,160,.025) 40px)}
-    nav{padding:16px 32px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:rgba(10,12,16,.95);backdrop-filter:blur(12px)}
-    .nav-brand{font-family:'DM Serif Display',serif;font-size:20px;color:var(--accent)}
-    .nav-brand span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-left:8px}
-    .nav-link{color:var(--muted);font-size:12px;text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:6px;transition:all .15s}
-    .nav-link:hover{color:var(--accent);border-color:var(--accent)}
-    .page{max-width:1100px;margin:0 auto;padding:40px 24px}
-    .page-title{font-family:'DM Serif Display',serif;font-size:32px;margin-bottom:4px}
-    .page-sub{font-size:12px;color:var(--muted);margin-bottom:32px}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px}
-    table{width:100%;border-collapse:collapse}
-    th{text-align:left;padding:10px 14px;font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);border-bottom:1px solid var(--border)}
-    td{padding:12px 14px;border-bottom:1px solid rgba(30,35,48,.5);font-size:12px}
-    tr:hover td{background:rgba(255,255,255,.02)}
-    .grade{display:inline-block;width:26px;height:26px;line-height:26px;text-align:center;border-radius:4px;font-family:'DM Serif Display',serif;font-size:15px}
-    .grade-A{background:rgba(0,229,160,.15);color:var(--accent);border:1px solid rgba(0,229,160,.3)}
-    .grade-B{background:rgba(123,108,255,.15);color:var(--accent2);border:1px solid rgba(123,108,255,.3)}
-    .grade-C{background:rgba(245,166,35,.15);color:var(--warn);border:1px solid rgba(245,166,35,.3)}
-    .grade-D{background:rgba(255,79,79,.15);color:var(--danger);border:1px solid rgba(255,79,79,.3)}
-    .grade-F{background:rgba(120,0,0,.15);color:#cc0000;border:1px solid rgba(120,0,0,.3)}
-    .bar-wrap{display:flex;align-items:center;gap:8px}
-    .bar-track{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;min-width:80px}
-    .bar-fill{height:100%;border-radius:2px}
-    footer{border-top:1px solid var(--border);padding:24px 32px;text-align:center;color:var(--muted);font-size:11px;margin-top:48px}
+    :root{--bg:#0a0c10;--surface:#111318;--border:#1e2330;--accent:#00e5a0;--text:#d4dbe8;--muted:#5a6070}
+    body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--text);font-size:13px;
+      display:flex;align-items:center;justify-content:center;min-height:100vh;}
+    .msg{text-align:center;padding:40px;}
+    .msg h1{font-family:'DM Serif Display',serif;font-size:1.6rem;color:#fff;margin-bottom:12px;}
+    .msg p{color:var(--muted);font-size:0.78rem;margin-bottom:20px;}
+    .msg a{color:var(--accent);text-decoration:none;font-size:0.78rem;border:1px solid rgba(0,229,160,0.3);
+      padding:8px 18px;border-radius:4px;}
+    .msg a:hover{background:rgba(0,229,160,0.08);}
   </style>
 </head>
 <body>
-<nav>
-  <div class="nav-brand">Control Plane 3 <span>MTCP v1.5</span></div>
-  <a href="/login" class="nav-link">Platform Login →</a>
-</nav>
-<div class="page">
-  <div class="page-title">MTCP Leaderboard</div>
-  <div class="page-sub">{{ leaderboard|length }} models · March 2026 · DOI 10.17605/OSF.IO/DXGK5</div>
-  <div class="card">
-    <table>
-      <thead>
-        <tr><th>Rank</th><th>Model</th><th>Provider</th><th>Avg Pass Rate</th><th>Grade</th></tr>
-      </thead>
-      <tbody>
-        {% for row in leaderboard %}
-        <tr>
-          <td style="color:var(--muted)">{{ row.rank }}</td>
-          <td>{{ row.model }}{% if row.rank==1 %} <span style="font-size:10px;color:var(--accent);margin-left:6px">ONLY A GRADE</span>{% endif %}</td>
-          <td style="color:var(--muted)">{{ row.provider }}</td>
-          <td>
-            <div class="bar-wrap">
-              <div class="bar-track">
-                <div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.grade=='A' %}var(--accent){% elif row.grade=='B' %}var(--accent2){% elif row.grade=='C' %}var(--warn){% elif row.grade=='D' %}var(--danger){% else %}#cc0000{% endif %}"></div>
-              </div>
-              <span style="min-width:44px;text-align:right;font-size:12px">{{ row.pass_rate }}%</span>
-            </div>
-          </td>
-          <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <div class="msg">
+    <h1>MTCP · Public Findings</h1>
+    <p>This page has moved. Redirecting you now...</p>
+    <a href="/evidence/public-findings">Go to Public Findings →</a>
   </div>
-</div>
-<div style="max-width:700px;margin:40px auto 0;padding:28px 24px;background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.15);border-radius:8px;text-align:center;">
-  <div style="font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:8px">Interested in enterprise access?</div>
-  <div style="font-size:0.78rem;color:var(--muted);margin-bottom:14px;line-height:1.6">MTCP is available for enterprise compliance audits, EU AI Act assessments, and white-label integration.<br>Request access or ask about pilot programmes.</div>
-  <a href="mailto:research@mtcp.live" style="display:inline-block;padding:10px 28px;background:var(--accent);color:#0a0d14;font-weight:700;font-size:0.78rem;border-radius:4px;text-decoration:none;letter-spacing:0.5px">research@mtcp.live</a>
-</div>
-<footer>
-  Control Plane 3 · MTCP Benchmark · A. Abby · © 2026<br>
-  <span style="margin-top:6px;display:inline-block">
-    <a href="https://doi.org/10.17605/OSF.IO/DXGK5" target="_blank" style="color:var(--accent);text-decoration:none">DOI: 10.17605/OSF.IO/DXGK5</a>
-    &nbsp;·&nbsp;
-    <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500" target="_blank" style="color:var(--accent);text-decoration:none">HuggingFace Dataset</a>
-    &nbsp;·&nbsp;
-    <a href="https://osf.io/dxgk5" target="_blank" style="color:var(--accent);text-decoration:none">OSF Preprint</a>
-  </span>
-</footer>
 </body>
 </html>
