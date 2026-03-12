@@ -144,6 +144,10 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
     <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
     <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
     <li><a href="/methodology" {% if active=='methodology' %}class="active"{% endif %}>Methodology</a></li>
+    {% if user %}
+    <li><a href="/dashboard" {% if active=='dashboard' %}class="active"{% endif %}>Dashboard</a></li>
+    <li><a href="/leaderboard" {% if active=='leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
+    {% endif %}
     <li><a href="/request-evaluation" class="nav-cta {% if active=='request' %}active{% endif %}">Request Evaluation</a></li>
   </ul>
   <div class="nav-user">

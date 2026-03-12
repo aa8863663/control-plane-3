@@ -256,6 +256,10 @@ def landing_page(request: Request):
 def public_redirect():
     return RedirectResponse(url="/evidence/public-findings", status_code=301)
 
+@app.get("/evidence/dashboard", response_class=HTMLResponse)
+def evidence_dashboard_redirect():
+    return RedirectResponse(url="/dashboard", status_code=301)
+
 @app.get("/evidence/public-findings", response_class=HTMLResponse)
 def evidence_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
