@@ -68,7 +68,7 @@ def get_auth(session=None, x_api_key=None):
         hashed = hashlib.sha256(x_api_key.encode()).hexdigest()
         try:
             conn = get_db(); cur = conn.cursor()
-            cur.execute("SELECT id FROM api_keys WHERE key_hash=%s AND is_active=TRUE", (hashed,))
+            cur.execute("SELECT id FROM api_keys WHERE key_hash=%s", (hashed,))
             row = cur.fetchone(); conn.close()
             if row: return {"id": None, "username": "api", "is_admin": False}
         except: pass
