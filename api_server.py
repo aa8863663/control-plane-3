@@ -923,12 +923,21 @@ def download_certificate(model: str, temperature: float, session: Optional[str] 
 
 # ── DATA EXPORT ───────────────────────────────────────────────────────────────
 
+def serialise(rows):
+    out = []
+    for r in rows:
+        d = {}
+        for k, v in dict(r).items():
+            d[k] = str(v) if hasattr(v, 'isoformat') else v
+        out.append(d)
+    return out
+
 @app.get("/api/runs")
 def api_runs(session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
     if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
     conn = get_db(); cur = conn.cursor()
     cur.execute("SELECT * FROM runs ORDER BY created_at DESC")
-    rows = [dict(r) for r in cur.fetchall()]; conn.close()
+    rows = serialise(cur.fetchall()); conn.close()
     return JSONResponse(rows)
 
 @app.get("/api/results")
@@ -936,7 +945,7 @@ def api_results(limit: int = 50, session: Optional[str] = Cookie(default=None), 
     if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
     conn = get_db(); cur = conn.cursor()
     cur.execute("SELECT * FROM results ORDER BY id DESC LIMIT %s", (limit,))
-    rows = [dict(r) for r in cur.fetchall()]; conn.close()
+    rows = serialise(cur.fetchall()); conn.close()
     return JSONResponse(rows)
 
 @app.get("/api/export-csv")
