@@ -332,6 +332,8 @@ def logout(session: Optional[str] = Cookie(default=None)):
 @app.get("/", response_class=HTMLResponse)
 def homepage(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
+    if not user:
+        return RedirectResponse("/landing", status_code=302)
     models = get_leaderboard_data()
     stats = {"total_models": len(models)}
     return templates.TemplateResponse(
