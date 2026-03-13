@@ -263,6 +263,8 @@ def evidence_dashboard_redirect():
 @app.get("/evidence/public-findings", response_class=HTMLResponse)
 def evidence_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
+    if not user:
+        return RedirectResponse("/landing", status_code=302)
     models = get_leaderboard_data()
     return templates.TemplateResponse(
         "evidence.html",
