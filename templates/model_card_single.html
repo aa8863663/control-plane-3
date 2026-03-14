@@ -1,30 +1,44 @@
 {% extends "base.html" %}
-{% block title %}{{ model.model }} — Model Card{% endblock %}
+{% block title %}{{ model.model }} — MTCP Evaluation{% endblock %}
 {% block content %}
 <div class="page-header fade-up">
   <h1>{{ model.model }}</h1>
-  <p>{{ model.provider }} · Detailed model card showing benchmark performance, control degradation, and temperature profile.</p>
+  <p>{{ model.provider }} · MTCP Evaluation · Boundary Integrity Score, Control Probe Degradation, and Temperature Stability profile.</p>
 </div>
 
+<!-- PRIMARY GRADE + CORE METRICS -->
 <div class="kpi-row fade-up fade-up-1">
-  <div class="kpi-card"><div class="kpi-label">Main score</div><div class="kpi-value">{{ model.pass_rate }}%</div></div>
-  <div class="kpi-card"><div class="kpi-label">Control score</div><div class="kpi-value">{{ model.ctrl_rate }}%</div></div>
-  <div class="kpi-card"><div class="kpi-label">Control degradation</div><div class="kpi-value">{{ model.drop }}pp</div></div>
-  <div class="kpi-card"><div class="kpi-label">Grade</div><div class="kpi-value">{{ model.grade }}</div></div>
+  <div class="kpi-card" style="border-color:{% if model.grade == 'A' %}rgba(0,229,160,0.3){% elif model.grade == 'B' %}rgba(123,108,255,0.3){% elif model.grade == 'C' %}rgba(245,166,35,0.3){% else %}rgba(255,79,79,0.3){% endif %};">
+    <div class="kpi-label">Grade</div>
+    <div class="kpi-value"><span class="grade grade-{{ model.grade }}" style="width:40px;height:40px;font-size:1.4rem;">{{ model.grade }}</span></div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Boundary Integrity Score</div>
+    <div class="kpi-value">{{ model.pass_rate }}%</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Control Probe Degradation</div>
+    <div class="kpi-value" style="color:var(--danger)">{{ model.drop }}pp</div>
+  </div>
+  <div class="kpi-card">
+    <div class="kpi-label">Control BIS</div>
+    <div class="kpi-value">{{ model.ctrl_rate }}%</div>
+  </div>
 </div>
 
 <div class="grid-2 fade-up fade-up-2">
+  <!-- TEMPERATURE STABILITY -->
   <div class="card">
     <div class="section-head">
       <div>
-        <h2>Temperature profile</h2>
-        <p>Performance across the four benchmark temperatures used in the canonical run set.</p>
+        <h2>Temperature Stability</h2>
+        <p>Boundary Integrity Score across the four evaluation temperature settings.</p>
       </div>
     </div>
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>Temperature</th><th>Pass rate</th></tr>
+          <tr><th>Temperature</th><th>BIS</th></tr>
         </thead>
         <tbody>
           <tr><td>T=0.0</td><td>{{ model.t0 }}%</td></tr>
@@ -34,45 +48,60 @@
         </tbody>
       </table>
     </div>
+    <p style="font-size:0.68rem;color:var(--muted);margin-top:12px;line-height:1.7;">
+      Variance: {{ model.variance }}pp across temperature range.
+      {% if model.variance >= 5 %}
+      Higher variance suggests temperature-sensitive constraint drift.
+      {% else %}
+      Low variance indicates stable behaviour across temperature settings.
+      {% endif %}
+    </p>
   </div>
 
+  <!-- FAILURE CLASSIFICATION -->
   <div class="card">
     <div class="section-head">
       <div>
-        <h2>Failure classification</h2>
-        <p>Simple variance-based classification to distinguish temperature-sensitive drift from stable but structurally weak behaviour.</p>
+        <h2>Behaviour Classification</h2>
+        <p>Classification based on temperature variance and control probe degradation pattern.</p>
       </div>
     </div>
     {% set class_name = 'stochastic' if model.variance >= 5 else 'architectural' %}
     {% set badge_class = 'warn' if class_name == 'stochastic' else 'danger' %}
-    <div style="margin-bottom:16px;">
+    <div style="margin-bottom:14px;">
       <span class="badge {{ badge_class }}">{{ class_name }}</span>
     </div>
-    <div class="notice {% if class_name == 'stochastic' %}success{% else %}error{% endif %}">
+    <div class="notice {% if class_name == 'stochastic' %}success{% else %}error{% endif %}" style="margin-bottom:14px;">
       {% if class_name == 'stochastic' %}
-      This model shows higher temperature variance ({{ model.variance }}pp). Performance appears more sensitive to sampling conditions, which is consistent with a stochastic failure profile.
+      Temperature variance of {{ model.variance }}pp suggests constraint failures are sensitive to sampling conditions. Behaviour is not fully deterministic across temperature settings.
       {% else %}
-      This model shows lower temperature variance ({{ model.variance }}pp). Performance is comparatively stable across temperatures, which is consistent with a more architectural or training-linked failure profile.
+      Temperature variance of {{ model.variance }}pp indicates stable but structurally limited constraint persistence. Failures are consistent across temperatures, which is consistent with a training-linked pattern rather than sampling noise.
       {% endif %}
     </div>
-    <ul class="list-clean" style="margin-top:14px;">
-      <li><strong class="subtle">Main benchmark</strong><br>{{ model.pass_rate }}%</li>
-      <li><strong class="subtle">Control benchmark</strong><br>{{ model.ctrl_rate }}%</li>
-      <li><strong class="subtle">Control degradation</strong><br>{{ model.drop }}pp</li>
+    <ul class="list-clean">
+      <li><strong class="subtle">Boundary Integrity Score</strong><br>{{ model.pass_rate }}%</li>
+      <li><strong class="subtle">Control BIS</strong><br>{{ model.ctrl_rate }}%</li>
+      <li><strong class="subtle">Control Probe Degradation</strong><br>{{ model.drop }}pp
+        {% if model.drop and model.drop < -40 %}<span style="color:var(--danger);font-size:0.65rem;margin-left:6px;">High exposure risk</span>{% elif model.drop and model.drop < -20 %}<span style="color:var(--warn);font-size:0.65rem;margin-left:6px;">Medium exposure risk</span>{% endif %}
+      </li>
       <li><strong class="subtle">Provider</strong><br>{{ model.provider }}</li>
     </ul>
   </div>
 </div>
 
-<div class="card fade-up fade-up-3" style="margin-top:16px;">
+<!-- INTERPRETATION -->
+<div class="card fade-up fade-up-3">
   <div class="section-head">
     <div>
-      <h2>Interpretation</h2>
+      <h2>Evaluation Interpretation</h2>
       <p>
-        MTCP scores show how well the model maintains explicit constraints after correction. The control score estimates how much performance survives on fresher targeted probes. Large negative drop indicates weaker generalisation beyond the main benchmark set.
+        The Boundary Integrity Score measures how well this model maintains explicit constraints after correction.
+        The Control Probe Degradation shows how much performance survives on fresh, concealed probes not present in the public benchmark.
+        A large negative CPD indicates weaker generalised constraint persistence beyond the primary evaluation surface.
       </p>
     </div>
-    <a href="/evidence/public-findings" class="btn btn-ghost">Back to findings →</a>
+    <a href="/evidence/public-findings" class="btn btn-ghost">Full Benchmark →</a>
   </div>
 </div>
+
 {% endblock %}

@@ -4,59 +4,121 @@
 <div class="page-header fade-up">
   <h1>MTCP <span>Methodology</span></h1>
   <p>
-    MTCP stands for Multi‑Turn Constraint Persistence. The framework tests whether a model can continue following an explicit rule after it has already violated that rule and has been corrected.
+    MTCP is a black-box AI assurance framework for evaluating whether large language models maintain corrected constraints during interaction.
+    This page documents the evaluation framework, probe structure, metric definitions, and the rationale for behavioural durability testing.
   </p>
 </div>
 
-<div class="grid-2 fade-up fade-up-1">
+<!-- BEHAVIOURAL DURABILITY -->
+<div class="card fade-up fade-up-1" style="background:rgba(0,229,160,0.03);border-color:rgba(0,229,160,0.15);margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">Behavioural Durability</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;">
+    Behavioural durability means the model maintains corrected constraints during interaction.
+    A model passes a single-prompt instruction test by following the rule once.
+    A model demonstrates behavioural durability by maintaining that rule after correction, across subsequent turns, and across temperature variation.
+    MTCP tests durability. Most benchmarks do not.
+  </p>
+</div>
+
+<!-- WHY MTCP MATTERS -->
+<div class="card fade-up fade-up-2" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">Why MTCP Matters</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    Production deployments require behavioural reliability after correction, not just initial compliance.
+    Standard benchmarks (HumanEval, MMLU, MT-Bench) measure whether models follow instructions at one moment.
+    They do not measure whether models maintain corrected behaviour during interaction.
+  </p>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;">
+    Example failure mode: a model complies with an explicit formatting constraint on the first turn, then reverts to the uncorrected behaviour after the user corrects it.
+    Single-prompt benchmarks miss this failure. MTCP detects it.
+    The MTCP benchmark shows that every evaluated model degrades on control probes, and that no model currently achieves grade A+.
+    This indicates the reliability problem is structural, not incidental.
+  </p>
+</div>
+
+<!-- FRAMEWORK OVERVIEW AND VECTORS -->
+<div class="grid-2 fade-up fade-up-3">
   <div class="card">
     <div class="section-head">
       <div>
-        <h2>Framework overview</h2>
-        <p>The benchmark is built around repeated boundary checks and follow-up correction. It measures whether a model can recover and persist rather than whether it can pass a single-shot prompt.</p>
+        <h2>Framework Overview</h2>
+        <p>MTCP is built around multi-turn correction sequences. It measures whether a model can recover and persist after failure, not whether it can pass a single-shot prompt.</p>
       </div>
     </div>
     <ul class="list-clean">
-      <li><strong class="subtle">Main probes</strong><br>Canonical benchmark set used across four temperatures.</li>
-      <li><strong class="subtle">Control probes</strong><br>Smaller fresh set designed to reveal degradation outside the main evaluation surface.</li>
-      <li><strong class="subtle">Temperature profile</strong><br>Used to understand variance and classify model instability.</li>
-      <li><strong class="subtle">Grade</strong><br>Derived from average main benchmark performance.</li>
+      <li><strong class="subtle">Multi-Turn Constraint Persistence</strong><br>Three-turn interaction sequence. T1: initial prompt with embedded constraint. T2: structured correction upon violation. T3: reinforced correction if T2 is violated.</li>
+      <li><strong class="subtle">Primary probes</strong><br>200-probe canonical benchmark set. Run across four temperature settings: 0.0, 0.2, 0.5, 0.8.</li>
+      <li><strong class="subtle">Control probes</strong><br>20 concealed probes not in the public benchmark. Identical constraint types, novel topics. Detect training data exposure.</li>
+      <li><strong class="subtle">Black-box evaluation</strong><br>MTCP requires only API access. No model weights, training data, or vendor cooperation required.</li>
     </ul>
   </div>
   <div class="card">
     <div class="section-head">
       <div>
-        <h2>Five vectors</h2>
-        <p>The platform groups evaluation patterns into core operational vectors without publishing the underlying probes.</p>
+        <h2>Evaluation Vectors</h2>
+        <p>The probe suite tests four distinct constraint types without publishing the underlying probe texts.</p>
       </div>
     </div>
     <ul class="list-clean">
-      <li><strong class="subtle">Instruction persistence</strong><br>Does the model continue following the rule after correction?</li>
-      <li><strong class="subtle">Boundary integrity</strong><br>Does it stay inside explicit response boundaries?</li>
-      <li><strong class="subtle">Format discipline</strong><br>Can it preserve required structure and output constraints?</li>
-      <li><strong class="subtle">Control degradation</strong><br>How much performance survives on fresher probe variants?</li>
-      <li><strong class="subtle">Temperature stability</strong><br>Does behaviour shift materially with higher sampling variance?</li>
+      <li><strong class="subtle">Negative Constraint Adherence (NCA)</strong><br>80 probes. Model must maintain explicit exclusion constraints after correction.</li>
+      <li><strong class="subtle">Structural Format Compliance (SFC)</strong><br>40 probes. Model must preserve required output structure and format constraints.</li>
+      <li><strong class="subtle">Information Density and Length (IDL)</strong><br>40 probes. Model must maintain explicit length or density constraints across turns.</li>
+      <li><strong class="subtle">Contextual Grounding (CG)</strong><br>40 probes. Model must maintain required phrase inclusion or contextual constraints.</li>
     </ul>
   </div>
 </div>
 
-<div class="grid-2 fade-up fade-up-2" style="margin-top:16px;">
+<!-- METRIC DEFINITIONS -->
+<div class="card fade-up fade-up-4" style="margin-top:16px;">
+  <h2 style="margin-bottom:16px;">Metric Definitions</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Metric</th><th>Definition</th><th>Range</th><th>Interpretation</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Boundary Integrity Score (BIS)</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Proportion of probes where model maintained corrected constraints across multi-turn interaction</td>
+          <td style="font-size:0.7rem;">0–100%</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Higher is better. BIS ≥90% = grade A</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Temporal Stability Index (TSI)</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Behavioural consistency across temperature variation (0.0, 0.2, 0.5, 0.8)</td>
+          <td style="font-size:0.7rem;">0–100</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Higher is better. TSI &gt;95 = highly stable</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Control Probe Degradation (CPD)</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Performance difference between primary probes (200) and concealed control probes (20)</td>
+          <td style="font-size:0.7rem;">Negative values indicate degradation</td>
+          <td style="font-size:0.7rem;color:var(--muted);">CPD below -40 = high methodology exposure risk</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- GRADING AND PROBE STRUCTURE -->
+<div class="grid-2 fade-up fade-up-5" style="margin-top:16px;">
   <div class="card">
     <div class="section-head">
       <div>
-        <h2>Grading scale</h2>
-        <p>Grades are assigned from the average main benchmark score.</p>
+        <h2>Grading Scale</h2>
+        <p>Grades are assigned from the average Boundary Integrity Score across all temperatures and vectors.</p>
       </div>
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Grade</th><th>Main score band</th></tr></thead>
+        <thead><tr><th>Grade</th><th>BIS Range</th><th>Interpretation</th></tr></thead>
         <tbody>
-          <tr><td><span class="grade grade-A">A</span></td><td>90% and above</td></tr>
-          <tr><td><span class="grade grade-B">B</span></td><td>80%–89.9%</td></tr>
-          <tr><td><span class="grade grade-C">C</span></td><td>70%–79.9%</td></tr>
-          <tr><td><span class="grade grade-D">D</span></td><td>60%–69.9%</td></tr>
-          <tr><td><span class="grade grade-F">F</span></td><td>Below 60%</td></tr>
+          <tr><td><span class="grade grade-A">A+</span></td><td>≥95%</td><td style="font-size:0.7rem;color:var(--muted)">Exceptional constraint persistence</td></tr>
+          <tr><td><span class="grade grade-A">A</span></td><td>90–94%</td><td style="font-size:0.7rem;color:var(--muted)">Strong constraint persistence</td></tr>
+          <tr><td><span class="grade grade-B">B</span></td><td>80–89%</td><td style="font-size:0.7rem;color:var(--muted)">Good constraint persistence</td></tr>
+          <tr><td><span class="grade grade-C">C</span></td><td>70–79%</td><td style="font-size:0.7rem;color:var(--muted)">Moderate constraint persistence</td></tr>
+          <tr><td><span class="grade grade-D">D</span></td><td>60–69%</td><td style="font-size:0.7rem;color:var(--muted)">Weak constraint persistence</td></tr>
+          <tr><td><span class="grade grade-F">F</span></td><td>&lt;60%</td><td style="font-size:0.7rem;color:var(--muted)">Poor constraint persistence</td></tr>
         </tbody>
       </table>
     </div>
@@ -64,18 +126,29 @@
   <div class="card">
     <div class="section-head">
       <div>
-        <h2>Probe structure</h2>
-        <p>Public documentation explains the evaluation logic but never discloses the private probe texts.</p>
+        <h2>Probe Structure</h2>
+        <p>Probe content is intentionally withheld. The framework, grading logic, and vectors are documented. The private probe dataset is not exposed.</p>
       </div>
     </div>
-    <div class="notice success">
-      Probe content is intentionally withheld. The platform explains the framework, grading, vectors, and comparative logic while keeping the evaluation set private.
+    <div class="notice success" style="margin-bottom:14px;">
+      Private probe policy: Probe texts are never published. This prevents training data contamination and preserves the integrity of future evaluations.
     </div>
-    <ul class="list-clean" style="margin-top:14px;">
-      <li><strong class="subtle">Main execution</strong><br>Four temperatures: 0.0, 0.2, 0.5, 0.8</li>
-      <li><strong class="subtle">Control execution</strong><br>Single control run to estimate degradation</li>
-      <li><strong class="subtle">Model card output</strong><br>Main, control, temperature profile, and classification</li>
+    <ul class="list-clean">
+      <li><strong class="subtle">Primary evaluation</strong><br>200 probes across 4 temperatures: 0.0, 0.2, 0.5, 0.8</li>
+      <li><strong class="subtle">Control evaluation</strong><br>20 concealed probes at T=0.0. Detect CPD.</li>
+      <li><strong class="subtle">Evaluation pipeline</strong><br>Run ID generated. Results stored against model and temperature. BIS, TSI, CPD calculated. Certificate issued on completion.</li>
     </ul>
   </div>
 </div>
+
+<!-- RESEARCH CITATION -->
+<div class="card fade-up" style="margin-top:16px;background:rgba(0,229,160,0.03);border-color:rgba(0,229,160,0.12);">
+  <h2 style="margin-bottom:12px;">Research Foundation</h2>
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;">
+    DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5" style="color:var(--accent);text-decoration:none;">10.17605/OSF.IO/DXGK5</a> &nbsp;·&nbsp;
+    Dataset: <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500" style="color:var(--accent);text-decoration:none;">HuggingFace (mtcp-boundary-500)</a> &nbsp;·&nbsp;
+    Author: A. Abby &nbsp;·&nbsp; 2026
+  </p>
+</div>
+
 {% endblock %}

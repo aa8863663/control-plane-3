@@ -1,27 +1,33 @@
 {% extends "base.html" %}
-{% block title %}Control Probes — MTCP{% endblock %}
+{% block title %}Control Probe Degradation — MTCP{% endblock %}
 {% block content %}
 <div class="page-header fade-up">
-  <h1>Control <span>Probes</span></h1>
-  <p>Results from the 20-probe control set · harder edge-case probes · not comparable to main benchmark</p>
+  <h1>Control Probe <span>Degradation</span></h1>
+  <p>Results from the 20-probe concealed control set. Control Probe Degradation (CPD) measures the performance gap between primary and control probes.</p>
 </div>
 
 <div class="card fade-up fade-up-1" style="margin-bottom:20px;background:rgba(255,79,79,0.04);border-color:rgba(255,79,79,0.15)">
-  <p style="font-size:0.72rem;color:var(--muted);line-height:1.8">Control probes are deliberately harder than the main benchmark. A model scoring 90% on main and 25% on ctrl is not contradictory — it is the expected pattern. The control drop is the key diagnostic metric for adversarial deployment risk. Do not compare ctrl rates directly to main rates.</p>
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;">
+    Control probes use identical constraint types to the primary benchmark but with novel topics and phrasing not present in the public dataset.
+    A model scoring 90% on primary probes and 25% on control probes is not contradictory — the degradation is the expected pattern and the key diagnostic metric.
+    Large negative CPD values indicate potential prior exposure to MTCP methodology during training.
+    Do not compare control BIS directly to primary BIS as an absolute performance measure.
+  </p>
 </div>
 
 <div class="card fade-up fade-up-2">
   <div class="section-head">
-    <div><h2>Control probe results — all models</h2></div>
+    <div><h2>Control Probe Results — All Models</h2></div>
   </div>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
           <th>Model</th>
-          <th>Ctrl pass rate</th>
-          <th>Main avg</th>
-          <th>Drop</th>
+          <th>Control BIS</th>
+          <th>Primary BIS</th>
+          <th>CPD</th>
+          <th>Risk Level</th>
           <th>Passed</th>
           <th>Total</th>
         </tr>
@@ -38,10 +44,33 @@
           </td>
           <td style="font-size:0.7rem;color:var(--muted)">{{ row.main_avg or '—' }}{% if row.main_avg %}%{% endif %}</td>
           <td style="font-size:0.7rem;color:var(--danger)">{% if row.drop %}-{{ row.drop }}pp{% else %}—{% endif %}</td>
+          <td style="font-size:0.65rem;">
+            {% if row.drop and row.drop > 40 %}
+            <span style="color:var(--danger)">High</span>
+            {% elif row.drop and row.drop > 20 %}
+            <span style="color:var(--warn)">Medium</span>
+            {% else %}
+            <span style="color:var(--muted)">Low</span>
+            {% endif %}
+          </td>
           <td style="font-size:0.7rem">{{ row.passed }}</td>
           <td style="font-size:0.7rem;color:var(--muted)">{{ row.total }}</td>
         </tr>
         {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card fade-up fade-up-3" style="margin-top:16px;">
+  <h2 style="margin-bottom:12px;">CPD Risk Thresholds</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>CPD Range</th><th>Risk Level</th><th>Interpretation</th></tr></thead>
+      <tbody>
+        <tr><td style="font-size:0.7rem;">Below -40</td><td style="font-size:0.7rem;color:var(--danger);">High</td><td style="font-size:0.7rem;color:var(--muted);">Strong indication of methodology exposure during training</td></tr>
+        <tr><td style="font-size:0.7rem;">-20 to -40</td><td style="font-size:0.7rem;color:var(--warn);">Medium</td><td style="font-size:0.7rem;color:var(--muted);">Partial exposure possible. Constraint persistence may not generalise.</td></tr>
+        <tr><td style="font-size:0.7rem;">Above -20</td><td style="font-size:0.7rem;color:var(--muted);">Low</td><td style="font-size:0.7rem;color:var(--muted);">Performance gap within expected range for constraint generalisation</td></tr>
       </tbody>
     </table>
   </div>

@@ -1,26 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Run Benchmark — MTCP{% endblock %}
+{% block title %}Run Evaluation — MTCP{% endblock %}
 {% block content %}
 <div class="page-header fade-up">
-  <h1>Run <span>Benchmark</span></h1>
-  <p>Trigger a new evaluation run via the API</p>
+  <h1>Run <span>Evaluation</span></h1>
+  <p>Trigger a new MTCP evaluation run via the command line</p>
 </div>
 
 <div class="card fade-up fade-up-1" style="margin-bottom:20px;background:rgba(245,166,35,0.04);border-color:rgba(245,166,35,0.2)">
-  <p style="font-size:0.72rem;color:var(--muted);line-height:1.8">Benchmark runs are executed via the command line. Use the terminal to run <code style="color:var(--accent)">python3 llm_safety_platform.py</code> with the appropriate flags. This page is a reference for run parameters.</p>
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;">Evaluation runs are executed via the command line. Use the terminal to run <code style="color:var(--accent)">python3 llm_safety_platform.py</code> with the appropriate flags. This page is a reference for run parameters.</p>
 </div>
 
 <div class="card fade-up fade-up-2" style="margin-bottom:20px">
-  <div class="section-head"><div><h2>Main benchmark run</h2></div></div>
-  <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px">Run against probes_200.json at all 4 temperatures:</p>
+  <div class="section-head"><div><h2>Standard MTCP run</h2><p>200 probes across 4 temperatures. Full benchmark comparison.</p></div></div>
   <code style="display:block;background:#0a0c10;border:1px solid var(--border);border-radius:4px;padding:14px 16px;font-size:0.72rem;color:var(--accent);line-height:1.8">
     python3 llm_safety_platform.py --data probes_200.json --api &lt;provider&gt; --model &lt;model-id&gt; --temperature 0.0,0.2,0.5,0.8 --out output.csv --runs 1
   </code>
 </div>
 
 <div class="card fade-up fade-up-3" style="margin-bottom:20px">
-  <div class="section-head"><div><h2>Control run</h2></div></div>
-  <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px">Run after every main run — control probes at T=0.0 only:</p>
+  <div class="section-head"><div><h2>Full Assurance run</h2><p>200 primary probes + 20 control probes. Includes Control Probe Degradation calculation.</p></div></div>
+  <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;">Run the standard evaluation first, then the control run immediately after:</p>
   <code style="display:block;background:#0a0c10;border:1px solid var(--border);border-radius:4px;padding:14px 16px;font-size:0.72rem;color:var(--accent);line-height:1.8">
     python3 llm_safety_platform.py --data probes_control_20.json --api &lt;provider&gt; --model &lt;model-id&gt; --temperature 0.0 --out ctrl_output.csv --runs 1
   </code>

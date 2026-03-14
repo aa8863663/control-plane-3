@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MTCP — Model Trust &amp; Compliance Platform</title>
+  <title>MTCP — AI Assurance for Large Language Models</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
   <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -50,21 +50,37 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .fade-up{animation:fadeUp 0.45s ease forwards;}
 .fade-up-1{animation-delay:0.05s;opacity:0;}.fade-up-2{animation-delay:0.10s;opacity:0;}
 .fade-up-3{animation-delay:0.15s;opacity:0;}.fade-up-4{animation-delay:0.20s;opacity:0;}
+.fade-up-5{animation-delay:0.25s;opacity:0;}.fade-up-6{animation-delay:0.30s;opacity:0;}
 
+/* Hero */
 .hero{padding:60px 32px;border-radius:10px;background:linear-gradient(180deg,rgba(0,229,160,0.05),rgba(17,19,24,0.94));
   border:1px solid rgba(0,229,160,0.12);margin-bottom:28px;}
 .hero-kicker{display:inline-flex;gap:8px;align-items:center;color:var(--accent);font-size:0.6rem;
   letter-spacing:1.6px;text-transform:uppercase;margin-bottom:16px;}
 .hero-title{font-family:'DM Serif Display',serif;font-size:2.6rem;line-height:1.05;color:#fff;max-width:820px;}
 .hero-title span{color:var(--accent);}
-.hero-copy{margin-top:16px;color:var(--muted);font-size:0.82rem;line-height:1.8;max-width:720px;}
+.hero-copy{margin-top:16px;color:var(--muted);font-size:0.82rem;line-height:1.8;max-width:680px;}
 .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;}
 
+/* Workflow panel */
+.workflow-panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:24px 28px;margin-bottom:28px;}
+.workflow-heading{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:20px;}
+.workflow-steps{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.workflow-step{display:flex;align-items:center;gap:10px;flex:1;min-width:140px;}
+.workflow-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#07110d;
+  font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.workflow-label{font-size:0.68rem;line-height:1.4;color:var(--text);}
+.workflow-arrow{color:var(--muted);font-size:1rem;flex-shrink:0;padding:0 2px;}
+.workflow-cta{display:flex;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border);flex-wrap:wrap;}
+
+/* KPI row */
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px;}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
 .kpi-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
 .kpi-value{font-family:'DM Serif Display',serif;font-size:1.45rem;color:#fff;margin-top:10px;}
 
+/* Feature grid */
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
 .feature-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px;position:relative;overflow:hidden;}
 .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
@@ -73,12 +89,14 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .feature-meta{margin-top:14px;font-size:0.6rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);}
 .feature-card a{display:inline-block;margin-top:14px;font-size:0.65rem;color:var(--accent);text-decoration:none;letter-spacing:1px;text-transform:uppercase;}
 
+/* Finding banner */
 .finding-banner{background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.12);border-radius:8px;
   padding:24px 28px;margin-bottom:28px;}
 .finding-banner h3{font-family:'DM Serif Display',serif;font-size:1.25rem;color:#fff;margin-bottom:12px;}
 .finding-banner p{font-size:0.74rem;color:var(--muted);line-height:2;}
 .finding-banner strong{color:var(--text);}
 
+/* Two col */
 .grid-2{display:grid;grid-template-columns:1.1fr 0.9fr;gap:16px;margin-bottom:28px;}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
 .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
@@ -99,6 +117,8 @@ footer a{color:var(--accent);text-decoration:none;}
   .kpi-row{grid-template-columns:repeat(3,1fr);}
   .grid-3,.grid-2{grid-template-columns:1fr;}
   .hero-title{font-size:2rem;}
+  .workflow-steps{flex-direction:column;align-items:flex-start;}
+  .workflow-arrow{transform:rotate(90deg);}
 }
 @media(max-width:600px){
   nav{padding:0 14px;}
@@ -115,6 +135,7 @@ footer a{color:var(--accent);text-decoration:none;}
   <a href="/" class="nav-logo">MTCP<span>.</span>live</a>
   <ul class="nav-links">
     <li><a href="/">Platform</a></li>
+    <li><a href="/run-evaluation">Evaluate</a></li>
     <li><a href="/evidence/public-findings">Evidence</a></li>
     <li><a href="/model-cards">Models</a></li>
     <li><a href="/methodology">Methodology</a></li>
@@ -124,22 +145,57 @@ footer a{color:var(--accent);text-decoration:none;}
 
 <div class="page">
 
+  <!-- HERO -->
   <div class="hero fade-up">
     <div class="hero-kicker">MTCP · Multi-Turn Constraint Persistence</div>
-    <h1 class="hero-title">Independent assurance for <span>model reliability</span> and constraint persistence.</h1>
+    <h1 class="hero-title">AI Assurance for <span>Large Language Models</span></h1>
     <p class="hero-copy">
-      MTCP evaluates whether production language models maintain compliance with explicit constraints after correction.
-      {{ total_models or 25 }} models tested across {{ total_results or '21,352' }} evaluations. The benchmark is complete.
-      The platform now provides structured evaluation services, evidence documentation, and assurance workflows for deployment-critical use cases.
+      MTCP evaluates whether models maintain corrected constraints during interaction.
+      Not single-prompt compliance. Behavioural durability across turns.
     </p>
     <div class="hero-actions">
-      <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
-      <a href="/evidence/public-findings" class="btn btn-ghost">View Public Findings</a>
-      <a href="/methodology" class="btn btn-ghost">Read Methodology</a>
+      <a href="/run-evaluation" class="btn btn-primary">Run Evaluation</a>
+      <a href="/evidence/public-findings" class="btn btn-ghost">View Benchmark</a>
     </div>
   </div>
 
-  <div class="kpi-row fade-up fade-up-1">
+  <!-- EVALUATION WORKFLOW PANEL -->
+  <div class="workflow-panel fade-up fade-up-1">
+    <div class="workflow-heading">How MTCP Works</div>
+    <div class="workflow-steps">
+      <div class="workflow-step">
+        <div class="workflow-num">1</div>
+        <div class="workflow-label">Submit model endpoint or API key</div>
+      </div>
+      <div class="workflow-arrow">→</div>
+      <div class="workflow-step">
+        <div class="workflow-num">2</div>
+        <div class="workflow-label">Run MTCP evaluation</div>
+      </div>
+      <div class="workflow-arrow">→</div>
+      <div class="workflow-step">
+        <div class="workflow-num">3</div>
+        <div class="workflow-label">Receive evaluation report</div>
+      </div>
+      <div class="workflow-arrow">→</div>
+      <div class="workflow-step">
+        <div class="workflow-num">4</div>
+        <div class="workflow-label">Compare against benchmark</div>
+      </div>
+      <div class="workflow-arrow">→</div>
+      <div class="workflow-step">
+        <div class="workflow-num">5</div>
+        <div class="workflow-label">Download evaluation certificate</div>
+      </div>
+    </div>
+    <div class="workflow-cta">
+      <a href="/run-evaluation" class="btn btn-primary">Run Evaluation</a>
+      <a href="/request-evaluation" class="btn btn-ghost">Request Private Evaluation</a>
+    </div>
+  </div>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row fade-up fade-up-2">
     <div class="kpi-card">
       <div class="kpi-label">Models evaluated</div>
       <div class="kpi-value">{{ total_models or 25 }}</div>
@@ -153,89 +209,104 @@ footer a{color:var(--accent);text-decoration:none;}
       <div class="kpi-value">{{ total_runs or 100 }}</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Pass rate range</div>
+      <div class="kpi-label">BIS range</div>
       <div class="kpi-value">{{ pass_range or '47–91%' }}</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Models achieving A+</div>
+      <div class="kpi-label">Grade A+ models</div>
       <div class="kpi-value" style="color:var(--danger)">0</div>
     </div>
   </div>
 
-  <div class="grid-3 fade-up fade-up-2">
+  <!-- PROBLEM EXPLANATION -->
+  <div class="grid-3 fade-up fade-up-3">
     <div class="feature-card">
-      <h3>Evaluate</h3>
-      <p>Structured constraint persistence testing across your deployment context. Multi-turn correction sequences, control probe degradation analysis, temperature stability profiling.</p>
-      <div class="feature-meta">Intake · Execution · Report</div>
-      <a href="/request-evaluation">Request Evaluation →</a>
+      <h3>Constraint Persistence</h3>
+      <p>Models must maintain corrected constraints across conversation turns, not only follow initial instructions.</p>
+      <div class="feature-meta">Boundary Integrity Score</div>
+      <a href="/methodology">Read Methodology →</a>
     </div>
     <div class="feature-card">
-      <h3>Evidence</h3>
-      <p>Public benchmark findings across 25 models. Temperature breakdowns, control degradation figures, and comparative results — supporting evidence for deployment review and model selection.</p>
-      <div class="feature-meta">Leaderboard · Model Cards · Control Analysis</div>
-      <a href="/evidence/public-findings">View Findings →</a>
+      <h3>Control Probe Integrity</h3>
+      <p>Concealed control probes detect whether models have been exposed to evaluation methodology during training.</p>
+      <div class="feature-meta">Control Probe Degradation</div>
+      <a href="/methodology">Read Methodology →</a>
     </div>
     <div class="feature-card">
-      <h3>Methodology</h3>
-      <p>Post-correction reliability testing. Five evaluation vectors. Grading scale from A to F. Deterministic probe sequences. SHA-256 verified evaluation records. OSF-registered framework.</p>
-      <div class="feature-meta">Framework · Vectors · Grading</div>
+      <h3>Temperature Stability</h3>
+      <p>Behaviour must remain consistent across temperature variation, not only perform at T=0.0.</p>
+      <div class="feature-meta">Temporal Stability Index</div>
       <a href="/methodology">Read Methodology →</a>
     </div>
   </div>
 
-  <div class="finding-banner fade-up fade-up-3">
-    <h3>Key Findings — 25 Models · 21,352 Evaluations · March 2026</h3>
+  <!-- KEY FINDINGS -->
+  <div class="finding-banner fade-up fade-up-4">
+    <h3>Key Findings — {{ total_models or 25 }} Models · {{ total_results or '21,352' }} Evaluations · March 2026</h3>
     <p>
-      <strong>No model achieves A+.</strong> Post-correction reliability is not demonstrated at scale by any current production system. The benchmark ceiling is grok-3-mini at 90.5%.<br><br>
-      <strong>GPT-4o scores D — 22.8pp below GPT-4o-mini.</strong> Newer flagship models do not outperform predecessors on constraint persistence. Inverse scaling is a consistent pattern.<br><br>
-      <strong>Claude shows temperature-invariant failure.</strong> The entire Claude range clusters at 66–68% with under 2pp variance across temperatures — consistent with architectural constraint suppression, not sampling noise.<br><br>
-      <strong>DeepSeek-R1 has the smallest control probe degradation</strong> — 5.0pp drop — the only model suggesting genuine generalised constraint persistence rather than benchmark-surface familiarity.
+      <strong>No model achieves A+.</strong> Post-correction reliability is not demonstrated at scale by any current production system. The benchmark ceiling is deepseek-r1 at 91.0%.<br><br>
+      <strong>GPT-4o scores grade D at 65.1%.</strong> GPT-4o-mini outperforms the flagship by 22.8 percentage points. Inverse scaling is a consistent pattern across providers.<br><br>
+      <strong>Universal control probe degradation.</strong> Every model shows a performance gap on control probes. Range: -15 to -67 percentage points. This indicates potential methodology exposure during training.<br><br>
+      <strong>Open source leads.</strong> deepseek-r1 (91.0%) and grok-3-mini (90.5%) are the only two models to achieve grade A. Both are open source or open weight.
     </p>
   </div>
 
-  <div class="grid-2 fade-up fade-up-4">
+  <!-- BENCHMARK SNAPSHOT -->
+  <div class="grid-2 fade-up fade-up-5">
     <div class="card">
       <div class="section-head">
         <div>
-          <h2>Public findings preview</h2>
-          <p>Top models from the current evidence layer. Full results with temperature breakdowns at the findings page.</p>
+          <h2>Benchmark Snapshot</h2>
+          <p>Top models from the current evidence layer. Full results with temperature breakdowns available in the Evidence section.</p>
         </div>
-        <a href="/evidence/public-findings" class="btn btn-ghost">Full Findings →</a>
+        <a href="/evidence/public-findings" class="btn btn-ghost">Full Benchmark →</a>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>#</th><th>Model</th><th>Provider</th><th>Main</th><th>Ctrl</th><th>Grade</th></tr>
+            <tr><th>#</th><th>Model</th><th>Provider</th><th>BIS</th><th>CPD</th><th>Grade</th></tr>
           </thead>
           <tbody>
-            <tr><td style="color:var(--muted);font-size:0.65rem">1</td><td><a class="muted-link" href="/model-cards/grok-3-mini">grok-3-mini</a></td><td style="color:var(--muted)">xai</td><td>90.5%</td><td>30.0%</td><td><span class="grade grade-A">A</span></td></tr>
-            <tr><td style="color:var(--muted);font-size:0.65rem">2</td><td><a class="muted-link" href="/model-cards/nvidia-llama-70b">nvidia-llama-70b</a></td><td style="color:var(--muted)">nvidia</td><td>88.3%</td><td>25.0%</td><td><span class="grade grade-B">B</span></td></tr>
-            <tr><td style="color:var(--muted);font-size:0.65rem">3</td><td><a class="muted-link" href="/model-cards/gpt-4o-mini">gpt-4o-mini</a></td><td style="color:var(--muted)">openai</td><td>87.9%</td><td>50.0%</td><td><span class="grade grade-B">B</span></td></tr>
-            <tr><td style="color:var(--muted);font-size:0.65rem">4</td><td><a class="muted-link" href="/model-cards/qwen-2.5-7b">qwen-2.5-7b</a></td><td style="color:var(--muted)">alibaba</td><td>87.1%</td><td>55.0%</td><td><span class="grade grade-B">B</span></td></tr>
-            <tr><td style="color:var(--muted);font-size:0.65rem">5</td><td><a class="muted-link" href="/model-cards/command-r">command-r</a></td><td style="color:var(--muted)">cohere</td><td>85.1%</td><td>10.0%</td><td><span class="grade grade-B">B</span></td></tr>
+            <tr><td style="color:var(--muted);font-size:0.65rem">1</td><td><a class="muted-link" href="/model-cards/deepseek-r1">deepseek-r1</a></td><td style="color:var(--muted)">OpenRouter</td><td>91.0%</td><td>-56.0</td><td><span class="grade grade-A">A</span></td></tr>
+            <tr><td style="color:var(--muted);font-size:0.65rem">2</td><td><a class="muted-link" href="/model-cards/grok-3-mini">grok-3-mini</a></td><td style="color:var(--muted)">xAI</td><td>90.5%</td><td>-60.5</td><td><span class="grade grade-A">A</span></td></tr>
+            <tr><td style="color:var(--muted);font-size:0.65rem">3</td><td><a class="muted-link" href="/model-cards/nvidia-llama-70b">nvidia-llama-70b</a></td><td style="color:var(--muted)">NVIDIA</td><td>88.3%</td><td>-63.3</td><td><span class="grade grade-B">B</span></td></tr>
+            <tr><td style="color:var(--muted);font-size:0.65rem">4</td><td><a class="muted-link" href="/model-cards/gpt-4o-mini">gpt-4o-mini</a></td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td>-37.5</td><td><span class="grade grade-B">B</span></td></tr>
+            <tr><td style="color:var(--muted);font-size:0.65rem">5</td><td><a class="muted-link" href="/model-cards/gpt-3.5-turbo">gpt-3.5-turbo</a></td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td>-52.9</td><td><span class="grade grade-B">B</span></td></tr>
           </tbody>
         </table>
       </div>
     </div>
     <div class="card">
       <div class="section-head">
-        <div><h2>What this platform does</h2></div>
+        <div><h2>Who Uses MTCP</h2></div>
       </div>
       <ul class="list-clean">
-        <li><strong style="color:var(--text)">Evaluation intake</strong><br>Capture deployment context, objectives, and required vectors before testing begins.</li>
-        <li><strong style="color:var(--text)">Evidence pages</strong><br>Public findings accessible without making the leaderboard the platform identity.</li>
-        <li><strong style="color:var(--text)">Model cards</strong><br>Main score, control score, temperature profile, and degradation per model.</li>
-        <li><strong style="color:var(--text)">Methodology layer</strong><br>MTCP framework explained without exposing the private probe dataset.</li>
-        <li><strong style="color:var(--text)">Assurance reports</strong><br>Structured evaluation outputs for compliance, audit, and deployment review.</li>
+        <li><strong style="color:var(--text)">Model Procurement</strong><br>Evaluate candidate models before deployment. Compare Boundary Integrity Score across vendors.</li>
+        <li><strong style="color:var(--text)">Risk Assessment</strong><br>Quantify behavioural reliability. Generate evidence for board approval and audit requirements.</li>
+        <li><strong style="color:var(--text)">AI Governance</strong><br>Demonstrate due diligence. Provide assurance evidence for compliance frameworks.</li>
+        <li><strong style="color:var(--text)">Deployment Gating</strong><br>Set minimum BIS thresholds. Gate production deployment on evaluation results.</li>
       </ul>
+    </div>
+  </div>
+
+  <!-- REQUEST EVALUATION CTA -->
+  <div class="hero fade-up fade-up-6" style="text-align:center;padding:40px 32px;">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#fff;margin-bottom:12px;">Request Private Evaluation</h2>
+    <p style="color:var(--muted);font-size:0.78rem;line-height:1.8;max-width:540px;margin:0 auto 24px;">
+      Submit your model endpoint for confidential MTCP evaluation.
+      Receive a formal report, benchmark comparison, and evaluation certificate.
+    </p>
+    <div class="hero-actions" style="justify-content:center;">
+      <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
+      <a href="/methodology" class="btn btn-ghost">Read Methodology</a>
     </div>
   </div>
 
 </div>
 
 <footer>
-  <p>MTCP Evaluation Platform &nbsp;·&nbsp; <a href="/methodology">Methodology</a> &nbsp;·&nbsp; <a href="/evidence/public-findings">Public Findings</a> &nbsp;·&nbsp; <a href="/request-evaluation">Request Evaluation</a></p>
-  <p style="margin-top:8px;">© 2026 A. Abby &nbsp;·&nbsp; DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5">10.17605/OSF.IO/DXGK5</a> &nbsp;·&nbsp; <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500">HuggingFace Dataset</a></p>
+  <p>MTCP · AI Assurance for Large Language Models &nbsp;·&nbsp; <a href="/methodology">Methodology</a> &nbsp;·&nbsp; <a href="/evidence/public-findings">Benchmark</a> &nbsp;·&nbsp; <a href="/request-evaluation">Request Evaluation</a></p>
+  <p style="margin-top:8px;">© 2026 A. Abby &nbsp;·&nbsp; DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5">10.17605/OSF.IO/DXGK5</a> &nbsp;·&nbsp; <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500">HuggingFace Dataset</a> &nbsp;·&nbsp; research@mtcp.live</p>
 </footer>
 </body>
 </html>
