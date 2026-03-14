@@ -1,118 +1,182 @@
 {% extends "base.html" %}
-{% block title %}MTCP — Model Assurance Platform{% endblock %}
+{% block title %}MTCP — AI Assurance for Large Language Models{% endblock %}
 {% block content %}
+
+{# ── HERO ──────────────────────────────────────────────────────────────── #}
 <div class="hero-card fade-up">
-  <div class="hero-kicker">MTCP · assurance-first evaluation system</div>
-  <h1 class="hero-title">Independent assurance for <span>model reliability</span>, constraint persistence, and deployment readiness.</h1>
+  <div class="hero-kicker">MTCP · Multi-Turn Constraint Persistence</div>
+  <h1 class="hero-title">AI Assurance for <span>Large Language Models</span></h1>
   <p class="hero-copy">
-    MTCP evaluates language models under multi-turn correction pressure, measures degradation on targeted control probes,
-    and turns benchmark evidence into an operational assurance workflow. The benchmark is still here, but the platform is built
-    to support evaluation, evidence gathering, and decision-making before deployment.
+    MTCP evaluates whether models maintain corrected constraints during interaction.
+    Not single-prompt compliance. Behavioural durability across turns.
   </p>
   <div class="hero-actions">
+    <a href="/run-evaluation" class="btn btn-primary">Run Evaluation</a>
+    <a href="/evidence/public-findings" class="btn btn-ghost">View Benchmark</a>
+  </div>
+</div>
+
+{# ── EVALUATION WORKFLOW PANEL ─────────────────────────────────────────── #}
+<div class="workflow-panel fade-up fade-up-1">
+  <div class="workflow-heading">How MTCP Works</div>
+  <div class="workflow-steps">
+    <div class="workflow-step">
+      <div class="workflow-num">1</div>
+      <div class="workflow-label">Submit model endpoint or API key</div>
+    </div>
+    <div class="workflow-arrow">→</div>
+    <div class="workflow-step">
+      <div class="workflow-num">2</div>
+      <div class="workflow-label">Run MTCP evaluation</div>
+    </div>
+    <div class="workflow-arrow">→</div>
+    <div class="workflow-step">
+      <div class="workflow-num">3</div>
+      <div class="workflow-label">Receive evaluation report</div>
+    </div>
+    <div class="workflow-arrow">→</div>
+    <div class="workflow-step">
+      <div class="workflow-num">4</div>
+      <div class="workflow-label">Compare against benchmark</div>
+    </div>
+    <div class="workflow-arrow">→</div>
+    <div class="workflow-step">
+      <div class="workflow-num">5</div>
+      <div class="workflow-label">Download evaluation certificate</div>
+    </div>
+  </div>
+  <div class="workflow-cta">
+    <a href="/run-evaluation" class="btn btn-primary">Run Evaluation</a>
+    <a href="/request-evaluation" class="btn btn-ghost">Request Private Evaluation</a>
+  </div>
+</div>
+
+{# ── PROBLEM EXPLANATION ───────────────────────────────────────────────── #}
+<div class="card fade-up fade-up-2">
+  <div class="section-head">
+    <div>
+      <h2>Why MTCP Exists</h2>
+      <p>Most benchmarks test whether a model follows an instruction once. MTCP tests whether the model maintains a corrected constraint across interaction.</p>
+    </div>
+  </div>
+  <div class="grid-3" style="margin-top:16px;">
+    <div class="feature-card">
+      <h3>Constraint Persistence</h3>
+      <p>Models must maintain corrected constraints across conversation turns, not only follow initial instructions.</p>
+      <div class="feature-meta">Multi-turn correction sequences</div>
+    </div>
+    <div class="feature-card">
+      <h3>Control Probe Integrity</h3>
+      <p>Concealed control probes detect whether models have been exposed to evaluation methodology during training.</p>
+      <div class="feature-meta">Control Probe Degradation (CPD)</div>
+    </div>
+    <div class="feature-card">
+      <h3>Temperature Stability</h3>
+      <p>Behaviour must remain consistent across temperature variation, not only perform at T=0.0.</p>
+      <div class="feature-meta">Temporal Stability Index (TSI)</div>
+    </div>
+  </div>
+</div>
+
+{# ── BENCHMARK SNAPSHOT ────────────────────────────────────────────────── #}
+<div class="card fade-up fade-up-3">
+  <div class="section-head">
+    <div>
+      <h2>Benchmark Snapshot</h2>
+      <p>Top five models evaluated under MTCP. Only 2 of {{ stats.total_models or models|length or 25 }} models achieve grade A.</p>
+    </div>
+    <a href="/evidence/public-findings" class="btn btn-ghost">View Full Benchmark →</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Model</th>
+          <th>Provider</th>
+          <th>BIS</th>
+          <th>CPD</th>
+          <th>Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in models[:5] %}
+        <tr>
+          <td class="subtle">{{ loop.index }}</td>
+          <td>{{ row.model }}</td>
+          <td class="subtle">{{ row.provider }}</td>
+          <td>{{ row.pass_rate }}%</td>
+          <td>{{ row.ctrl_rate }}%</td>
+          <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6"><div class="empty-state">No benchmark data available.</div></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{# ── WHAT MTCP DETECTS ─────────────────────────────────────────────────── #}
+<div class="card fade-up fade-up-4">
+  <h2>What MTCP Detects</h2>
+  <div class="grid-3" style="margin-top:16px;">
+    <div class="feature-card">
+      <h3>Constraint Persistence Failure</h3>
+      <p>Models revert to uncorrected behaviour after correction. MTCP detects this through multi-turn interaction probes.</p>
+      <div class="feature-meta">Measured by Boundary Integrity Score</div>
+    </div>
+    <div class="feature-card">
+      <h3>Control Probe Degradation</h3>
+      <p>Performance gaps between primary and concealed control probes indicate potential methodology exposure during training.</p>
+      <div class="feature-meta">Measured by Control Probe Degradation</div>
+    </div>
+    <div class="feature-card">
+      <h3>Temperature Instability</h3>
+      <p>Models show inconsistent behaviour across temperature settings. MTCP measures stability across T=0.0, 0.2, 0.5, and 0.8.</p>
+      <div class="feature-meta">Measured by Temporal Stability Index</div>
+    </div>
+  </div>
+</div>
+
+{# ── WHO THIS IS FOR ───────────────────────────────────────────────────── #}
+<div class="card fade-up fade-up-5">
+  <h2>Who Uses MTCP</h2>
+  <div class="grid-2" style="margin-top:16px;">
+    <ul class="list-clean">
+      <li>
+        <strong class="subtle">Model Procurement</strong><br>
+        Evaluate candidate models before deployment. Compare Boundary Integrity Score across vendors.
+      </li>
+      <li>
+        <strong class="subtle">Risk Assessment</strong><br>
+        Quantify behavioural reliability. Generate evidence for board approval and audit requirements.
+      </li>
+    </ul>
+    <ul class="list-clean">
+      <li>
+        <strong class="subtle">AI Governance</strong><br>
+        Demonstrate due diligence. Provide assurance evidence for compliance frameworks.
+      </li>
+      <li>
+        <strong class="subtle">Deployment Gating</strong><br>
+        Set minimum BIS thresholds. Gate production deployment on evaluation results.
+      </li>
+    </ul>
+  </div>
+</div>
+
+{# ── REQUEST EVALUATION ────────────────────────────────────────────────── #}
+<div class="hero-card fade-up fade-up-6" style="text-align:center;">
+  <h2>Request Private Evaluation</h2>
+  <p style="max-width:560px;margin:12px auto 24px;">
+    Submit your model endpoint for confidential MTCP evaluation.
+    Receive a formal report, benchmark comparison, and evaluation certificate.
+  </p>
+  <div class="hero-actions" style="justify-content:center;">
     <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
-    <a href="/evidence/public-findings" class="btn btn-ghost">View Public Findings</a>
     <a href="/methodology" class="btn btn-ghost">Read Methodology</a>
   </div>
 </div>
 
-<div class="kpi-row fade-up fade-up-1">
-  <div class="kpi-card">
-    <div class="kpi-label">Canonical models evaluated</div>
-    <div class="kpi-value">{{ stats.total_models or models|length or 25 }}</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">Main probe structure</div>
-    <div class="kpi-value">200</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">Control probe structure</div>
-    <div class="kpi-value">20</div>
-  </div>
-  <div class="kpi-card">
-    <div class="kpi-label">Evaluation mode</div>
-    <div class="kpi-value">Multi‑turn</div>
-  </div>
-</div>
-
-<div class="grid-3 fade-up fade-up-2" style="margin-bottom:28px;">
-  <div class="feature-card">
-    <h3>Evaluate</h3>
-    <p>
-      Run structured model evaluations against private boundary probes, correction sequences, and control checks. Use the platform
-      to test how models behave when constraints must persist across turns rather than in a single-shot prompt.
-    </p>
-    <div class="feature-meta">Execution + scoring + evidence capture</div>
-  </div>
-  <div class="feature-card">
-    <h3>Evidence</h3>
-    <p>
-      Use the public findings as supporting evidence, not the entire story. Temperature breakdowns, control degradation, and
-      comparative results help turn raw benchmark output into something useful for deployment review and model selection.
-    </p>
-    <div class="feature-meta">Leaderboard + control degradation</div>
-  </div>
-  <div class="feature-card">
-    <h3>Methodology</h3>
-    <p>
-      MTCP focuses on post-correction reliability: whether a model can keep following an explicit instruction after it has already
-      failed once. The system measures persistence, variance, and degradation without exposing the underlying probe set.
-    </p>
-    <div class="feature-meta">Framework + vectors + grading</div>
-  </div>
-</div>
-
-<div class="grid-2 fade-up fade-up-3">
-  <div class="card">
-    <div class="section-head">
-      <div>
-        <h2>Public findings preview</h2>
-        <p>Top five models from the current public evidence layer. Full results, temperature breakdowns, and control figures are available in the findings section.</p>
-      </div>
-      <a href="/evidence/public-findings" class="btn btn-ghost">Full Findings →</a>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Model</th>
-            <th>Provider</th>
-            <th>Main</th>
-            <th>Ctrl</th>
-            <th>Grade</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for row in models[:5] %}
-          <tr>
-            <td class="subtle">{{ loop.index }}</td>
-            <td>{{ row.model }}</td>
-            <td class="subtle">{{ row.provider }}</td>
-            <td>{{ row.pass_rate }}%</td>
-            <td>{{ row.ctrl_rate }}%</td>
-            <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
-          </tr>
-          {% else %}
-          <tr><td colspan="6"><div class="empty-state">No leaderboard data available.</div></td></tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="card">
-    <div class="section-head">
-      <div>
-        <h2>What this site now does</h2>
-        <p>The benchmark remains intact, but the primary workflow is shifting toward evaluation intake, methodology transparency, and model-specific evidence pages.</p>
-      </div>
-    </div>
-    <ul class="list-clean">
-      <li><strong class="subtle">Evaluation intake</strong><br>Capture deployment context, objectives, and required vectors before testing begins.</li>
-      <li><strong class="subtle">Evidence pages</strong><br>Keep public findings accessible without making the leaderboard the homepage identity.</li>
-      <li><strong class="subtle">Model cards</strong><br>Show each model’s main score, control score, temperature profile, and degradation pattern.</li>
-      <li><strong class="subtle">Methodology layer</strong><br>Explain the MTCP framework without exposing private probes.</li>
-    </ul>
-  </div>
-</div>
 {% endblock %}
