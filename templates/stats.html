@@ -1,12 +1,12 @@
 {% extends "base.html" %}
-{% block title %}Stats — MTCP{% endblock %}
+{% block title %}Statistics — MTCP{% endblock %}
 {% block head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
-  <h1>Statistics</h1>
-  <p>Aggregate metrics across all benchmark runs · {{ total_results }} evaluations · {{ model_count }} models</p>
+  <h1>Evaluation <span>Statistics</span></h1>
+  <p>Aggregate metrics across all MTCP evaluation runs · {{ total_results }} evaluations · {{ model_count }} models</p>
 </div>
 
 <div class="stats-grid fade-up fade-up-1" style="margin-bottom:28px">
@@ -16,21 +16,21 @@
   </div>
   <div class="stat-card">
     <div class="stat-value">{{ total_results }}</div>
-    <div class="stat-label">Evaluations</div>
+    <div class="stat-label">Total Evaluations</div>
   </div>
   <div class="stat-card">
     <div class="stat-value" style="color:var(--danger)">{{ hard_stops }}</div>
-    <div class="stat-label">Safety Hard Stops</div>
+    <div class="stat-label">Hard Stops</div>
   </div>
   <div class="stat-card">
     <div class="stat-value">{{ model_count }}</div>
-    <div class="stat-label">Models</div>
+    <div class="stat-label">Models Evaluated</div>
   </div>
 </div>
 
 <div class="card fade-up fade-up-2" style="margin-bottom:24px">
   <div class="section-head">
-    <div><h2>Average Pass Rate by Model</h2></div>
+    <div><h2>Boundary Integrity Score by Model</h2></div>
   </div>
   <canvas id="modelChart" height="80"></canvas>
 </div>
@@ -38,14 +38,14 @@
 {% if temp_breakdown %}
 <div class="card fade-up fade-up-3" style="margin-bottom:24px">
   <div class="section-head">
-    <div><h2>Pass Rate by Temperature</h2></div>
+    <div><h2>BIS by Temperature</h2></div>
   </div>
   <div class="table-wrap">
     <table>
       <thead>
         <tr>
           <th>Temperature</th>
-          <th>Avg Pass Rate</th>
+          <th>Avg BIS</th>
           <th>Total Evaluations</th>
         </tr>
       </thead>
@@ -74,8 +74,8 @@
 <div class="card fade-up fade-up-4">
   <div class="section-head">
     <div>
-      <h2>Control Probe Results</h2>
-      <p>20 harder edge-case probes. Results are NOT comparable to main benchmark. Notable: grok-3-mini drops from 90.5% (main) → 30% (ctrl).</p>
+      <h2>Control Probe Degradation</h2>
+      <p>20 concealed control probes. Control BIS is not comparable to primary BIS. The degradation gap is the key metric.</p>
     </div>
   </div>
   <div class="table-wrap">
@@ -85,7 +85,7 @@
           <th>Model</th>
           <th>Passed</th>
           <th>Total</th>
-          <th>Ctrl Pass Rate</th>
+          <th>Control BIS</th>
         </tr>
       </thead>
       <tbody>

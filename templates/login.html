@@ -24,12 +24,15 @@ button:hover{background:#00c88a;}
 .register-link{text-align:center;margin-top:18px;font-size:0.62rem;color:var(--muted);}
 .register-link a{color:var(--accent);text-decoration:none;}
 .register-link a:hover{text-decoration:underline;}
+.public-link{text-align:center;margin-top:10px;font-size:0.62rem;color:var(--muted);}
+.public-link a{color:var(--muted);text-decoration:none;}
+.public-link a:hover{color:var(--accent);}
   </style>
 </head>
 <body>
   <div class="box">
     <div class="brand">MTCP<span>.</span></div>
-    <div class="sub">LLM Safety Benchmarking</div>
+    <div class="sub">AI Assurance Platform</div>
     {% if error %}
     <div class="error">{{ error }}</div>
     {% endif %}
@@ -41,6 +44,7 @@ button:hover{background:#00c88a;}
       <button type="submit">Sign In →</button>
     </form>
     <div class="register-link"><a href="/register">Create an account</a></div>
+    <div class="public-link"><a href="/landing">← View public benchmark</a></div>
   </div>
 </body>
 </html>

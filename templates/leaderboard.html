@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Leaderboard — MTCP{% endblock %}
+{% block title %}Benchmark Rankings — MTCP{% endblock %}
 {% block extra_styles %}
 .filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
 .pill{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:3px;cursor:pointer;transition:all 0.15s;}
@@ -15,17 +15,17 @@
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
-  <h1>Leaderboard</h1>
-  <p>25 models · 4 temperatures · 100 main runs · {{ leaderboard|length }} entries · March 2026</p>
+  <h1>Benchmark <span>Rankings</span></h1>
+  <p>{{ leaderboard|length }} models evaluated under MTCP · 4 temperature settings · March 2026</p>
 </div>
 
 <div class="card fade-up fade-up-1">
   <div class="section-head">
     <div>
-      <h2>All models ranked by main benchmark pass rate</h2>
-      <p>Ordered by average pass rate across T=0.0, 0.2, 0.5, 0.8. Control degradation shown separately.</p>
+      <h2>All models ranked by Boundary Integrity Score</h2>
+      <p>Ordered by average BIS across T=0.0, 0.2, 0.5, 0.8. Control Probe Degradation shown separately.</p>
     </div>
-    <a href="/evidence/public-findings" class="btn btn-ghost">Public View →</a>
+    <a href="/evidence/public-findings" class="btn btn-ghost">Public Benchmark →</a>
   </div>
 
   <div class="filter-bar">
@@ -45,9 +45,9 @@
           <th>#</th>
           <th>Model</th>
           <th>Provider</th>
-          <th>Main %</th>
-          <th>Ctrl %</th>
-          <th>Drop</th>
+          <th>BIS</th>
+          <th>Ctrl BIS</th>
+          <th>CPD</th>
           <th>T=0.0</th>
           <th>T=0.2</th>
           <th>T=0.5</th>
@@ -65,7 +65,7 @@
             {% else %}{{ loop.index }}{% endif %}
           </td>
           <td style="font-size:0.7rem">
-            {{ row.model }}
+            <a href="/model-cards/{{ row.model }}" style="color:var(--text);text-decoration:none;">{{ row.model }}</a>
             <span class="provider-tag">{{ row.provider }}</span>
           </td>
           <td style="color:var(--muted);font-size:0.65rem">{{ row.provider }}</td>
@@ -90,8 +90,9 @@
 
   <div class="lb-actions">
     <a href="/api/compare" class="btn btn-ghost">Temperature Chart</a>
-    <a href="/api/actuarial" class="btn btn-ghost">Actuarial</a>
+    <a href="/api/actuarial" class="btn btn-ghost">Actuarial Analysis</a>
     <a href="/model-cards" class="btn btn-ghost">Model Cards</a>
+    <a href="/ctrl-probes" class="btn btn-ghost">Control Probe Degradation</a>
   </div>
 </div>
 

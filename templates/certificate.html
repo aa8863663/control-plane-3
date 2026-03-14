@@ -1,14 +1,25 @@
 {% extends "base.html" %}
-{% block title %}Certificate — MTCP{% endblock %}
+{% block title %}Evaluation Certificates — MTCP{% endblock %}
 {% block content %}
 <div class="page-header fade-up">
-  <h1>Certificate <span>Generator</span></h1>
-  <p>Generate and download benchmark certificates for any model and temperature</p>
+  <h1>Evaluation <span>Certificates</span></h1>
+  <p>Download formal MTCP evaluation certificates. Suitable for procurement documentation, audit evidence, and compliance records.</p>
 </div>
 
-<div class="card fade-up fade-up-1">
+<div class="card fade-up fade-up-1" style="background:rgba(0,229,160,0.03);border-color:rgba(0,229,160,0.12);margin-bottom:20px;">
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;">
+    Each certificate confirms the model was evaluated under the Multi-Turn Constraint Persistence (MTCP) framework.
+    The certificate includes Boundary Integrity Score, grade, benchmark position, and a verification URL.
+    Certificates are valid indefinitely unless the model is retrained.
+  </p>
+</div>
+
+<div class="card fade-up fade-up-2">
   <div class="section-head">
-    <div><h2>All model results</h2><p>Click a row to generate the certificate for that model and temperature.</p></div>
+    <div>
+      <h2>All evaluation results</h2>
+      <p>Click Generate to download the certificate for that model and temperature.</p>
+    </div>
   </div>
   <div class="table-wrap">
     <table>
@@ -16,7 +27,7 @@
         <tr>
           <th>Model</th>
           <th>Temperature</th>
-          <th>Pass Rate</th>
+          <th>BIS</th>
           <th>Grade</th>
           <th>Passed</th>
           <th>Total</th>
@@ -37,7 +48,7 @@
           <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
           <td style="font-size:0.7rem">{{ row.passed }}</td>
           <td style="font-size:0.7rem;color:var(--muted)">{{ row.total }}</td>
-          <td><a href="/certificate/download/{{ row.model|urlencode }}/{{ row.temperature }}" target="_blank" class="btn btn-ghost" style="font-size:0.6rem;padding:4px 10px" onclick="event.stopPropagation()">Generate →</a></td>
+          <td><a href="/certificate/download/{{ row.model|urlencode }}/{{ row.temperature }}" target="_blank" class="btn btn-ghost" style="font-size:0.6rem;padding:4px 10px" onclick="event.stopPropagation()">Download →</a></td>
         </tr>
         {% endfor %}
       </tbody>
