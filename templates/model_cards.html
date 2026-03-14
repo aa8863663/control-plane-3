@@ -3,7 +3,7 @@
 {% block content %}
 <div class="page-header fade-up">
   <h1>Model <span>Cards</span></h1>
-  <p>Per-model summaries showing provider, benchmark performance, control performance, and grade. Open a card for temperature profile and failure classification.</p>
+  <p>Per-model evaluation summaries showing Boundary Integrity Score, Control Probe Degradation, and grade. Open a card for full temperature profile and behaviour classification.</p>
 </div>
 
 <div class="model-grid fade-up fade-up-1">
@@ -14,21 +14,21 @@
       <div class="model-sub">{{ model.provider }}</div>
     </div>
     <div class="meta-row">
-      <span>Main</span><strong>{{ model.pass_rate }}%</strong>
+      <span>BIS</span><strong>{{ model.pass_rate }}%</strong>
     </div>
     <div class="meta-row">
-      <span>Ctrl</span><strong>{{ model.ctrl_rate }}%</strong>
+      <span>Control BIS</span><strong>{{ model.ctrl_rate }}%</strong>
     </div>
     <div class="meta-row">
       <span>Grade</span><span class="grade grade-{{ model.grade }}">{{ model.grade }}</span>
     </div>
     <div class="meta-row">
-      <span>Drop</span><strong>{{ model.drop }}pp</strong>
+      <span>CPD</span><strong style="color:var(--danger)">{{ model.drop }}pp</strong>
     </div>
     <div class="meta-row">
-      <span>Variance</span><strong>{{ model.variance }}pp</strong>
+      <span>TSI Variance</span><strong>{{ model.variance }}pp</strong>
     </div>
-    <a class="btn btn-ghost" href="/model-cards/{{ model.model }}">Open Model Card →</a>
+    <a class="btn btn-ghost" href="/model-cards/{{ model.model }}">View Evaluation →</a>
   </div>
   {% else %}
   <div class="empty-state" style="grid-column:1/-1;">No models available.</div>
