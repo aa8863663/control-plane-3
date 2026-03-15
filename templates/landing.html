@@ -22,7 +22,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);backdrop-fi
 .nav-logo{font-family:'DM Serif Display',serif;font-size:1rem;color:#fff;text-decoration:none;white-space:nowrap;}
 .nav-logo span{color:var(--accent);}
 .nav-links{display:flex;align-items:center;gap:2px;list-style:none;}
-.nav-links a{font-size:0.65rem;color:var(--muted);text-decoration:none;letter-spacing:1.2px;
+.nav-links a{font-size:0.65rem;color:#9aaabb;text-decoration:none;letter-spacing:1.2px;
   text-transform:uppercase;padding:7px 11px;border-radius:3px;transition:color 0.15s,background 0.15s;}
 .nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.03);}
 .nav-cta{border:1px solid rgba(0,229,160,0.25);color:var(--accent)!important;background:rgba(0,229,160,0.05);}
@@ -66,13 +66,13 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .workflow-step{display:flex;align-items:center;gap:10px;flex:1;min-width:140px;}
 .workflow-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#07110d;
   font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.workflow-label{font-size:0.68rem;line-height:1.4;color:var(--text);}
+.workflow-label{font-size:0.74rem;line-height:1.5;color:var(--text);}
 .workflow-arrow{color:var(--muted);font-size:1rem;flex-shrink:0;padding:0 2px;}
 .workflow-cta{display:flex;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border);flex-wrap:wrap;}
 .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
-.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px;}
 .kpi-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
-.kpi-value{font-family:'DM Serif Display',serif;font-size:1.45rem;color:#fff;margin-top:10px;}
+.kpi-value{font-family:'DM Serif Display',serif;font-size:1.45rem;color:#fff;margin-top:12px;}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
 .feature-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px;position:relative;overflow:hidden;}
 .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
@@ -129,12 +129,16 @@ footer a{color:var(--accent);text-decoration:none;}
     <div class="hero-kicker">MTCP · Multi-Turn Constraint Persistence</div>
     <h1 class="hero-title">AI Assurance for <span>Large Language Models</span></h1>
     <p class="hero-copy">
-      MTCP measures whether AI models keep following rules after correction — not just on the first try.
-      The only public benchmark for post-correction constraint persistence.
+      MTCP measures whether AI models maintain corrected constraints across interaction, not just on the first prompt.
     </p>
     <div class="hero-actions">
       <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
       <a href="/evidence/public-findings" class="btn btn-ghost">View Benchmark →</a>
+    </div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:18px;">
+      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Black-box evaluation</span>
+      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Public benchmark evidence</span>
+      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Audit-ready outputs</span>
     </div>
   </div>
 
@@ -168,8 +172,8 @@ footer a{color:var(--accent);text-decoration:none;}
       </div>
     </div>
     <div class="workflow-cta">
-      <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
       <a href="/methodology" class="btn btn-ghost">Read Methodology →</a>
+      <a href="/evidence/public-findings" class="btn btn-ghost">View Benchmark →</a>
     </div>
   </div>
 
@@ -236,7 +240,7 @@ footer a{color:var(--accent);text-decoration:none;}
         </div>
       </div>
       <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;margin-bottom:16px;">
-        MTCP benchmark results are publicly available. View the complete leaderboard, metric definitions, grading scale, and research citation.
+        The public MTCP benchmark provides comparative evidence on post-correction constraint persistence across evaluated models.
       </p>
       <a href="/evidence/public-findings" class="btn btn-ghost" style="width:100%;justify-content:center;">View Full Benchmark →</a>
     </div>

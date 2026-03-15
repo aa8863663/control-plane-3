@@ -21,7 +21,7 @@
 .act-filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,229,160,0.06);}
 .act-filter-btn:hover{border-color:var(--text);color:var(--text);}
 .act-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
-.act-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;transition:border-color 0.15s;}
+.act-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;transition:border-color 0.15s;}
 .act-card:hover{border-color:var(--border2);}
 .act-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:8px;}
 .act-model-name{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#fff;word-break:break-all;line-height:1.4;}
@@ -39,7 +39,7 @@
   padding-top:10px;border-top:1px solid var(--border);font-size:0.62rem;color:var(--muted);}
 .pie-wrap{display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:center;}
 .pie-legend{display:flex;flex-direction:column;gap:12px;}
-.pie-legend-item{display:flex;align-items:center;gap:10px;font-size:0.7rem;color:var(--muted);}
+.pie-legend-item{display:flex;align-items:flex-start;gap:12px;font-size:0.72rem;color:var(--muted);line-height:1.7;}
 .pie-legend-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
 @media(max-width:600px){
   .act-summary{grid-template-columns:1fr 1fr;}
@@ -50,8 +50,8 @@
 
 <div class="act-summary fade-up fade-up-1" id="actSummary">
   <div class="act-summary-card"><div class="act-summary-val" id="sumModels">—</div><div class="act-summary-lbl">Models</div></div>
-  <div class="act-summary-card"><div class="act-summary-val" id="sumArch">—</div><div class="act-summary-lbl">Architectural</div></div>
-  <div class="act-summary-card"><div class="act-summary-val" id="sumStoch">—</div><div class="act-summary-lbl">Stochastic</div></div>
+  <div class="act-summary-card"><div class="act-summary-val" id="sumArch">—</div><div class="act-summary-lbl">Low Variance</div></div>
+  <div class="act-summary-card"><div class="act-summary-val" id="sumStoch">—</div><div class="act-summary-lbl">Higher Variance</div></div>
   <div class="act-summary-card"><div class="act-summary-val" id="sumAvg">—</div><div class="act-summary-lbl">Avg Pass Rate</div></div>
 </div>
 
@@ -60,7 +60,7 @@
   <div class="section-head">
     <div>
       <h2>Failure Classification</h2>
-      <p>Operational summary only — not an official MTCP metric. Models are classified by temperature variance in their pass rate across T=0.0–0.8.</p>
+      <p>Operational summary only. This view groups models by how much pass rate shifts across temperature settings. It is not a formal MTCP metric. Classification threshold: variance &lt;5pp = Low variance · variance ≥5pp = Higher variance.</p>
     </div>
   </div>
   <div class="pie-wrap">
@@ -69,25 +69,25 @@
       <div class="pie-legend-item">
         <div class="pie-legend-dot" style="background:#3b9eff"></div>
         <div>
-          <strong style="color:var(--text)" id="archCount">—</strong> Architectural
-          <div style="font-size:0.65rem;margin-top:2px;line-height:1.6;"><strong style="color:var(--text)">Variance &lt;5pp.</strong> Failures are consistent regardless of temperature. Suggests a training-level constraint limit rather than sampling noise.</div>
+          <strong style="color:var(--text)" id="archCount">—</strong> Low variance
+          <div style="font-size:0.7rem;margin-top:4px;line-height:1.7;">Behaviour remains similar across temperature settings.</div>
         </div>
       </div>
       <div class="pie-legend-item">
         <div class="pie-legend-dot" style="background:#f5a623"></div>
         <div>
-          <strong style="color:var(--text)" id="stochCount">—</strong> Stochastic
-          <div style="font-size:0.65rem;margin-top:2px;line-height:1.6;"><strong style="color:var(--text)">Variance ≥5pp.</strong> Failures are temperature-sensitive. Higher sampling randomness causes more constraint drift. Often addressable by lowering temperature in production.</div>
+          <strong style="color:var(--text)" id="stochCount">—</strong> Higher variance
+          <div style="font-size:0.7rem;margin-top:4px;line-height:1.7;">Behaviour shifts more as temperature changes.</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="act-filters fade-up fade-up-3">
+<div class="act-filters fade-up fade-up-3" style="margin-top:8px;">
   <button class="act-filter-btn active" onclick="filter('all',this)">All</button>
-  <button class="act-filter-btn" onclick="filter('arch',this)">Architectural</button>
-  <button class="act-filter-btn" onclick="filter('stoch',this)">Stochastic</button>
+  <button class="act-filter-btn" onclick="filter('arch',this)">Low Variance</button>
+  <button class="act-filter-btn" onclick="filter('stoch',this)">Higher Variance</button>
   <button class="act-filter-btn" onclick="sort('rate',this)">Sort: Pass Rate</button>
   <button class="act-filter-btn" onclick="sort('variance',this)">Sort: Variance</button>
   <button class="act-filter-btn" onclick="sort('name',this)">Sort: Name</button>
