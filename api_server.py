@@ -233,6 +233,13 @@ def startup():
             created_at TIMESTAMP DEFAULT NOW()
         )""")
         # users table migrations
+        cur.execute("""CREATE TABLE IF NOT EXISTS password_reset_tokens (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+            token TEXT UNIQUE NOT NULL,
+            created_at TIMESTAMP DEFAULT NOW(),
+            used BOOLEAN DEFAULT FALSE
+        )""")
         cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS full_name TEXT")
         cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT")
         cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS organisation TEXT")
@@ -384,6 +391,84 @@ def register_post(
         return templates.TemplateResponse("register.html", {"request": request, "error": None, "success": "Account request submitted. You will be notified when approved."})
     except Exception as e:
         return templates.TemplateResponse("register.html", {"request": request, "error": "An account with this email already exists.", "success": None})
+
+@app.get("/forgot-password", response_class=HTMLResponse)
+def forgot_password_page(request: Request):
+    return templates.TemplateResponse("forgot_password.html", {"request": request, "error": None, "success": None})
+
+@app.post("/forgot-password", response_class=HTMLResponse)
+def forgot_password_post(request: Request, email: str = Form(...)):
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("SELECT id, full_name, email, username FROM users WHERE username=%s AND is_active=TRUE", (email,))
+        u = cur.fetchone()
+        if u:
+            token = secrets.token_urlsafe(32)
+            cur.execute("INSERT INTO password_reset_tokens (user_id, token) VALUES (%s, %s)", (u["id"], token))
+            conn.commit()
+            name = u["full_name"] or u["username"] or "there"
+            reset_url = f"https://mtcp.live/reset-password?token={token}"
+            send_email(
+                subject="Reset your MTCP password",
+                body=f"Hi {name},\n\nClick the link below to reset your MTCP password. This link expires in 1 hour.\n\n{reset_url}\n\nIf you did not request this, ignore this email.\n\nMTCP Team"
+            )
+        conn.close()
+    except Exception as e:
+        print(f"Forgot password error: {e}")
+    # Always show success to avoid email enumeration
+    return templates.TemplateResponse("forgot_password.html", {"request": request, "error": None,
+        "success": "If an account exists with that email, a reset link has been sent."})
+
+@app.get("/reset-password", response_class=HTMLResponse)
+def reset_password_page(request: Request, token: str = ""):
+    valid = False
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("""
+            SELECT t.id, t.used, t.created_at
+            FROM password_reset_tokens t
+            WHERE t.token=%s
+        """, (token,))
+        row = cur.fetchone(); conn.close()
+        if row and not row["used"]:
+            from datetime import timezone, timedelta
+            age = datetime.utcnow() - row["created_at"].replace(tzinfo=None)
+            valid = age < timedelta(hours=1)
+    except Exception as e:
+        print(f"Reset password page error: {e}")
+    return templates.TemplateResponse("reset_password.html", {"request": request, "token": token, "valid": valid, "error": None, "success": None})
+
+@app.post("/reset-password", response_class=HTMLResponse)
+def reset_password_post(request: Request, token: str = Form(...), password: str = Form(...), confirm_password: str = Form(...)):
+    if password != confirm_password:
+        return templates.TemplateResponse("reset_password.html", {"request": request, "token": token, "valid": True, "error": "Passwords do not match.", "success": None})
+    if len(password) < 6:
+        return templates.TemplateResponse("reset_password.html", {"request": request, "token": token, "valid": True, "error": "Password must be at least 6 characters.", "success": None})
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("""
+            SELECT t.id, t.user_id, t.used, t.created_at
+            FROM password_reset_tokens t
+            WHERE t.token=%s
+        """, (token,))
+        row = cur.fetchone()
+        if not row or row["used"]:
+            conn.close()
+            return templates.TemplateResponse("reset_password.html", {"request": request, "token": token, "valid": False, "error": "This reset link is invalid or has already been used.", "success": None})
+        from datetime import timedelta
+        age = datetime.utcnow() - row["created_at"].replace(tzinfo=None)
+        if age >= timedelta(hours=1):
+            conn.close()
+            return templates.TemplateResponse("reset_password.html", {"request": request, "token": token, "valid": False, "error": "This reset link has expired. Please request a new one.", "success": None})
+        import bcrypt as _bcrypt
+        new_hash = _bcrypt.hashpw(password.encode(), _bcrypt.gensalt()).decode()
+        cur.execute("UPDATE users SET password_hash=%s WHERE id=%s", (new_hash, row["user_id"]))
+        cur.execute("UPDATE password_reset_tokens SET used=TRUE WHERE id=%s", (row["id"],))
+        conn.commit(); conn.close()
+        return templates.TemplateResponse("reset_password.html", {"request": request, "token": token, "valid": True, "error": None, "success": "Password updated. You can now log in."})
+    except Exception as e:
+        print(f"Reset password error: {e}")
+        return templates.TemplateResponse("reset_password.html", {"request": request, "token": token, "valid": True, "error": "Something went wrong. Please try again.", "success": None})
 
 @app.get("/logout")
 def logout(session: Optional[str] = Cookie(default=None)):
