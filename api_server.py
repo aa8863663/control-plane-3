@@ -257,7 +257,7 @@ def landing_page(request: Request):
                        /NULLIF(COUNT(*),0),1) as pct
                 FROM results r JOIN runs ru ON r.run_id=ru.id
                 WHERE ru.dataset IS DISTINCT FROM 'ctrl'
-                GROUP BY ru.id) sub""")
+                GROUP BY ru.model) sub""")
         row = cur.fetchone(); vals = list(row.values()) if row else [0,0]; mn = vals[0] or 0; mx = vals[1] or 0
         conn.close()
     except Exception as e:
@@ -321,6 +321,29 @@ def login_post(request: Request, username: str = Form(...), password: str = Form
 def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request, "error": None, "success": None})
 
+# ── Email helper ──────────────────────────────────────────────────────────────
+
+def send_email(subject: str, body: str):
+    import smtplib
+    from email.mime.text import MIMEText
+    smtp_user = os.environ.get("ZOHO_SMTP_USER", "")
+    smtp_pass = os.environ.get("ZOHO_SMTP_PASSWORD", "")
+    notify_to = os.environ.get("NOTIFY_EMAIL", "admin@mtcp.live")
+    if not smtp_user or not smtp_pass:
+        print("Email not configured — skipping notification")
+        return
+    try:
+        msg = MIMEText(body, "plain")
+        msg["Subject"] = subject
+        msg["From"] = smtp_user
+        msg["To"] = notify_to
+        with smtplib.SMTP_SSL("smtp.zoho.eu", 465) as server:
+            server.login(smtp_user, smtp_pass)
+            server.sendmail(smtp_user, [notify_to], msg.as_string())
+        print(f"Email sent: {subject}")
+    except Exception as e:
+        print(f"Email error: {e}")
+
 @app.post("/register")
 def register_post(
     request: Request,
@@ -343,6 +366,10 @@ def register_post(
             (email, hash_password(password), full_name, email, organisation, intended_use_case, notes)
         )
         conn.commit(); conn.close()
+        send_email(
+            subject=f"[MTCP] New registration: {full_name}",
+            body=f"New registration request:\n\nName: {full_name}\nEmail: {email}\nOrganisation: {organisation}\nUse case: {intended_use_case}\nNotes: {notes or chr(8212)}\n\nApprove at: https://mtcp.live/admin"
+        )
         return templates.TemplateResponse("register.html", {"request": request, "error": None, "success": "Account request submitted. You will be notified when approved."})
     except Exception as e:
         return templates.TemplateResponse("register.html", {"request": request, "error": "An account with this email already exists.", "success": None})
@@ -494,6 +521,10 @@ def request_evaluation_post(
             (name, organisation, contact_email, model_name, provider, endpoint_details, evaluation_objective, notes, "pending")
         )
         conn.commit(); conn.close()
+        send_email(
+            subject=f"[MTCP] New evaluation request: {model_name}",
+            body=f"New evaluation request:\n\nName: {name}\nOrganisation: {organisation}\nEmail: {contact_email}\nProvider: {provider}\nModel: {model_name}\nEndpoint: {endpoint_details or chr(8212)}\nObjective: {evaluation_objective}\nNotes: {notes or chr(8212)}\n\nReview at: https://mtcp.live/admin"
+        )
         return templates.TemplateResponse(
             "request_evaluation.html",
             {
