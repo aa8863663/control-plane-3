@@ -26,7 +26,18 @@ def get_db():
 
 import hashlib, secrets
 
-def hash_password(p): return hashlib.sha256(p.encode()).hexdigest()
+import bcrypt as _bcrypt
+
+def hash_password(p):
+    return _bcrypt.hashpw(p.encode(), _bcrypt.gensalt()).decode()
+
+def check_password(plain, stored):
+    try:
+        return _bcrypt.checkpw(plain.encode(), stored.encode())
+    except Exception:
+        # fallback for any legacy SHA-256 hashes still in DB
+        import hashlib
+        return hashlib.sha256(plain.encode()).hexdigest() == stored
 
 def get_user_from_token(token):
     if not token: return None
@@ -305,7 +316,7 @@ def login_post(request: Request, username: str = Form(...), password: str = Form
         conn = get_db(); cur = conn.cursor()
         cur.execute("SELECT id, username, password_hash, is_admin FROM users WHERE username=%s AND is_active=TRUE", (username,))
         u = cur.fetchone(); conn.close()
-        if u and u["password_hash"] == hash_password(password):
+        if u and check_password(password, u["password_hash"]):
             token = secrets.token_urlsafe(32)
             conn2 = get_db(); cur2 = conn2.cursor()
             cur2.execute("INSERT INTO sessions (token, user_id) VALUES (%s,%s)", (token, u["id"]))
