@@ -260,6 +260,11 @@ def public_redirect():
 def evidence_dashboard_redirect():
     return RedirectResponse(url="/dashboard", status_code=301)
 
+@app.get("/benchmark", response_class=HTMLResponse)
+def benchmark_redirect():
+    from fastapi.responses import RedirectResponse
+    return RedirectResponse(url="/evidence/public-findings", status_code=301)
+
 @app.get("/evidence/public-findings", response_class=HTMLResponse)
 def evidence_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
