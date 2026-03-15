@@ -37,13 +37,13 @@ button:hover{background:#00c88a;}
     <div class="error">{{ error }}</div>
     {% endif %}
     <form method="post" action="/login">
-      <label>Username</label>
-      <input type="text" name="username" autocomplete="username" required>
+      <label>Email</label>
+      <input type="email" name="username" autocomplete="email" required>
       <label>Password</label>
       <input type="password" name="password" autocomplete="current-password" required>
       <button type="submit">Sign In →</button>
     </form>
-    <div class="register-link"><a href="/register">Create an account</a></div>
+    <div class="register-link"><a href="/register">Request access</a></div>
     <div class="public-link"><a href="/landing">← View public benchmark</a></div>
   </div>
 </body>
