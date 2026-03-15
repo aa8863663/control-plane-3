@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}Buyer Brief — MTCP{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Buyer <span>Brief</span></h1>
+  <p>Enterprise decision-maker briefing on MTCP as AI assurance system. Audience: CTOs, AI governance leads, procurement teams, risk officers.</p>
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<div class="card fade-up fade-up-1" style="background:rgba(0,229,160,0.03);border-color:rgba(0,229,160,0.15);margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">MTCP: AI Assurance for Large Language Model Deployment</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:12px;">
+    Multi-Turn Constraint Persistence (MTCP) is a black-box evaluation framework that measures whether large language models
+    maintain corrected constraints during interaction. Most benchmarks test single-prompt compliance.
+    MTCP evaluates behavioural durability across conversation turns — measuring how models respond after correction.
+  </p>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;">
+    MTCP provides formal evaluation reports, benchmark comparison, and assurance certificates suitable for procurement
+    documentation, risk assessment, and compliance frameworks.
+  </p>
+</div>
+
+<!-- THE PROBLEM -->
+<div class="card fade-up fade-up-2" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">Why Single-Prompt Benchmarks Are Insufficient</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    Standard benchmarks (HumanEval, MMLU, MT-Bench) measure whether models follow instructions at one moment.
+    They do not measure whether models maintain corrected behaviour during interaction.
+    Production deployments require behavioural reliability after correction, not just initial compliance.
+  </p>
+  <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:4px;padding:16px 20px;margin-bottom:16px;">
+    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:12px;">Example Failure Mode</div>
+    <div style="font-size:0.72rem;line-height:2.2;color:var(--text);">
+      <div><span style="color:var(--muted)">User →</span> Generate a report without using passive voice.</div>
+      <div><span style="color:var(--accent)">Model →</span> [Complies correctly]</div>
+      <div><span style="color:var(--muted)">User →</span> The previous section used passive voice. Please correct it.</div>
+      <div><span style="color:var(--danger)">Model →</span> [Reverts to passive voice in correction]</div>
+    </div>
+    <div style="font-size:0.68rem;color:var(--muted);margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+      Single-prompt benchmarks miss this failure. MTCP detects it.
+    </div>
+  </div>
+</div>
+
+<!-- WHAT MTCP MEASURES -->
+<div class="card fade-up fade-up-3" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:16px;">MTCP Evaluation Framework</h2>
+  <div class="grid-3" style="margin-bottom:0;">
+    <div style="padding:16px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;">
+      <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:8px;">BIS</div>
+      <div style="font-weight:700;color:var(--text);font-size:0.8rem;margin-bottom:8px;">Boundary Integrity Score</div>
+      <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;margin-bottom:8px;">Proportion of probes where model maintained corrected constraints. BIS ≥90% = grade A.</p>
+      <div style="font-size:0.62rem;color:var(--muted);">Primary procurement decision metric</div>
+    </div>
+    <div style="padding:16px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;">
+      <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:8px;">TSI</div>
+      <div style="font-weight:700;color:var(--text);font-size:0.8rem;margin-bottom:8px;">Temporal Stability Index</div>
+      <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;margin-bottom:8px;">Behavioural consistency across temperature variation. TSI &gt;95 = highly stable.</p>
+      <div style="font-size:0.62rem;color:var(--muted);">Production deployment reliability indicator</div>
+    </div>
+    <div style="padding:16px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;">
+      <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--warn);margin-bottom:8px;">CPD</div>
+      <div style="font-weight:700;color:var(--text);font-size:0.8rem;margin-bottom:8px;">Control Probe Degradation</div>
+      <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;margin-bottom:8px;">Performance gap between primary and concealed control probes. CPD &lt;-40 = high exposure risk.</p>
+      <div style="font-size:0.62rem;color:var(--muted);">Training data contamination indicator</div>
+    </div>
+  </div>
+</div>
+
+<!-- ENTERPRISE USE CASES -->
+<div class="card fade-up fade-up-4" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:16px;">MTCP for Enterprise AI Governance</h2>
+  <div class="grid-2" style="margin-bottom:0;">
+    <ul class="list-clean">
+      <li>
+        <strong style="color:var(--text)">Model Procurement</strong>
+        <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;margin-top:4px;">Evaluate candidate models under MTCP. Compare BIS, TSI, CPD across vendors. Select model with strongest constraint persistence. Attach MTCP certificate to procurement documentation.</p>
+      </li>
+      <li>
+        <strong style="color:var(--text)">Risk Assessment</strong>
+        <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;margin-top:4px;">Run MTCP evaluation on deployed model. Generate risk metrics. Benchmark against industry standard. Establish minimum BIS threshold policy.</p>
+      </li>
+    </ul>
+    <ul class="list-clean">
+      <li>
+        <strong style="color:var(--text)">Deployment Gating</strong>
+        <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;margin-top:4px;">Set minimum BIS threshold (e.g. ≥85% for production). Gate deployment on MTCP evaluation pass. Re-evaluate after model updates. Maintain audit trail of evaluations.</p>
+      </li>
+      <li>
+        <strong style="color:var(--text)">Compliance &amp; Audit</strong>
+        <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;margin-top:4px;">Submit MTCP certificate as evidence. Provide benchmark comparison. Show evaluation methodology (DOI: 10.17605/OSF.IO/DXGK5). Demonstrate third-party evaluation.</p>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- EVALUATION PROFILES -->
+<div class="card fade-up fade-up-5" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:16px;">Three Evaluation Profiles</h2>
+  <div class="grid-3" style="margin-bottom:14px;">
+    <div style="padding:18px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;margin-bottom:6px;">Quick Check</div>
+      <div style="font-size:1.4rem;font-family:'DM Serif Display',serif;color:var(--accent);margin-bottom:14px;">Free</div>
+      <ul class="list-clean" style="margin-bottom:0;">
+        <li style="padding:5px 0;">50 probes</li>
+        <li style="padding:5px 0;">T=0.0 only</li>
+        <li style="padding:5px 0;">5–10 minutes</li>
+        <li style="padding:5px 0;border-bottom:none;color:var(--muted);">Fast validation</li>
+      </ul>
+    </div>
+    <div style="padding:18px;background:var(--surface2);border:1px solid rgba(0,229,160,0.25);border-radius:6px;">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;margin-bottom:6px;">Standard MTCP</div>
+      <div style="font-size:1.4rem;font-family:'DM Serif Display',serif;color:var(--accent);margin-bottom:14px;">£49 <span style="font-size:0.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">/ run</span></div>
+      <ul class="list-clean" style="margin-bottom:0;">
+        <li style="padding:5px 0;">200 probes</li>
+        <li style="padding:5px 0;">T=0.0, 0.2, 0.5, 0.8</li>
+        <li style="padding:5px 0;">30–45 minutes</li>
+        <li style="padding:5px 0;border-bottom:none;color:var(--muted);">Full benchmark comparison</li>
+      </ul>
+    </div>
+    <div style="padding:18px;background:var(--surface2);border:1px solid rgba(123,108,255,0.25);border-radius:6px;">
+      <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;margin-bottom:6px;">Full Assurance</div>
+      <div style="font-size:1.4rem;font-family:'DM Serif Display',serif;color:var(--accent2);margin-bottom:14px;">£199 <span style="font-size:0.72rem;color:var(--muted);font-family:'JetBrains Mono',monospace;">/ run</span></div>
+      <ul class="list-clean" style="margin-bottom:0;">
+        <li style="padding:5px 0;">200 + 20 control probes</li>
+        <li style="padding:5px 0;">T=0.0, 0.2, 0.5, 0.8</li>
+        <li style="padding:5px 0;">45–60 minutes</li>
+        <li style="padding:5px 0;border-bottom:none;color:var(--muted);">Procurement evidence &amp; audit</li>
+      </ul>
+    </div>
+  </div>
+  <div style="padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;font-size:0.7rem;color:var(--muted);">
+    Enterprise: Volume pricing · Unlimited evaluations · Priority support · Custom SLAs · White-label option &nbsp;·&nbsp;
+    <a href="mailto:research@mtcp.live" style="color:var(--accent);text-decoration:none;">research@mtcp.live</a>
+  </div>
+</div>
+
+<!-- BENCHMARK COMPARISON -->
+<div class="card fade-up fade-up-6" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:16px;">How MTCP Differs from Existing Benchmarks</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Benchmark</th><th>Evaluation Type</th><th>Multi-Turn</th><th>Constraint Persistence</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;color:var(--accent)">MTCP</td>
+          <td style="font-size:0.7rem;">Constraint persistence</td>
+          <td style="font-size:0.7rem;color:var(--accent)">✓ Yes</td>
+          <td style="font-size:0.7rem;color:var(--accent)">✓ Enforced explicitly</td>
+        </tr>
+        <tr>
+          <td style="font-size:0.7rem;color:var(--muted)">HumanEval</td>
+          <td style="font-size:0.7rem;color:var(--muted)">Code generation (single turn)</td>
+          <td style="font-size:0.7rem;color:var(--muted)">✗ No</td>
+          <td style="font-size:0.7rem;color:var(--muted)">✗ No</td>
+        </tr>
+        <tr>
+          <td style="font-size:0.7rem;color:var(--muted)">MMLU</td>
+          <td style="font-size:0.7rem;color:var(--muted)">Knowledge retrieval (single turn)</td>
+          <td style="font-size:0.7rem;color:var(--muted)">✗ No</td>
+          <td style="font-size:0.7rem;color:var(--muted)">✗ No</td>
+        </tr>
+        <tr>
+          <td style="font-size:0.7rem;color:var(--muted)">MT-Bench</td>
+          <td style="font-size:0.7rem;color:var(--muted)">Multi-turn conversation</td>
+          <td style="font-size:0.7rem;color:var(--muted)">✓ Yes</td>
+          <td style="font-size:0.7rem;color:var(--muted)">✗ Not enforced</td>
+        </tr>
+        <tr>
+          <td style="font-size:0.7rem;color:var(--muted)">OpenAI Evals</td>
+          <td style="font-size:0.7rem;color:var(--muted)">Custom evaluation framework</td>
+          <td style="font-size:0.7rem;color:var(--muted)">Varies</td>
+          <td style="font-size:0.7rem;color:var(--muted)">✗ No benchmark comparison</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- BLACK BOX + SECURITY -->
+<div class="grid-2 fade-up" style="margin-bottom:20px;">
+  <div class="card">
+    <h2 style="margin-bottom:12px;">No Vendor Cooperation Required</h2>
+    <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">MTCP requires only API access. No model weights, training data, vendor cooperation, or internal access required.</p>
+    <ul class="list-clean">
+      <li>Independent evaluation</li>
+      <li>Vendor-neutral assessment</li>
+      <li>Procurement without vendor participation</li>
+      <li>Third-party verification</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2 style="margin-bottom:12px;">Data Handling &amp; Privacy</h2>
+    <ul class="list-clean">
+      <li><strong style="color:var(--text)">API keys</strong><br>Encrypted in transit. Used only during evaluation runtime. Immediately discarded. Never logged or stored.</li>
+      <li><strong style="color:var(--text)">Results</strong><br>Private by default. Benchmark inclusion optional and anonymised. No probe texts exposed.</li>
+      <li><strong style="color:var(--text)">Enterprise</strong><br>Confidential endpoint submission available. NDA available on request.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- RESEARCH -->
+<div class="card fade-up" style="margin-bottom:20px;background:rgba(0,229,160,0.03);border-color:rgba(0,229,160,0.12);">
+  <h2 style="margin-bottom:12px;">Research Foundation</h2>
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;">
+    DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5" style="color:var(--accent);text-decoration:none;">10.17605/OSF.IO/DXGK5</a> &nbsp;·&nbsp;
+    Dataset: <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500" style="color:var(--accent);text-decoration:none;">HuggingFace (mtcp-boundary-500)</a> &nbsp;·&nbsp;
+    Author: A. Abby &nbsp;·&nbsp; 2026 &nbsp;·&nbsp;
+    Methodology fully documented · Results publicly available · Independent validation possible
+  </p>
+</div>
+
+<!-- CTA -->
+<div class="card fade-up" style="text-align:center;padding:36px;">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:#fff;margin-bottom:10px;">Get Started</h2>
+  <p style="font-size:0.74rem;color:var(--muted);margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8;">
+    Submit your model for evaluation or contact us for enterprise pricing, NDA pack, and volume options.<br>
+    <a href="mailto:research@mtcp.live" style="color:var(--accent);text-decoration:none;">research@mtcp.live</a>
+  </p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
+    <a href="/evidence/public-findings" class="btn btn-ghost">View Benchmark</a>
+    <a href="/methodology" class="btn btn-ghost">Read Methodology</a>
+  </div>
+</div>
+{% endblock %}

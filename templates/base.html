@@ -184,22 +184,29 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
 <nav>
   <a href="/" class="nav-logo">MTCP<span>.</span></a>
   <ul class="nav-links">
+    {% if user %}
     <li><a href="/" {% if active=='platform' or active=='home' %}class="active"{% endif %}>Platform</a></li>
-    <li><a href="/run-evaluation" {% if active=='evaluate' %}class="active"{% endif %}>Evaluate</a></li>
+    <li><a href="/run-evaluation" {% if active=='run' %}class="active"{% endif %}>Evaluate</a></li>
     <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
     <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
     <li><a href="/methodology" {% if active=='methodology' %}class="active"{% endif %}>Methodology</a></li>
-    {% if user and user.is_admin %}
+    {% if user.is_admin %}
     <li><a href="/admin" {% if active=='admin' %}class="active"{% endif %}>Admin</a></li>
     {% endif %}
     <li><a href="/request-evaluation" class="nav-cta {% if active=='request' %}active{% endif %}">Request Evaluation</a></li>
+    {% else %}
+    <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
+    <li><a href="/methodology" {% if active=='methodology' %}class="active"{% endif %}>Methodology</a></li>
+    <li><a href="/buyer-brief" {% if active=='buyer-brief' %}class="active"{% endif %}>Buyer Brief</a></li>
+    <li><a href="/request-evaluation" {% if active=='request' %}class="active"{% endif %}>Request Evaluation</a></li>
+    <li><a href="/register">Register</a></li>
+    <li><a href="/login" class="nav-cta">Login</a></li>
+    {% endif %}
   </ul>
   <div class="nav-user">
     {% if user %}
     <span class="nav-user-name">{{ user.username }}</span>
     <a href="/logout" class="nav-logout">Sign out</a>
-    {% else %}
-    <a href="/login" class="nav-logout">Sign in</a>
     {% endif %}
   </div>
 </nav>

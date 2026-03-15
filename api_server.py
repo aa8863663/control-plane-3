@@ -481,6 +481,11 @@ def methodology_page(request: Request, session: Optional[str] = Cookie(default=N
         }
     )
 
+@app.get("/buyer-brief", response_class=HTMLResponse)
+def buyer_brief_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    return templates.TemplateResponse("buyer_brief.html", {"request": request, "user": user, "active": "buyer-brief"})
+
 @app.get("/request-evaluation", response_class=HTMLResponse)
 def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
