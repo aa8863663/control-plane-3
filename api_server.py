@@ -660,7 +660,7 @@ def compare_page(request: Request, session: Optional[str] = Cookie(default=None)
     return templates.TemplateResponse("compare.html", {
         "request": request, "user": user, "active": "compare", "compare_data": data})
 
-@app.get("/run-benchmark", response_class=HTMLResponse)
+@app.get("/run-evaluation", response_class=HTMLResponse)
 def run_benchmark_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user, redir = require_login(session)
     if redir: return redir
