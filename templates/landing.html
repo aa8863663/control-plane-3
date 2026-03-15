@@ -9,9 +9,9 @@
 :root{
   --bg:#0a0c10;--surface:#111318;--surface2:#161920;--border:#1e2229;--border2:#252c36;
   --accent:#00e5a0;--accent2:#7b6cff;--warn:#f5a623;--danger:#ff4f4f;--blue:#3b9eff;
-  --text:#d4dbe8;--muted:#5a6070;
+  --text:#d4dbe8;--muted:#8090a8;
 }
-html{font-size:15px;-webkit-font-smoothing:antialiased;}
+html{font-size:16px;-webkit-font-smoothing:antialiased;}
 body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;}
 .grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:linear-gradient(rgba(0,229,160,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,160,0.025) 1px,transparent 1px);
@@ -27,7 +27,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);backdrop-fi
 .nav-links a:hover{color:var(--text);background:rgba(255,255,255,0.03);}
 .nav-cta{border:1px solid rgba(0,229,160,0.25);color:var(--accent)!important;background:rgba(0,229,160,0.05);}
 .nav-cta:hover{background:rgba(0,229,160,0.10)!important;border-color:rgba(0,229,160,0.45)!important;}
-.page{max-width:1100px;margin:0 auto;padding:36px 20px 80px;position:relative;z-index:1;}
+.page{max-width:1100px;margin:0 auto;padding:44px 24px 80px;position:relative;z-index:1;}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:4px;
   border:1px solid var(--border);text-decoration:none;cursor:pointer;font-size:0.68rem;
   letter-spacing:1.1px;text-transform:uppercase;transition:all 0.15s;font-family:'JetBrains Mono',monospace;}
@@ -37,7 +37,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(10,12,16,0.97);backdrop-fi
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
 table{width:100%;border-collapse:collapse;}
 th{text-align:left;padding:10px 12px;font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);border-bottom:1px solid var(--border);}
-td{padding:12px;border-bottom:1px solid rgba(30,34,41,0.8);font-size:0.72rem;vertical-align:middle;}
+td{padding:13px 12px;border-bottom:1px solid rgba(30,34,41,0.8);font-size:0.78rem;vertical-align:middle;}
 tr:hover td{background:rgba(255,255,255,0.015);}
 .grade{display:inline-flex;width:28px;height:28px;border-radius:4px;align-items:center;justify-content:center;
   font-family:'DM Serif Display',serif;font-size:1rem;}
@@ -129,12 +129,12 @@ footer a{color:var(--accent);text-decoration:none;}
     <div class="hero-kicker">MTCP · Multi-Turn Constraint Persistence</div>
     <h1 class="hero-title">AI Assurance for <span>Large Language Models</span></h1>
     <p class="hero-copy">
-      MTCP evaluates whether models maintain corrected constraints during interaction.
-      Not single-prompt compliance. Behavioural durability across turns.
+      MTCP measures whether AI models keep following rules after correction — not just on the first try.
+      The only public benchmark for post-correction constraint persistence.
     </p>
     <div class="hero-actions">
       <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
-      <a href="/evidence/public-findings" class="btn btn-ghost">View Benchmark</a>
+      <a href="/evidence/public-findings" class="btn btn-ghost">View Benchmark →</a>
     </div>
   </div>
 
@@ -169,7 +169,7 @@ footer a{color:var(--accent);text-decoration:none;}
     </div>
     <div class="workflow-cta">
       <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
-      <a href="/methodology" class="btn btn-ghost">Read Methodology</a>
+      <a href="/methodology" class="btn btn-ghost">Read Methodology →</a>
     </div>
   </div>
 
@@ -259,7 +259,4 @@ footer a{color:var(--accent);text-decoration:none;}
 
 <footer>
   <p>MTCP · AI Assurance for Large Language Models &nbsp;·&nbsp; <a href="/methodology">Methodology</a> &nbsp;·&nbsp; <a href="/evidence/public-findings">Benchmark</a> &nbsp;·&nbsp; <a href="/request-evaluation">Request Evaluation</a></p>
-  <p style="margin-top:8px;">© 2026 A. Abby &nbsp;·&nbsp; DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5">10.17605/OSF.IO/DXGK5</a> &nbsp;·&nbsp; <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500">HuggingFace Dataset</a> &nbsp;·&nbsp; research@mtcp.live</p>
-</footer>
-</body>
-</html>
+  <p style="margin-top:8px;">© 2026 A. Abby &nbsp;·&nbsp; DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5">10.17605/OSF.IO/DXGK5</a> &nbsp;·&nbsp; <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500">HuggingFace Dataset</a> &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf

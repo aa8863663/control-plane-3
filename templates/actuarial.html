@@ -60,7 +60,7 @@
   <div class="section-head">
     <div>
       <h2>Failure Classification</h2>
-      <p>Operational summary of failure type distribution. Not an official MTCP metric — derived from temperature variance threshold (≥5pp = stochastic).</p>
+      <p>Operational summary only — not an official MTCP metric. Models are classified by temperature variance in their pass rate across T=0.0–0.8.</p>
     </div>
   </div>
   <div class="pie-wrap">
@@ -70,14 +70,14 @@
         <div class="pie-legend-dot" style="background:#3b9eff"></div>
         <div>
           <strong style="color:var(--text)" id="archCount">—</strong> Architectural
-          <div style="font-size:0.65rem;margin-top:2px;">Variance &lt;5pp · Consistent failures across temperatures · Pattern consistent with training-linked constraint limits</div>
+          <div style="font-size:0.65rem;margin-top:2px;line-height:1.6;"><strong style="color:var(--text)">Variance &lt;5pp.</strong> Failures are consistent regardless of temperature. Suggests a training-level constraint limit rather than sampling noise.</div>
         </div>
       </div>
       <div class="pie-legend-item">
         <div class="pie-legend-dot" style="background:#f5a623"></div>
         <div>
           <strong style="color:var(--text)" id="stochCount">—</strong> Stochastic
-          <div style="font-size:0.65rem;margin-top:2px;">Variance ≥5pp · Failures sensitive to sampling conditions · Behaviour shifts with temperature</div>
+          <div style="font-size:0.65rem;margin-top:2px;line-height:1.6;"><strong style="color:var(--text)">Variance ≥5pp.</strong> Failures are temperature-sensitive. Higher sampling randomness causes more constraint drift. Often addressable by lowering temperature in production.</div>
         </div>
       </div>
     </div>
