@@ -51,8 +51,6 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .fade-up-1{animation-delay:0.05s;opacity:0;}.fade-up-2{animation-delay:0.10s;opacity:0;}
 .fade-up-3{animation-delay:0.15s;opacity:0;}.fade-up-4{animation-delay:0.20s;opacity:0;}
 .fade-up-5{animation-delay:0.25s;opacity:0;}.fade-up-6{animation-delay:0.30s;opacity:0;}
-
-/* Hero */
 .hero{padding:60px 32px;border-radius:10px;background:linear-gradient(180deg,rgba(0,229,160,0.05),rgba(17,19,24,0.94));
   border:1px solid rgba(0,229,160,0.12);margin-bottom:28px;}
 .hero-kicker{display:inline-flex;gap:8px;align-items:center;color:var(--accent);font-size:0.6rem;
@@ -61,8 +59,6 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .hero-title span{color:var(--accent);}
 .hero-copy{margin-top:16px;color:var(--muted);font-size:0.82rem;line-height:1.8;max-width:680px;}
 .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px;}
-
-/* Workflow panel */
 .workflow-panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;
   padding:24px 28px;margin-bottom:28px;}
 .workflow-heading{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:20px;}
@@ -73,14 +69,10 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .workflow-label{font-size:0.68rem;line-height:1.4;color:var(--text);}
 .workflow-arrow{color:var(--muted);font-size:1rem;flex-shrink:0;padding:0 2px;}
 .workflow-cta{display:flex;gap:10px;margin-top:20px;padding-top:18px;border-top:1px solid var(--border);flex-wrap:wrap;}
-
-/* KPI row */
-.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px;}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px;}
 .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
 .kpi-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
 .kpi-value{font-family:'DM Serif Display',serif;font-size:1.45rem;color:#fff;margin-top:10px;}
-
-/* Feature grid */
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px;}
 .feature-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px;position:relative;overflow:hidden;}
 .feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
@@ -88,15 +80,6 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .feature-card p{color:var(--muted);font-size:0.72rem;line-height:1.8;}
 .feature-meta{margin-top:14px;font-size:0.6rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--accent);}
 .feature-card a{display:inline-block;margin-top:14px;font-size:0.65rem;color:var(--accent);text-decoration:none;letter-spacing:1px;text-transform:uppercase;}
-
-/* Finding banner */
-.finding-banner{background:rgba(0,229,160,0.04);border:1px solid rgba(0,229,160,0.12);border-radius:8px;
-  padding:24px 28px;margin-bottom:28px;}
-.finding-banner h3{font-family:'DM Serif Display',serif;font-size:1.25rem;color:#fff;margin-bottom:12px;}
-.finding-banner p{font-size:0.74rem;color:var(--muted);line-height:2;}
-.finding-banner strong{color:var(--text);}
-
-/* Two col */
 .grid-2{display:grid;grid-template-columns:1.1fr 0.9fr;gap:16px;margin-bottom:28px;}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
 .section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
@@ -108,17 +91,14 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .table-wrap{overflow-x:auto;}
 .muted-link{color:var(--muted);text-decoration:none;}
 .muted-link:hover{color:var(--accent);}
-
 footer{border-top:1px solid var(--border);padding:28px 32px;text-align:center;color:var(--muted);
   font-size:0.72rem;margin-top:60px;position:relative;z-index:1;}
 footer a{color:var(--accent);text-decoration:none;}
-
 @media(max-width:900px){
-  .kpi-row{grid-template-columns:repeat(3,1fr);}
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
   .grid-3,.grid-2{grid-template-columns:1fr;}
   .hero-title{font-size:2rem;}
   .workflow-steps{flex-direction:column;align-items:flex-start;}
-  .workflow-arrow{transform:rotate(90deg);}
 }
 @media(max-width:600px){
   nav{padding:0 14px;}
@@ -132,14 +112,13 @@ footer a{color:var(--accent);text-decoration:none;}
 <body>
 <div class="grid-bg"></div>
 <nav>
-  <a href="/" class="nav-logo">MTCP<span>.</span>live</a>
+  <a href="/landing" class="nav-logo">MTCP<span>.</span>live</a>
   <ul class="nav-links">
-    <li><a href="/">Platform</a></li>
-    <li><a href="/run-evaluation">Evaluate</a></li>
     <li><a href="/evidence/public-findings">Evidence</a></li>
-    <li><a href="/model-cards">Models</a></li>
     <li><a href="/methodology">Methodology</a></li>
     <li><a href="/request-evaluation" class="nav-cta">Request Evaluation</a></li>
+    <li><a href="/register">Register</a></li>
+    <li><a href="/login">Login</a></li>
   </ul>
 </nav>
 
@@ -154,7 +133,7 @@ footer a{color:var(--accent);text-decoration:none;}
       Not single-prompt compliance. Behavioural durability across turns.
     </p>
     <div class="hero-actions">
-      <a href="/run-evaluation" class="btn btn-primary">Run Evaluation</a>
+      <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
       <a href="/evidence/public-findings" class="btn btn-ghost">View Benchmark</a>
     </div>
   </div>
@@ -189,8 +168,8 @@ footer a{color:var(--accent);text-decoration:none;}
       </div>
     </div>
     <div class="workflow-cta">
-      <a href="/run-evaluation" class="btn btn-primary">Run Evaluation</a>
-      <a href="/request-evaluation" class="btn btn-ghost">Request Private Evaluation</a>
+      <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
+      <a href="/methodology" class="btn btn-ghost">Read Methodology</a>
     </div>
   </div>
 
@@ -198,27 +177,23 @@ footer a{color:var(--accent);text-decoration:none;}
   <div class="kpi-row fade-up fade-up-2">
     <div class="kpi-card">
       <div class="kpi-label">Models evaluated</div>
-      <div class="kpi-value">{{ total_models or 25 }}</div>
+      <div class="kpi-value">{{ total_models }}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Total evaluations</div>
-      <div class="kpi-value">{{ total_results or '21,352' }}</div>
+      <div class="kpi-value">{{ total_results }}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Benchmark runs</div>
-      <div class="kpi-value">{{ total_runs or 100 }}</div>
+      <div class="kpi-value">{{ total_runs }}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">BIS range</div>
-      <div class="kpi-value">{{ pass_range or '47–91%' }}</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Grade A+ models</div>
-      <div class="kpi-value" style="color:var(--danger)">0</div>
+      <div class="kpi-value">{{ pass_range }}</div>
     </div>
   </div>
 
-  <!-- PROBLEM EXPLANATION -->
+  <!-- WHAT MTCP DETECTS -->
   <div class="grid-3 fade-up fade-up-3">
     <div class="feature-card">
       <h3>Constraint Persistence</h3>
@@ -240,42 +215,8 @@ footer a{color:var(--accent);text-decoration:none;}
     </div>
   </div>
 
-  <!-- KEY FINDINGS -->
-  <div class="finding-banner fade-up fade-up-4">
-    <h3>Key Findings — {{ total_models or 25 }} Models · {{ total_results or '21,352' }} Evaluations · March 2026</h3>
-    <p>
-      <strong>No model achieves A+.</strong> Post-correction reliability is not demonstrated at scale by any current production system. The benchmark ceiling is deepseek-r1 at 91.0%.<br><br>
-      <strong>GPT-4o scores grade D at 65.1%.</strong> GPT-4o-mini outperforms the flagship by 22.8 percentage points. Inverse scaling is a consistent pattern across providers.<br><br>
-      <strong>Universal control probe degradation.</strong> Every model shows a performance gap on control probes. Range: -15 to -67 percentage points. This indicates potential methodology exposure during training.<br><br>
-      <strong>Open source leads.</strong> deepseek-r1 (91.0%) and grok-3-mini (90.5%) are the only two models to achieve grade A. Both are open source or open weight.
-    </p>
-  </div>
-
-  <!-- BENCHMARK SNAPSHOT -->
-  <div class="grid-2 fade-up fade-up-5">
-    <div class="card">
-      <div class="section-head">
-        <div>
-          <h2>Benchmark Snapshot</h2>
-          <p>Top models from the current evidence layer. Full results with temperature breakdowns available in the Evidence section.</p>
-        </div>
-        <a href="/evidence/public-findings" class="btn btn-ghost">Full Benchmark →</a>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>#</th><th>Model</th><th>Provider</th><th>BIS</th><th>CPD</th><th>Grade</th></tr>
-          </thead>
-          <tbody>
-            <tr><td style="color:var(--muted);font-size:0.65rem">1</td><td><a class="muted-link" href="/model-cards/deepseek-r1">deepseek-r1</a></td><td style="color:var(--muted)">OpenRouter</td><td>91.0%</td><td>-56.0</td><td><span class="grade grade-A">A</span></td></tr>
-            <tr><td style="color:var(--muted);font-size:0.65rem">2</td><td><a class="muted-link" href="/model-cards/grok-3-mini">grok-3-mini</a></td><td style="color:var(--muted)">xAI</td><td>90.5%</td><td>-60.5</td><td><span class="grade grade-A">A</span></td></tr>
-            <tr><td style="color:var(--muted);font-size:0.65rem">3</td><td><a class="muted-link" href="/model-cards/nvidia-llama-70b">nvidia-llama-70b</a></td><td style="color:var(--muted)">NVIDIA</td><td>88.3%</td><td>-63.3</td><td><span class="grade grade-B">B</span></td></tr>
-            <tr><td style="color:var(--muted);font-size:0.65rem">4</td><td><a class="muted-link" href="/model-cards/gpt-4o-mini">gpt-4o-mini</a></td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td>-37.5</td><td><span class="grade grade-B">B</span></td></tr>
-            <tr><td style="color:var(--muted);font-size:0.65rem">5</td><td><a class="muted-link" href="/model-cards/gpt-3.5-turbo">gpt-3.5-turbo</a></td><td style="color:var(--muted)">OpenAI</td><td>87.9%</td><td>-52.9</td><td><span class="grade grade-B">B</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+  <!-- WHO USES MTCP + BENCHMARK LINK -->
+  <div class="grid-2 fade-up fade-up-4">
     <div class="card">
       <div class="section-head">
         <div><h2>Who Uses MTCP</h2></div>
@@ -287,10 +228,22 @@ footer a{color:var(--accent);text-decoration:none;}
         <li><strong style="color:var(--text)">Deployment Gating</strong><br>Set minimum BIS thresholds. Gate production deployment on evaluation results.</li>
       </ul>
     </div>
+    <div class="card">
+      <div class="section-head">
+        <div>
+          <h2>Public Benchmark</h2>
+          <p>Full results with temperature breakdowns and metric definitions.</p>
+        </div>
+      </div>
+      <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;margin-bottom:16px;">
+        MTCP benchmark results are publicly available. View the complete leaderboard, metric definitions, grading scale, and research citation.
+      </p>
+      <a href="/evidence/public-findings" class="btn btn-ghost" style="width:100%;justify-content:center;">View Full Benchmark →</a>
+    </div>
   </div>
 
   <!-- REQUEST EVALUATION CTA -->
-  <div class="hero fade-up fade-up-6" style="text-align:center;padding:40px 32px;">
+  <div class="hero fade-up fade-up-5" style="text-align:center;padding:40px 32px;">
     <h2 style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:#fff;margin-bottom:12px;">Request Private Evaluation</h2>
     <p style="color:var(--muted);font-size:0.78rem;line-height:1.8;max-width:540px;margin:0 auto 24px;">
       Submit your model endpoint for confidential MTCP evaluation.
@@ -298,7 +251,7 @@ footer a{color:var(--accent);text-decoration:none;}
     </p>
     <div class="hero-actions" style="justify-content:center;">
       <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
-      <a href="/methodology" class="btn btn-ghost">Read Methodology</a>
+      <a href="/register" class="btn btn-ghost">Register for Access</a>
     </div>
   </div>
 

@@ -21,7 +21,7 @@
   </div>
   <div class="stat-card">
     <div class="stat-value" style="color:var(--accent)">{{ best_grade | default('—') }}</div>
-    <div class="stat-label">Top Grade · grok-3-mini</div>
+    <div class="stat-label">Top Grade</div>
   </div>
 </div>
 
@@ -74,13 +74,14 @@
     <a href="/leaderboard" class="btn btn-ghost">Leaderboard</a>
     <a href="/stats" class="btn btn-ghost">Stats</a>
     <a href="/api/compare" class="btn btn-ghost">Compare</a>
+    <a href="/certificate" class="btn btn-ghost">Certificates</a>
+    <a href="/model-cards" class="btn btn-ghost">Model Cards</a>
+    <a href="/evidence/public-findings" class="btn btn-ghost">Evidence</a>
+    {% if user and user.is_admin %}
+    <a href="/admin" class="btn btn-ghost">Admin</a>
     <a href="/api/actuarial" class="btn btn-ghost">Actuarial</a>
     <a href="/api/costs" class="btn btn-ghost">Costs</a>
     <a href="/ctrl-probes" class="btn btn-ghost">Ctrl Probes</a>
-    <a href="/certificate" class="btn btn-ghost">Certificates</a>
-    <a href="/model-cards" class="btn btn-ghost">Model Cards</a>
-    {% if user and user.is_admin %}
-    <a href="/admin" class="btn btn-ghost">Admin</a>
     <a href="/health" class="btn btn-ghost">Health</a>
     {% endif %}
     <a href="/logout" class="btn btn-ghost" style="color:var(--danger)">Logout</a>

@@ -740,6 +740,17 @@ def admin_delete_user(user_id: int, session: Optional[str] = Cookie(default=None
         print(f"Delete user error: {e}")
     return RedirectResponse("/admin", status_code=302)
 
+@app.post("/admin/approve-user/{user_id}")
+def admin_approve_user(user_id: int, session: Optional[str] = Cookie(default=None)):
+    user, redir = require_admin(session)
+    if redir: return redir
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("UPDATE users SET is_active=TRUE, is_approved=TRUE WHERE id=%s", (user_id,))
+        conn.commit(); conn.close()
+    except Exception as e:
+        print(f"Approve user error: {e}")
+    return RedirectResponse("/admin", status_code=302)
 
 @app.post("/admin/create-key")
 def admin_create_key(request: Request, session: Optional[str] = Cookie(default=None), label: str = Form(default="")):

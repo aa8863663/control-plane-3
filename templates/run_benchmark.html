@@ -3,41 +3,62 @@
 {% block content %}
 <div class="page-header fade-up">
   <h1>Run <span>Evaluation</span></h1>
-  <p>Trigger a new MTCP evaluation run via the command line</p>
+  <p>Submit a request to run an MTCP evaluation. Requests are reviewed and scheduled by the MTCP team.</p>
 </div>
 
-<div class="card fade-up fade-up-1" style="margin-bottom:20px;background:rgba(245,166,35,0.04);border-color:rgba(245,166,35,0.2)">
-  <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;">Evaluation runs are executed via the command line. Use the terminal to run <code style="color:var(--accent)">python3 llm_safety_platform.py</code> with the appropriate flags. This page is a reference for run parameters.</p>
+<div class="card fade-up fade-up-1" style="margin-bottom:20px;background:rgba(0,229,160,0.03);border-color:rgba(0,229,160,0.15);">
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;">
+    MTCP evaluations are run against the full 200-probe benchmark across four temperature settings (0.0, 0.2, 0.5, 0.8).
+    Submit your model details below. The team will confirm scheduling and provide access instructions.
+  </p>
 </div>
 
-<div class="card fade-up fade-up-2" style="margin-bottom:20px">
-  <div class="section-head"><div><h2>Standard MTCP run</h2><p>200 probes across 4 temperatures. Full benchmark comparison.</p></div></div>
-  <code style="display:block;background:#0a0c10;border:1px solid var(--border);border-radius:4px;padding:14px 16px;font-size:0.72rem;color:var(--accent);line-height:1.8">
-    python3 llm_safety_platform.py --data probes_200.json --api &lt;provider&gt; --model &lt;model-id&gt; --temperature 0.0,0.2,0.5,0.8 --out output.csv --runs 1
-  </code>
-</div>
-
-<div class="card fade-up fade-up-3" style="margin-bottom:20px">
-  <div class="section-head"><div><h2>Full Assurance run</h2><p>200 primary probes + 20 control probes. Includes Control Probe Degradation calculation.</p></div></div>
-  <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;">Run the standard evaluation first, then the control run immediately after:</p>
-  <code style="display:block;background:#0a0c10;border:1px solid var(--border);border-radius:4px;padding:14px 16px;font-size:0.72rem;color:var(--accent);line-height:1.8">
-    python3 llm_safety_platform.py --data probes_control_20.json --api &lt;provider&gt; --model &lt;model-id&gt; --temperature 0.0 --out ctrl_output.csv --runs 1
-  </code>
-</div>
-
-<div class="card fade-up fade-up-4">
-  <div class="section-head"><div><h2>Pending runs</h2></div></div>
-  <div class="table-wrap">
-    <table>
-      <thead><tr><th>Model</th><th>Provider</th><th>Status</th><th>Notes</th></tr></thead>
-      <tbody>
-        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">magistral-medium-latest</td><td style="font-size:0.7rem;color:var(--muted)">Mistral</td><td><span style="font-size:0.6rem;background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.2);padding:2px 8px;border-radius:3px">READY</span></td><td style="font-size:0.68rem;color:var(--muted)">No blockers</td></tr>
-        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">gemini-2.5-flash</td><td style="font-size:0.7rem;color:var(--muted)">Google</td><td><span style="font-size:0.6rem;background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.2);padding:2px 8px;border-radius:3px">READY</span></td><td style="font-size:0.68rem;color:var(--muted)">No blockers</td></tr>
-        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">deepseek-r1-distill-qwen-32b</td><td style="font-size:0.7rem;color:var(--muted)">NVIDIA</td><td><span style="font-size:0.6rem;background:rgba(255,79,79,0.1);color:var(--danger);border:1px solid rgba(255,79,79,0.2);padding:2px 8px;border-radius:3px">FIX FIRST</span></td><td style="font-size:0.68rem;color:var(--muted)">Fix constraint_detector.py line 31</td></tr>
-        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">kimi-k2-instruct-0905</td><td style="font-size:0.7rem;color:var(--muted)">Fireworks</td><td><span style="font-size:0.6rem;background:rgba(245,166,35,0.1);color:var(--warn);border:1px solid rgba(245,166,35,0.2);padding:2px 8px;border-radius:3px">RETRY</span></td><td style="font-size:0.68rem;color:var(--muted)">Was rate limited</td></tr>
-        <tr><td style="font-family:'JetBrains Mono',monospace;font-size:0.7rem">llama-3-405b-instruct</td><td style="font-size:0.7rem;color:var(--muted)">Watsonx</td><td><span style="font-size:0.6rem;background:rgba(255,79,79,0.1);color:var(--danger);border:1px solid rgba(255,79,79,0.2);padding:2px 8px;border-radius:3px">BLOCKED</span></td><td style="font-size:0.68rem;color:var(--muted)">IBM IAM 401</td></tr>
-      </tbody>
-    </table>
+<div class="card fade-up fade-up-2" style="margin-bottom:20px;">
+  <div class="section-head">
+    <div>
+      <h2>Request Evaluation Run</h2>
+      <p>Provide your model endpoint details. All fields are required except notes.</p>
+    </div>
   </div>
+  <form method="post" action="/request-evaluation">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input name="name" required placeholder="Full name">
+      </div>
+      <div class="form-group">
+        <label>Organisation</label>
+        <input name="organisation" required placeholder="Company or institution">
+      </div>
+      <div class="form-group">
+        <label>Contact Email</label>
+        <input name="contact_email" type="email" required placeholder="you@organisation.com">
+      </div>
+      <div class="form-group">
+        <label>Provider</label>
+        <input name="provider" required placeholder="e.g. OpenAI, Anthropic, Google">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Model Name</label>
+      <input name="model_name" required placeholder="e.g. gpt-4o, claude-3-5-sonnet, gemini-1.5-pro">
+    </div>
+    <div class="form-group">
+      <label>Endpoint Details <span style="color:var(--muted);font-size:0.7rem">(optional)</span></label>
+      <input name="endpoint_details" placeholder="API endpoint or access method if applicable">
+    </div>
+    <div class="form-group">
+      <label>Evaluation Objective</label>
+      <textarea name="evaluation_objective" rows="3" required placeholder="What do you need to learn or validate about this model?"></textarea>
+    </div>
+    <div class="form-group">
+      <label>Notes <span style="color:var(--muted);font-size:0.7rem">(optional)</span></label>
+      <input name="notes" placeholder="Anything else we should know?">
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+      <button type="submit" class="btn btn-primary">Submit Request</button>
+      <a href="/methodology" class="btn btn-ghost">Read Methodology</a>
+    </div>
+  </form>
 </div>
 {% endblock %}

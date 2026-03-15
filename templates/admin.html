@@ -6,6 +6,7 @@
 .badge{display:inline-block;padding:2px 8px;border-radius:3px;font-size:0.6rem;font-weight:700;letter-spacing:0.5px;}
 .badge-active{background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.2);}
 .badge-revoked{background:rgba(255,79,79,0.1);color:var(--danger);border:1px solid rgba(255,79,79,0.2);}
+.badge-pending{background:rgba(245,166,35,0.1);color:var(--warn);border:1px solid rgba(245,166,35,0.2);}
 .inline-form{display:inline;}
 .success-box{background:rgba(0,229,160,0.06);border:1px solid rgba(0,229,160,0.2);border-left:3px solid var(--accent);color:var(--text);padding:11px 15px;border-radius:4px;font-size:0.7rem;margin-bottom:16px;}
 .warn-box{background:rgba(245,166,35,0.05);border:1px solid rgba(245,166,35,0.2);border-left:3px solid var(--warn);color:var(--text);padding:11px 15px;border-radius:4px;font-size:0.7rem;margin-bottom:16px;}
@@ -24,6 +25,10 @@
     <div class="stat-label">Total Users</div>
   </div>
   <div class="stat-card">
+    <div class="stat-value" style="color:var(--warn)">{{ pending_users|length }}</div>
+    <div class="stat-label">Pending Approval</div>
+  </div>
+  <div class="stat-card">
     <div class="stat-value">{{ total_runs }}</div>
     <div class="stat-label">Total Runs</div>
   </div>
@@ -33,7 +38,35 @@
   </div>
 </div>
 
-<div class="card admin-section fade-up fade-up-2">
+{% if pending_users %}
+<div class="card admin-section fade-up fade-up-2" style="border-color:rgba(245,166,35,0.3);background:rgba(245,166,35,0.02);">
+  <div class="card-title" style="color:var(--warn)">Pending Registrations — {{ pending_users|length }}</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>ID</th><th>Username</th><th>Created</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for u in pending_users %}
+        <tr>
+          <td style="color:var(--muted)">{{ u.id }}</td>
+          <td>{{ u.username }}</td>
+          <td style="color:var(--muted)">{{ u.created_at[:10] }}</td>
+          <td style="display:flex;gap:8px;align-items:center;">
+            <form method="post" action="/admin/approve-user/{{ u.id }}" style="display:inline">
+              <button type="submit" class="btn btn-primary" style="padding:4px 12px;font-size:0.6rem">Approve</button>
+            </form>
+            <form method="post" action="/admin/delete-user/{{ u.id }}" style="display:inline">
+              <button type="submit" class="btn btn-danger" style="padding:4px 12px;font-size:0.6rem">Reject</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+
+<div class="card admin-section fade-up fade-up-3">
   <div class="card-title">API Keys</div>
 
   {% if new_key %}
@@ -78,11 +111,11 @@
   </div>
 </div>
 
-<div class="card admin-section fade-up fade-up-3">
-  <div class="card-title">Users</div>
+<div class="card admin-section fade-up fade-up-4">
+  <div class="card-title">All Users</div>
   <div class="table-wrap">
     <table>
-      <thead><tr><th>ID</th><th>Username</th><th>Created</th><th>Admin</th><th>Active</th></tr></thead>
+      <thead><tr><th>ID</th><th>Username</th><th>Created</th><th>Admin</th><th>Status</th><th></th></tr></thead>
       <tbody>
         {% for u in users %}
         <tr>
@@ -90,7 +123,20 @@
           <td>{{ u.username }}</td>
           <td style="color:var(--muted)">{{ u.created_at[:10] }}</td>
           <td>{% if u.is_admin %}<span class="badge badge-active">Admin</span>{% else %}<span style="color:var(--muted);font-size:0.68rem">—</span>{% endif %}</td>
-          <td><span class="badge {{ 'badge-active' if u.is_active else 'badge-revoked' }}">{{ 'Yes' if u.is_active else 'No' }}</span></td>
+          <td>
+            {% if u.is_active %}
+              <span class="badge badge-active">Active</span>
+            {% else %}
+              <span class="badge badge-pending">Pending</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if not u.is_admin %}
+            <form method="post" action="/admin/delete-user/{{ u.id }}" style="display:inline">
+              <button type="submit" class="btn btn-danger" style="padding:4px 12px;font-size:0.6rem">Delete</button>
+            </form>
+            {% endif %}
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -98,9 +144,9 @@
   </div>
 </div>
 
-<div class="card admin-section fade-up fade-up-4">
+<div class="card admin-section fade-up fade-up-5">
   <div class="card-title">API Endpoints</div>
-  <p style="font-size:0.7rem;color:var(--muted);margin-bottom:14px">Use your API key in the <code style="color:var(--accent)">X-API-Key</code> header to access these endpoints without a browser session.</p>
+  <p style="font-size:0.7rem;color:var(--muted);margin-bottom:14px">Use your API key in the <code style="color:var(--accent)">X-API-Key</code> header.</p>
   <div class="table-wrap">
     <table>
       <thead><tr><th>Endpoint</th><th>Method</th><th>Description</th></tr></thead>
@@ -112,7 +158,7 @@
       </tbody>
     </table>
   </div>
-  <div class="alert alert-info" style="margin-top:14px">Example: <code>curl -H "X-API-Key: cp3_..." https://mtcp.live/api/runs</code></div>
+  <p style="font-size:0.68rem;color:var(--muted);margin-top:12px;">Example: <code style="color:var(--accent)">curl -H "X-API-Key: cp3_..." https://mtcp.live/api/runs</code></p>
 </div>
 
 <div style="margin-top:8px" class="fade-up">
