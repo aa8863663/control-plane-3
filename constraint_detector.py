@@ -28,8 +28,9 @@ def detect_violations(response: str, constraints: dict) -> list:
     return detect_structural_violations(response, constraints)
 
 def detect_structural_violations(response: str, constraints: dict) -> list:
-    text = (response[0] if isinstance(response, list) else response or '').strip()
-    words = text.split()
+    text = (response[0] if isinstance(response, list) else response or "")
+    text = (text.get("content", text) if isinstance(text, dict) else text)
+    text = (text or "").strip()
     violations = []
 
     for pattern in STRUCTURAL_PATTERNS:
