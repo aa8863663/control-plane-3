@@ -4,13 +4,13 @@
 <div class="page-header fade-up">
   <h1>Request <span>Evaluation</span></h1>
   <p>
-    Use this form to submit an evaluation request for a model, deployment context, or assurance review. Submissions are stored for follow-up in the platform workflow.
+    Submit your model for MTCP evaluation. Requests are reviewed and followed up by the MTCP team.
   </p>
 </div>
 
 {% if success %}
 <div class="notice success fade-up fade-up-1" style="margin-bottom:18px;">
-  Request submitted successfully. We have recorded the request{% if contact_email %} for {{ contact_email }}{% endif %}.
+  Request submitted successfully. We have recorded the request{% if contact_email %} for {{ contact_email }}{% endif %} and will be in touch.
 </div>
 {% endif %}
 {% if error %}
@@ -23,49 +23,41 @@
   <form method="post" action="/request-evaluation">
     <div class="form-grid">
       <div class="form-group">
+        <label for="name">Your Name</label>
+        <input id="name" name="name" required placeholder="Full name">
+      </div>
+      <div class="form-group">
         <label for="organisation">Organisation</label>
-        <input id="organisation" name="organisation" required>
+        <input id="organisation" name="organisation" required placeholder="Company or institution">
       </div>
       <div class="form-group">
         <label for="contact_email">Contact Email</label>
-        <input id="contact_email" name="contact_email" type="email" required>
+        <input id="contact_email" name="contact_email" type="email" required placeholder="you@organisation.com">
       </div>
       <div class="form-group">
-        <label for="model_identifier">Model Identifier</label>
-        <input id="model_identifier" name="model_identifier" required placeholder="e.g. provider/model-name">
-      </div>
-      <div class="form-group">
-        <label for="timeline">Timeline</label>
-        <input id="timeline" name="timeline" required placeholder="e.g. Immediate, This month, Q2">
+        <label for="provider">Provider</label>
+        <input id="provider" name="provider" required placeholder="e.g. OpenAI, Anthropic, Google">
       </div>
     </div>
 
     <div class="form-group">
-      <label for="deployment_context">Deployment Context</label>
-      <textarea id="deployment_context" name="deployment_context" rows="4" required placeholder="Describe the intended product or deployment environment."></textarea>
+      <label for="model_name">Model Name</label>
+      <input id="model_name" name="model_name" required placeholder="e.g. gpt-4o, claude-3-5-sonnet, gemini-1.5-pro">
+    </div>
+
+    <div class="form-group">
+      <label for="endpoint_details">Endpoint Details <span style="color:var(--muted);font-size:0.7rem">(optional)</span></label>
+      <input id="endpoint_details" name="endpoint_details" placeholder="API endpoint or access method if applicable">
     </div>
 
     <div class="form-group">
       <label for="evaluation_objective">Evaluation Objective</label>
-      <textarea id="evaluation_objective" name="evaluation_objective" rows="4" required placeholder="What do you need to learn or validate?"></textarea>
+      <textarea id="evaluation_objective" name="evaluation_objective" rows="4" required placeholder="What do you need to learn or validate about this model?"></textarea>
     </div>
 
-    <div class="form-grid">
-      <div class="form-group">
-        <label for="vectors">Vectors</label>
-        <select id="vectors" name="vectors">
-          <option value="full">Full evaluation surface</option>
-          <option value="instruction-persistence">Instruction persistence</option>
-          <option value="boundary-integrity">Boundary integrity</option>
-          <option value="format-discipline">Format discipline</option>
-          <option value="control-degradation">Control degradation</option>
-          <option value="temperature-stability">Temperature stability</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label for="notes">Notes</label>
-        <input id="notes" name="notes" placeholder="Optional extra context">
-      </div>
+    <div class="form-group">
+      <label for="notes">Notes <span style="color:var(--muted);font-size:0.7rem">(optional)</span></label>
+      <input id="notes" name="notes" placeholder="Anything else we should know?">
     </div>
 
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">

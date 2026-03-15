@@ -4,7 +4,7 @@
 <div class="page-header fade-up">
   <h1>MTCP <span>Benchmark</span></h1>
   <p>
-    Public evaluation results for {{ models|length }} large language models evaluated under Multi-Turn Constraint Persistence framework.
+    Public evaluation results for {{ models|length }} large language model{% if models|length != 1 %}s{% endif %} evaluated under the Multi-Turn Constraint Persistence framework.
     MTCP measures whether models maintain corrected constraints during interaction, not only single-prompt compliance.
   </p>
 </div>
@@ -16,22 +16,12 @@
   <div class="stat-card"><div class="stat-value">MTCP</div><div class="stat-label">Framework</div></div>
 </div>
 
-<!-- KEY FINDING -->
-<div class="card fade-up fade-up-2" style="background:rgba(0,229,160,0.03);border-color:rgba(0,229,160,0.15);margin-bottom:20px;">
-  <h2 style="margin-bottom:10px;">Key Finding</h2>
-  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;">
-    Only 2 models achieve grade A on MTCP (BIS ≥90%).
-    Most frontier models demonstrate moderate to weak constraint persistence during multi-turn interaction.
-    Control Probe Degradation is detected across all evaluated models, indicating potential methodology exposure during training.
-  </p>
-</div>
-
 <!-- FULL RANKINGS TABLE -->
-<div class="card fade-up fade-up-3">
+<div class="card fade-up fade-up-2">
   <div class="section-head">
     <div>
       <h2>Complete Rankings</h2>
-      <p>Ordered by Boundary Integrity Score. Control Probe Degradation shown as difference from primary BIS.</p>
+      <p>Ordered by Boundary Integrity Score (BIS). CPD shown as difference from primary BIS.</p>
     </div>
     <a href="/methodology" class="btn btn-ghost">Methodology →</a>
   </div>
@@ -43,7 +33,6 @@
           <th>Model</th>
           <th>Provider</th>
           <th>BIS</th>
-          <th>TSI</th>
           <th>CPD</th>
           <th>T=0.0</th>
           <th>T=0.2</th>
@@ -56,11 +45,10 @@
         {% for row in models %}
         <tr>
           <td class="subtle">{{ loop.index }}</td>
-          <td><a class="muted-link" href="/model-cards/{{ row.model }}">{{ row.model }}</a></td>
+          <td>{{ row.model }}</td>
           <td class="subtle">{{ row.provider }}</td>
           <td>{{ row.pass_rate }}%</td>
-          <td>{{ row.tsi or '—' }}</td>
-          <td class="{% if row.drop and row.drop < -40 %}subtle{% endif %}">{{ row.drop }}pp</td>
+          <td class="subtle">{{ row.drop }}pp</td>
           <td>{{ row.t0 }}%</td>
           <td>{{ row.t2 }}%</td>
           <td>{{ row.t5 }}%</td>
@@ -68,34 +56,15 @@
           <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
         </tr>
         {% else %}
-        <tr><td colspan="11"><div class="empty-state">No benchmark data available.</div></td></tr>
+        <tr><td colspan="10"><div class="empty-state">No benchmark data available.</div></td></tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- BENCHMARK INSIGHTS -->
-<div class="grid-3 fade-up fade-up-4" style="margin-top:20px;">
-  <div class="feature-card">
-    <h3>Open Source Leads</h3>
-    <p>Top 2 models (deepseek-r1, grok-3-mini) achieve grade A. Open source models demonstrate competitive constraint persistence.</p>
-    <div class="feature-meta">deepseek-r1 · 91.0% BIS</div>
-  </div>
-  <div class="feature-card">
-    <h3>Flagship Underperformance</h3>
-    <p>GPT-4o scores grade D at 65.1% BIS. GPT-4o-mini outperforms the flagship by 22.8 percentage points.</p>
-    <div class="feature-meta">Inverse scaling detected</div>
-  </div>
-  <div class="feature-card">
-    <h3>Universal CPD</h3>
-    <p>All models show performance gaps on control probes. Range: -15 to -67 points. Indicates potential methodology exposure during training.</p>
-    <div class="feature-meta">CPD range: -15 to -67</div>
-  </div>
-</div>
-
 <!-- METRIC DEFINITIONS -->
-<div class="card fade-up fade-up-5" style="margin-top:20px;">
+<div class="card fade-up fade-up-3" style="margin-top:20px;">
   <h2 style="margin-bottom:16px;">Metric Definitions</h2>
   <div class="grid-3" style="margin-bottom:0;">
     <div>
@@ -108,13 +77,13 @@
     </div>
     <div>
       <p style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:6px;">Control Probe Degradation (CPD)</p>
-      <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;">Performance difference between primary probes (200) and concealed control probes (20). Values below -40 indicate high methodology exposure risk.</p>
+      <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;">Performance difference between primary probes and concealed control probes. Values below -40 indicate high methodology exposure risk.</p>
     </div>
   </div>
 </div>
 
 <!-- GRADING SCALE -->
-<div class="card fade-up fade-up-6" style="margin-top:20px;">
+<div class="card fade-up fade-up-4" style="margin-top:20px;">
   <div class="section-head">
     <div><h2>Grading Scale</h2></div>
   </div>
@@ -122,7 +91,7 @@
     <table>
       <thead><tr><th>Grade</th><th>BIS Range</th><th>Interpretation</th></tr></thead>
       <tbody>
-        <tr><td><span class="grade grade-A">A</span></td><td>90–94%</td><td style="font-size:0.7rem;color:var(--muted)">Strong constraint persistence</td></tr>
+        <tr><td><span class="grade grade-A">A</span></td><td>90–100%</td><td style="font-size:0.7rem;color:var(--muted)">Strong constraint persistence</td></tr>
         <tr><td><span class="grade grade-B">B</span></td><td>80–89%</td><td style="font-size:0.7rem;color:var(--muted)">Good constraint persistence</td></tr>
         <tr><td><span class="grade grade-C">C</span></td><td>70–79%</td><td style="font-size:0.7rem;color:var(--muted)">Moderate constraint persistence</td></tr>
         <tr><td><span class="grade grade-D">D</span></td><td>60–69%</td><td style="font-size:0.7rem;color:var(--muted)">Weak constraint persistence</td></tr>

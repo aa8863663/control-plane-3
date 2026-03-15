@@ -210,14 +210,30 @@ def startup():
             created_at TIMESTAMP DEFAULT NOW(), last_used TIMESTAMP)""")
         cur.execute("""CREATE TABLE IF NOT EXISTS evaluation_requests (
             id SERIAL PRIMARY KEY,
-            company TEXT NOT NULL,
+            name TEXT,
+            organisation TEXT,
             contact_email TEXT NOT NULL,
-            models_of_interest TEXT NOT NULL,
-            use_case TEXT NOT NULL,
-            timeline TEXT NOT NULL,
+            model_name TEXT,
+            provider TEXT,
+            endpoint_details TEXT,
+            evaluation_objective TEXT,
+            notes TEXT,
             status TEXT DEFAULT 'pending',
             created_at TIMESTAMP DEFAULT NOW()
         )""")
+        # users table migrations
+        cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS full_name TEXT")
+        cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS email TEXT")
+        cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS organisation TEXT")
+        cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS intended_use_case TEXT")
+        cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS notes TEXT")
+        cur.execute("ALTER TABLE users ADD COLUMN IF NOT EXISTS is_approved BOOLEAN DEFAULT FALSE")
+        # evaluation_requests table migrations
+        cur.execute("ALTER TABLE evaluation_requests ADD COLUMN IF NOT EXISTS name TEXT")
+        cur.execute("ALTER TABLE evaluation_requests ADD COLUMN IF NOT EXISTS model_name TEXT")
+        cur.execute("ALTER TABLE evaluation_requests ADD COLUMN IF NOT EXISTS provider TEXT")
+        cur.execute("ALTER TABLE evaluation_requests ADD COLUMN IF NOT EXISTS endpoint_details TEXT")
+        cur.execute("ALTER TABLE evaluation_requests ADD COLUMN IF NOT EXISTS evaluation_objective TEXT")
         conn.commit(); conn.close()
     except Exception as e:
         print(f"Startup warning: {e}")
@@ -268,8 +284,6 @@ def benchmark_redirect():
 @app.get("/evidence/public-findings", response_class=HTMLResponse)
 def evidence_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
-    if not user:
-        return RedirectResponse("/landing", status_code=302)
     models = get_leaderboard_data()
     return templates.TemplateResponse(
         "evidence.html",
@@ -308,18 +322,30 @@ def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request, "error": None, "success": None})
 
 @app.post("/register")
-def register_post(request: Request, username: str = Form(...), password: str = Form(...), confirm: str = Form(...)):
-    if password != confirm:
+def register_post(
+    request: Request,
+    full_name: str = Form(...),
+    email: str = Form(...),
+    organisation: str = Form(...),
+    intended_use_case: str = Form(...),
+    notes: str = Form(""),
+    password: str = Form(...),
+    confirm_password: str = Form(...)
+):
+    if password != confirm_password:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Passwords do not match.", "success": None})
     if len(password) < 6:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Password must be at least 6 characters.", "success": None})
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("INSERT INTO users (username, password_hash, is_active) VALUES (%s,%s,FALSE)", (username, hash_password(password)))
+        cur.execute(
+            "INSERT INTO users (username, password_hash, is_active, is_approved, full_name, email, organisation, intended_use_case, notes) VALUES (%s,%s,FALSE,FALSE,%s,%s,%s,%s,%s)",
+            (email, hash_password(password), full_name, email, organisation, intended_use_case, notes)
+        )
         conn.commit(); conn.close()
         return templates.TemplateResponse("register.html", {"request": request, "error": None, "success": "Account request submitted. You will be notified when approved."})
-    except:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Username already taken.", "success": None})
+    except Exception as e:
+        return templates.TemplateResponse("register.html", {"request": request, "error": "An account with this email already exists.", "success": None})
 
 @app.get("/logout")
 def logout(session: Optional[str] = Cookie(default=None)):
@@ -446,13 +472,13 @@ def request_evaluation_get(request: Request, session: Optional[str] = Cookie(def
 @app.post("/request-evaluation", response_class=HTMLResponse)
 def request_evaluation_post(
     request: Request,
+    name: str = Form(...),
     organisation: str = Form(...),
     contact_email: str = Form(...),
-    model_identifier: str = Form(...),
-    deployment_context: str = Form(...),
+    model_name: str = Form(...),
+    provider: str = Form(...),
+    endpoint_details: str = Form(""),
     evaluation_objective: str = Form(...),
-    timeline: str = Form(...),
-    vectors: str = Form("full"),
     notes: str = Form(""),
     session: Optional[str] = Cookie(default=None)
 ):
@@ -462,19 +488,10 @@ def request_evaluation_post(
         cur.execute(
             """
             INSERT INTO evaluation_requests
-                (company, contact_email, models_of_interest, use_case, timeline, status)
-            VALUES (%s, %s, %s, %s, %s, %s)
+                (name, organisation, contact_email, model_name, provider, endpoint_details, evaluation_objective, notes, status)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
-            (
-                organisation,
-                contact_email,
-                model_identifier,
-                "Context: {0}\nObjective: {1}\nVectors: {2}\nNotes: {3}".format(
-                    deployment_context, evaluation_objective, vectors, notes
-                ),
-                timeline,
-                "pending"
-            )
+            (name, organisation, contact_email, model_name, provider, endpoint_details, evaluation_objective, notes, "pending")
         )
         conn.commit(); conn.close()
         return templates.TemplateResponse(
@@ -559,7 +576,6 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
             WHERE ru.dataset='ctrl'
             GROUP BY ru.model ORDER BY pass_rate DESC""")
         ctrl_stats = [{"model": r["model"], "total": r["total"], "passed": r["passed"], "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]
-        # Temperature breakdown: avg pass rate per temperature across all models
         cur.execute("""
             SELECT ru.temperature,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate,
@@ -569,7 +585,6 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
             GROUP BY ru.temperature ORDER BY ru.temperature""")
         temp_breakdown = [{"temperature": float(r["temperature"] or 0), "pass_rate": float(r["pass_rate"] or 0), "total": r["total"]} for r in cur.fetchall()]
 
-        # BIS — Benchmark Integrity Score
         cur.execute("""
             SELECT ru.model,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as main_rate
@@ -593,7 +608,6 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
             bis_stats.append({"model": model, "main_rate": main, "ctrl_rate": ctrl, "gap": gap, "bis": bis})
         bis_stats.sort(key=lambda x: x["bis"], reverse=True)
 
-        # TSI — Temperature Stability Index
         cur.execute("""
             SELECT ru.model, ru.temperature,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate

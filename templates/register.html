@@ -7,17 +7,19 @@
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     body{font-family:'JetBrains Mono',monospace;background:#0a0c10;color:#d4dbe8;min-height:100vh;display:flex;align-items:center;justify-content:center;background-image:repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(0,229,160,.025) 39px,rgba(0,229,160,.025) 40px),repeating-linear-gradient(90deg,transparent,transparent 39px,rgba(0,229,160,.025) 39px,rgba(0,229,160,.025) 40px)}
-    .box{background:#111318;border:1px solid #1e2330;border-radius:12px;padding:48px 40px;width:100%;max-width:380px}
+    .box{background:#111318;border:1px solid #1e2330;border-radius:12px;padding:48px 40px;width:100%;max-width:480px}
     .brand{font-family:'DM Serif Display',serif;font-size:28px;color:#00e5a0;margin-bottom:4px}
     .brand-sub{font-size:11px;color:#5a6070;margin-bottom:32px;text-transform:uppercase;letter-spacing:.1em}
     .form-group{margin-bottom:16px}
     .form-label{display:block;font-size:11px;color:#5a6070;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
     .form-input{width:100%;padding:10px 14px;background:#161a22;border:1px solid #1e2330;border-radius:8px;color:#d4dbe8;font-family:inherit;font-size:13px;transition:border-color .15s}
     .form-input:focus{outline:none;border-color:#00e5a0}
+    textarea.form-input{resize:vertical;min-height:80px}
     .btn{width:100%;padding:11px;background:#00e5a0;color:#0a0c10;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;margin-top:8px}
     .btn:hover{background:#00c98c}
     .error{background:rgba(255,79,79,.1);border:1px solid rgba(255,79,79,.3);color:#ff4f4f;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:16px}
     .success{background:rgba(0,229,160,.1);border:1px solid rgba(0,229,160,.3);color:#00e5a0;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:16px}
+    .section-divider{font-size:10px;color:#5a6070;text-transform:uppercase;letter-spacing:.1em;margin:24px 0 16px;border-top:1px solid #1e2330;padding-top:16px}
     .footer{margin-top:20px;text-align:center;font-size:11px;color:#5a6070}
     .footer a{color:#5a6070}
     .footer a:hover{color:#00e5a0}
@@ -26,24 +28,43 @@
 <body>
   <div class="box">
     <div class="brand">MTCP</div>
-    <div class="brand-sub">AI Assurance Platform</div>
+    <div class="brand-sub">Request Platform Access</div>
     {% if error %}<div class="error">{{ error }}</div>{% endif %}
     {% if success %}<div class="success">{{ success }}</div>{% endif %}
+    {% if not success %}
     <form method="POST" action="/register">
       <div class="form-group">
-        <label class="form-label">Username</label>
-        <input class="form-input" name="username" type="text" required/>
+        <label class="form-label">Full Name</label>
+        <input class="form-input" name="full_name" type="text" required placeholder="Your full name"/>
       </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" name="email" type="email" required placeholder="you@organisation.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Organisation</label>
+        <input class="form-input" name="organisation" type="text" required placeholder="Company or institution"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Intended Use Case</label>
+        <textarea class="form-input" name="intended_use_case" required placeholder="How do you intend to use the MTCP platform?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes <span style="color:#3a4050">(optional)</span></label>
+        <textarea class="form-input" name="notes" placeholder="Anything else we should know?"></textarea>
+      </div>
+      <div class="section-divider">Set Password</div>
       <div class="form-group">
         <label class="form-label">Password</label>
         <input class="form-input" name="password" type="password" required/>
       </div>
       <div class="form-group">
         <label class="form-label">Confirm Password</label>
-        <input class="form-input" name="confirm" type="password" required/>
+        <input class="form-input" name="confirm_password" type="password" required/>
       </div>
-      <button type="submit" class="btn">Create Account</button>
+      <button type="submit" class="btn">Request Access</button>
     </form>
+    {% endif %}
     <div class="footer"><a href="/login">Back to login</a></div>
   </div>
 </body>
