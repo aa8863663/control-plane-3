@@ -29,3 +29,8 @@ logs/
 *.tar.gz
 test_cert.pdf
 MASTER_HANDOFF_PROMPT*
+*.csv
+temp_*.json
+backup_templates/
+templates_backup_20260312/
+api_server_backup.py
