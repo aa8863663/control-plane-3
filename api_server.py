@@ -749,6 +749,52 @@ def admin_page(request: Request, session: Optional[str] = Cookie(default=None), 
         "request": request, "user": user, "active": "admin",
         "users": users, "pending_users": pending_users, "total_runs": total_runs, "total_results": total_results, "api_keys": api_keys, "new_key": new_key})
 
+@app.get("/admin/evaluation-requests", response_class=HTMLResponse)
+def admin_eval_requests(request: Request, session: Optional[str] = Cookie(default=None)):
+    user, redir = require_admin(session)
+    if redir: return redir
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("""
+            SELECT id, name, organisation, contact_email, model_name, provider,
+                   endpoint_details, evaluation_objective, notes, status, created_at
+            FROM evaluation_requests
+            ORDER BY created_at DESC
+        """)
+        requests = []
+        for r in cur.fetchall():
+            requests.append({
+                "id": r["id"],
+                "name": r["name"] or "—",
+                "organisation": r["organisation"] or "—",
+                "contact_email": r["contact_email"],
+                "model_name": r["model_name"] or "—",
+                "provider": r["provider"] or "—",
+                "endpoint_details": r["endpoint_details"] or "—",
+                "evaluation_objective": r["evaluation_objective"] or "—",
+                "notes": r["notes"] or "—",
+                "status": r["status"] or "pending",
+                "created_at": r["created_at"].strftime("%Y-%m-%d %H:%M") if r["created_at"] else "—"
+            })
+        conn.close()
+    except Exception as e:
+        print(f"Eval requests error: {e}"); requests = []
+    return templates.TemplateResponse("admin_eval_requests.html", {
+        "request": request, "user": user, "active": "admin", "requests": requests
+    })
+
+@app.post("/admin/evaluation-requests/{req_id}/status")
+def admin_eval_request_status(req_id: int, status: str = Form(...), session: Optional[str] = Cookie(default=None)):
+    user, redir = require_admin(session)
+    if redir: return redir
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("UPDATE evaluation_requests SET status=%s WHERE id=%s", (status, req_id))
+        conn.commit(); conn.close()
+    except Exception as e:
+        print(f"Eval request status error: {e}")
+    return RedirectResponse("/admin/evaluation-requests", status_code=302)
+
 @app.post("/admin/create-user")
 def admin_create_user(session: Optional[str] = Cookie(default=None),
                       username: str = Form(...), password: str = Form(...),
@@ -782,8 +828,17 @@ def admin_approve_user(user_id: int, session: Optional[str] = Cookie(default=Non
     if redir: return redir
     try:
         conn = get_db(); cur = conn.cursor()
+        cur.execute("SELECT full_name, email, username FROM users WHERE id=%s", (user_id,))
+        u = cur.fetchone()
         cur.execute("UPDATE users SET is_active=TRUE, is_approved=TRUE WHERE id=%s", (user_id,))
         conn.commit(); conn.close()
+        if u:
+            name = u["full_name"] or u["username"] or "there"
+            email = u["email"] or u["username"]
+            send_email(
+                subject="Your MTCP access has been approved",
+                body=f"Hi {name},\n\nYour request for access to the MTCP platform has been approved.\n\nYou can now log in at https://mtcp.live/login using your email address.\n\nMTCP Team\nresearch@mtcp.live"
+            )
     except Exception as e:
         print(f"Approve user error: {e}")
     return RedirectResponse("/admin", status_code=302)

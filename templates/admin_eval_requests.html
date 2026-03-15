@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Evaluation Requests — Admin{% endblock %}
+{% block extra_styles %}
+.status-pending{background:rgba(245,166,35,0.1);color:var(--warn);border:1px solid rgba(245,166,35,0.2);padding:2px 8px;border-radius:3px;font-size:0.6rem;font-weight:700;}
+.status-approved{background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.2);padding:2px 8px;border-radius:3px;font-size:0.6rem;font-weight:700;}
+.status-rejected{background:rgba(255,79,79,0.1);color:var(--danger);border:1px solid rgba(255,79,79,0.2);padding:2px 8px;border-radius:3px;font-size:0.6rem;font-weight:700;}
+.detail-row{background:var(--surface2);border-top:none;}
+.detail-row td{padding:10px 12px 16px;font-size:0.68rem;color:var(--muted);line-height:1.8;}
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Evaluation <span>Requests</span></h1>
+  <p>{{ requests|length }} submission{% if requests|length != 1 %}s{% endif %} · ordered by most recent</p>
+</div>
+
+<div style="margin-bottom:16px;" class="fade-up">
+  <a href="/admin" class="btn btn-ghost">← Admin Panel</a>
+</div>
+
+{% if requests %}
+<div class="card fade-up fade-up-1">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Organisation</th>
+          <th>Model</th>
+          <th>Provider</th>
+          <th>Submitted</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in requests %}
+        <tr style="cursor:pointer" onclick="toggleDetail({{ r.id }})">
+          <td style="color:var(--muted);font-size:0.65rem">{{ r.id }}</td>
+          <td style="font-size:0.72rem">{{ r.name }}</td>
+          <td style="font-size:0.7rem;color:var(--muted)">{{ r.organisation }}</td>
+          <td style="font-size:0.7rem;font-family:'JetBrains Mono',monospace">{{ r.model_name }}</td>
+          <td style="font-size:0.7rem;color:var(--muted)">{{ r.provider }}</td>
+          <td style="font-size:0.65rem;color:var(--muted)">{{ r.created_at }}</td>
+          <td><span class="status-{{ r.status }}">{{ r.status }}</span></td>
+          <td style="white-space:nowrap;">
+            <form method="post" action="/admin/evaluation-requests/{{ r.id }}/status" style="display:inline" onclick="event.stopPropagation()">
+              <input type="hidden" name="status" value="approved">
+              <button type="submit" class="btn btn-primary" style="padding:3px 10px;font-size:0.6rem;">Approve</button>
+            </form>
+            <form method="post" action="/admin/evaluation-requests/{{ r.id }}/status" style="display:inline;margin-left:4px;" onclick="event.stopPropagation()">
+              <input type="hidden" name="status" value="rejected">
+              <button type="submit" class="btn btn-danger" style="padding:3px 10px;font-size:0.6rem;">Reject</button>
+            </form>
+          </td>
+        </tr>
+        <tr class="detail-row" id="detail-{{ r.id }}" style="display:none;">
+          <td colspan="8">
+            <strong style="color:var(--text)">Contact:</strong> <a href="mailto:{{ r.contact_email }}" style="color:var(--accent);text-decoration:none;">{{ r.contact_email }}</a><br>
+            <strong style="color:var(--text)">Endpoint:</strong> {{ r.endpoint_details }}<br>
+            <strong style="color:var(--text)">Objective:</strong> {{ r.evaluation_objective }}<br>
+            <strong style="color:var(--text)">Notes:</strong> {{ r.notes }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+<div class="empty-state fade-up fade-up-1">No evaluation requests yet.</div>
+{% endif %}
+
+<script>
+function toggleDetail(id) {
+  const row = document.getElementById('detail-' + id);
+  row.style.display = row.style.display === 'none' ? '' : 'none';
+}
+</script>
+{% endblock %}
