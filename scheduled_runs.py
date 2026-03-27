@@ -61,6 +61,16 @@ MODELS: List[Tuple[str, str]] = [
     ("amazon.nova-lite-v1:0",                       "bedrock"),
     ("amazon.nova-pro-v1:0",                        "bedrock"),
     ("amazon.nova-micro-v1:0",                      "bedrock"),
+    # === PROVIDERS.JSON SYNC — 2026-03-27 ===
+    ("magistral-medium-latest",                     "mistral"),
+    ("google/gemini-2.5-flash",                     "openrouter"),
+    ("accounts/fireworks/models/kimi-k2-instruct-0905", "fireworks"),
+    ("deepseek-ai/deepseek-r1-distill-qwen-32b",   "nvidia"),
+    ("moonshotai/kimi-k2-thinking",                 "nvidia"),
+    ("llama3.1-8b",                                  "cerebras"),
+    # === BEDROCK CLAUDE (ctrl probes) ===
+    ("eu.anthropic.claude-sonnet-4-20250514-v1:0",  "bedrock"),
+    ("eu.anthropic.claude-haiku-4-5-20251001-v1:0", "bedrock"),
 ]
 
 TEMPERATURES = [0.0, 0.2, 0.5, 0.8]

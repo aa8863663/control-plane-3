@@ -3,6 +3,7 @@ venv/
 __pycache__/
 *.pyc
 .DS_Store
+templates/.DS_Store
 *.bak*
 *.save
 *.rtf
@@ -35,3 +36,4 @@ backup_templates/
 templates_backup_20260312/
 api_server_backup.py
 probes_500.json
+llm_safety_platform.py
