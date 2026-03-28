@@ -104,7 +104,7 @@ def get_leaderboard_data():
     cur.execute("""
         SELECT
             ru.model,
-            COALESCE(NULLIF(ru.provider, ''), 'Unknown') AS provider,
+            COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') AS provider,
             ROUND(
                 CAST(
                     100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END)
@@ -143,7 +143,7 @@ def get_leaderboard_data():
         FROM results r
         JOIN runs ru ON r.run_id = ru.id
         WHERE ru.dataset IS DISTINCT FROM 'ctrl'
-        GROUP BY ru.model, COALESCE(NULLIF(ru.provider, ''), 'Unknown')
+        GROUP BY ru.model, COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown')
         ORDER BY pass_rate DESC, ru.model
     """)
     rows = cur.fetchall()
