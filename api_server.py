@@ -98,6 +98,7 @@ def grade(pct):
 # ── Leaderboard / Evidence Helpers ───────────────────────────────────────────
 
 def get_leaderboard_data():
+    print("LEADERBOARD QUERY V2 RUNNING")
     conn = get_db()
     cur = conn.cursor()
 
@@ -260,6 +261,11 @@ def startup():
     start_scheduler()
 
 # ── PUBLIC ────────────────────────────────────────────────────────────────────
+
+@app.get("/debug-version")
+def debug_version():
+    return {"version": "v2-groupby-model-only", "commit": "72f5cae", "timestamp": "2026-03-28T22:18"}
+
 
 @app.get("/landing", response_class=HTMLResponse)
 def landing_page(request: Request):
