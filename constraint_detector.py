@@ -28,15 +28,19 @@ def detect_violations(response: str, constraints: dict) -> list:
     return detect_structural_violations(response, constraints)
 
 def detect_structural_violations(response: str, constraints: dict) -> list:
-    text = (response[0] if isinstance(response, list) else response or "")
-    text = (text.get("content", text) if isinstance(text, dict) else text)
-    text = (text or "").strip()
+    if isinstance(response, list):
+        response = response[0] if response else ""
+    if isinstance(response, dict):
+        response = (response.get("content") or response.get("text") or
+                    response.get("message") or str(response))
+    text = (response or "").strip()
     violations = []
 
     for pattern in STRUCTURAL_PATTERNS:
         if re.search(pattern, text, re.IGNORECASE):
             violations.append(f"Structural Refusal/Caveat Detected: '{pattern}'")
-
+    
+    words = text.split()
     for c_type, target in (constraints or {}).items():
 
         # ── EXISTING CONSTRAINTS ──────────────────────────────────────────
