@@ -14,22 +14,24 @@ def get_leaderboard_data(conn):
     cur.execute("""
         SELECT
             ru.model,
-            ru.provider,
+            MODE() WITHIN GROUP (
+                ORDER BY COALESCE(NULLIF(ru.provider, ''), 'Unknown')
+            ) AS provider,
             ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END)
                 AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate,
             ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' AND ru.temperature=0.0 THEN 1 ELSE 0 END)
                 AS NUMERIC)/NULLIF(SUM(CASE WHEN ru.temperature=0.0 THEN 1 ELSE 0 END),0),1) as t0,
-            ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' AND ru.temperature=0.2 THEN 1 ELSE 0 END)
-                AS NUMERIC)/NULLIF(SUM(CASE WHEN ru.temperature=0.2 THEN 1 ELSE 0 END),0),1) as t2,
+            ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' AND ROUND(ru.temperature::numeric,1)=0.2 THEN 1 ELSE 0 END)
+                AS NUMERIC)/NULLIF(SUM(CASE WHEN ROUND(ru.temperature::numeric,1)=0.2 THEN 1 ELSE 0 END),0),1) as t2,
             ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' AND ru.temperature=0.5 THEN 1 ELSE 0 END)
                 AS NUMERIC)/NULLIF(SUM(CASE WHEN ru.temperature=0.5 THEN 1 ELSE 0 END),0),1) as t5,
-            ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' AND ru.temperature=0.8 THEN 1 ELSE 0 END)
-                AS NUMERIC)/NULLIF(SUM(CASE WHEN ru.temperature=0.8 THEN 1 ELSE 0 END),0),1) as t8,
+            ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' AND ROUND(ru.temperature::numeric,1)=0.8 THEN 1 ELSE 0 END)
+                AS NUMERIC)/NULLIF(SUM(CASE WHEN ROUND(ru.temperature::numeric,1)=0.8 THEN 1 ELSE 0 END),0),1) as t8,
             COUNT(*) as total
         FROM results r
         JOIN runs ru ON r.run_id = ru.id
         WHERE ru.dataset IS DISTINCT FROM 'ctrl'
-        GROUP BY ru.model, ru.provider
+        GROUP BY ru.model
         ORDER BY pass_rate DESC
     """)
     rows = cur.fetchall()
