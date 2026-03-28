@@ -69,8 +69,10 @@ MODELS: List[Tuple[str, str]] = [
     ("moonshotai/kimi-k2-thinking",                 "nvidia"),
     ("llama3.1-8b",                                  "cerebras"),
     # === BEDROCK CLAUDE (ctrl probes) ===
-    ("eu.anthropic.claude-sonnet-4-20250514-v1:0",  "bedrock"),
-    ("eu.anthropic.claude-haiku-4-5-20251001-v1:0", "bedrock"),
+    ("eu.anthropic.claude-sonnet-4-5-20250929-v1:0",  "bedrock"),
+    ("eu.anthropic.claude-haiku-4-5-20251001-v1:0",   "bedrock"),
+    ("eu.anthropic.claude-sonnet-4-6",                "bedrock"),
+    ("eu.anthropic.claude-opus-4-5-20251101-v1:0",    "bedrock"),
 ]
 
 TEMPERATURES = [0.0, 0.2, 0.5, 0.8]
