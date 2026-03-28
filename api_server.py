@@ -104,7 +104,9 @@ def get_leaderboard_data():
     cur.execute("""
         SELECT
             ru.model,
-            COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') AS provider,
+            MODE() WITHIN GROUP (
+                ORDER BY COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown')
+            ) AS provider,
             ROUND(
                 CAST(
                     100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END)
@@ -121,9 +123,9 @@ def get_leaderboard_data():
             ) AS t0,
             ROUND(
                 CAST(
-                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' AND ru.temperature = 0.2 THEN 1 ELSE 0 END)
+                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' AND ROUND(ru.temperature::numeric, 1) = 0.2 THEN 1 ELSE 0 END)
                     AS NUMERIC
-                ) / NULLIF(SUM(CASE WHEN ru.temperature = 0.2 THEN 1 ELSE 0 END), 0),
+                ) / NULLIF(SUM(CASE WHEN ROUND(ru.temperature::numeric, 1) = 0.2 THEN 1 ELSE 0 END), 0),
                 1
             ) AS t2,
             ROUND(
@@ -135,15 +137,15 @@ def get_leaderboard_data():
             ) AS t5,
             ROUND(
                 CAST(
-                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' AND ru.temperature = 0.8 THEN 1 ELSE 0 END)
+                    100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' AND ROUND(ru.temperature::numeric, 1) = 0.8 THEN 1 ELSE 0 END)
                     AS NUMERIC
-                ) / NULLIF(SUM(CASE WHEN ru.temperature = 0.8 THEN 1 ELSE 0 END), 0),
+                ) / NULLIF(SUM(CASE WHEN ROUND(ru.temperature::numeric, 1) = 0.8 THEN 1 ELSE 0 END), 0),
                 1
             ) AS t8
         FROM results r
         JOIN runs ru ON r.run_id = ru.id
         WHERE ru.dataset IS DISTINCT FROM 'ctrl'
-        GROUP BY ru.model, COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown')
+        GROUP BY ru.model
         ORDER BY pass_rate DESC, ru.model
     """)
     rows = cur.fetchall()
