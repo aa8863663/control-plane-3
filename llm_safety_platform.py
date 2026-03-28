@@ -167,6 +167,22 @@ class APIClient:
             )
 
     def call(self, prompt: str, temperature: float = 0.0) -> tuple:
+        import time
+        max_retries = 5
+        for attempt in range(max_retries):
+            try:
+                return self._call_once(prompt, temperature)
+            except Exception as e:
+                err = str(e)
+                if '429' in err or 'rate_limit' in err.lower() or 'rate limit' in err.lower() or 'too many requests' in err.lower():
+                    wait = 60 * (attempt + 1)
+                    print(f'  Rate limit hit — waiting {wait}s before retry {attempt+1}/{max_retries}...')
+                    time.sleep(wait)
+                else:
+                    raise
+        raise RuntimeError(f'Max retries exceeded after {max_retries} attempts')
+
+    def _call_once(self, prompt: str, temperature: float = 0.0) -> tuple:
         # Google native
         if self.provider == 'google':
             config = genai.types.GenerationConfig(temperature=temperature, max_output_tokens=1024)
@@ -293,7 +309,7 @@ class MTCPEvaluator:
                 if not cur.fetchone():
                     cur.execute("""INSERT INTO runs (model, temperature, provider, probe_count, dataset, created_at, python_version)
                         VALUES (%s,%s,%s,%s,%s,NOW(),%s) RETURNING id""",
-                        (api_client.model, temperature, api_client.provider, len(all_results), 'probes_200', '3.9'))
+                        (api_client.model, temperature, api_client.provider, len(all_results), __import__('os').path.splitext(__import__('os').path.basename(args.data))[0], '3.9'))
                     run_id = cur.fetchone()[0]
                     for r in all_results:
                         cur.execute("""INSERT INTO results (run_id, probe_id, outcome, recovery_latency, created_at)

@@ -36,4 +36,3 @@ backup_templates/
 templates_backup_20260312/
 api_server_backup.py
 probes_500.json
-llm_safety_platform.py
