@@ -244,7 +244,7 @@ class MTCPEvaluator:
             self.dataset = json.load(f)
         self.ve = ViolationEngine()
 
-    def run_benchmark(self, api_client: APIClient, output_path: str, temperature: float, runs: int):
+    def run_benchmark(self, api_client: APIClient, output_path: str, temperature: float, runs: int, dataset: str = 'probes'):
         all_results = []
         total = len(self.dataset) * runs
         done = 0
@@ -309,7 +309,7 @@ class MTCPEvaluator:
                 if not cur.fetchone():
                     cur.execute("""INSERT INTO runs (model, temperature, provider, probe_count, dataset, created_at, python_version)
                         VALUES (%s,%s,%s,%s,%s,NOW(),%s) RETURNING id""",
-                        (api_client.model, temperature, api_client.provider, len(all_results), 'probes', '3.9'))
+                        (api_client.model, temperature, api_client.provider, len(all_results), dataset, '3.9'))
                     run_id = cur.fetchone()[0]
                     for r in all_results:
                         cur.execute("""INSERT INTO results (run_id, probe_id, outcome, recovery_latency, created_at)
@@ -350,6 +350,8 @@ def main():
 
     temperatures = [float(t) for t in args.temperature.split(',')]
 
+    dataset = 'ctrl' if 'ctrl' in os.path.basename(args.data) else os.path.splitext(os.path.basename(args.data))[0]
+
     evaluator = MTCPEvaluator(args.data)
     for model in models:
         print(f'\n=== Model: {model} ===')
@@ -357,6 +359,6 @@ def main():
         for temp in temperatures:
             print(f'  Temperature: {temp}')
             out = f'temp_{temp}_{args.out}'
-            evaluator.run_benchmark(client, out, temp, args.runs)
+            evaluator.run_benchmark(client, out, temp, args.runs, dataset=dataset)
 
 if __name__ == '__main__': main()
