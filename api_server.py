@@ -273,7 +273,7 @@ def landing_page(request: Request):
         conn = get_db(); cur = conn.cursor()
         cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs")
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_200'")
         total_models = cur.fetchone()['n'] or 0
         cur.execute("SELECT COUNT(*) AS n FROM results")
         total_results = cur.fetchone()['n'] or 0
@@ -520,7 +520,7 @@ def dashboard(request: Request, session: Optional[str] = Cookie(default=None)):
         total_results = cur.fetchone()['n'] or 0
         cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset IS DISTINCT FROM 'ctrl'")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset IS DISTINCT FROM 'ctrl'")
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_200'")
         total_models = cur.fetchone()['n'] or 0
         cur.execute("""
             SELECT model, ROUND(CAST(100.0*SUM(CASE WHEN outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
