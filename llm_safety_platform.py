@@ -309,7 +309,7 @@ class MTCPEvaluator:
                 if not cur.fetchone():
                     cur.execute("""INSERT INTO runs (model, temperature, provider, probe_count, dataset, created_at, python_version)
                         VALUES (%s,%s,%s,%s,%s,NOW(),%s) RETURNING id""",
-                        (api_client.model, temperature, api_client.provider, len(all_results), __import__('os').path.splitext(__import__('os').path.basename(args.data))[0], '3.9'))
+                        (api_client.model, temperature, api_client.provider, len(all_results), 'probes', '3.9'))
                     run_id = cur.fetchone()[0]
                     for r in all_results:
                         cur.execute("""INSERT INTO results (run_id, probe_id, outcome, recovery_latency, created_at)
