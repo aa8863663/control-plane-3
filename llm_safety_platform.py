@@ -310,13 +310,13 @@ class MTCPEvaluator:
                     cur.execute("""INSERT INTO runs (model, temperature, provider, probe_count, dataset, created_at, python_version)
                         VALUES (%s,%s,%s,%s,%s,NOW(),%s) RETURNING id""",
                         (api_client.model, temperature, api_client.provider, len(all_results), dataset, '3.9'))
-                    run_id = cur.fetchone()[0]
+                    db_run_id = cur.fetchone()[0]
                     for r in all_results:
                         cur.execute("""INSERT INTO results (run_id, probe_id, outcome, recovery_latency, created_at)
                             VALUES (%s,%s,%s,%s,NOW())""",
-                            (run_id, r['probe_id'], r['outcome'], r['recovery_latency']))
+                            (db_run_id, r["probe_id"], r['outcome'], r['recovery_latency']))
                     db.commit()
-                    print(f'DB: imported {len(all_results)} results (run_id={run_id})')
+                    print(f"DB: imported {len(all_results)} results (run_id={db_run_id})")
                 else:
                     print('DB: already exists, skipped')
                 db.close()
