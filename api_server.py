@@ -600,6 +600,10 @@ def buyer_brief_page(request: Request, session: Optional[str] = Cookie(default=N
     user = current_user(session)
     return templates.TemplateResponse("buyer_brief.html", {"request": request, "user": user, "active": "buyer-brief"})
 
+@app.get("/pricing")
+def pricing(request: Request):
+    return templates.TemplateResponse("pricing.html", {"request": request, "active": "pricing"})
+
 @app.get("/request-evaluation", response_class=HTMLResponse)
 def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
