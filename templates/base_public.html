@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="{% block meta_description %}MTCP — Multi-Turn Constraint Persistence. The only benchmark that tests whether AI models maintain corrected constraints across interaction. 28 models evaluated. Audit-ready.{% endblock %}">
+  <meta name="description" content="{% block meta_description %}MTCP — Multi-Turn Constraint Persistence. The only benchmark that tests whether AI models maintain corrected constraints across interaction. {{ total_models | default(28) }} models evaluated. Audit-ready.{% endblock %}">
   <title>{% block title %}MTCP — AI Assurance for Large Language Models{% endblock %}</title>
 
   <!-- Fonts: DM Serif Display (brand/headings) + JetBrains Mono (data/nav/body) -->

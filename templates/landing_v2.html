@@ -5,7 +5,7 @@
   <div class="hero-inner">
     <div class="hero-eyebrow">Multi-Turn Constraint Persistence</div>
     <h1>Does your model hold its <span>constraints</span> under correction?</h1>
-    <p>MTCP measures post-correction reliability — whether LLMs maintain compliance after explicit correction. 25 production models evaluated. Independent. Reproducible. Audit-ready.</p>
+    <p>MTCP measures post-correction reliability — whether LLMs maintain compliance after explicit correction. {{ total_models | default(0) }} production models evaluated. Independent. Reproducible. Audit-ready.</p>
     <div class="hero-actions">
       <a href="/request-evaluation" class="hero-primary">Request an Evaluation</a>
       <a href="/evidence/public-findings" class="hero-secondary">View Public Findings</a>
@@ -16,7 +16,7 @@
 <div class="page-wrap">
   <div class="stat-grid">
     <div class="stat-card">
-      <div class="stat-value">25</div>
+      <div class="stat-value">{{ total_models | default(0) }}</div>
       <div class="stat-label">Models Evaluated</div>
     </div>
     <div class="stat-card">
@@ -47,7 +47,7 @@
     <div class="card">
       <div class="section-label">Evidence</div>
       <div class="card-title">Public Benchmark Findings</div>
-      <div class="card-sub">Full leaderboard across 25 models. Temperature profiles. Control probe degradation analysis.</div>
+      <div class="card-sub">Full leaderboard across {{ total_models | default(0) }} models. Temperature profiles. Control probe degradation analysis.</div>
       <a href="/evidence/public-findings" class="btn btn-outline" style="margin-top:8px;">View Findings →</a>
     </div>
     <div class="card">
