@@ -8,7 +8,7 @@
 
 <!-- PRIMARY GRADE + CORE METRICS -->
 <div class="kpi-row fade-up fade-up-1">
-  <div class="kpi-card" style="border-color:{% if model.grade == 'A' %}rgba(0,229,160,0.3){% elif model.grade == 'B' %}rgba(123,108,255,0.3){% elif model.grade == 'C' %}rgba(245,166,35,0.3){% else %}rgba(255,79,79,0.3){% endif %};">
+  <div class="kpi-card" style="border-color:{% if model.grade == 'A' %}rgba(16,185,129,0.3){% elif model.grade == 'B' %}rgba(37,99,235,0.3){% elif model.grade == 'C' %}rgba(212,168,67,0.3){% else %}rgba(239,68,68,0.3){% endif %};">
     <div class="kpi-label">Grade</div>
     <div class="kpi-value"><span class="grade grade-{{ model.grade }}" style="width:40px;height:40px;font-size:1.4rem;">{{ model.grade }}</span></div>
   </div>
@@ -67,7 +67,7 @@
       </div>
     </div>
     {% set class_name = 'stochastic' if model.variance >= 5 else 'architectural' %}
-    {% set badge_class = 'warn' if class_name == 'stochastic' else 'danger' %}
+    {% set badge_class = 'stoch' if class_name == 'stochastic' else 'arch' %}
     <div style="margin-bottom:14px;">
       <span class="badge {{ badge_class }}">{{ class_name }}</span>
     </div>

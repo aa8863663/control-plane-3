@@ -60,7 +60,7 @@
 
 .tiers-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -85,8 +85,8 @@
 /* Enterprise tier — elevated */
 .tier.featured {
   background: var(--surface2);
-  border-left: 1px solid rgba(0,229,160,0.18) !important;
-  border-right: 1px solid rgba(0,229,160,0.18);
+  border-left: 1px solid rgba(37,99,235,0.2) !important;
+  border-right: 1px solid rgba(37,99,235,0.2);
 }
 .tier.featured::before {
   content: '';
@@ -95,7 +95,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), rgba(0,229,160,0.2));
+  background: linear-gradient(90deg, var(--accent2), rgba(37,99,235,0.15));
 }
 
 /* Popular badge */
@@ -107,8 +107,8 @@
   text-transform: uppercase;
   letter-spacing: 1.2px;
   color: var(--accent);
-  border: 1px solid rgba(0,229,160,0.25);
-  background: rgba(0,229,160,0.06);
+  border: 1px solid rgba(16,185,129,0.25);
+  background: rgba(16,185,129,0.07);
   padding: 3px 8px;
   border-radius: 2px;
   margin-bottom: 16px;
@@ -186,17 +186,17 @@
 }
 .cta-pro {
   background: transparent;
-  border: 1px solid rgba(123,108,255,0.4);
+  border: 1px solid rgba(37,99,235,0.4);
   color: var(--accent2);
 }
 .cta-pro:hover {
-  background: rgba(123,108,255,0.08);
+  background: rgba(37,99,235,0.08);
   border-color: var(--accent2);
 }
 .cta-enterprise {
   background: var(--accent);
   border: 1px solid var(--accent);
-  color: #07110d;
+  color: #fff;
 }
 .cta-enterprise:hover { filter: brightness(1.1); }
 .cta-whitelabel {
@@ -251,14 +251,14 @@
   margin-top: 1px;
 }
 .feat-icon.yes {
-  background: rgba(0,229,160,0.12);
+  background: rgba(16,185,129,0.12);
   color: var(--accent);
-  border: 1px solid rgba(0,229,160,0.22);
+  border: 1px solid rgba(16,185,129,0.22);
 }
 .feat-icon.yes-purple {
-  background: rgba(123,108,255,0.12);
+  background: rgba(37,99,235,0.12);
   color: var(--accent2);
-  border: 1px solid rgba(123,108,255,0.22);
+  border: 1px solid rgba(37,99,235,0.22);
 }
 .feat-icon.no {
   background: rgba(255,255,255,0.04);
@@ -273,10 +273,10 @@
     border-radius: 8px;
   }
   .tier.featured {
-    border-left: 1px solid rgba(0,229,160,0.18) !important;
+    border-left: 1px solid rgba(37,99,235,0.2) !important;
   }
 }
-@media (max-width: 560px) {
+@media (max-width: 768px) {
   .tiers-grid {
     grid-template-columns: 1fr;
     border-radius: 8px;
@@ -332,8 +332,8 @@
 }
 .comp-table thead th:first-child { text-align: left; color: var(--subtle); }
 .comp-table thead th.col-featured {
-  color: var(--accent);
-  background: rgba(0,229,160,0.04);
+  color: var(--accent2);
+  background: rgba(37,99,235,0.05);
 }
 .comp-table tbody tr:hover td { background: rgba(255,255,255,0.012); }
 .comp-table tbody tr:last-child td { border-bottom: none; }
@@ -350,7 +350,7 @@
   font-size: 0.68rem;
 }
 .comp-table td.col-featured {
-  background: rgba(0,229,160,0.025);
+  background: rgba(37,99,235,0.03);
 }
 .comp-table .cat-row td {
   background: var(--surface2);
@@ -447,8 +447,8 @@
 /* ── BOTTOM CTA STRIP ────────────────────────────────────────────── */
 
 .cta-strip {
-  background: linear-gradient(160deg, rgba(0,229,160,0.06) 0%, rgba(17,19,24,0.95) 70%);
-  border: 1px solid rgba(0,229,160,0.13);
+  background: linear-gradient(160deg, rgba(37,99,235,0.07) 0%, rgba(22,27,36,0.96) 70%);
+  border: 1px solid rgba(37,99,235,0.14);
   border-radius: 10px;
   padding: 48px 40px;
   text-align: center;
@@ -463,7 +463,7 @@
   right: -80px;
   width: 260px;
   height: 260px;
-  background: radial-gradient(circle, rgba(0,229,160,0.07) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 70%);
   pointer-events: none;
 }
 .cta-strip h2 {
@@ -726,53 +726,6 @@
     </ul>
   </div>
 
-  <!-- WHITE-LABEL -->
-  <div class="tier">
-    <div class="tier-name">White-label</div>
-    <div class="tier-price" style="font-size:1.5rem;margin-top:4px;">Custom</div>
-    <div class="tier-price-period">bespoke pricing</div>
-    <p class="tier-tagline">
-      License MTCP methodology and tooling for internal deployment or resale under your own brand.
-    </p>
-    <a href="mailto:research@mtcp.live?subject=White-label%20Enquiry" class="tier-cta cta-whitelabel">Enquire →</a>
-
-    <div class="tier-divider"></div>
-    <div class="tier-section-label">Built for</div>
-    <ul class="tier-features">
-      <li class="tier-feature included">
-        <span class="feat-icon yes">✓</span>
-        Full MTCP methodology licence
-      </li>
-      <li class="tier-feature included">
-        <span class="feat-icon yes">✓</span>
-        White-label reporting and certificates
-      </li>
-      <li class="tier-feature included">
-        <span class="feat-icon yes">✓</span>
-        Internal deployment on your infra
-      </li>
-      <li class="tier-feature included">
-        <span class="feat-icon yes">✓</span>
-        Custom probe suite development
-      </li>
-      <li class="tier-feature included">
-        <span class="feat-icon yes">✓</span>
-        Resale to your clients
-      </li>
-      <li class="tier-feature included">
-        <span class="feat-icon yes">✓</span>
-        Co-branding options
-      </li>
-      <li class="tier-feature included">
-        <span class="feat-icon yes">✓</span>
-        Advisory and integration support
-      </li>
-      <li class="tier-feature included">
-        <span class="feat-icon yes">✓</span>
-        Custom SLAs
-      </li>
-    </ul>
-  </div>
 
 </div>
 <!-- end tiers-grid -->
@@ -807,171 +760,144 @@
     <table class="comp-table">
       <thead>
         <tr>
-          <th style="text-align:left;width:38%">Feature</th>
+          <th style="text-align:left;width:40%">Feature</th>
           <th>Free</th>
           <th>Pro</th>
           <th class="col-featured">Enterprise</th>
-          <th>White-label</th>
         </tr>
       </thead>
       <tbody>
 
         <!-- BENCHMARK ACCESS -->
         <tr class="cat-row">
-          <td colspan="5">Benchmark access</td>
+          <td colspan="4">Benchmark access</td>
         </tr>
         <tr>
           <td>Public leaderboard ({{ total_models }}+ models)</td>
           <td><span class="check-yes">✓</span></td>
           <td><span class="check-yes">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>BIS, CPD, TSI scores</td>
           <td><span class="check-yes">✓</span></td>
           <td><span class="check-yes">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Temperature breakdown (T=0.0–0.8)</td>
           <td><span class="check-yes">✓</span></td>
           <td><span class="check-yes">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Model cards (per-model detail)</td>
           <td><span class="check-yes">✓</span></td>
           <td><span class="check-yes">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
 
         <!-- EVALUATIONS -->
         <tr class="cat-row">
-          <td colspan="5">Private evaluations</td>
+          <td colspan="4">Private evaluations</td>
         </tr>
         <tr>
           <td>Private model evaluation</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-partial" style="font-size:0.65rem;">2/month</span></td>
           <td class="col-featured"><span class="check-yes">Unlimited</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>200-probe full benchmark run</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-yes-pur">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Control probe run (20 probes)</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-no">—</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Confidential endpoint submission</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-no">—</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
 
         <!-- OUTPUTS -->
         <tr class="cat-row">
-          <td colspan="5">Reports & outputs</td>
+          <td colspan="4">Reports & outputs</td>
         </tr>
         <tr>
           <td>Formal PDF evaluation report</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-yes-pur">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Evaluation certificate (procurement)</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-yes-pur">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Audit certificate (EU AI Act / NIST)</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-no">—</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Benchmark comparison (vs {{ total_models }} models)</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-yes-pur">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
 
         <!-- API & INTEGRATIONS -->
         <tr class="cat-row">
-          <td colspan="5">API & integrations</td>
+          <td colspan="4">API & integrations</td>
         </tr>
         <tr>
           <td>REST API access</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-no">—</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Embeddable evaluation badge</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-yes-pur">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
-        <tr>
-          <td>White-label reporting</td>
-          <td><span class="check-no">—</span></td>
-          <td><span class="check-no">—</span></td>
-          <td class="col-featured"><span class="check-no">—</span></td>
-          <td><span class="check-yes">✓</span></td>
-        </tr>
-
         <!-- SUPPORT -->
         <tr class="cat-row">
-          <td colspan="5">Support & legal</td>
+          <td colspan="4">Support & legal</td>
         </tr>
         <tr>
           <td>NDA available</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-no">—</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Dedicated account contact</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-no">—</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
           <td>Turnaround SLA</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-partial" style="font-size:0.65rem;">5 business days</span></td>
           <td class="col-featured"><span class="check-yes" style="font-size:0.65rem;">48 hours</span></td>
-          <td><span class="check-yes">Custom</span></td>
         </tr>
         <tr>
           <td>Custom probe suite</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-no">—</span></td>
           <td class="col-featured"><span class="check-no">—</span></td>
-          <td><span class="check-yes">✓</span></td>
         </tr>
 
       </tbody>

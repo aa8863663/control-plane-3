@@ -1,18 +1,5 @@
 {% extends "base.html" %}
 {% block title %}Benchmark Rankings — MTCP{% endblock %}
-{% block extra_styles %}
-.filter-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
-.pill{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:3px;cursor:pointer;transition:all 0.15s;}
-.pill:hover{border-color:var(--accent);color:var(--accent);}
-.pill.active{background:rgba(0,229,160,0.1);border-color:var(--accent);color:var(--accent);}
-.pill-divider{width:1px;background:var(--border);margin:0 4px;align-self:stretch;}
-.rank-1{color:#fbbf24;font-family:'DM Serif Display',serif;}
-.rank-2{color:#9ca3af;font-family:'DM Serif Display',serif;}
-.rank-3{color:#b45309;font-family:'DM Serif Display',serif;}
-.provider-tag{font-size:0.58rem;color:var(--muted);background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:1px 7px;border-radius:3px;white-space:nowrap;margin-left:6px;vertical-align:middle;}
-.row-pass td{background:rgba(0,229,160,0.025);}
-.lb-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
-{% endblock %}
 {% block content %}
 <div class="page-header fade-up">
   <h1>Benchmark <span>Rankings</span></h1>
