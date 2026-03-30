@@ -1,85 +1,213 @@
 {% extends "base.html" %}
 {% block title %}Benchmark Rankings — MTCP{% endblock %}
+{% block extra_styles %}
+/* ── LEADERBOARD BENTO ──────────────────────────────────────────────────── */
+.lb-bento-header{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.lb-kpi{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 20px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.lb-kpi-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);}
+.lb-kpi-value{font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text);margin-top:8px;line-height:1;}
+.lb-kpi-sub{font-size:0.6rem;color:var(--muted);margin-top:4px;}
+
+.lb-bento-body{display:grid;grid-template-columns:1fr 260px;gap:16px;align-items:start;}
+.lb-main{background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,0.05);overflow:hidden;}
+.lb-main-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);}
+.lb-main-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);}
+.lb-main-sub{font-size:0.68rem;color:var(--muted);margin-top:3px;}
+
+.lb-sidebar{display:flex;flex-direction:column;gap:14px;}
+.lb-side-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.lb-side-title{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;}
+
+.grade-band{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);}
+.grade-band:last-child{border-bottom:none;}
+.grade-band-label{font-size:0.62rem;color:var(--muted);flex:1;}
+.grade-band-count{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text);}
+.grade-band-bar{height:4px;border-radius:2px;flex:2;background:var(--surface2);overflow:hidden;}
+.grade-band-fill{height:100%;border-radius:2px;}
+
+.temp-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.temp-cell{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;}
+.temp-cell-label{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.temp-cell-value{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);margin-top:4px;}
+
+@media(max-width:900px){
+  .lb-bento-header{grid-template-columns:1fr 1fr;}
+  .lb-bento-body{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+  .lb-bento-header{grid-template-columns:1fr 1fr;}
+}
+{% endblock %}
 {% block content %}
 <div class="page-header fade-up">
   <h1>Benchmark <span>Rankings</span></h1>
-  <p>{{ leaderboard|length }} models evaluated under MTCP · 4 temperature settings</p>
+  <p>{{ leaderboard|length }} models evaluated under MTCP · 4 temperature settings · 29,000+ individual evaluations</p>
 </div>
 
-<div class="card fade-up fade-up-1">
-  <div class="section-head">
-    <div>
-      <h2>All models ranked by Boundary Integrity Score</h2>
-      <p>Ordered by average BIS across T=0.0, 0.2, 0.5, 0.8. Control Probe Degradation shown separately.</p>
+<!-- ── BENTO HEADER — KPI band ─────────────────────────────────────────── -->
+{% set total = leaderboard|length %}
+{% set grade_a = leaderboard|selectattr('grade','equalto','A')|list|length %}
+{% set grade_b = leaderboard|selectattr('grade','equalto','B')|list|length %}
+{% set passing = leaderboard|selectattr('pass_rate','ge',80)|list|length %}
+{% set avg_bis = (leaderboard|map(attribute='pass_rate')|sum / total)|round(1) if total > 0 else 0 %}
+
+<div class="lb-bento-header fade-up fade-up-1">
+  <div class="lb-kpi">
+    <div class="lb-kpi-label">Models evaluated</div>
+    <div class="lb-kpi-value">{{ total }}</div>
+    <div class="lb-kpi-sub">across all providers</div>
+  </div>
+  <div class="lb-kpi">
+    <div class="lb-kpi-label">Avg BIS</div>
+    <div class="lb-kpi-value">{{ avg_bis }}%</div>
+    <div class="lb-kpi-sub">boundary integrity score</div>
+  </div>
+  <div class="lb-kpi">
+    <div class="lb-kpi-label">Grade A models</div>
+    <div class="lb-kpi-value" style="color:#16a34a">{{ grade_a }}</div>
+    <div class="lb-kpi-sub">BIS ≥ 90%</div>
+  </div>
+  <div class="lb-kpi">
+    <div class="lb-kpi-label">Passing (BIS ≥ 80%)</div>
+    <div class="lb-kpi-value">{{ passing }}</div>
+    <div class="lb-kpi-sub">of {{ total }} evaluated</div>
+  </div>
+</div>
+
+<!-- ── BENTO BODY — table + sidebar ───────────────────────────────────── -->
+<div class="lb-bento-body fade-up fade-up-2">
+
+  <!-- Main table panel -->
+  <div class="lb-main">
+    <div class="lb-main-head">
+      <div class="lb-main-title">All models ranked by Boundary Integrity Score</div>
+      <div class="lb-main-sub">Ordered by avg BIS across T=0.0, 0.2, 0.5, 0.8 · Control Probe Degradation shown separately</div>
+      <div class="filter-bar" style="margin-top:12px;margin-bottom:0;">
+        <button class="pill active" onclick="filterGrade('all')">All</button>
+        <div class="pill-divider"></div>
+        <button class="pill" onclick="filterGrade('A')">Grade A</button>
+        <button class="pill" onclick="filterGrade('B')">Grade B</button>
+        <button class="pill" onclick="filterGrade('C')">Grade C</button>
+        <button class="pill" onclick="filterGrade('D')">Grade D</button>
+        <button class="pill" onclick="filterGrade('F')">Grade F</button>
+        <div class="pill-divider"></div>
+        <a href="/evidence/public-findings" class="btn btn-ghost" style="padding:5px 12px;min-height:auto;font-size:0.6rem;">Public Benchmark →</a>
+      </div>
     </div>
-    <a href="/evidence/public-findings" class="btn btn-ghost">Public Benchmark →</a>
+
+    <div class="table-wrap">
+      <table id="lb-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Model</th>
+            <th>BIS</th>
+            <th>Ctrl BIS</th>
+            <th>CPD</th>
+            <th>T=0.0</th>
+            <th>T=0.2</th>
+            <th>T=0.5</th>
+            <th>T=0.8</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in leaderboard %}
+          <tr class="lb-row {% if row.pass_rate >= 80 %}row-pass{% endif %}" data-grade="{{ row.grade }}">
+            <td style="color:var(--muted);font-size:0.65rem;white-space:nowrap">
+              {% if loop.index == 1 %}<span class="rank-1">①</span>
+              {% elif loop.index == 2 %}<span class="rank-2">②</span>
+              {% elif loop.index == 3 %}<span class="rank-3">③</span>
+              {% else %}{{ loop.index }}{% endif %}
+            </td>
+            <td style="font-size:0.7rem">
+              <a href="/model-cards/{{ row.model }}" style="color:var(--text);text-decoration:none;">{{ row.model }}</a>
+              <span class="provider-tag">{{ row.provider }}</span>
+            </td>
+            <td>
+              <div class="bar-wrap">
+                <div class="bar-track"><div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.grade=='A' %}#16a34a{% elif row.grade=='B' %}var(--accent2){% elif row.grade=='C' %}var(--warn){% else %}var(--danger){% endif %}"></div></div>
+                <span style="font-size:0.7rem;min-width:38px;text-align:right">{{ row.pass_rate }}%</span>
+              </div>
+            </td>
+            <td style="font-size:0.7rem;color:var(--danger)">{{ row.ctrl_rate }}%</td>
+            <td style="font-size:0.7rem;color:var(--muted)">{{ row.drop }}pp</td>
+            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t0 }}%</td>
+            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t2 }}%</td>
+            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t5 }}%</td>
+            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t8 }}%</td>
+            <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="lb-actions" style="padding:14px 22px;">
+      <a href="/api/compare" class="btn btn-ghost">Temperature Chart</a>
+      <a href="/api/actuarial" class="btn btn-ghost">Actuarial Analysis</a>
+      <a href="/model-cards" class="btn btn-ghost">Model Cards</a>
+      <a href="/ctrl-probes" class="btn btn-ghost">Control Probe Degradation</a>
+    </div>
   </div>
 
-  <div class="filter-bar">
-    <button class="pill active" onclick="filterGrade('all')">All</button>
-    <div class="pill-divider"></div>
-    <button class="pill" onclick="filterGrade('A')">Grade A</button>
-    <button class="pill" onclick="filterGrade('B')">Grade B</button>
-    <button class="pill" onclick="filterGrade('C')">Grade C</button>
-    <button class="pill" onclick="filterGrade('D')">Grade D</button>
-    <button class="pill" onclick="filterGrade('F')">Grade F</button>
-  </div>
+  <!-- Sidebar panels -->
+  <div class="lb-sidebar">
 
-  <div class="table-wrap">
-    <table id="lb-table">
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>Model</th>
-          <th>Provider</th>
-          <th>BIS</th>
-          <th>Ctrl BIS</th>
-          <th>CPD</th>
-          <th>T=0.0</th>
-          <th>T=0.2</th>
-          <th>T=0.5</th>
-          <th>T=0.8</th>
-          <th>Grade</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in leaderboard %}
-        <tr class="lb-row {% if row.pass_rate >= 80 %}row-pass{% endif %}" data-grade="{{ row.grade }}">
-          <td style="color:var(--muted);font-size:0.65rem">
-            {% if loop.index == 1 %}<span class="rank-1">①</span>
-            {% elif loop.index == 2 %}<span class="rank-2">②</span>
-            {% elif loop.index == 3 %}<span class="rank-3">③</span>
-            {% else %}{{ loop.index }}{% endif %}
-          </td>
-          <td style="font-size:0.7rem">
-            <a href="/model-cards/{{ row.model }}" style="color:var(--text);text-decoration:none;">{{ row.model }}</a>
-            <span class="provider-tag">{{ row.provider }}</span>
-          </td>
-          <td style="color:var(--muted);font-size:0.65rem">{{ row.provider }}</td>
-          <td>
-            <div class="bar-wrap">
-              <div class="bar-track"><div class="bar-fill" style="width:{{ row.pass_rate }}%;background:{% if row.grade=='A' %}var(--accent){% elif row.grade=='B' %}var(--accent2){% elif row.grade=='C' %}var(--warn){% else %}var(--danger){% endif %}"></div></div>
-              <span style="font-size:0.7rem;min-width:38px;text-align:right">{{ row.pass_rate }}%</span>
-            </div>
-          </td>
-          <td style="font-size:0.7rem;color:var(--danger)">{{ row.ctrl_rate }}%</td>
-          <td style="font-size:0.7rem;color:var(--muted)">{{ row.drop }}pp</td>
-          <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t0 }}%</td>
-          <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t2 }}%</td>
-          <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t5 }}%</td>
-          <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t8 }}%</td>
-          <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+    <!-- Grade distribution -->
+    <div class="lb-side-card">
+      <div class="lb-side-title">Grade distribution</div>
+      {% set grades = [('A','#16a34a'),('B','#475569'),('C','#d97706'),('D','#ef4444'),('F','#f87171')] %}
+      {% for g, color in grades %}
+      {% set cnt = leaderboard|selectattr('grade','equalto',g)|list|length %}
+      {% set pct = ((cnt / total) * 100)|round(0)|int if total > 0 else 0 %}
+      <div class="grade-band">
+        <span class="grade grade-{{ g }}">{{ g }}</span>
+        <div class="grade-band-bar"><div class="grade-band-fill" style="width:{{ pct }}%;background:{{ color }};"></div></div>
+        <span class="grade-band-count">{{ cnt }}</span>
+        <span class="grade-band-label" style="flex:none;font-size:0.6rem;color:var(--muted)">{{ pct }}%</span>
+      </div>
+      {% endfor %}
+    </div>
 
-  <div class="lb-actions">
-    <a href="/api/compare" class="btn btn-ghost">Temperature Chart</a>
-    <a href="/api/actuarial" class="btn btn-ghost">Actuarial Analysis</a>
-    <a href="/model-cards" class="btn btn-ghost">Model Cards</a>
-    <a href="/ctrl-probes" class="btn btn-ghost">Control Probe Degradation</a>
+    <!-- Temperature averages -->
+    <div class="lb-side-card">
+      <div class="lb-side-title">Avg BIS by temperature</div>
+      <div class="temp-grid">
+        {% set t0_avg = (leaderboard|map(attribute='t0')|map('float')|sum / total)|round(1) if total > 0 else 0 %}
+        {% set t2_avg = (leaderboard|map(attribute='t2')|map('float')|sum / total)|round(1) if total > 0 else 0 %}
+        {% set t5_avg = (leaderboard|map(attribute='t5')|map('float')|sum / total)|round(1) if total > 0 else 0 %}
+        {% set t8_avg = (leaderboard|map(attribute='t8')|map('float')|sum / total)|round(1) if total > 0 else 0 %}
+        <div class="temp-cell">
+          <div class="temp-cell-label">T=0.0</div>
+          <div class="temp-cell-value">{{ t0_avg }}%</div>
+        </div>
+        <div class="temp-cell">
+          <div class="temp-cell-label">T=0.2</div>
+          <div class="temp-cell-value">{{ t2_avg }}%</div>
+        </div>
+        <div class="temp-cell">
+          <div class="temp-cell-label">T=0.5</div>
+          <div class="temp-cell-value">{{ t5_avg }}%</div>
+        </div>
+        <div class="temp-cell">
+          <div class="temp-cell-label">T=0.8</div>
+          <div class="temp-cell-value">{{ t8_avg }}%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick links -->
+    <div class="lb-side-card">
+      <div class="lb-side-title">Explore further</div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <a href="/evidence/public-findings" class="btn btn-ghost" style="justify-content:flex-start;font-size:0.62rem;">Public Benchmark →</a>
+        <a href="/api/actuarial" class="btn btn-ghost" style="justify-content:flex-start;font-size:0.62rem;">Actuarial Analysis →</a>
+        <a href="/methodology" class="btn btn-ghost" style="justify-content:flex-start;font-size:0.62rem;">Methodology →</a>
+        <a href="/request-evaluation" class="btn btn-primary" style="justify-content:flex-start;font-size:0.62rem;">Request Evaluation →</a>
+      </div>
+    </div>
+
   </div>
 </div>
 

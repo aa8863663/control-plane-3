@@ -55,7 +55,7 @@
 const raw = {{ rows | tojson }};
 const temps = [...new Set(raw.map(r => r.temperature))].sort((a,b)=>a-b);
 const models = [...new Set(raw.map(r => r.model))];
-const palette = ['#00e5a0','#7b6cff','#f5a623','#ff4f4f','#38bdf8','#fb923c','#a3e635','#e879f9','#34d399','#818cf8','#f472b6'];
+const palette = ['#2563eb','#16a34a','#d97706','#ef4444','#38bdf8','#fb923c','#a3e635','#7c3aed','#34d399','#818cf8','#f472b6'];
 const datasets = models.map((m,i) => ({
   label: m,
   data: temps.map(t => { const r = raw.find(x => x.model===m && x.temperature==t); return r ? parseFloat(r.pass_rate) : null; }),
@@ -68,10 +68,10 @@ new Chart(document.getElementById('actChart'), {
   data: { labels: temps.map(t => 'T='+t), datasets },
   options: {
     responsive: true,
-    plugins: { legend: { labels: { color: '#d4dbe8', font: { family: 'JetBrains Mono', size: 10 }, boxWidth: 12 } } },
+    plugins: { legend: { labels: { color: '#0f172a', font: { family: 'JetBrains Mono', size: 10 }, boxWidth: 12 } } },
     scales: {
-      x: { ticks: { color: '#5a6070' }, grid: { color: '#1e2330' } },
-      y: { min: 0, max: 100, ticks: { color: '#5a6070', callback: v => v+'%' }, grid: { color: '#1e2330' } }
+      x: { ticks: { color: '#64748b' }, grid: { color: '#e2e8f0' } },
+      y: { min: 0, max: 100, ticks: { color: '#64748b', callback: v => v+'%' }, grid: { color: '#e2e8f0' } }
     }
   }
 });

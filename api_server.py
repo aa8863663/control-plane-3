@@ -1151,7 +1151,7 @@ def download_certificate(model: str, temperature: float, session: Optional[str] 
         if not row: return JSONResponse({"error": "No data found"}, status_code=404)
         pr = float(row["pass_rate"] or 0)
         g = grade(pr)
-        color = {"A":"#00e5a0","B":"#7b6cff","C":"#f5a623","D":"#ff4f4f"}.get(g,"#00e5a0")
+        color = {"A":"#16a34a","B":"#475569","C":"#d97706","D":"#ef4444"}.get(g,"#2563eb")
         issued = datetime.utcnow().strftime("%B %Y")
         html = f"""<!DOCTYPE html>
 <html><head><meta charset="UTF-8"/>
