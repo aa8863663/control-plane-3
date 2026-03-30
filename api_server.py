@@ -103,6 +103,16 @@ def get_leaderboard_data():
     cur = conn.cursor()
 
     cur.execute("""
+        WITH best_dataset AS (
+            SELECT
+                model,
+                CASE WHEN 'probes_500' = ANY(ARRAY_AGG(DISTINCT dataset)) THEN 'probes_500'
+                     ELSE 'probes_200'
+                END AS dataset
+            FROM runs
+            WHERE dataset IN ('probes_500', 'probes_200')
+            GROUP BY model
+        )
         SELECT
             ru.model,
             MODE() WITHIN GROUP (
@@ -145,7 +155,7 @@ def get_leaderboard_data():
             ) AS t8
         FROM results r
         JOIN runs ru ON r.run_id = ru.id
-        WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+        JOIN best_dataset bd ON ru.model = bd.model AND ru.dataset = bd.dataset
         GROUP BY ru.model
         ORDER BY pass_rate DESC, ru.model
     """)
@@ -273,7 +283,7 @@ def landing_page(request: Request):
         conn = get_db(); cur = conn.cursor()
         cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_200'")
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
         total_models = cur.fetchone()['n'] or 0
         cur.execute("SELECT COUNT(*) AS n FROM results")
         total_results = cur.fetchone()['n'] or 0
@@ -282,7 +292,7 @@ def landing_page(request: Request):
                 SELECT ROUND(CAST(100.0*SUM(CASE WHEN outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)
                        /NULLIF(COUNT(*),0),1) as pct
                 FROM results r JOIN runs ru ON r.run_id=ru.id
-                WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+                WHERE ru.dataset = 'probes_500'
                 GROUP BY ru.model) sub""")
         row = cur.fetchone(); vals = list(row.values()) if row else [0,0]; mn = vals[0] or 0; mx = vals[1] or 0
         conn.close()
@@ -520,12 +530,12 @@ def dashboard(request: Request, session: Optional[str] = Cookie(default=None)):
         total_results = cur.fetchone()['n'] or 0
         cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset IS DISTINCT FROM 'ctrl'")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_200'")
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
         total_models = cur.fetchone()['n'] or 0
         cur.execute("""
             SELECT model, ROUND(CAST(100.0*SUM(CASE WHEN outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY model ORDER BY pass_rate DESC""")
         rows = cur.fetchall(); conn.close()
         model_rows = [{"model": r["model"], "pass_rate": float(r["pass_rate"] or 0), "grade": grade(float(r["pass_rate"] or 0))} for r in rows]
@@ -589,6 +599,10 @@ def methodology_page(request: Request, session: Optional[str] = Cookie(default=N
 def buyer_brief_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     return templates.TemplateResponse("buyer_brief.html", {"request": request, "user": user, "active": "buyer-brief"})
+
+@app.get("/pricing")
+def pricing(request: Request):
+    return templates.TemplateResponse("pricing.html", {"request": request, "active": "pricing"})
 
 @app.get("/request-evaluation", response_class=HTMLResponse)
 def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -671,7 +685,7 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
                    SUM(CASE WHEN r.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY ru.model, ru.temperature, ru.provider ORDER BY pass_rate DESC""")
         rows = cur.fetchall(); conn.close()
         lb = []
@@ -705,7 +719,7 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
         cur.execute("""
             SELECT ru.model, ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as avg_pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY ru.model ORDER BY avg_pass_rate DESC""")
         model_stats = [{"model": r["model"], "pass_rate": float(r["avg_pass_rate"] or 0)} for r in cur.fetchall()]
         cur.execute("""
@@ -721,7 +735,7 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate,
                    COUNT(*) as total
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY ru.temperature ORDER BY ru.temperature""")
         temp_breakdown = [{"temperature": float(r["temperature"] or 0), "pass_rate": float(r["pass_rate"] or 0), "total": r["total"]} for r in cur.fetchall()]
 
@@ -729,7 +743,7 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
             SELECT ru.model,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as main_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY ru.model""")
         main_map = {r["model"]: float(r["main_rate"] or 0) for r in cur.fetchall()}
         cur.execute("""
@@ -752,7 +766,7 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
             SELECT ru.model, ru.temperature,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY ru.model, ru.temperature ORDER BY ru.model, ru.temperature""")
         from collections import defaultdict
         import statistics
@@ -789,7 +803,7 @@ def certificate_page(request: Request, session: Optional[str] = Cookie(default=N
                    SUM(CASE WHEN r.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY ru.model, ru.temperature ORDER BY pass_rate DESC""")
         rows = cur.fetchall(); conn.close()
         cert_rows = [{"model": r["model"], "temperature": float(r["temperature"] or 0),
@@ -810,7 +824,7 @@ def compare_page(request: Request, session: Optional[str] = Cookie(default=None)
             SELECT ru.model, ru.temperature,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY ru.model, ru.temperature ORDER BY ru.model, ru.temperature""")
         data = [{"model": r["model"], "temperature": float(r["temperature"] or 0), "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]
         conn.close()
@@ -994,7 +1008,7 @@ def ctrl_probes_page(request: Request, session: Optional[str] = Cookie(default=N
         cur.execute("""
             SELECT ru.model, ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl' GROUP BY ru.model""")
+            WHERE ru.dataset = 'probes_500' GROUP BY ru.model""")
         main_avg = {r["model"]: float(r["pass_rate"] or 0) for r in cur.fetchall()}
         conn.close()
         for row in ctrl_rows:
@@ -1031,7 +1045,7 @@ def actuarial_page(request: Request, session: Optional[str] = Cookie(default=Non
             SELECT ru.temperature, ru.model,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY ru.temperature, ru.model ORDER BY ru.temperature, pass_rate DESC""")
         rows = [{"temperature": float(r["temperature"] or 0), "model": r["model"], "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]; conn.close()
     except Exception as e:
@@ -1048,7 +1062,7 @@ def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
         cur.execute("""
             SELECT model, COUNT(DISTINCT run_id) as runs, COUNT(*) as probes
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.dataset = 'probes_500'
             GROUP BY model ORDER BY model""")
         rows = [dict(r) for r in cur.fetchall()]; conn.close()
     except Exception as e:
