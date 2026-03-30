@@ -602,7 +602,29 @@ def buyer_brief_page(request: Request, session: Optional[str] = Cookie(default=N
 
 @app.get("/pricing")
 def pricing(request: Request):
-    return templates.TemplateResponse("pricing.html", {"request": request, "active": "pricing"})
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
+        total_runs = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
+        total_models = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(*) AS n FROM results")
+        total_results = cur.fetchone()['n'] or 0
+        cur.execute("""
+            SELECT MIN(pct), MAX(pct) FROM (
+                SELECT ROUND(CAST(100.0*SUM(CASE WHEN outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)
+                       /NULLIF(COUNT(*),0),1) as pct
+                FROM results r JOIN runs ru ON r.run_id=ru.id
+                WHERE ru.dataset = 'probes_500'
+                GROUP BY ru.model) sub""")
+        row = cur.fetchone(); vals = list(row.values()) if row else [0,0]; mn = vals[0] or 0; mx = vals[1] or 0
+        conn.close()
+    except Exception as e:
+        print(f"Pricing error: {e}"); total_runs=0; total_models=0; total_results=0; mn=0; mx=0
+    return templates.TemplateResponse("pricing.html", {
+        "request": request, "active": "pricing",
+        "total_models": total_models, "total_results": f"{total_results:,}",
+        "total_runs": total_runs, "pass_range": f"{mn}–{mx}%"})
 
 @app.get("/request-evaluation", response_class=HTMLResponse)
 def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -827,11 +849,12 @@ def compare_page(request: Request, session: Optional[str] = Cookie(default=None)
             WHERE ru.dataset = 'probes_500'
             GROUP BY ru.model, ru.temperature ORDER BY ru.model, ru.temperature""")
         data = [{"model": r["model"], "temperature": float(r["temperature"] or 0), "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]
+        total_models = len({d["model"] for d in data})
         conn.close()
     except Exception as e:
-        print(f"Compare error: {e}"); data=[]
+        print(f"Compare error: {e}"); data=[]; total_models=0
     return templates.TemplateResponse("compare.html", {
-        "request": request, "user": user, "active": "compare", "compare_data": data})
+        "request": request, "user": user, "active": "compare", "compare_data": data, "total_models": total_models})
 
 @app.get("/run-evaluation", response_class=HTMLResponse)
 def run_benchmark_page(request: Request, session: Optional[str] = Cookie(default=None)):

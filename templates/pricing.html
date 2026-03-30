@@ -571,7 +571,7 @@
   <span class="research-divider"></span>
   <span class="research-item" style="cursor:default">
     <span class="research-item-dot" style="background:var(--muted)"></span>
-    28 models benchmarked · 4 temperatures · Independent
+    {{ total_models }} models benchmarked · 4 temperatures · Independent
   </span>
 </div>
 
@@ -584,7 +584,7 @@
     <div class="tier-price tier-price-free">£0</div>
     <div class="tier-price-period">always free</div>
     <p class="tier-tagline">
-      Full access to the public benchmark. See how 28 frontier models score before you commit to anything.
+      Full access to the public benchmark. See how {{ total_models }} frontier models score before you commit to anything.
     </p>
     <a href="/evidence/public-findings" class="tier-cta cta-free">View Benchmark →</a>
 
@@ -593,7 +593,7 @@
     <ul class="tier-features">
       <li class="tier-feature included">
         <span class="feat-icon yes">✓</span>
-        Full public leaderboard — 28 models
+        Full public leaderboard — {{ total_models }} models
       </li>
       <li class="tier-feature included">
         <span class="feat-icon yes">✓</span>
@@ -661,7 +661,7 @@
       </li>
       <li class="tier-feature included">
         <span class="feat-icon yes-purple">✓</span>
-        Benchmark comparison against all 28 models
+        Benchmark comparison against all {{ total_models }} models
       </li>
       <li class="tier-feature included">
         <span class="feat-icon yes-purple">✓</span>
@@ -821,7 +821,7 @@
           <td colspan="5">Benchmark access</td>
         </tr>
         <tr>
-          <td>Public leaderboard (28+ models)</td>
+          <td>Public leaderboard ({{ total_models }}+ models)</td>
           <td><span class="check-yes">✓</span></td>
           <td><span class="check-yes">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
@@ -908,7 +908,7 @@
           <td><span class="check-yes">✓</span></td>
         </tr>
         <tr>
-          <td>Benchmark comparison (vs 28 models)</td>
+          <td>Benchmark comparison (vs {{ total_models }} models)</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-yes-pur">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
@@ -1013,11 +1013,11 @@
     </div>
     <div class="faq-item">
       <div class="faq-q">Can I trial before committing to Pro?</div>
-      <div class="faq-a">Yes. The free public benchmark shows exactly how 28 evaluated models perform. If you want to see how your specific model compares before subscribing, you can submit a single evaluation request — we'll quote you a one-off rate before any subscription is needed.</div>
+      <div class="faq-a">Yes. The free public benchmark shows exactly how {{ total_models }} evaluated models perform. If you want to see how your specific model compares before subscribing, you can submit a single evaluation request — we'll quote you a one-off rate before any subscription is needed.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">What models have already been benchmarked?</div>
-      <div class="faq-a">28 models including GPT-4o, Claude Sonnet, Gemini 2.0 Flash, Llama 4, Mistral Large, Kimi-k2, and more. Grades range from A (grok-3-mini at 90.5%) to F (mistral-small-3.2 at 47%). <a href="/evidence/public-findings">Full leaderboard →</a></div>
+      <div class="faq-a">{{ total_models }} models including GPT-4o, Claude Sonnet, Gemini 2.0 Flash, Llama 4, Mistral Large, Kimi-k2, and more. Grades range from A (grok-3-mini at 90.5%) to F (mistral-small-3.2 at 47%). <a href="/evidence/public-findings">Full leaderboard →</a></div>
     </div>
   </div>
 </div>
