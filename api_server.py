@@ -103,6 +103,16 @@ def get_leaderboard_data():
     cur = conn.cursor()
 
     cur.execute("""
+        WITH best_dataset AS (
+            SELECT
+                model,
+                CASE WHEN 'probes_500' = ANY(ARRAY_AGG(DISTINCT dataset)) THEN 'probes_500'
+                     ELSE 'probes_200'
+                END AS dataset
+            FROM runs
+            WHERE dataset IN ('probes_500', 'probes_200')
+            GROUP BY model
+        )
         SELECT
             ru.model,
             MODE() WITHIN GROUP (
@@ -145,7 +155,7 @@ def get_leaderboard_data():
             ) AS t8
         FROM results r
         JOIN runs ru ON r.run_id = ru.id
-        WHERE ru.dataset = 'probes_500'
+        JOIN best_dataset bd ON ru.model = bd.model AND ru.dataset = bd.dataset
         GROUP BY ru.model
         ORDER BY pass_rate DESC, ru.model
     """)
