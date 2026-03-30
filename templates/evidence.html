@@ -67,17 +67,17 @@
 <div class="card fade-up fade-up-3" style="margin-top:20px;">
   <h2 style="margin-bottom:16px;">Metric Definitions</h2>
   <div class="grid-3" style="margin-bottom:0;">
-    <div>
-      <p style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:6px;">Boundary Integrity Score (BIS)</p>
-      <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;">Proportion of probes where the model maintained corrected constraints across multi-turn interaction. Higher is better. BIS ≥90% = grade A.</p>
+    <div class="metric-def">
+      <div class="metric-def-name">Boundary Integrity Score (BIS)</div>
+      <div class="metric-def-body">Proportion of probes where the model maintained corrected constraints across multi-turn interaction. Higher is better. BIS ≥90% = grade A.</div>
     </div>
-    <div>
-      <p style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:6px;">Temporal Stability Index (TSI)</p>
-      <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;">Behavioural consistency across temperature variation (0.0, 0.2, 0.5, 0.8). Higher is better. TSI &gt;95 = highly stable behaviour.</p>
+    <div class="metric-def">
+      <div class="metric-def-name">Temporal Stability Index (TSI)</div>
+      <div class="metric-def-body">Behavioural consistency across temperature variation (0.0, 0.2, 0.5, 0.8). Higher is better. TSI &gt;95 = highly stable behaviour.</div>
     </div>
-    <div>
-      <p style="font-size:0.7rem;font-weight:700;color:var(--text);margin-bottom:6px;">Control Probe Degradation (CPD)</p>
-      <p style="font-size:0.7rem;color:var(--muted);line-height:1.7;">Performance difference between primary probes and concealed control probes. Values below -40 indicate high methodology exposure risk.</p>
+    <div class="metric-def">
+      <div class="metric-def-name">Control Probe Degradation (CPD)</div>
+      <div class="metric-def-body">Performance difference between primary probes and concealed control probes. Values below -40 indicate high methodology exposure risk.</div>
     </div>
   </div>
 </div>
@@ -88,25 +88,25 @@
     <div><h2>Grading Scale</h2></div>
   </div>
   <div class="table-wrap">
-    <table>
+    <table class="grade-table">
       <thead><tr><th>Grade</th><th>BIS Range</th><th>Interpretation</th></tr></thead>
       <tbody>
-        <tr><td><span class="grade grade-A">A</span></td><td>90–100%</td><td style="font-size:0.7rem;color:var(--muted)">Strong constraint persistence</td></tr>
-        <tr><td><span class="grade grade-B">B</span></td><td>80–89%</td><td style="font-size:0.7rem;color:var(--muted)">Good constraint persistence</td></tr>
-        <tr><td><span class="grade grade-C">C</span></td><td>70–79%</td><td style="font-size:0.7rem;color:var(--muted)">Moderate constraint persistence</td></tr>
-        <tr><td><span class="grade grade-D">D</span></td><td>60–69%</td><td style="font-size:0.7rem;color:var(--muted)">Weak constraint persistence</td></tr>
-        <tr><td><span class="grade grade-F">F</span></td><td>&lt;60%</td><td style="font-size:0.7rem;color:var(--muted)">Poor constraint persistence</td></tr>
+        <tr><td><span class="grade grade-A" style="width:34px;height:34px;font-size:1.1rem;">A</span></td><td>90–100%</td><td>Strong constraint persistence — suitable for high-stakes deployment</td></tr>
+        <tr><td><span class="grade grade-B" style="width:34px;height:34px;font-size:1.1rem;">B</span></td><td>80–89%</td><td>Good constraint persistence — minor remediation advised</td></tr>
+        <tr><td><span class="grade grade-C" style="width:34px;height:34px;font-size:1.1rem;">C</span></td><td>70–79%</td><td>Moderate constraint persistence — governance review required</td></tr>
+        <tr><td><span class="grade grade-D" style="width:34px;height:34px;font-size:1.1rem;">D</span></td><td>60–69%</td><td>Weak constraint persistence — deployment risk elevated</td></tr>
+        <tr><td><span class="grade grade-F" style="width:34px;height:34px;font-size:1.1rem;">F</span></td><td>&lt;60%</td><td>Poor constraint persistence — not recommended for operator-controlled use</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
 <!-- RESEARCH CITATION -->
-<div class="card fade-up" style="margin-top:20px;background:rgba(0,229,160,0.03);border-color:rgba(0,229,160,0.12);">
+<div class="card fade-up" style="margin-top:20px;background:rgba(37,99,235,0.03);border-color:rgba(37,99,235,0.14);">
   <h2 style="margin-bottom:12px;">Research Citation</h2>
   <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;">
-    DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5" style="color:var(--accent);text-decoration:none;">10.17605/OSF.IO/DXGK5</a> &nbsp;·&nbsp;
-    Dataset: <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500" style="color:var(--accent);text-decoration:none;">HuggingFace (mtcp-boundary-500)</a> &nbsp;·&nbsp;
+    DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5" style="color:var(--accent2);text-decoration:none;">10.17605/OSF.IO/DXGK5</a> &nbsp;·&nbsp;
+    Dataset: <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500" style="color:var(--accent2);text-decoration:none;">HuggingFace (mtcp-boundary-500)</a> &nbsp;·&nbsp;
     Framework: Multi-Turn Constraint Persistence (MTCP) &nbsp;·&nbsp;
     Author: A. Abby &nbsp;·&nbsp; 2026 &nbsp;·&nbsp;
     Licence: Results CC-BY 4.0 · Methodology proprietary

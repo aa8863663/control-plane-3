@@ -127,6 +127,8 @@ tr:hover td{background:rgba(255,255,255,0.015);}
 .badge.good{color:var(--accent);border-color:rgba(16,185,129,0.25);background:rgba(16,185,129,0.07);}
 .badge.warn{color:var(--warn);border-color:rgba(212,168,67,0.25);background:rgba(212,168,67,0.07);}
 .badge.danger{color:var(--danger);border-color:rgba(239,68,68,0.25);background:rgba(239,68,68,0.07);}
+.badge.arch{color:var(--accent2);border-color:rgba(37,99,235,0.28);background:rgba(37,99,235,0.08);}
+.badge.stoch{color:var(--warn);border-color:rgba(212,168,67,0.28);background:rgba(212,168,67,0.08);}
 .model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .model-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:12px;}
 .model-card h3{font-size:0.9rem;color:#fff;}
@@ -179,6 +181,22 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
   .card,.feature-card,.stat-card,.kpi-card,.model-card{overflow-x:auto;}
   .card > table,.feature-card > table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 }
+/* ── BUTTONS (extended) ───────────────────────────────────────────────── */
+.btn-outline{background:transparent;border-color:var(--accent2);color:var(--accent2);}
+.btn-outline:hover{background:rgba(37,99,235,0.08);border-color:var(--accent2);}
+
+/* ── METRIC DEFINITIONS ───────────────────────────────────────────────── */
+.metric-def{padding:16px 18px;border:1px solid var(--border);border-radius:6px;
+  border-top:2px solid var(--accent2);background:var(--surface);}
+.metric-def-name{font-size:0.68rem;font-weight:600;color:var(--text);margin-bottom:8px;letter-spacing:0.3px;}
+.metric-def-body{font-size:0.68rem;color:var(--muted);line-height:1.8;}
+
+/* ── GRADE TABLE (audit style) ────────────────────────────────────────── */
+.grade-table td:first-child{width:64px;text-align:center;}
+.grade-table td:nth-child(2){font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text);font-weight:600;letter-spacing:0.5px;}
+.grade-table td:nth-child(3){font-size:0.72rem;color:var(--muted);}
+.grade-table tr:hover td{background:rgba(255,255,255,0.012);}
+
 /* ── ACTUARIAL PAGE ───────────────────────────────────────────────────── */
 .act-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;}
 .act-summary-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
