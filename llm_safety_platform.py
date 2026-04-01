@@ -223,7 +223,8 @@ class APIClient:
                 body = _json.dumps({"anthropic_version": "bedrock-2023-05-31", "max_tokens": 1024, "temperature": temperature, "messages": [{"role": "user", "content": [{"type": "text", "text": prompt}]}]})
                 resp = self.client.invoke_model(modelId=self.model, body=body, contentType='application/json', accept='application/json')
                 resp_body = _json.loads(resp['body'].read())
-                text = resp_body.get('content', [{}])[0].get('text', '')
+                _c = resp_body.get('content', [])
+                text = _c[0].get('text', '') if _c else ''
                 pt = resp_body.get('usage', {}).get('input_tokens', 0)
                 ct = resp_body.get('usage', {}).get('output_tokens', 0)
             else:

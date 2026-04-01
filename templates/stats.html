@@ -113,7 +113,7 @@
 <script>
 const labels = {{ model_stats | map(attribute='model') | list | tojson }};
 const data = {{ model_stats | map(attribute='pass_rate') | list | tojson }};
-const colors = data.map(v => v >= 90 ? '#00e5a0' : v >= 80 ? '#7b6cff' : v >= 70 ? '#f5a623' : '#ff4f4f');
+const colors = data.map(v => v >= 90 ? '#16a34a' : v >= 80 ? '#2563eb' : v >= 70 ? '#d97706' : '#ef4444');
 new Chart(document.getElementById('modelChart'), {
   type: 'bar',
   data: { labels, datasets: [{ data, backgroundColor: colors, borderRadius: 4, borderSkipped: false }] },
@@ -121,8 +121,8 @@ new Chart(document.getElementById('modelChart'), {
     responsive: true,
     plugins: { legend: { display: false } },
     scales: {
-      x: { ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 }, maxRotation: 45 }, grid: { color: '#1e2330' } },
-      y: { min: 0, max: 100, ticks: { color: '#5a6070', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' }, grid: { color: '#1e2330' } }
+      x: { ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 10 }, maxRotation: 45 }, grid: { color: '#e2e8f0' } },
+      y: { min: 0, max: 100, ticks: { color: '#64748b', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' }, grid: { color: '#e2e8f0' } }
     }
   }
 });

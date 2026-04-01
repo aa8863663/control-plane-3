@@ -103,16 +103,6 @@ def get_leaderboard_data():
     cur = conn.cursor()
 
     cur.execute("""
-        WITH best_dataset AS (
-            SELECT
-                model,
-                CASE WHEN 'probes_500' = ANY(ARRAY_AGG(DISTINCT dataset)) THEN 'probes_500'
-                     ELSE 'probes_200'
-                END AS dataset
-            FROM runs
-            WHERE dataset IN ('probes_500', 'probes_200')
-            GROUP BY model
-        )
         SELECT
             ru.model,
             MODE() WITHIN GROUP (
@@ -155,7 +145,7 @@ def get_leaderboard_data():
             ) AS t8
         FROM results r
         JOIN runs ru ON r.run_id = ru.id
-        JOIN best_dataset bd ON ru.model = bd.model AND ru.dataset = bd.dataset
+        WHERE ru.dataset = 'probes_500'
         GROUP BY ru.model
         ORDER BY pass_rate DESC, ru.model
     """)
@@ -526,9 +516,9 @@ def dashboard(request: Request, session: Optional[str] = Cookie(default=None)):
         return redir
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset IS DISTINCT FROM 'ctrl')")
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
         total_results = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset IS DISTINCT FROM 'ctrl'")
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
         total_runs = cur.fetchone()['n'] or 0
         cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
         total_models = cur.fetchone()['n'] or 0
@@ -732,11 +722,11 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
     if redir: return redir
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset IS DISTINCT FROM 'ctrl'")
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset IS DISTINCT FROM 'ctrl')")
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
         total_results = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP' AND run_id IN (SELECT id FROM runs WHERE dataset IS DISTINCT FROM 'ctrl')")
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP' AND run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
         hard_stops = cur.fetchone()['n'] or 0
         cur.execute("""
             SELECT ru.model, ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as avg_pass_rate
@@ -1145,13 +1135,13 @@ def download_certificate(model: str, temperature: float, session: Optional[str] 
                    SUM(CASE WHEN r.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.model=%s AND ru.temperature=%s AND ru.dataset IS DISTINCT FROM 'ctrl'
+            WHERE ru.model=%s AND ru.temperature=%s AND ru.dataset = 'probes_500'
         """, (model, temperature))
         row = cur.fetchone(); conn.close()
         if not row: return JSONResponse({"error": "No data found"}, status_code=404)
         pr = float(row["pass_rate"] or 0)
         g = grade(pr)
-        color = {"A":"#00e5a0","B":"#7b6cff","C":"#f5a623","D":"#ff4f4f"}.get(g,"#00e5a0")
+        color = {"A":"#16a34a","B":"#475569","C":"#d97706","D":"#ef4444"}.get(g,"#2563eb")
         issued = datetime.utcnow().strftime("%B %Y")
         html = f"""<!DOCTYPE html>
 <html><head><meta charset="UTF-8"/>
