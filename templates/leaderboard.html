@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Benchmark Rankings — MTCP{% endblock %}
+{% block title %}Evidence Rankings — MTCP{% endblock %}
 {% block extra_styles %}
 /* ── LEADERBOARD BENTO ──────────────────────────────────────────────────── */
 .lb-bento-header{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
@@ -40,7 +40,7 @@
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
-  <h1>Benchmark <span>Rankings</span></h1>
+  <h1>Evidence <span>Rankings</span></h1>
   <p>{{ leaderboard|length }} models evaluated under MTCP · 4 temperature settings · {{ total_evals }}+ individual evaluations</p>
 </div>
 
