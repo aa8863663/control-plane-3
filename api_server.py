@@ -588,7 +588,14 @@ def methodology_page(request: Request, session: Optional[str] = Cookie(default=N
 @app.get("/buyer-brief", response_class=HTMLResponse)
 def buyer_brief_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
-    return templates.TemplateResponse("buyer_brief.html", {"request": request, "user": user, "active": "buyer-brief"})
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
+        total_models = cur.fetchone()['n'] or 0
+        conn.close()
+    except Exception as e:
+        print(f"Buyer brief error: {e}"); total_models = 0
+    return templates.TemplateResponse("buyer_brief.html", {"request": request, "user": user, "active": "buyer-brief", "total_models": total_models})
 
 @app.get("/pricing")
 def pricing(request: Request):
