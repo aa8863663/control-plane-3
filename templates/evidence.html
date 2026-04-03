@@ -1,11 +1,11 @@
 {% extends "base.html" %}
-{% block title %}Benchmark — MTCP Evidence Layer{% endblock %}
+{% block title %}Release Assurance Evaluation — MTCP Evidence Layer{% endblock %}
 {% block content %}
 <div class="page-header fade-up">
-  <h1>MTCP <span>Benchmark</span></h1>
+  <h1>MTCP <span>Evidence</span></h1>
   <p>
-    Public evaluation results for {{ models|length }} large language model{% if models|length != 1 %}s{% endif %} evaluated under the Multi-Turn Constraint Persistence framework.
-    MTCP measures whether models maintain corrected constraints during interaction, not only single-prompt compliance.
+    183,708 structured probe interactions across 36 frontier models.
+    MTCP tests whether models maintain corrected constraints after interaction — not just whether they comply once.
   </p>
 </div>
 
@@ -56,7 +56,7 @@
           <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
         </tr>
         {% else %}
-        <tr><td colspan="10"><div class="empty-state">No benchmark data available.</div></td></tr>
+        <tr><td colspan="10"><div class="empty-state">No evaluation data available.</div></td></tr>
         {% endfor %}
       </tbody>
     </table>
@@ -117,7 +117,7 @@
 <div class="card fade-up" style="margin-top:20px;text-align:center;padding:32px;">
   <h2 style="margin-bottom:10px;">Evaluate Your Model Under MTCP</h2>
   <p style="font-size:0.74rem;color:var(--muted);margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto;">
-    Submit your model endpoint for MTCP evaluation. Receive a formal report, benchmark comparison, and evaluation certificate.
+    Submit your model endpoint for a behavioral durability test. Receive a formal report, Release Decision Pack, and evaluation certificate.
   </p>
   <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
     <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
