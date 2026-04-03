@@ -539,12 +539,15 @@ def dashboard(request: Request, session: Optional[str] = Cookie(default=None)):
         cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
         total_models = cur.fetchone()['n'] or 0
         cur.execute("""
-            SELECT model, ROUND(CAST(100.0*SUM(CASE WHEN outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
+            SELECT
+                ru.model,
+                MODE() WITHIN GROUP (ORDER BY COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown')) AS provider,
+                ROUND(CAST(100.0*SUM(CASE WHEN outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
             WHERE ru.dataset = 'probes_500'
-            GROUP BY model ORDER BY pass_rate DESC""")
+            GROUP BY ru.model ORDER BY pass_rate DESC""")
         rows = cur.fetchall(); conn.close()
-        model_rows = [{"model": r["model"], "pass_rate": float(r["pass_rate"] or 0), "grade": grade(float(r["pass_rate"] or 0))} for r in rows]
+        model_rows = [{"model": r["model"], "provider": r["provider"], "pass_rate": float(r["pass_rate"] or 0), "grade": grade(float(r["pass_rate"] or 0))} for r in rows]
         best_grade = model_rows[0]["grade"] if model_rows else "N/A"
     except Exception as e:
         print("Dashboard error: {0}".format(e))
