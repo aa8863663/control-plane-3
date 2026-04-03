@@ -1,6 +1,6 @@
 {% extends "base_public.html" %}
 {% block title %}Pricing — MTCP AI Assurance{% endblock %}
-{% block meta_description %}MTCP pricing. Free public benchmark access, Pro private evaluations at £499/mo, Enterprise API and white-label from £1,999/mo.{% endblock %}
+{% block meta_description %}MTCP pricing. Free public evidence access, Pro private evaluations at £499/mo, Enterprise API and white-label from £1,999/mo.{% endblock %}
 
 {% block extra_styles %}
 
@@ -542,9 +542,7 @@
   </div>
   <h1>Evaluation that stands up<br>in <span>procurement</span></h1>
   <p>
-    Start with the public benchmark for free.
-    Commission private evaluations when you need audit-ready evidence.
-    Scale to enterprise when your deployment demands it.
+    Independent AI release assurance. Get empirical evidence and a clear deployment verdict before you commit to a model.
   </p>
   <div class="pricing-urgency">
     <span class="urgency-dot"></span>
@@ -571,7 +569,7 @@
   <span class="research-divider"></span>
   <span class="research-item" style="cursor:default">
     <span class="research-item-dot" style="background:var(--muted)"></span>
-    {{ total_models }} models benchmarked · 4 temperatures · Independent
+    {{ total_models }} models evaluated · 4 temperature settings · Independent
   </span>
 </div>
 
@@ -593,7 +591,7 @@
     <ul class="tier-features">
       <li class="tier-feature included">
         <span class="feat-icon yes">✓</span>
-        Full public leaderboard — {{ total_models }} models
+        Full public evidence layer — {{ total_models }} models
       </li>
       <li class="tier-feature included">
         <span class="feat-icon yes">✓</span>
@@ -645,7 +643,7 @@
       </li>
       <li class="tier-feature included">
         <span class="feat-icon yes-purple">✓</span>
-        Full 200-probe benchmark run
+        Full 200-probe behavioral durability evaluation
       </li>
       <li class="tier-feature included">
         <span class="feat-icon yes-purple">✓</span>
@@ -691,6 +689,22 @@
     <div class="tier-divider"></div>
     <div class="tier-section-label">Everything in Pro, plus</div>
     <ul class="tier-features">
+      <li class="tier-feature included">
+        <span class="feat-icon yes">✓</span>
+        Release Decision Pack per evaluation
+      </li>
+      <li class="tier-feature included">
+        <span class="feat-icon yes">✓</span>
+        Full evidence audit trail (machine-readable JSON)
+      </li>
+      <li class="tier-feature included">
+        <span class="feat-icon yes">✓</span>
+        Tamper-evident SHA-256 integrity hash
+      </li>
+      <li class="tier-feature included">
+        <span class="feat-icon yes">✓</span>
+        Runtime risk signals and deployment verdict
+      </li>
       <li class="tier-feature included">
         <span class="feat-icon yes">✓</span>
         Unlimited private evaluations
@@ -808,7 +822,7 @@
           <td class="col-featured"><span class="check-yes">Unlimited</span></td>
         </tr>
         <tr>
-          <td>200-probe full benchmark run</td>
+          <td>200-probe behavioral durability evaluation</td>
           <td><span class="check-no">—</span></td>
           <td><span class="check-yes-pur">✓</span></td>
           <td class="col-featured"><span class="check-yes">✓</span></td>
@@ -942,8 +956,8 @@
       <div class="faq-a">Yes. The free public benchmark shows exactly how {{ total_models }} evaluated models perform. If you want to see how your specific model compares before subscribing, you can submit a single evaluation request — we'll quote you a one-off rate before any subscription is needed.</div>
     </div>
     <div class="faq-item">
-      <div class="faq-q">What models have already been benchmarked?</div>
-      <div class="faq-a">{{ total_models }} models including frontier models from OpenAI, Anthropic, Google, Meta, Mistral, and more. We continuously add new models to the benchmark. If a model you need isn't yet evaluated, Enterprise customers can request priority evaluation. <a href="/evidence/public-findings">Full leaderboard →</a></div>
+      <div class="faq-q">What models have already been evaluated?</div>
+      <div class="faq-a">{{ total_models }} models including frontier models from OpenAI, Anthropic, Google, Meta, Mistral, and more. We continuously add new models to the evaluation. If a model you need isn't yet evaluated, Enterprise customers can request priority evaluation. <a href="/evidence/public-findings">Full leaderboard →</a></div>
     </div>
   </div>
 </div>
