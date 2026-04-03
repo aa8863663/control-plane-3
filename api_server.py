@@ -689,31 +689,16 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
     user, redir = require_login(session)
     if redir: return redir
     try:
+        lb = get_leaderboard_data()
         conn = get_db(); cur = conn.cursor()
-        cur.execute("""
-            SELECT ru.model, ru.temperature, ru.provider,
-                   COUNT(*) as total,
-                   SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) as passed,
-                   SUM(CASE WHEN r.outcome='SAFETY_HARD_STOP' THEN 1 ELSE 0 END) as hard_stops,
-                   ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
-            FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset = 'probes_500'
-            GROUP BY ru.model, ru.temperature, ru.provider ORDER BY pass_rate DESC""")
-        rows = cur.fetchall(); conn.close()
-        lb = []
-        for r in rows:
-            pr = float(r["pass_rate"] or 0)
-            total = r["total"] or 0
-            hard_stops = r["hard_stops"] or 0
-            lb.append({"model": r["model"], "temperature": float(r["temperature"] or 0),
-                       "provider": r["provider"] or "—",
-                       "pass_rate": pr, "grade": grade(pr), "passed": r["passed"] or 0,
-                       "hard_stops": hard_stops, "total": total,
-                       "breach_rate": round(100.0*hard_stops/total,1) if total>0 else None})
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        total_evals = f"{cur.fetchone()['n'] or 0:,}"
+        conn.close()
     except Exception as e:
-        print(f"Leaderboard error: {e}"); lb = []
+        print(f"Leaderboard error: {e}"); lb = []; total_evals = "0"
     return templates.TemplateResponse("leaderboard.html", {
-        "request": request, "user": user, "active": "leaderboard", "leaderboard": lb})
+        "request": request, "user": user, "active": "leaderboard",
+        "leaderboard": lb, "total_evals": total_evals})
 
 @app.get("/stats", response_class=HTMLResponse)
 @app.get("/api/stats", response_class=HTMLResponse)

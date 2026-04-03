@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 """
 Control Plane 3 — MTCP Benchmark Runner
-Supports: groq, openai, anthropic, openrouter, mistral, nvidia, google
+Supports: groq, openai, anthropic, openrouter, mistral, nvidia, google, replicate
 """
 import argparse, csv, json, os, re, uuid, hashlib, platform, pkg_resources
 from datetime import datetime
+try:
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
+except ImportError:
+    pass
 from constraint_detector import detect_violations
 from ve_engine import ViolationEngine
 from prp_engine import check_persistence_policy
@@ -74,6 +79,7 @@ class APIClient:
             'cohere': 'COHERE_API_KEY',
             'bedrock': 'AWS_ACCESS_KEY_ID',
             'watsonx': 'IBM_WATSONX_API_KEY',
+            'replicate': 'REPLICATE_API_TOKEN',
         }
         env_key = env_key_map.get(provider, f'{provider.upper()}_API_KEY')
         self.api_key = os.environ.get(env_key)
@@ -166,9 +172,16 @@ class APIClient:
                 base_url='https://eu-gb.ml.cloud.ibm.com/ml/v1-beta/generation/text?version=2023-05-29'
             )
 
+        elif provider == 'replicate':
+            # Replicate OpenAI-compatible endpoint
+            self.client = OpenAI(
+                api_key=self.api_key,
+                base_url='https://openai-compat.api.replicate.com/v1'
+            )
+
     def call(self, prompt: str, temperature: float = 0.0) -> tuple:
         import time
-        max_retries = 5
+        max_retries = 20
         for attempt in range(max_retries):
             try:
                 return self._call_once(prompt, temperature)
@@ -177,6 +190,10 @@ class APIClient:
                 if '429' in err or 'rate_limit' in err.lower() or 'rate limit' in err.lower() or 'too many requests' in err.lower():
                     wait = 60 * (attempt + 1)
                     print(f'  Rate limit hit — waiting {wait}s before retry {attempt+1}/{max_retries}...')
+                    time.sleep(wait)
+                elif any(code in err for code in ['500', '502', '503', '504']):
+                    wait = 30 * (attempt + 1)
+                    print(f'  Server error ({err[:60]}) — waiting {wait}s before retry {attempt+1}/{max_retries}...')
                     time.sleep(wait)
                 else:
                     raise
@@ -191,14 +208,14 @@ class APIClient:
             return text, 0, 0, 0
 
         # OpenAI-compatible providers
-        if self.provider in ['groq', 'openai', 'openrouter', 'mistral', 'nvidia', 'github', 'fireworks', 'cerebras', 'cohere', 'watsonx']:
+        if self.provider in ['groq', 'openai', 'openrouter', 'mistral', 'nvidia', 'github', 'fireworks', 'cerebras', 'cohere', 'watsonx', 'replicate']:
             resp = self.client.chat.completions.create(
                 model=self.model,
                 messages=[{'role': 'user', 'content': prompt}],
                 temperature=temperature,
                 max_tokens=1024
             )
-            text = resp.choices[0].message.content or ''
+            text = (resp.choices[0].message.content or '') if resp.choices else ''
             usage = resp.usage
             pt = usage.prompt_tokens if usage else 0
             ct = usage.completion_tokens if usage else 0
@@ -227,6 +244,13 @@ class APIClient:
                 text = _c[0].get('text', '') if _c else ''
                 pt = resp_body.get('usage', {}).get('input_tokens', 0)
                 ct = resp_body.get('usage', {}).get('output_tokens', 0)
+            elif 'qwen' in self.model.lower() or 'mistral' in self.model.lower() or 'deepseek' in self.model.lower():
+                body = _json.dumps({"messages": [{"role": "user", "content": prompt}], "max_tokens": 1024, "temperature": temperature})
+                resp = self.client.invoke_model(modelId=self.model, body=body, contentType='application/json', accept='application/json')
+                resp_body = _json.loads(resp['body'].read())
+                text = resp_body.get('choices', [{}])[0].get('message', {}).get('content', '')
+                pt = resp_body.get('usage', {}).get('prompt_tokens', 0)
+                ct = resp_body.get('usage', {}).get('completion_tokens', 0)
             else:
                 body = _json.dumps({"messages": [{"role": "user", "content": [{"text": prompt}]}], "inferenceConfig": {"maxTokens": 1024, "temperature": temperature}})
                 resp = self.client.invoke_model(modelId=self.model, body=body, contentType='application/json', accept='application/json')
@@ -305,12 +329,13 @@ class MTCPEvaluator:
             if db_url:
                 db = psycopg2.connect(db_url)
                 cur = db.cursor()
+                stored_model = getattr(api_client, 'db_model', None) or api_client.model
                 cur.execute("SELECT id FROM runs WHERE model=%s AND temperature=%s AND probe_count=%s",
-                    (api_client.model, temperature, len(all_results)))
+                    (stored_model, temperature, len(all_results)))
                 if not cur.fetchone():
                     cur.execute("""INSERT INTO runs (model, temperature, provider, probe_count, dataset, created_at, python_version)
                         VALUES (%s,%s,%s,%s,%s,NOW(),%s) RETURNING id""",
-                        (api_client.model, temperature, api_client.provider, len(all_results), dataset, '3.9'))
+                        (stored_model, temperature, api_client.provider, len(all_results), dataset, '3.9'))
                     run_id = cur.fetchone()[0]
                     for r in all_results:
                         cur.execute("""INSERT INTO results (run_id, probe_id, outcome, recovery_latency, created_at)
@@ -337,6 +362,8 @@ def main():
     parser.add_argument('--out', default='results.csv')
     parser.add_argument('--temperature', default='0.0')
     parser.add_argument('--runs', type=int, default=1)
+    parser.add_argument('--db-model', default=None,
+        help='Override the model name stored in DB (defaults to --model)')
     args = parser.parse_args()
 
     generate_run_manifest(args.data, __file__)
@@ -351,12 +378,15 @@ def main():
 
     temperatures = [float(t) for t in args.temperature.split(',')]
 
-    dataset = 'ctrl' if 'ctrl' in os.path.basename(args.data) else os.path.splitext(os.path.basename(args.data))[0]
+    _data_base = os.path.basename(args.data)
+    dataset = 'ctrl' if ('ctrl' in _data_base or 'control' in _data_base) else os.path.splitext(_data_base)[0]
 
     evaluator = MTCPEvaluator(args.data)
     for model in models:
         print(f'\n=== Model: {model} ===')
         client = APIClient(args.api, model)
+        if args.db_model:
+            client.db_model = args.db_model
         for temp in temperatures:
             print(f'  Temperature: {temp}')
             out = f'temp_{temp}_{args.out}'
