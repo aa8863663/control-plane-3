@@ -270,7 +270,7 @@ def startup():
 
 @app.get("/debug-version")
 def debug_version():
-    return {"version": "v2-groupby-model-only", "commit": "72f5cae", "timestamp": "2026-03-28T22:18"}
+    return {"version": "v3-enterprise-release-assurance", "commit": "f6d7e6b", "timestamp": "2026-04-03T17:30"}
 
 
 @app.get("/landing", response_class=HTMLResponse)
