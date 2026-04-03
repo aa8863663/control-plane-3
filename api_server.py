@@ -1202,7 +1202,7 @@ def download_certificate(model: str, temperature: float, session: Optional[str] 
   .doi{{font-size:11px;color:#5a6070;margin-top:24px}}
 </style></head>
 <body><div class="cert">
-  <div class="cert-title">MTCP Benchmark Certificate · Control Plane 3</div>
+  <div class="cert-title">MTCP Evaluation Certificate · Release Assurance</div>
   <div class="grade">{g}</div>
   <div class="model-name">{model}</div>
   <div class="temp">Temperature: {temperature}</div>
