@@ -611,12 +611,28 @@ def model_card_single(request: Request, model_name: str, session: Optional[str] 
 @app.get("/methodology", response_class=HTMLResponse)
 def methodology_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
+        total_models = cur.fetchone()['n'] or 0
+        cur.execute("""
+            SELECT COUNT(*) AS n
+            FROM results r
+            JOIN runs ru ON r.run_id = ru.id
+            WHERE ru.dataset IN ('ctrl', 'probes_200', 'probes_500')
+        """)
+        total_results = f"{cur.fetchone()['n'] or 0:,}"
+        conn.close()
+    except Exception as e:
+        print(f"Methodology error: {e}"); total_models = 0; total_results = "0"
     return templates.TemplateResponse(
         "methodology.html",
         {
             "request": request,
             "user": user,
-            "active": "methodology"
+            "active": "methodology",
+            "total_models": total_models,
+            "total_results": total_results
         }
     )
 
