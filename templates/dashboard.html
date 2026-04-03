@@ -25,7 +25,51 @@
   </div>
 </div>
 
-<div class="card fade-up fade-up-2" style="margin-bottom:20px">
+<!-- DECISION PACKS -->
+<div class="card fade-up fade-up-2" style="margin-bottom:20px;background:rgba(37,99,235,0.03);border-color:rgba(37,99,235,0.15);">
+  <div class="section-head">
+    <div>
+      <h2>Your Release Decision Packs</h2>
+      <p>Download tamper-evident decision packs with deployment verdicts and structured signals</p>
+    </div>
+    <a href="/model-cards" class="btn btn-ghost" style="font-size:0.65rem">All Model Cards →</a>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Provider</th>
+          <th>BIS</th>
+          <th>Grade</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in model_rows[:10] %}
+        <tr>
+          <td style="font-size:0.7rem;font-family:'JetBrains Mono',monospace">
+            <a href="/model-cards/{{ row.model }}" style="color:var(--text);text-decoration:none">{{ row.model }}</a>
+          </td>
+          <td style="font-size:0.7rem;color:var(--muted)">{{ row.provider | default('—') }}</td>
+          <td style="font-size:0.7rem">{{ row.pass_rate }}%</td>
+          <td><span class="grade grade-{{ row.grade }}" style="width:24px;height:24px;font-size:0.85rem">{{ row.grade }}</span></td>
+          <td>
+            <a href="/api/decision-pack/{{ row.model }}" class="btn btn-primary" style="font-size:0.6rem;padding:5px 12px;white-space:nowrap">Download Pack →</a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" style="color:var(--muted);text-align:center;padding:24px">No models evaluated yet. <a href="/request-evaluation" style="color:var(--accent)">Request an evaluation →</a></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:0.68rem;color:var(--muted);margin-top:12px;line-height:1.7;">
+    Each Decision Pack includes model-level BIS/CPD metrics, three-lane verdict (RED/YELLOW/GREEN), structured signals, and regulatory alignment metadata (EU AI Act Article 12, NIST RMF). Schema version 1.1 with SHA-256 tamper-evident hash.
+  </p>
+</div>
+
+<div class="card fade-up fade-up-3" style="margin-bottom:20px">
   <div class="section-head">
     <div>
       <h2>Model Performance</h2>
@@ -68,7 +112,7 @@
   </div>
 </div>
 
-<div class="card fade-up fade-up-3">
+<div class="card fade-up fade-up-4">
   <h2 style="font-family:'DM Serif Display',serif;font-size:1.1rem;color:#fff;margin-bottom:14px">Quick Links</h2>
   <div style="display:flex;flex-wrap:wrap;gap:8px">
     <a href="/leaderboard" class="btn btn-ghost">Leaderboard</a>

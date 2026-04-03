@@ -19,7 +19,17 @@
 </div>
 {% endif %}
 
-<div class="card fade-up fade-up-2">
+<div class="card fade-up fade-up-2" style="margin-bottom:20px;background:rgba(37,99,235,0.03);border-color:rgba(37,99,235,0.15);">
+  <h2 style="margin-bottom:12px;">What You'll Receive</h2>
+  <ul class="list-clean" style="margin-bottom:0;">
+    <li><strong class="subtle">Release Decision Pack</strong><br>Tamper-evident JSON with model-level BIS/CPD metrics, three-lane verdict (RED/YELLOW/GREEN), structured signals, and deployment guidance. Schema 1.1 with SHA-256 hash. EU AI Act Article 12 and NIST RMF alignment.</li>
+    <li><strong class="subtle">Formal Evaluation Report</strong><br>PDF report with Boundary Integrity Score, Control Probe Degradation, temperature stability analysis, and comparative standing against {{ total_models | default('35') }} evaluated models.</li>
+    <li><strong class="subtle">Procurement Certificate</strong><br>Downloadable evaluation certificate suitable for board presentations, procurement documentation, and compliance submissions.</li>
+    <li><strong class="subtle">Evidence Packs</strong><br>Per-run evidence artifacts with completeness invariants, event logs, and regulatory metadata for each evaluation temperature setting.</li>
+  </ul>
+</div>
+
+<div class="card fade-up fade-up-3">
   <form method="post" action="/request-evaluation">
     <div class="form-grid">
       <div class="form-group">
