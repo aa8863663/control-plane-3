@@ -66,12 +66,6 @@
         "priority": 85
     },
     {
-        "provider": "nvidia",
-        "model": "granite-3.3-8b",
-        "enabled": true,
-        "priority": 85
-    },
-    {
         "provider": "bedrock",
         "model": "eu.anthropic.claude-sonnet-4-5-20250929-v1:0",
         "enabled": true,
@@ -122,12 +116,6 @@
     {
         "provider": "bedrock",
         "model": "amazon.nova-lite-v1:0",
-        "enabled": true,
-        "priority": 70
-    },
-    {
-        "provider": "nvidia",
-        "model": "phi-4-mini",
         "enabled": true,
         "priority": 70
     },

@@ -1,0 +1,334 @@
+MONITOR STARTED: Thu  2 Apr 2026 06:39:30 BST
+
+--- Monitor check: Thu  2 Apr 2026 06:39:30 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 06:39:30 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 06:59:30 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 06:59:30 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 07:19:30 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 07:19:30 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 07:39:31 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 07:39:31 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 07:59:31 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 07:59:31 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 08:19:31 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 08:19:31 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 08:39:31 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 08:39:31 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 08:59:31 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 08:59:31 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 09:19:32 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 09:19:32 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 09:39:32 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 09:39:32 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 09:59:32 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 09:59:32 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 10:19:32 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 10:19:32 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 10:39:33 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 10:39:33 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 10:59:33 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 10:59:33 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 11:19:33 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 11:19:33 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 11:39:33 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 11:39:33 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 11:59:33 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 11:59:33 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 12:19:34 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 12:19:34 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 12:39:34 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 12:39:34 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 12:59:34 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 12:59:34 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 13:19:34 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 13:19:34 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 13:39:35 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 13:39:35 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 13:59:35 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 13:59:35 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia]
+
+--- Monitor check: Thu  2 Apr 2026 14:29:05 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 14:29:06 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+  [one-off kimi-k2-instruct-0905.*probes_500] not running — covered by group scripts
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+
+--- Monitor check: Thu  2 Apr 2026 14:49:06 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 14:49:06 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+  [one-off kimi-k2-instruct-0905.*probes_500] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+
+--- Monitor check: Thu  2 Apr 2026 15:09:06 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 15:09:06 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+
+--- Monitor check: Thu  2 Apr 2026 15:29:06 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 15:29:06 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+
+--- Monitor check: Thu  2 Apr 2026 15:49:07 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 15:49:07 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+
+--- Monitor check: Thu  2 Apr 2026 16:09:07 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 16:09:07 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+
+--- Monitor check: Thu  2 Apr 2026 16:29:07 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 16:29:07 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+
+--- Monitor check: Thu  2 Apr 2026 16:49:07 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 16:49:08 BST
+========================================
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+
+--- Monitor check: Thu  2 Apr 2026 17:09:08 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 17:09:08 BST
+========================================
+  [one-off granite-3.3-8b-instruct.*probes_control] not running — covered by group scripts
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+
+--- Monitor check: Thu  2 Apr 2026 17:29:08 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 17:29:08 BST
+========================================
+  [one-off granite-3.3-8b-instruct.*probes_control] not running — covered by group scripts
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+
+--- Monitor check: Thu  2 Apr 2026 17:49:08 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 17:49:08 BST
+========================================
+  [one-off granite-3.3-8b-instruct.*probes_control] not running — covered by group scripts
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+
+--- Monitor check: Thu  2 Apr 2026 18:09:08 BST ---
+  [20] not running — restarting
+
+========================================
+NEW MODELS OVERNIGHT [20]: Thu  2 Apr 2026 18:09:09 BST
+========================================
+  [one-off granite-3.3-8b-instruct.*probes_control] not running — covered by group scripts
+  [one-off phi-4-mini.*probes_control] not running — covered by group scripts
+  [one-off qwen3-32b.*probes_200] not running — covered by group scripts
+Usage: /Users/aimeestanyer/Projects/control-plane-3/run_new_models_overnight.sh [mistral|cohere|google|groq|nvidia|fireworks]
