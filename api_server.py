@@ -313,11 +313,16 @@ def evidence_page(request: Request, session: Optional[str] = Cookie(default=None
     models = get_leaderboard_data()
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) AS n FROM results")
-        total_results = cur.fetchone()['n'] or 0
+        cur.execute("""
+            SELECT COUNT(*) AS n
+            FROM results r
+            JOIN runs ru ON r.run_id = ru.id
+            WHERE ru.dataset IN ('ctrl', 'probes_200', 'probes_500')
+        """)
+        total_results = f"{cur.fetchone()['n'] or 0:,}"
         conn.close()
     except Exception as e:
-        print(f"Evidence page error: {e}"); total_results = 0
+        print(f"Evidence page error: {e}"); total_results = "0"
     return templates.TemplateResponse(
         "evidence.html",
         {
