@@ -179,21 +179,24 @@ def get_leaderboard_data():
     for row in rows:
         main_rate = float(row["pass_rate"] or 0)
         ctrl_rate = float(ctrl_map.get(row["model"], 0))
-        t0 = float(row["t0"] or 0)
-        t2 = float(row["t2"] or 0)
-        t5 = float(row["t5"] or 0)
-        t8 = float(row["t8"] or 0)
-        variance = round(max(t0, t2, t5, t8) - min(t0, t2, t5, t8), 1)
+        # Keep NULL as None instead of coercing to 0 - missing temps should show "—" not "0.0%"
+        t0 = round(float(row["t0"]), 1) if row["t0"] is not None else None
+        t2 = round(float(row["t2"]), 1) if row["t2"] is not None else None
+        t5 = round(float(row["t5"]), 1) if row["t5"] is not None else None
+        t8 = round(float(row["t8"]), 1) if row["t8"] is not None else None
+        # Calculate variance only from measured temperatures
+        measured_temps = [t for t in [t0, t2, t5, t8] if t is not None]
+        variance = round(max(measured_temps) - min(measured_temps), 1) if len(measured_temps) > 1 else 0.0
         models.append({
             "model": row["model"],
             "provider": row["provider"],
             "pass_rate": round(main_rate, 1),
             "ctrl_rate": round(ctrl_rate, 1),
             "drop": round(ctrl_rate - main_rate, 1),
-            "t0": round(t0, 1),
-            "t2": round(t2, 1),
-            "t5": round(t5, 1),
-            "t8": round(t8, 1),
+            "t0": t0,
+            "t2": t2,
+            "t5": t5,
+            "t8": t8,
             "variance": variance,
             "grade": grade(main_rate),
         })

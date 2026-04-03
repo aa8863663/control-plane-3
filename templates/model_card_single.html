@@ -41,10 +41,10 @@
           <tr><th>Temperature</th><th>BIS</th></tr>
         </thead>
         <tbody>
-          <tr><td>T=0.0</td><td>{{ model.t0 }}%</td></tr>
-          <tr><td>T=0.2</td><td>{{ model.t2 }}%</td></tr>
-          <tr><td>T=0.5</td><td>{{ model.t5 }}%</td></tr>
-          <tr><td>T=0.8</td><td>{{ model.t8 }}%</td></tr>
+          <tr><td>T=0.0</td><td>{% if model.t0 is not none %}{{ model.t0 }}%{% else %}—{% endif %}</td></tr>
+          <tr><td>T=0.2</td><td>{% if model.t2 is not none %}{{ model.t2 }}%{% else %}—{% endif %}</td></tr>
+          <tr><td>T=0.5</td><td>{% if model.t5 is not none %}{{ model.t5 }}%{% else %}—{% endif %}</td></tr>
+          <tr><td>T=0.8</td><td>{% if model.t8 is not none %}{{ model.t8 }}%{% else %}—{% endif %}</td></tr>
         </tbody>
       </table>
     </div>
