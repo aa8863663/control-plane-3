@@ -311,13 +311,21 @@ def benchmark_redirect():
 def evidence_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     models = get_leaderboard_data()
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("SELECT COUNT(*) AS n FROM results")
+        total_results = cur.fetchone()['n'] or 0
+        conn.close()
+    except Exception as e:
+        print(f"Evidence page error: {e}"); total_results = 0
     return templates.TemplateResponse(
         "evidence.html",
         {
             "request": request,
             "user": user,
             "active": "evidence",
-            "models": models
+            "models": models,
+            "total_results": total_results
         }
     )
 
