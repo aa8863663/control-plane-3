@@ -10,6 +10,7 @@ from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
 from evidence_pack import build_pack
+from generate_decision_pack import build_pack as build_decision_pack
 
 app = FastAPI(title="Control Plane 3", description="MTCP LLM Safety Benchmarking Platform")
 templates = Jinja2Templates(directory="templates")
@@ -555,7 +556,8 @@ def dashboard(request: Request, session: Optional[str] = Cookie(default=None)):
 
 @app.get("/model-cards", response_class=HTMLResponse)
 def model_cards(request: Request, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
+    user, redir = require_login(session)
+    if redir: return redir
     models = get_leaderboard_data()
     return templates.TemplateResponse(
         "model_cards.html",
@@ -569,7 +571,8 @@ def model_cards(request: Request, session: Optional[str] = Cookie(default=None))
 
 @app.get("/model-cards/{model_name}", response_class=HTMLResponse)
 def model_card_single(request: Request, model_name: str, session: Optional[str] = Cookie(default=None)):
-    user = current_user(session)
+    user, redir = require_login(session)
+    if redir: return redir
     models = get_leaderboard_data()
     model = None
     for item in models:
@@ -1210,6 +1213,23 @@ def download_evidence_pack(run_id: str, session: Optional[str] = Cookie(default=
     try:
         pack = build_pack(run_id)
         filename = f"evidence_{run_id.replace('/', '_').replace(':', '_')}.json"
+        return JSONResponse(
+            content=pack,
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"',
+                "Content-Type": "application/json"
+            }
+        )
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@app.get("/api/decision-pack/{model_name}")
+def download_decision_pack(model_name: str, session: Optional[str] = Cookie(default=None)):
+    user, redir = require_login(session)
+    if redir: return redir
+    try:
+        pack = build_decision_pack(model_name)
+        filename = f"{model_name.replace('/', '_').replace(':', '_')}_decision_pack.json"
         return JSONResponse(
             content=pack,
             headers={
