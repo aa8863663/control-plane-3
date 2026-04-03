@@ -104,4 +104,43 @@
   </div>
 </div>
 
+<!-- EVIDENCE PACKS -->
+{% if runs and runs|length > 0 %}
+<div class="card fade-up fade-up-4">
+  <div class="section-head">
+    <div>
+      <h2>Evidence Packs</h2>
+      <p>Download tamper-evident Evidence Packs for individual evaluation runs. Each pack includes structured signals, completeness invariant verification, and regulatory alignment metadata.</p>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Dataset</th>
+          <th>Temperature</th>
+          <th>Date</th>
+          <th>Probes</th>
+          <th>Download</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for run in runs %}
+        <tr>
+          <td><span class="badge {% if run.dataset == 'ctrl' %}arch{% else %}stoch{% endif %}">{{ run.dataset }}</span></td>
+          <td>T={{ run.temperature }}</td>
+          <td>{{ run.created_at.strftime('%Y-%m-%d') if run.created_at else '—' }}</td>
+          <td>{{ run.probe_count or '—' }}</td>
+          <td><a href="/api/evidence-pack/{{ run.id }}" class="btn btn-ghost" style="padding:4px 12px;font-size:0.65rem;">Download Pack →</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:0.68rem;color:var(--muted);margin-top:12px;line-height:1.7;">
+    Evidence Packs conform to schema version 1.1 and include SHA-256 tamper-evident hashing, completeness invariant verification (∑PROBES = ∑COMPLETED + ∑HARD_STOPS + ∑ERRORS), structured signals with three-lane verdict system (RED/YELLOW/GREEN), and regulatory alignment metadata (EU AI Act Article 12, NIST RMF).
+  </p>
+</div>
+{% endif %}
+
 {% endblock %}

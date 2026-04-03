@@ -9,6 +9,8 @@ from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, Stre
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 
+from evidence_pack import build_pack
+
 app = FastAPI(title="Control Plane 3", description="MTCP LLM Safety Benchmarking Platform")
 templates = Jinja2Templates(directory="templates")
 
@@ -576,13 +578,30 @@ def model_card_single(request: Request, model_name: str, session: Optional[str] 
             break
     if model is None:
         return HTMLResponse("Model not found", status_code=404)
+
+    # Fetch available evidence packs (runs) for this model
+    runs = []
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("""
+            SELECT id, dataset, temperature, created_at, probe_count
+            FROM runs
+            WHERE model = %s AND dataset IN ('ctrl', 'probes_200', 'probes_500')
+            ORDER BY created_at DESC
+        """, (model_name,))
+        runs = [dict(r) for r in cur.fetchall()]
+        conn.close()
+    except Exception as e:
+        print(f"Error fetching runs: {e}")
+
     return templates.TemplateResponse(
         "model_card_single.html",
         {
             "request": request,
             "user": user,
             "active": "models",
-            "model": model
+            "model": model,
+            "runs": runs
         }
     )
 
@@ -1179,6 +1198,25 @@ def download_certificate(model: str, temperature: float, session: Optional[str] 
 <script>window.onload=function(){{window.print();}}</script>
 </body></html>"""
         return HTMLResponse(content=html)
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+# ── EVIDENCE PACK DOWNLOAD ────────────────────────────────────────────────────
+
+@app.get("/api/evidence-pack/{run_id}")
+def download_evidence_pack(run_id: str, session: Optional[str] = Cookie(default=None)):
+    user, redir = require_login(session)
+    if redir: return redir
+    try:
+        pack = build_pack(run_id)
+        filename = f"evidence_{run_id.replace('/', '_').replace(':', '_')}.json"
+        return JSONResponse(
+            content=pack,
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"',
+                "Content-Type": "application/json"
+            }
+        )
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
