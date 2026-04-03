@@ -13,7 +13,7 @@
   </div>
   <div class="stat-card">
     <div class="stat-value">{{ total_runs | default(0) }}</div>
-    <div class="stat-label">Benchmark Runs</div>
+    <div class="stat-label">Evaluation Runs</div>
   </div>
   <div class="stat-card">
     <div class="stat-value">{{ total_models | default(0) }}</div>
@@ -29,7 +29,7 @@
   <div class="section-head">
     <div>
       <h2>Model Performance</h2>
-      <p>{{ total_models | default(0) }} models · main benchmark average pass rate</p>
+      <p>{{ total_models | default(0) }} models · primary evidence layer average</p>
     </div>
     <a href="/leaderboard" class="btn btn-ghost" style="font-size:0.65rem">Full Leaderboard →</a>
   </div>
