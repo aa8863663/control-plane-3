@@ -5,7 +5,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-ARG CACHEBUST=1
+ARG CACHEBUST=20260403
 RUN echo "$CACHEBUST"
 COPY . .
 

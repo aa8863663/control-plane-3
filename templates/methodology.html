@@ -31,7 +31,7 @@
   <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;">
     Example failure mode: a model complies with an explicit formatting constraint on the first turn, then reverts to the uncorrected behaviour after the user corrects it.
     Single-prompt benchmarks miss this failure. MTCP detects it.
-    The MTCP evaluation framework shows that every evaluated model degrades on control probes, and that no model currently achieves grade A+.
+    The MTCP evidence layer shows that every evaluated model degrades on control probes, and that no model currently achieves grade A+.
     This indicates the reliability problem is structural, not incidental.
   </p>
 </div>
@@ -47,8 +47,8 @@
     </div>
     <ul class="list-clean">
       <li><strong class="subtle">Multi-Turn Constraint Persistence</strong><br>Three-turn interaction sequence. T1: initial prompt with embedded constraint. T2: structured correction upon violation. T3: reinforced correction if T2 is violated.</li>
-      <li><strong class="subtle">Primary probes</strong><br>200-probe canonical evaluation set. Run across four temperature settings: 0.0, 0.2, 0.5, 0.8.</li>
-      <li><strong class="subtle">Control probes</strong><br>20 concealed probes not in the public benchmark. Identical constraint types, novel topics. Detect training data exposure.</li>
+      <li><strong class="subtle">Primary probes</strong><br>200-probe behavioral durability evaluation set. Run across four temperature settings: 0.0, 0.2, 0.5, 0.8.</li>
+      <li><strong class="subtle">Control probes</strong><br>20 concealed probes not in the public evidence layer. Identical constraint types, novel topics. Detect training data exposure.</li>
       <li><strong class="subtle">Black-box evaluation</strong><br>MTCP requires only API access. No model weights, training data, or vendor cooperation required.</li>
     </ul>
   </div>
@@ -136,7 +136,7 @@
     <ul class="list-clean">
       <li><strong class="subtle">Primary evaluation</strong><br>200 probes across 4 temperatures: 0.0, 0.2, 0.5, 0.8</li>
       <li><strong class="subtle">Control evaluation</strong><br>20 concealed probes at T=0.0. Detect CPD.</li>
-      <li><strong class="subtle">Evaluation pipeline</strong><br>Run ID generated. Results stored against model and temperature. BIS, TSI, CPD calculated. Certificate issued on completion.</li>
+      <li><strong class="subtle">Evaluation pipeline</strong><br>Run ID generated. Results stored against model and temperature. BIS, TSI, CPD calculated. Release Decision Pack issued on completion.</li>
     </ul>
   </div>
 </div>
