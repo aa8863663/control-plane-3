@@ -130,47 +130,61 @@ footer a{color:var(--accent2);text-decoration:none;}
 
   <!-- HERO -->
   <div class="hero fade-up">
-    <div class="hero-kicker">AI ASSURANCE · RELEASE GATING · BEHAVIORAL DURABILITY</div>
-    <h1 class="hero-title">Your deployed model <span>stops obeying</span> after you correct it.</h1>
-    <p class="hero-sub">MTCP independently evaluates whether AI models maintain corrected constraints across interaction — not just whether they comply once. Get a Release Decision Pack: empirical evidence, risk signals, and a clear deployment verdict.</p>
+    <div class="hero-kicker">AI RELEASE ASSURANCE · EU AI ACT READY · EMPIRICAL</div>
+    <h1 class="hero-title">Know if your model obeys <span>before you deploy it.</span></h1>
+    <p class="hero-sub">MTCP independently tests whether AI models maintain corrected constraints across interaction. Black-box. DOI-registered. Tamper-evident. 35 frontier models evaluated.</p>
     <div class="hero-actions">
       <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
       <a href="/evidence/public-findings" class="btn btn-outline">View Evidence →</a>
     </div>
     <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:18px;">
-      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ {{ total_models }} frontier models evaluated — compare before you commit</span>
-      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Zero code changes to the model required — fully black-box</span>
-      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Release Decision Pack — EU AI Act ready, tamper-evident, downloadable</span>
+      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Black-box — API access only, no weights or vendor cooperation needed</span>
+      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Empirical — 181,428 real probe interactions, not simulated</span>
+      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Audit-ready — SHA-256 signed Release Decision Pack</span>
     </div>
   </div>
 
+  <!-- REGULATION STRIP -->
+  <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:center;padding:16px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:28px;" class="fade-up fade-up-1">
+    <span style="font-size:0.58rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;flex-shrink:0;">Aligned to:</span>
+    <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">EU AI Act</span>
+    <span style="color:var(--border2)">·</span>
+    <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">NIST AI RMF</span>
+    <span style="color:var(--border2)">·</span>
+    <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">ISO/IEC 42001</span>
+    <span style="color:var(--border2)">·</span>
+    <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">FCA</span>
+    <span style="color:var(--border2)">·</span>
+    <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">MAS FEAT</span>
+  </div>
+
   <!-- EVALUATION WORKFLOW PANEL -->
-  <div class="workflow-panel fade-up fade-up-1">
+  <div class="workflow-panel fade-up fade-up-2">
     <div class="workflow-heading">How MTCP Works</div>
     <div class="workflow-steps">
       <div class="workflow-step">
         <div class="workflow-num">1</div>
-        <div class="workflow-label">Submit model endpoint or API key</div>
+        <div class="workflow-label">Submit API endpoint — no weights or vendor access needed</div>
       </div>
       <div class="workflow-arrow">→</div>
       <div class="workflow-step">
         <div class="workflow-num">2</div>
-        <div class="workflow-label">Run MTCP evaluation</div>
+        <div class="workflow-label">MTCP runs full behavioural durability evaluation</div>
       </div>
       <div class="workflow-arrow">→</div>
       <div class="workflow-step">
         <div class="workflow-num">3</div>
-        <div class="workflow-label">Receive evaluation report</div>
+        <div class="workflow-label">Receive Release Decision Pack — APPROVED / RESTRICTED / REJECTED</div>
       </div>
       <div class="workflow-arrow">→</div>
       <div class="workflow-step">
         <div class="workflow-num">4</div>
-        <div class="workflow-label">Receive Release Decision Pack</div>
+        <div class="workflow-label">Download tamper-evident evidence trail (SHA-256)</div>
       </div>
       <div class="workflow-arrow">→</div>
       <div class="workflow-step">
         <div class="workflow-num">5</div>
-        <div class="workflow-label">Download evidence trail</div>
+        <div class="workflow-label">Gate deployment or satisfy regulatory audit</div>
       </div>
     </div>
     <div class="workflow-cta">
@@ -202,22 +216,19 @@ footer a{color:var(--accent2);text-decoration:none;}
   <!-- WHAT MTCP DETECTS -->
   <div class="grid-3 fade-up fade-up-3">
     <div class="feature-card">
-      <h3>Constraint Persistence</h3>
-      <p>Models must maintain corrected constraints across conversation turns, not only follow initial instructions.</p>
+      <h3>Measure</h3>
+      <p>181,428 probe interactions across 35 frontier models at 4 temperature settings. The largest independent constraint persistence dataset published.</p>
       <div class="feature-meta">Boundary Integrity Score</div>
-      <a href="/methodology">Read Methodology →</a>
     </div>
     <div class="feature-card">
-      <h3>Control Probe Integrity</h3>
-      <p>Concealed control probes detect whether models have been exposed to evaluation methodology during training.</p>
+      <h3>Verify</h3>
+      <p>Concealed control probes detect training data exposure. SHA-256 signed evidence packs. Machine-readable audit trail per run.</p>
       <div class="feature-meta">Control Probe Degradation</div>
-      <a href="/methodology">Read Methodology →</a>
     </div>
     <div class="feature-card">
-      <h3>Temperature Stability</h3>
-      <p>Behaviour must remain consistent across temperature variation, not only perform at T=0.0.</p>
-      <div class="feature-meta">Temporal Stability Index</div>
-      <a href="/methodology">Read Methodology →</a>
+      <h3>Gate</h3>
+      <p>Release Decision Pack delivers APPROVED / APPROVED WITH RESTRICTIONS / REJECTED verdict with runtime guidance and regulatory alignment metadata.</p>
+      <div class="feature-meta">Release Decision Pack</div>
     </div>
   </div>
 
@@ -228,10 +239,10 @@ footer a{color:var(--accent2);text-decoration:none;}
         <div><h2>Who Uses MTCP</h2></div>
       </div>
       <ul class="list-clean">
-        <li><strong style="color:var(--text)">Model Procurement</strong><br>Evaluate candidate models before deployment. Compare Boundary Integrity Score across vendors.</li>
-        <li><strong style="color:var(--text)">Risk Assessment</strong><br>Quantify behavioural reliability. Generate evidence for board approval and audit requirements.</li>
-        <li><strong style="color:var(--text)">AI Governance</strong><br>Demonstrate due diligence. Provide assurance evidence for compliance frameworks.</li>
-        <li><strong style="color:var(--text)">Deployment Gating</strong><br>Set minimum BIS thresholds. Gate production deployment on evaluation results.</li>
+        <li><strong style="color:var(--text)">Procurement Teams</strong><br>Compare 35 evaluated models before vendor selection. Attach MTCP certificate to procurement documentation.</li>
+        <li><strong style="color:var(--text)">AI Risk Officers</strong><br>Empirical evidence for board-level risk sign-off. Quantified BIS, CPD, and TSI scores per model.</li>
+        <li><strong style="color:var(--text)">Compliance Leads</strong><br>EU AI Act Article 12 ready. NIST AI RMF aligned. Audit-ready evidence packs downloadable immediately.</li>
+        <li><strong style="color:var(--text)">Deployment Gatekeepers</strong><br>Set minimum BIS threshold. Block release on REJECTED verdict. Retest after model changes.</li>
       </ul>
     </div>
     <div class="card">
@@ -242,7 +253,7 @@ footer a{color:var(--accent2);text-decoration:none;}
         </div>
       </div>
       <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;margin-bottom:16px;">
-        The public MTCP evidence layer provides comparative release assurance data across evaluated models.
+        The MTCP evidence layer provides comparative release assurance data across 35 independently evaluated frontier models. 181,428 structured probe interactions at four temperature settings.
       </p>
       <a href="/evidence/public-findings" class="btn btn-ghost" style="width:100%;justify-content:center;">View Evidence →</a>
     </div>
@@ -250,10 +261,9 @@ footer a{color:var(--accent2);text-decoration:none;}
 
   <!-- REQUEST EVALUATION CTA -->
   <div class="hero fade-up fade-up-5" style="text-align:center;padding:40px 32px;">
-    <h2 style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--text);margin-bottom:12px;">Request Private Evaluation</h2>
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.8rem;color:var(--text);margin-bottom:12px;">Ready to evaluate your model?</h2>
     <p style="color:var(--muted);font-size:0.78rem;line-height:1.8;max-width:540px;margin:0 auto 24px;">
-      Submit your model endpoint for confidential MTCP evaluation.
-      Receive a Release Decision Pack, full evidence audit trail, and deployment verdict.
+      Submit your endpoint for a confidential MTCP evaluation. Receive a Release Decision Pack, full evidence audit trail, and deployment verdict. EU AI Act ready.
     </p>
     <div class="hero-actions" style="justify-content:center;">
       <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
@@ -265,4 +275,4 @@ footer a{color:var(--accent2);text-decoration:none;}
 
 <footer>
   <p>MTCP · AI Assurance for Large Language Models &nbsp;·&nbsp; <a href="/methodology">Methodology</a> &nbsp;·&nbsp; <a href="/evidence/public-findings">Evidence</a> &nbsp;·&nbsp; <a href="/request-evaluation">Request Evaluation</a></p>
-  <p style="margin-top:8px;">© 2026 A. Abby &nbsp;·&nbsp; DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5">10.17605/OSF.IO/DXGK5</a> &nbsp;·&nbsp; <a href="https://huggingface.co/datasets/aa8899/mtcp-boundary-500">HuggingFace Dataset</a> &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf
+  <p style="margin-top:8px;">© 2026 A. Abby · DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5">10.17605/OSF.IO/DXGK5</a></p>

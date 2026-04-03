@@ -93,7 +93,7 @@ def generate_html_report(data):
 </head>
 <body>
 <h1>Control Plane 3 — Benchmark Report</h1>
-<div class="meta">Generated: {data['generated_at']} &nbsp;|&nbsp; DOI: https://doi.org/10.17605/OSF.IO/DXGK5 &nbsp;|&nbsp; Copyright (c) 2026 aa8863663. All Rights Reserved.</div>
+<div class="meta">Generated: {data['generated_at']} &nbsp;|&nbsp; DOI: https://doi.org/10.17605/OSF.IO/DXGK5 &nbsp;|&nbsp; © 2026 A. Abby. All Rights Reserved.</div>
 <div class="stats">
   <div class="stat"><strong>{data['total_runs']}</strong>Total Runs</div>
   <div class="stat"><strong>{data['total_results']}</strong>Total Results</div>
@@ -105,7 +105,7 @@ def generate_html_report(data):
 <table><tr><th>Temperature</th><th>Total</th><th>Passed</th><th>Failed</th><th>Pass Rate</th><th>Avg Latency</th></tr>{rows_temp}</table>
 <h2>Model Comparison</h2>
 <table><tr><th>Model</th><th>Temperature</th><th>Total</th><th>Passed</th><th>Pass Rate</th></tr>{rows_model}</table>
-<div class="footer">Control Plane 3 &nbsp;|&nbsp; github.com/aa8863663/control-plane-3 &nbsp;|&nbsp; All Rights Reserved</div>
+<div class="footer">MTCP &nbsp;|&nbsp; DOI: 10.17605/OSF.IO/DXGK5 &nbsp;|&nbsp; © 2026 A. Abby. All Rights Reserved.</div>
 </body>
 </html>"""
 
