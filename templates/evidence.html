@@ -48,10 +48,10 @@
           <td class="subtle">{{ row.provider }}</td>
           <td>{{ row.pass_rate }}%</td>
           <td class="subtle">{{ row.drop }}pp</td>
-          <td>{{ row.t0 }}%</td>
-          <td>{{ row.t2 }}%</td>
-          <td>{{ row.t5 }}%</td>
-          <td>{{ row.t8 }}%</td>
+          <td>{% if row.t0 is not none %}{{ row.t0 }}%{% else %}—{% endif %}</td>
+          <td>{% if row.t2 is not none %}{{ row.t2 }}%{% else %}—{% endif %}</td>
+          <td>{% if row.t5 is not none %}{{ row.t5 }}%{% else %}—{% endif %}</td>
+          <td>{% if row.t8 is not none %}{{ row.t8 }}%{% else %}—{% endif %}</td>
           <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
         </tr>
         {% else %}

@@ -132,10 +132,10 @@
             </td>
             <td style="font-size:0.7rem;color:var(--danger)">{{ row.ctrl_rate }}%</td>
             <td style="font-size:0.7rem;color:var(--muted)">{{ row.drop }}pp</td>
-            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t0 }}%</td>
-            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t2 }}%</td>
-            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t5 }}%</td>
-            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{{ row.t8 }}%</td>
+            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{% if row.t0 is not none %}{{ row.t0 }}%{% else %}—{% endif %}</td>
+            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{% if row.t2 is not none %}{{ row.t2 }}%{% else %}—{% endif %}</td>
+            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{% if row.t5 is not none %}{{ row.t5 }}%{% else %}—{% endif %}</td>
+            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{% if row.t8 is not none %}{{ row.t8 }}%{% else %}—{% endif %}</td>
             <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
           </tr>
           {% endfor %}
