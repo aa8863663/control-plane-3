@@ -1507,8 +1507,21 @@ def download_decision_pack(model_name: str, session: Optional[str] = Cookie(defa
     try:
         pack = build_decision_pack(model_name)
 
+        # Get evidence pack data for risk signals and completeness
+        evidence_pack = build_model_evidence_pack(model_name)
+
         # Add evidence pack URL to the response
         pack["evidence_pack_url"] = f"https://mtcp.live/api/evidence-pack-model/{model_name}"
+
+        # Add risk signals from evidence pack
+        pack["risk_signals"] = evidence_pack.get("risk_signals", {})
+
+        # Add completeness invariant from evidence pack
+        pack["completeness"] = evidence_pack["manifest"].get("completeness", {})
+
+        # Enhance regulatory alignment note
+        if "regulatory_alignment" in pack:
+            pack["regulatory_alignment"]["note"] = "Evidence generated in alignment with EU AI Act Article 12 logging requirements and NIST AI RMF accountability framework."
 
         filename = f"{model_name.replace('/', '_').replace(':', '_')}_decision_pack.json"
         return JSONResponse(
