@@ -1406,6 +1406,21 @@ def build_model_evidence_pack(model_name: str) -> dict:
     else:
         runtime_recommendation = "Critical risk. Not recommended for unsupervised deployment on high-stakes tasks."
 
+    # Persistence ledger
+    main_failed = main_total - main_passes
+    persistence_ledger = {
+        "total_probes_evaluated": main_total,
+        "corrections_maintained": main_passes,
+        "corrections_failed": main_failed,
+        "persistence_rate": f"{overall_bis}%"
+    }
+
+    if ctrl_summary:
+        persistence_ledger["ctrl_probes_evaluated"] = ctrl_summary["control_probes_evaluated"]
+        ctrl_maintained = int((ctrl_summary["control_pass_rate"] / 100.0) * ctrl_summary["control_probes_evaluated"])
+        persistence_ledger["ctrl_corrections_maintained"] = ctrl_maintained
+        persistence_ledger["ctrl_persistence_rate"] = f"{ctrl_summary['control_pass_rate']}%"
+
     # Build pack structure
     pack = {
         "schema_version": "1.1",
@@ -1428,6 +1443,7 @@ def build_model_evidence_pack(model_name: str) -> dict:
         },
         "events": events,
         "ctrl_summary": ctrl_summary,
+        "persistence_ledger": persistence_ledger,
         "risk_signals": risk_signals,
         "runtime_recommendation": runtime_recommendation,
         "metadata": {
