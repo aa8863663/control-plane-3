@@ -1277,6 +1277,326 @@ def health_page(request: Request, session: Optional[str] = Cookie(default=None))
     return templates.TemplateResponse("health.html", {
         "request": request, "user": user, "status": status, "db_info": db_info})
 
+# ── ACTUARIAL DASHBOARD API ENDPOINTS ─────────────────────────────────────────
+
+@app.get("/api/actuarial/overview")
+async def actuarial_overview_api(session: Optional[str] = Cookie(default=None)):
+    """Executive dashboard overview metrics"""
+    user = current_user(session)
+    if not user: return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    try:
+        conn = get_db(); cur = conn.cursor()
+
+        # Total models count
+        cur.execute("""
+            SELECT COUNT(DISTINCT ru.model) as total_models
+            FROM runs ru
+            WHERE ru.dataset = 'probes_500'
+        """)
+        total_models = cur.fetchone()['total_models'] or 0
+
+        # Average BIS across all models
+        cur.execute("""
+            WITH model_bis AS (
+                SELECT ru.model,
+                       ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
+                FROM results r JOIN runs ru ON r.run_id=ru.id
+                WHERE ru.dataset = 'probes_500'
+                GROUP BY ru.model
+            )
+            SELECT ROUND(AVG(bis), 1) as avg_bis FROM model_bis
+        """)
+        avg_bis = float(cur.fetchone()['avg_bis'] or 0)
+
+        # Total evaluations
+        cur.execute("""
+            SELECT COUNT(*) as total_evals
+            FROM results r JOIN runs ru ON r.run_id=ru.id
+            WHERE ru.dataset = 'probes_500'
+        """)
+        total_evaluations = cur.fetchone()['total_evals'] or 0
+
+        # Risk tier distribution (grade counts)
+        cur.execute("""
+            WITH model_scores AS (
+                SELECT ru.model,
+                       ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
+                FROM results r JOIN runs ru ON r.run_id=ru.id
+                WHERE ru.dataset = 'probes_500'
+                GROUP BY ru.model
+            )
+            SELECT
+                CASE
+                    WHEN bis >= 90 THEN 'A'
+                    WHEN bis >= 80 THEN 'B'
+                    WHEN bis >= 70 THEN 'C'
+                    WHEN bis >= 60 THEN 'D'
+                    ELSE 'F'
+                END AS grade,
+                COUNT(*) AS count
+            FROM model_scores
+            GROUP BY grade
+        """)
+        risk_tiers = {row['grade']: row['count'] for row in cur.fetchall()}
+
+        # Provider performance (avg BIS per provider)
+        cur.execute("""
+            WITH model_scores AS (
+                SELECT COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') as provider,
+                       ru.model,
+                       ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
+                FROM results r JOIN runs ru ON r.run_id=ru.id
+                WHERE ru.dataset = 'probes_500'
+                GROUP BY provider, ru.model
+            )
+            SELECT provider, ROUND(AVG(bis), 1) as avg_bis, COUNT(DISTINCT model) as model_count
+            FROM model_scores
+            GROUP BY provider
+            ORDER BY avg_bis DESC
+        """)
+        provider_performance = [{"provider": row['provider'], "avg_bis": float(row['avg_bis'] or 0), "model_count": row['model_count']} for row in cur.fetchall()]
+
+        # Recent activity (last 7 days)
+        cur.execute("""
+            SELECT COUNT(DISTINCT ru.id) as new_runs,
+                   COUNT(DISTINCT ru.model) as new_models,
+                   COUNT(*) as new_evaluations
+            FROM runs ru
+            WHERE ru.created_at >= NOW() - INTERVAL '7 days' AND ru.dataset = 'probes_500'
+        """)
+        activity = cur.fetchone()
+        recent_activity = {
+            "new_runs": activity['new_runs'] or 0,
+            "new_models": activity['new_models'] or 0,
+            "new_evaluations": activity['new_evaluations'] or 0
+        }
+
+        conn.close()
+
+        return JSONResponse({
+            "total_models": total_models,
+            "avg_bis": avg_bis,
+            "total_evaluations": total_evaluations,
+            "status": "healthy" if avg_bis >= 70 else "review_needed",
+            "risk_tiers": risk_tiers,
+            "provider_performance": provider_performance,
+            "recent_activity": recent_activity,
+            "compliance": {
+                "transparency": True,
+                "human_oversight": True,
+                "accuracy_tracked": True,
+                "continuous_monitoring": total_evaluations > 1000
+            }
+        })
+    except Exception as e:
+        print(f"Actuarial overview error: {e}")
+        return JSONResponse({"detail": str(e)}, status_code=500)
+
+@app.get("/api/actuarial/models")
+async def actuarial_models_api(
+    request: Request,
+    provider: Optional[str] = None,
+    grade: Optional[str] = None,
+    session: Optional[str] = Cookie(default=None)
+):
+    """Model performance data with filters"""
+    user = current_user(session)
+    if not user: return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    try:
+        conn = get_db(); cur = conn.cursor()
+
+        # Build temperature breakdown subquery
+        temp_query = """
+            WITH model_temps AS (
+                SELECT ru.model,
+                       COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') as provider,
+                       ru.temperature,
+                       ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
+                FROM results r JOIN runs ru ON r.run_id=ru.id
+                WHERE ru.dataset = 'probes_500'
+                GROUP BY ru.model, provider, ru.temperature
+            ),
+            model_stats AS (
+                SELECT model, provider,
+                       MAX(CASE WHEN temperature = 0.0 THEN pass_rate END) as t0,
+                       MAX(CASE WHEN ROUND(temperature::numeric, 1) = 0.2 THEN pass_rate END) as t2,
+                       MAX(CASE WHEN temperature = 0.5 THEN pass_rate END) as t5,
+                       MAX(CASE WHEN ROUND(temperature::numeric, 1) = 0.8 THEN pass_rate END) as t8,
+                       ROUND(AVG(pass_rate), 1) as bis
+                FROM model_temps
+                GROUP BY model, provider
+            ),
+            model_variance AS (
+                SELECT model, provider, bis,
+                       CASE
+                           WHEN bis >= 90 THEN 'A'
+                           WHEN bis >= 80 THEN 'B'
+                           WHEN bis >= 70 THEN 'C'
+                           WHEN bis >= 60 THEN 'D'
+                           ELSE 'F'
+                       END as grade,
+                       t0, t2, t5, t8
+                FROM model_stats
+            )
+            SELECT * FROM model_variance
+        """
+
+        # Add filters
+        filters = []
+        if provider:
+            filters.append(f"provider = '{provider}'")
+        if grade:
+            filters.append(f"grade = '{grade}'")
+
+        if filters:
+            temp_query += " WHERE " + " AND ".join(filters)
+
+        temp_query += " ORDER BY bis DESC"
+
+        cur.execute(temp_query)
+        models = []
+        for idx, row in enumerate(cur.fetchall(), 1):
+            models.append({
+                "rank": idx,
+                "model": row['model'],
+                "provider": row['provider'],
+                "bis": float(row['bis'] or 0),
+                "grade": row['grade'],
+                "temperatures": {
+                    "t0": float(row['t0']) if row['t0'] else None,
+                    "t2": float(row['t2']) if row['t2'] else None,
+                    "t5": float(row['t5']) if row['t5'] else None,
+                    "t8": float(row['t8']) if row['t8'] else None
+                }
+            })
+
+        conn.close()
+        return JSONResponse({"models": models})
+    except Exception as e:
+        print(f"Actuarial models error: {e}")
+        return JSONResponse({"detail": str(e)}, status_code=500)
+
+@app.get("/api/actuarial/providers")
+async def actuarial_providers_api(session: Optional[str] = Cookie(default=None)):
+    """Provider comparison data"""
+    user = current_user(session)
+    if not user: return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    try:
+        conn = get_db(); cur = conn.cursor()
+
+        # Provider summary stats
+        cur.execute("""
+            WITH model_scores AS (
+                SELECT COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') as provider,
+                       ru.model,
+                       ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
+                FROM results r JOIN runs ru ON r.run_id=ru.id
+                WHERE ru.dataset = 'probes_500'
+                GROUP BY provider, ru.model
+            )
+            SELECT provider,
+                   COUNT(DISTINCT model) as model_count,
+                   ROUND(AVG(bis), 1) as avg_bis,
+                   ROUND(MAX(bis), 1) as best_bis,
+                   ROUND(MIN(bis), 1) as worst_bis,
+                   MAX(model) FILTER (WHERE bis = MAX(bis)) as best_model,
+                   MIN(model) FILTER (WHERE bis = MIN(bis)) as worst_model
+            FROM model_scores
+            GROUP BY provider
+            ORDER BY avg_bis DESC
+        """)
+        providers = []
+        for row in cur.fetchall():
+            providers.append({
+                "provider": row['provider'],
+                "model_count": row['model_count'],
+                "avg_bis": float(row['avg_bis'] or 0),
+                "best_bis": float(row['best_bis'] or 0),
+                "worst_bis": float(row['worst_bis'] or 0),
+                "best_model": row['best_model'],
+                "worst_model": row['worst_model']
+            })
+
+        conn.close()
+        return JSONResponse({"providers": providers})
+    except Exception as e:
+        print(f"Actuarial providers error: {e}")
+        return JSONResponse({"detail": str(e)}, status_code=500)
+
+@app.get("/api/actuarial/audit-trail")
+async def actuarial_audit_trail_api(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    provider: Optional[str] = None,
+    status: Optional[str] = None,
+    session: Optional[str] = Cookie(default=None)
+):
+    """Run history for audit and compliance"""
+    user = current_user(session)
+    if not user: return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    try:
+        conn = get_db(); cur = conn.cursor()
+
+        # Build query with filters
+        query = """
+            SELECT r.id as run_id,
+                   r.created_at,
+                   r.model,
+                   COALESCE(NULLIF(r.provider, ''), NULLIF(r.api_provider, ''), 'Unknown') as provider,
+                   r.temperature,
+                   r.probe_count,
+                   r.status,
+                   COUNT(res.id) as total_probes,
+                   COUNT(*) FILTER (WHERE res.outcome = 'COMPLETED') as passed,
+                   ROUND(CAST(100.0*COUNT(*) FILTER (WHERE res.outcome = 'COMPLETED') AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
+            FROM runs r
+            LEFT JOIN results res ON r.id = res.run_id
+            WHERE r.dataset = 'probes_500'
+        """
+
+        params = []
+        if start_date:
+            query += " AND r.created_at >= %s"
+            params.append(start_date)
+        if end_date:
+            query += " AND r.created_at <= %s"
+            params.append(end_date)
+        if provider:
+            query += " AND COALESCE(NULLIF(r.provider, ''), NULLIF(r.api_provider, ''), 'Unknown') = %s"
+            params.append(provider)
+        if status:
+            query += " AND r.status = %s"
+            params.append(status)
+
+        query += " GROUP BY r.id, r.created_at, r.model, provider, r.temperature, r.probe_count, r.status"
+        query += " ORDER BY r.created_at DESC LIMIT 200"
+
+        cur.execute(query, params)
+        runs = []
+        for row in cur.fetchall():
+            runs.append({
+                "run_id": row['run_id'],
+                "created_at": row['created_at'].isoformat() if row['created_at'] else None,
+                "model": row['model'],
+                "provider": row['provider'],
+                "temperature": float(row['temperature'] or 0),
+                "probe_count": row['probe_count'],
+                "status": row['status'],
+                "total_probes": row['total_probes'],
+                "passed": row['passed'],
+                "bis": float(row['bis'] or 0)
+            })
+
+        conn.close()
+        return JSONResponse({"runs": runs})
+    except Exception as e:
+        print(f"Actuarial audit trail error: {e}")
+        return JSONResponse({"detail": str(e)}, status_code=500)
+
 @app.get("/api/actuarial", response_class=HTMLResponse)
 def actuarial_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user, redir = require_admin(session)

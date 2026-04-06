@@ -1,205 +1,493 @@
 {% extends "base.html" %}
-{% block title %}Actuarial Analysis — MTCP{% endblock %}
+{% block title %}Actuarial Dashboard — MTCP{% endblock %}
 {% block head %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* Actuarial Dashboard Styles */
+.actuarial-dashboard { margin-top: -44px; }
+.tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 32px; overflow-x: auto; }
+.tab { background: transparent; border: none; padding: 14px 24px; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted);
+  cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s;
+  white-space: nowrap; }
+.tab:hover { color: var(--text); background: rgba(0,0,0,0.02); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); background: rgba(37,99,235,0.05); }
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Metric cards */
+.metric-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+.metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
+.metric-value { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--text); line-height: 1; }
+.metric-label { font-size: 0.62rem; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; margin-top: 10px; }
+.metric-sublabel { font-size: 0.58rem; color: var(--muted); margin-top: 4px; }
+
+/* Risk heatmap */
+.risk-heatmap { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px; }
+.risk-item { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 16px;
+  display: flex; align-items: center; justify-content: space-between; }
+.risk-label { font-size: 0.7rem; font-weight: 600; }
+.risk-count { font-family: 'DM Serif Display', serif; font-size: 1.4rem; }
+.risk-a { border-left: 3px solid #16a34a; }
+.risk-b { border-left: 3px solid #2563eb; }
+.risk-c { border-left: 3px solid #d97706; }
+.risk-d { border-left: 3px solid #ef4444; }
+.risk-f { border-left: 3px solid #991b1b; }
+
+/* Models table */
+.models-table { width: 100%; border-collapse: collapse; }
+.models-table th { text-align: left; padding: 12px; font-size: 0.62rem; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--muted); border-bottom: 1px solid var(--border); }
+.models-table td { padding: 14px 12px; border-bottom: 1px solid var(--border); font-size: 0.75rem; }
+.models-table tr:hover td { background: rgba(0,0,0,0.02); cursor: pointer; }
+.models-table .model-name { font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+.models-table .provider-tag { font-size: 0.58rem; color: var(--muted); background: var(--surface2);
+  padding: 2px 8px; border-radius: 3px; margin-left: 8px; }
+
+/* Providers table */
+.providers-table { width: 100%; border-collapse: collapse; }
+.providers-table th { text-align: left; padding: 12px; font-size: 0.62rem; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--muted); border-bottom: 1px solid var(--border); }
+.providers-table td { padding: 14px 12px; border-bottom: 1px solid var(--border); font-size: 0.75rem; }
+.providers-table tr:hover td { background: rgba(0,0,0,0.02); }
+
+/* Audit table */
+.audit-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
+.audit-table th { text-align: left; padding: 10px 12px; font-size: 0.58rem; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--muted); border-bottom: 1px solid var(--border); }
+.audit-table td { padding: 11px 12px; border-bottom: 1px solid var(--border); }
+.audit-table tr:hover td { background: rgba(0,0,0,0.02); }
+.audit-table .run-id { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+.audit-table .status-badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.58rem;
+  text-transform: uppercase; letter-spacing: 0.5px; }
+.status-completed { background: rgba(22,163,74,0.12); color: #16a34a; }
+.status-failed { background: rgba(239,68,68,0.12); color: #ef4444; }
+
+/* Filters */
+.filters { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.filter-btn { background: var(--surface); border: 1px solid var(--border); color: var(--muted);
+  padding: 6px 14px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+  letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
+.filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+.filter-btn.active { background: rgba(37,99,235,0.08); border-color: var(--accent); color: var(--accent); }
+
+/* Loading state */
+.loading { text-align: center; padding: 40px; color: var(--muted); font-size: 0.72rem; }
+
+/* Empty state */
+.empty { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 0.75rem; }
+
+@media(max-width:900px){
+  .metric-cards { grid-template-columns: repeat(2, 1fr); }
+  .risk-heatmap { grid-template-columns: 1fr; }
+}
+</style>
 {% endblock %}
 {% block content %}
 <div class="page-header fade-up">
-  <h1>Actuarial <span>Analysis</span></h1>
-  <p>Temperature stability and failure classification across evaluated models.</p>
+  <h1>Actuarial <span>Dashboard</span></h1>
+  <p>Enterprise-grade analytics and model governance · Real-time insights across all evaluations</p>
 </div>
 
-
-<div class="act-summary fade-up fade-up-1" id="actSummary">
-  <div class="act-summary-card"><div class="act-summary-val" id="sumModels">—</div><div class="act-summary-lbl">Models</div></div>
-  <div class="act-summary-card"><div class="act-summary-val" id="sumArch">—</div><div class="act-summary-lbl">Low Variance</div></div>
-  <div class="act-summary-card"><div class="act-summary-val" id="sumStoch">—</div><div class="act-summary-lbl">Higher Variance</div></div>
-  <div class="act-summary-card"><div class="act-summary-val" id="sumAvg">—</div><div class="act-summary-lbl">Avg Pass Rate</div></div>
-</div>
-
-<!-- PIE CHART -->
-<div class="card fade-up fade-up-2" style="margin-bottom:22px;">
-  <div class="section-head">
-    <div>
-      <h2>Failure Classification</h2>
-      <p>Operational summary only. This view groups models by how much pass rate shifts across temperature settings. It is not a formal MTCP metric. Classification threshold: variance &lt;5pp = Low variance · variance ≥5pp = Higher variance.</p>
-    </div>
+<div class="actuarial-dashboard fade-up fade-up-1">
+  <!-- Tab Navigation -->
+  <div class="tabs">
+    <button class="tab active" data-tab="overview">Overview</button>
+    <button class="tab" data-tab="models">Models</button>
+    <button class="tab" data-tab="providers">Providers</button>
+    <button class="tab" data-tab="audit">Audit Trail</button>
   </div>
-  <div class="pie-wrap">
-    <canvas id="pieChart" width="220" height="220"></canvas>
-    <div class="pie-legend">
-      <div class="pie-legend-item">
-        <div class="pie-legend-dot" style="background:#3b9eff"></div>
-        <div>
-          <strong style="color:var(--text)" id="archCount">—</strong> Low variance
-          <div style="font-size:0.7rem;margin-top:4px;line-height:1.7;">Behaviour remains similar across temperature settings.</div>
-        </div>
+
+  <!-- Overview Tab -->
+  <div id="overview-tab" class="tab-content active">
+    <div class="metric-cards">
+      <div class="metric-card">
+        <div class="metric-value" id="overview-total-models">—</div>
+        <div class="metric-label">Total Models</div>
       </div>
-      <div class="pie-legend-item">
-        <div class="pie-legend-dot" style="background:#f5a623"></div>
-        <div>
-          <strong style="color:var(--text)" id="stochCount">—</strong> Higher variance
-          <div style="font-size:0.7rem;margin-top:4px;line-height:1.7;">Behaviour shifts more as temperature changes.</div>
-        </div>
+      <div class="metric-card">
+        <div class="metric-value" id="overview-avg-bis">—</div>
+        <div class="metric-label">Average BIS</div>
+        <div class="metric-sublabel" id="overview-status">—</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="overview-total-evals">—</div>
+        <div class="metric-label">Total Evaluations</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="overview-activity">—</div>
+        <div class="metric-label">Recent Activity</div>
+        <div class="metric-sublabel">Last 7 days</div>
       </div>
     </div>
+
+    <div class="card" style="margin-bottom:24px">
+      <div class="section-head" style="margin-bottom:20px">
+        <h2>Risk Distribution</h2>
+      </div>
+      <div class="risk-heatmap" id="risk-heatmap">
+        <div class="risk-item risk-a">
+          <div><div class="risk-label">🟢 High Trust (A)</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px">BIS ≥90%</div></div>
+          <div class="risk-count" id="risk-a">0</div>
+        </div>
+        <div class="risk-item risk-b">
+          <div><div class="risk-label">🔵 Good (B)</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px">BIS 80-89%</div></div>
+          <div class="risk-count" id="risk-b">0</div>
+        </div>
+        <div class="risk-item risk-c">
+          <div><div class="risk-label">🟡 Review (C)</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px">BIS 70-79%</div></div>
+          <div class="risk-count" id="risk-c">0</div>
+        </div>
+        <div class="risk-item risk-d">
+          <div><div class="risk-label">🟠 Caution (D)</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px">BIS 60-69%</div></div>
+          <div class="risk-count" id="risk-d">0</div>
+        </div>
+        <div class="risk-item risk-f">
+          <div><div class="risk-label">🔴 High Risk (F)</div><div style="font-size:0.62rem;color:var(--muted);margin-top:2px">BIS <60%</div></div>
+          <div class="risk-count" id="risk-f">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-head" style="margin-bottom:20px">
+        <h2>Provider Performance</h2>
+      </div>
+      <canvas id="providerChart" height="100"></canvas>
+    </div>
+  </div>
+
+  <!-- Models Tab -->
+  <div id="models-tab" class="tab-content">
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterModels('all', this)">All Models</button>
+      <button class="filter-btn" onclick="filterModels('A', this)">Grade A</button>
+      <button class="filter-btn" onclick="filterModels('B', this)">Grade B</button>
+      <button class="filter-btn" onclick="filterModels('C', this)">Grade C</button>
+      <button class="filter-btn" onclick="filterModels('D', this)">Grade D</button>
+      <button class="filter-btn" onclick="filterModels('F', this)">Grade F</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table class="models-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Model</th>
+              <th>Provider</th>
+              <th>BIS</th>
+              <th>Grade</th>
+              <th>T=0.0</th>
+              <th>T=0.2</th>
+              <th>T=0.5</th>
+              <th>T=0.8</th>
+            </tr>
+          </thead>
+          <tbody id="models-tbody">
+            <tr><td colspan="9" class="loading">Loading models...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Providers Tab -->
+  <div id="providers-tab" class="tab-content">
+    <div class="card">
+      <div class="table-wrap">
+        <table class="providers-table">
+          <thead>
+            <tr>
+              <th>Provider</th>
+              <th>Models</th>
+              <th>Avg BIS</th>
+              <th>Best Model</th>
+              <th>Best BIS</th>
+              <th>Worst Model</th>
+              <th>Worst BIS</th>
+            </tr>
+          </thead>
+          <tbody id="providers-tbody">
+            <tr><td colspan="7" class="loading">Loading providers...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Trail Tab -->
+  <div id="audit-tab" class="tab-content">
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterAudit('all', this)">All Runs</button>
+      <button class="filter-btn" onclick="filterAudit('7d', this)">Last 7 Days</button>
+      <button class="filter-btn" onclick="filterAudit('30d', this)">Last 30 Days</button>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table class="audit-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Run ID</th>
+              <th>Model</th>
+              <th>Provider</th>
+              <th>Temp</th>
+              <th>Probes</th>
+              <th>Passed</th>
+              <th>BIS</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="audit-tbody">
+            <tr><td colspan="9" class="loading">Loading audit trail...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
-
-<div class="act-filters fade-up fade-up-3" style="margin-top:8px;">
-  <button class="act-filter-btn active" onclick="filter('all',this)">All</button>
-  <button class="act-filter-btn" onclick="filter('arch',this)">Low Variance</button>
-  <button class="act-filter-btn" onclick="filter('stoch',this)">Higher Variance</button>
-  <button class="act-filter-btn" onclick="sort('rate',this)">Sort: Pass Rate</button>
-  <button class="act-filter-btn" onclick="sort('variance',this)">Sort: Variance</button>
-  <button class="act-filter-btn" onclick="sort('name',this)">Sort: Name</button>
-</div>
-
-<div class="act-grid fade-up fade-up-4" id="actGrid"></div>
 
 <script>
-const raw = {{ rows | tojson }};
+let currentTab = 'overview';
+let allModels = [];
+let allRuns = [];
+let providerChart = null;
 
-const modelMap = {};
-raw.forEach(r => {
-  const m = r.model;
-  const t = parseFloat(r.temperature);
-  if (!modelMap[m]) modelMap[m] = {};
-  const key = t === 0.0 ? 't0' : t === 0.2 ? 't2' : t === 0.5 ? 't5' : t === 0.8 ? 't8' : null;
-  if (key) modelMap[m][key] = parseFloat(r.pass_rate);
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const tabName = tab.dataset.tab;
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(tabName + '-tab').classList.add('active');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentTab = tabName;
+    loadTabData(tabName);
+  });
 });
 
-function gradeOf(p) {
-  return p >= 90 ? 'A' : p >= 80 ? 'B' : p >= 70 ? 'C' : p >= 60 ? 'D' : 'F';
+// Load data on page load
+loadTabData('overview');
+
+// Auto-refresh overview every 30 seconds
+setInterval(() => {
+  if (currentTab === 'overview') {
+    loadTabData('overview');
+  }
+}, 30000);
+
+async function loadTabData(tab) {
+  switch(tab) {
+    case 'overview':
+      await loadOverview();
+      break;
+    case 'models':
+      await loadModels();
+      break;
+    case 'providers':
+      await loadProviders();
+      break;
+    case 'audit':
+      await loadAuditTrail();
+      break;
+  }
 }
 
-function barColor(pct) {
-  if (pct >= 80) return 'var(--accent)';
-  if (pct >= 70) return 'var(--accent2)';
-  if (pct >= 60) return 'var(--warn)';
-  return 'var(--danger)';
-}
+async function loadOverview() {
+  try {
+    const response = await fetch('/api/actuarial/overview');
+    const data = await response.json();
 
-const models = Object.keys(modelMap).map(m => {
-  const d = modelMap[m];
-  const vals = [d.t0, d.t2, d.t5, d.t8].filter(v => v !== undefined);
-  const variance = vals.length > 1 ? parseFloat((Math.max(...vals) - Math.min(...vals)).toFixed(1)) : 0;
-  const avg = vals.length ? parseFloat((vals.reduce((s,v)=>s+v,0)/vals.length).toFixed(1)) : 0;
-  return { model: m, d, vals, variance, avg, grade: gradeOf(avg), isArch: variance < 5 };
-});
+    document.getElementById('overview-total-models').textContent = data.total_models;
+    document.getElementById('overview-avg-bis').textContent = data.avg_bis.toFixed(1) + '%';
+    document.getElementById('overview-status').textContent = data.status === 'healthy' ? '✓ Healthy' : '⚠ Review Needed';
+    document.getElementById('overview-total-evals').textContent = data.total_evaluations.toLocaleString();
+    document.getElementById('overview-activity').textContent = data.recent_activity.new_runs + ' runs';
 
-const archCount = models.filter(m=>m.isArch).length;
-const stochCount = models.filter(m=>!m.isArch).length;
+    // Risk tiers
+    document.getElementById('risk-a').textContent = data.risk_tiers.A || 0;
+    document.getElementById('risk-b').textContent = data.risk_tiers.B || 0;
+    document.getElementById('risk-c').textContent = data.risk_tiers.C || 0;
+    document.getElementById('risk-d').textContent = data.risk_tiers.D || 0;
+    document.getElementById('risk-f').textContent = data.risk_tiers.F || 0;
 
-// Summary stats
-document.getElementById('sumModels').textContent = models.length;
-document.getElementById('sumArch').textContent = archCount;
-document.getElementById('sumStoch').textContent = stochCount;
-document.getElementById('archCount').textContent = archCount;
-document.getElementById('stochCount').textContent = stochCount;
-const overallAvg = models.length ? (models.reduce((s,m)=>s+m.avg,0)/models.length).toFixed(1) : 0;
-document.getElementById('sumAvg').textContent = overallAvg + '%';
+    // Provider performance chart
+    const providers = data.provider_performance;
+    const labels = providers.map(p => p.provider);
+    const values = providers.map(p => p.avg_bis);
+    const colors = values.map(v => v >= 80 ? '#2563eb' : v >= 70 ? '#d97706' : '#ef4444');
 
-// Pie chart
-new Chart(document.getElementById('pieChart'), {
-  type: 'pie',
-  data: {
-    labels: ['Architectural', 'Stochastic'],
-    datasets: [{
-      data: [archCount, stochCount],
-      backgroundColor: ['#2563eb', '#d4a843'],
-      borderColor: '#f8f9fa',
-      borderWidth: 3
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: ctx => ` ${ctx.label}: ${ctx.raw} model${ctx.raw !== 1 ? 's' : ''}`
+    if (providerChart) {
+      providerChart.destroy();
+    }
+
+    const ctx = document.getElementById('providerChart').getContext('2d');
+    providerChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors,
+          borderRadius: 4,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => ` ${ctx.parsed.x.toFixed(1)}% BIS`
+            }
+          }
+        },
+        scales: {
+          x: {
+            min: 0,
+            max: 100,
+            ticks: {
+              color: '#64748b',
+              font: { family: 'JetBrains Mono', size: 10 },
+              callback: v => v + '%'
+            },
+            grid: { color: '#e2e8f0' }
+          },
+          y: {
+            ticks: {
+              color: '#64748b',
+              font: { family: 'JetBrains Mono', size: 10 }
+            },
+            grid: { display: false }
+          }
         }
       }
-    }
+    });
+  } catch (error) {
+    console.error('Error loading overview:', error);
   }
-});
-
-let currentFilter = 'all';
-let currentSort = 'rate';
-
-function renderCard(m) {
-  const temps = [{k:'t0',l:'T=0.0'},{k:'t2',l:'T=0.2'},{k:'t5',l:'T=0.5'},{k:'t8',l:'T=0.8'}];
-  const bars = temps.map(({k,l}) => {
-    const v = m.d[k];
-    if (v === undefined) return `<div class="act-bar-row">
-      <span class="act-bar-label">${l}</span>
-      <div class="act-bar-track"></div>
-      <span class="act-bar-val" style="color:var(--muted)">—</span>
-    </div>`;
-    return `<div class="act-bar-row">
-      <span class="act-bar-label">${l}</span>
-      <div class="act-bar-track"><div class="act-bar-fill" style="width:${v}%;background:${barColor(v)}"></div></div>
-      <span class="act-bar-val">${v}%</span>
-    </div>`;
-  }).join('');
-
-  const gradeColors = {A:'var(--accent)',B:'var(--accent2)',C:'var(--warn)',D:'var(--danger)',F:'#ff8b8b'};
-  const gc = gradeColors[m.grade];
-
-  return `<div class="act-card" data-type="${m.isArch?'arch':'stoch'}">
-    <div class="act-card-header">
-      <div class="act-model-name">${m.model}</div>
-      <div class="act-badges">
-        <span class="act-class-badge ${m.isArch?'badge-arch':'badge-stoch'}">${m.isArch?'Arch':'Stoch'}</span>
-        <span class="grade grade-${m.grade}">${m.grade}</span>
-      </div>
-    </div>
-    <div class="act-bars">${bars}</div>
-    <div class="act-variance-row">
-      <span>Avg: <strong style="color:${gc}">${m.avg}%</strong></span>
-      <span>Variance: <strong style="color:${m.variance>=5?'var(--warn)':'var(--muted)'}">${m.variance}pp</strong></span>
-    </div>
-  </div>`;
 }
 
-function getSorted(f, s) {
-  let list = [...models];
-  if (f === 'arch') list = list.filter(m => m.isArch);
-  if (f === 'stoch') list = list.filter(m => !m.isArch);
-  if (s === 'rate') list.sort((a,b) => b.avg - a.avg);
-  if (s === 'variance') list.sort((a,b) => b.variance - a.variance);
-  if (s === 'name') list.sort((a,b) => a.model.localeCompare(b.model));
-  return list;
-}
+async function loadModels(grade = null) {
+  try {
+    const url = grade ? `/api/actuarial/models?grade=${grade}` : '/api/actuarial/models';
+    const response = await fetch(url);
+    const data = await response.json();
+    allModels = data.models;
 
-function renderGrid() {
-  const list = getSorted(currentFilter, currentSort);
-  document.getElementById('actGrid').innerHTML = list.length
-    ? list.map(renderCard).join('')
-    : '<p style="color:var(--muted);font-size:0.72rem;padding:24px">No models match this filter.</p>';
-}
-
-function filter(type, btn) {
-  currentFilter = type;
-  document.querySelectorAll('.act-filter-btn').forEach(b => {
-    if (['all','architectural','stochastic'].includes(b.textContent.toLowerCase().trim())) {
-      b.classList.remove('active');
+    const tbody = document.getElementById('models-tbody');
+    if (allModels.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" class="empty">No models found</td></tr>';
+      return;
     }
-  });
-  btn.classList.add('active');
-  renderGrid();
+
+    tbody.innerHTML = allModels.map(m => {
+      const gradeColors = {A:'#16a34a',B:'#2563eb',C:'#d97706',D:'#ef4444',F:'#991b1b'};
+      const gradeColor = gradeColors[m.grade];
+      return `<tr>
+        <td style="color:var(--muted)">#${m.rank}</td>
+        <td class="model-name">${m.model}</td>
+        <td><span class="provider-tag">${m.provider}</span></td>
+        <td style="font-weight:600;color:${gradeColor}">${m.bis.toFixed(1)}%</td>
+        <td><span class="grade grade-${m.grade}">${m.grade}</span></td>
+        <td>${m.temperatures.t0 ? m.temperatures.t0.toFixed(1) + '%' : '—'}</td>
+        <td>${m.temperatures.t2 ? m.temperatures.t2.toFixed(1) + '%' : '—'}</td>
+        <td>${m.temperatures.t5 ? m.temperatures.t5.toFixed(1) + '%' : '—'}</td>
+        <td>${m.temperatures.t8 ? m.temperatures.t8.toFixed(1) + '%' : '—'}</td>
+      </tr>`;
+    }).join('');
+  } catch (error) {
+    console.error('Error loading models:', error);
+    document.getElementById('models-tbody').innerHTML = '<tr><td colspan="9" class="empty">Error loading models</td></tr>';
+  }
 }
 
-function sort(type, btn) {
-  currentSort = type;
-  document.querySelectorAll('.act-filter-btn').forEach(b => {
-    if (b.textContent.startsWith('Sort:')) b.classList.remove('active');
-  });
-  btn.classList.add('active');
-  renderGrid();
+async function loadProviders() {
+  try {
+    const response = await fetch('/api/actuarial/providers');
+    const data = await response.json();
+
+    const tbody = document.getElementById('providers-tbody');
+    if (data.providers.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="empty">No providers found</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = data.providers.map(p => {
+      return `<tr>
+        <td style="font-weight:600">${p.provider}</td>
+        <td style="color:var(--muted)">${p.model_count}</td>
+        <td style="font-weight:600;color:var(--accent)">${p.avg_bis.toFixed(1)}%</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:0.68rem">${p.best_model}</td>
+        <td style="color:#16a34a;font-weight:600">${p.best_bis.toFixed(1)}%</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:0.68rem">${p.worst_model}</td>
+        <td style="color:#ef4444;font-weight:600">${p.worst_bis.toFixed(1)}%</td>
+      </tr>`;
+    }).join('');
+  } catch (error) {
+    console.error('Error loading providers:', error);
+    document.getElementById('providers-tbody').innerHTML = '<tr><td colspan="7" class="empty">Error loading providers</td></tr>';
+  }
 }
 
-renderGrid();
+async function loadAuditTrail(filter = 'all') {
+  try {
+    let url = '/api/actuarial/audit-trail';
+    if (filter === '7d') {
+      const date = new Date();
+      date.setDate(date.getDate() - 7);
+      url += `?start_date=${date.toISOString()}`;
+    } else if (filter === '30d') {
+      const date = new Date();
+      date.setDate(date.getDate() - 30);
+      url += `?start_date=${date.toISOString()}`;
+    }
+
+    const response = await fetch(url);
+    const data = await response.json();
+    allRuns = data.runs;
+
+    const tbody = document.getElementById('audit-tbody');
+    if (allRuns.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="9" class="empty">No runs found</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = allRuns.map(r => {
+      const date = new Date(r.created_at);
+      const dateStr = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      const statusClass = r.bis >= 70 ? 'status-completed' : 'status-failed';
+      return `<tr>
+        <td style="color:var(--muted);font-size:0.68rem">${dateStr}</td>
+        <td class="run-id">${r.run_id.substring(0, 8)}</td>
+        <td style="font-family:'JetBrains Mono',monospace;font-size:0.68rem">${r.model}</td>
+        <td style="color:var(--muted)">${r.provider}</td>
+        <td style="color:var(--muted)">${r.temperature.toFixed(1)}</td>
+        <td style="color:var(--muted)">${r.total_probes}</td>
+        <td style="font-weight:600">${r.passed}</td>
+        <td style="font-weight:600">${r.bis.toFixed(1)}%</td>
+        <td><span class="status-badge ${statusClass}">${r.status}</span></td>
+      </tr>`;
+    }).join('');
+  } catch (error) {
+    console.error('Error loading audit trail:', error);
+    document.getElementById('audit-tbody').innerHTML = '<tr><td colspan="9" class="empty">Error loading audit trail</td></tr>';
+  }
+}
+
+function filterModels(grade, btn) {
+  document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadModels(grade === 'all' ? null : grade);
+}
+
+function filterAudit(filter, btn) {
+  document.querySelectorAll('.filters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadAuditTrail(filter);
+}
 </script>
 {% endblock %}
