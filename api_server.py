@@ -311,7 +311,7 @@ def public_redirect():
 
 @app.get("/evidence/dashboard", response_class=HTMLResponse)
 def evidence_dashboard_redirect():
-    return RedirectResponse(url="/dashboard", status_code=301)
+    return RedirectResponse(url="/evidence/public-findings", status_code=301)
 
 @app.get("/benchmark", response_class=HTMLResponse)
 def benchmark_page(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -1035,6 +1035,8 @@ def compare_page(request: Request, session: Optional[str] = Cookie(default=None)
     if redir: return redir
     try:
         conn = get_db(); cur = conn.cursor()
+
+        # Get comparison data
         cur.execute("""
             SELECT ru.model, ru.temperature,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
@@ -1043,11 +1045,21 @@ def compare_page(request: Request, session: Optional[str] = Cookie(default=None)
             GROUP BY ru.model, ru.temperature ORDER BY ru.model, ru.temperature""")
         data = [{"model": r["model"], "temperature": float(r["temperature"] or 0), "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]
         total_models = len({d["model"] for d in data})
+
+        # Get stats for cards
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
+        total_runs = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        total_results = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP' AND run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        hard_stops = cur.fetchone()['n'] or 0
+
         conn.close()
     except Exception as e:
-        print(f"Compare error: {e}"); data=[]; total_models=0
+        print(f"Compare error: {e}"); data=[]; total_models=0; total_runs=0; total_results=0; hard_stops=0
     return templates.TemplateResponse("compare.html", {
-        "request": request, "user": user, "active": "compare", "compare_data": data, "total_models": total_models})
+        "request": request, "user": user, "active": "compare", "compare_data": data,
+        "total_models": total_models, "total_runs": total_runs, "total_results": total_results, "hard_stops": hard_stops})
 
 @app.get("/run-evaluation", response_class=HTMLResponse)
 def run_benchmark_page(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -1615,17 +1627,32 @@ def actuarial_page(request: Request, session: Optional[str] = Cookie(default=Non
     if redir: return redir
     try:
         conn = get_db(); cur = conn.cursor()
+
+        # Get model data
         cur.execute("""
             SELECT ru.temperature, ru.model,
                    ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
             FROM results r JOIN runs ru ON r.run_id=ru.id
             WHERE ru.dataset = 'probes_500'
             GROUP BY ru.temperature, ru.model ORDER BY ru.temperature, pass_rate DESC""")
-        rows = [{"temperature": float(r["temperature"] or 0), "model": r["model"], "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]; conn.close()
+        rows = [{"temperature": float(r["temperature"] or 0), "model": r["model"], "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]
+
+        # Get stats for cards
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
+        total_runs = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        total_results = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
+        total_models = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP' AND run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        hard_stops = cur.fetchone()['n'] or 0
+
+        conn.close()
     except Exception as e:
-        print(f"Actuarial error: {e}"); rows=[]
+        print(f"Actuarial error: {e}"); rows=[]; total_runs=0; total_results=0; total_models=0; hard_stops=0
     return templates.TemplateResponse("actuarial.html", {
-        "request": request, "user": user, "active": "actuarial", "rows": rows})
+        "request": request, "user": user, "active": "actuarial", "rows": rows,
+        "total_runs": total_runs, "total_results": total_results, "total_models": total_models, "hard_stops": hard_stops})
 
 @app.get("/api/actuarial/export-csv")
 async def export_audit_trail_csv(

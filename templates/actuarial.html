@@ -90,7 +90,26 @@
   <p>Enterprise-grade analytics and model governance · Real-time insights across all evaluations</p>
 </div>
 
-<div class="actuarial-dashboard fade-up fade-up-1">
+<div class="stats-grid fade-up fade-up-1" style="margin-bottom:28px">
+  <div class="stat-card">
+    <div class="stat-value">{{ total_runs }}</div>
+    <div class="stat-label">Total Runs</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_results }}</div>
+    <div class="stat-label">Total Evaluations</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--danger)">{{ hard_stops }}</div>
+    <div class="stat-label">Hard Stops</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_models }}</div>
+    <div class="stat-label">Models Evaluated</div>
+  </div>
+</div>
+
+<div class="actuarial-dashboard fade-up fade-up-2">
   <!-- Tab Navigation -->
   <div class="tabs">
     <button class="tab active" data-tab="overview">Overview</button>

@@ -9,7 +9,26 @@
   <p>Pass rate by temperature across all {{ total_models }} models</p>
 </div>
 
-<div class="card fade-up fade-up-1">
+<div class="stats-grid fade-up fade-up-1" style="margin-bottom:28px">
+  <div class="stat-card">
+    <div class="stat-value">{{ total_runs }}</div>
+    <div class="stat-label">Total Runs</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_results }}</div>
+    <div class="stat-label">Total Evaluations</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" style="color:var(--danger)">{{ hard_stops }}</div>
+    <div class="stat-label">Hard Stops</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_models }}</div>
+    <div class="stat-label">Models Evaluated</div>
+  </div>
+</div>
+
+<div class="card fade-up fade-up-2">
   <div class="section-head">
     <div><h2>Temperature response curves</h2><p>How each model's pass rate changes across T=0.0, 0.2, 0.5, 0.8</p></div>
   </div>
