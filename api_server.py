@@ -456,6 +456,8 @@ def evidence_page(request: Request, session: Optional[str] = Cookie(default=None
     models = get_leaderboard_data()
     try:
         conn = get_db(); cur = conn.cursor()
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
+        total_models = cur.fetchone()['n'] or 0
         cur.execute("""
             SELECT COUNT(*) AS n
             FROM results r
@@ -465,7 +467,7 @@ def evidence_page(request: Request, session: Optional[str] = Cookie(default=None
         total_results = f"{cur.fetchone()['n'] or 0:,}"
         conn.close()
     except Exception as e:
-        print(f"Evidence page error: {e}"); total_results = "0"
+        print(f"Evidence page error: {e}"); total_results = "0"; total_models = 0
     return templates.TemplateResponse(
         "evidence.html",
         {
@@ -473,7 +475,8 @@ def evidence_page(request: Request, session: Optional[str] = Cookie(default=None
             "user": user,
             "active": "evidence",
             "models": models,
-            "total_results": total_results
+            "total_results": total_results,
+            "total_models": total_models
         }
     )
 
@@ -786,10 +789,12 @@ def buyer_brief_page(request: Request, session: Optional[str] = Cookie(default=N
         conn = get_db(); cur = conn.cursor()
         cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
         total_models = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(*) AS n FROM results")
+        total_results = f"{cur.fetchone()['n'] or 0:,}"
         conn.close()
     except Exception as e:
-        print(f"Buyer brief error: {e}"); total_models = 0
-    return templates.TemplateResponse("buyer_brief.html", {"request": request, "user": user, "active": "buyer-brief", "total_models": total_models})
+        print(f"Buyer brief error: {e}"); total_models = 0; total_results = "0"
+    return templates.TemplateResponse("buyer_brief.html", {"request": request, "user": user, "active": "buyer-brief", "total_models": total_models, "total_results": total_results})
 
 @app.get("/pricing")
 def pricing(request: Request):
@@ -2080,10 +2085,39 @@ def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
             FROM results r JOIN runs ru ON r.run_id=ru.id
             WHERE ru.dataset = 'probes_500'
             GROUP BY model ORDER BY model""")
-        rows = [dict(r) for r in cur.fetchall()]; conn.close()
+        rows = [dict(r) for r in cur.fetchall()]
+
+        # Calculate stats
+        total_runs = sum(r['runs'] for r in rows)
+        total_probes = sum(r['probes'] for r in rows)
+        model_count = len(rows)
+        avg_probes = int(total_probes / model_count) if model_count > 0 else 0
+        models = [r['model'] for r in rows]
+        probe_counts = [r['probes'] for r in rows]
+
+        conn.close()
     except Exception as e:
-        print(f"Costs error: {e}"); rows=[]
-    return templates.TemplateResponse("costs.html", {"request": request, "user": user, "rows": rows})
+        print(f"Costs error: {e}")
+        rows = []
+        total_runs = 0
+        total_probes = 0
+        model_count = 0
+        avg_probes = 0
+        models = []
+        probe_counts = []
+
+    return templates.TemplateResponse("costs.html", {
+        "request": request,
+        "user": user,
+        "active": "costs",
+        "rows": rows,
+        "total_runs": total_runs,
+        "total_probes": f"{total_probes:,}",
+        "model_count": model_count,
+        "avg_probes": f"{avg_probes:,}",
+        "models": models,
+        "probe_counts": probe_counts
+    })
 
 
 @app.get("/settings/api-keys", response_class=HTMLResponse)

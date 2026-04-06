@@ -4,7 +4,7 @@
 <div class="page-header fade-up">
   <h1>MTCP <span>Methodology</span></h1>
   <p>
-    MTCP is a black-box AI release assurance framework for evaluating whether large language models maintain corrected constraints during interaction. DOI-registered methodology. {{ total_models }} models evaluated. 181,428 probe interactions.
+    MTCP is a black-box AI release assurance framework for evaluating whether large language models maintain corrected constraints during interaction. DOI-registered methodology. {{ total_models }} models evaluated. {{ total_results }} probe interactions.
   </p>
 </div>
 
@@ -74,7 +74,7 @@
     </div>
     <ul class="list-clean">
       <li><strong class="subtle">Multi-Turn Constraint Persistence</strong><br>Three-turn interaction sequence. T1: initial prompt with embedded constraint. T2: structured correction upon violation. T3: reinforced correction if T2 is violated.</li>
-      <li><strong class="subtle">Primary probes</strong><br>181,428-probe evaluation across three run modes. Four temperature settings: 0.0, 0.2, 0.5, 0.8.</li>
+      <li><strong class="subtle">Primary probes</strong><br>{{ total_results }}-probe evaluation across three run modes. Four temperature settings: 0.0, 0.2, 0.5, 0.8.</li>
       <li><strong class="subtle">Control probes</strong><br>20 concealed probes not in the public evidence layer. Identical constraint types, novel topics. Detect training data exposure.</li>
       <li><strong class="subtle">Black-box evaluation</strong><br>MTCP requires only API access. No model weights, training data, or vendor cooperation required.</li>
     </ul>

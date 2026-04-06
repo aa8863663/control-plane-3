@@ -6,9 +6,38 @@
   <p>Runs and probe counts by model across all evaluation activity</p>
 </div>
 
-<div class="card fade-up fade-up-1">
+<!-- Stats Cards -->
+<div class="stats-grid fade-up fade-up-1" style="margin-bottom:28px">
+  <div class="stat-card">
+    <div class="stat-value">{{ total_runs }}</div>
+    <div class="stat-label">Total Runs</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ total_probes }}</div>
+    <div class="stat-label">Total Probes</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ model_count }}</div>
+    <div class="stat-label">Models</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ avg_probes }}</div>
+    <div class="stat-label">Avg Probes/Model</div>
+  </div>
+</div>
+
+<!-- Probes by Model Chart -->
+<div class="card fade-up fade-up-2" style="margin-bottom:24px">
   <div class="section-head">
-    <div><h2>Runs and probes by model</h2></div>
+    <div><h2>Probes by Model</h2></div>
+  </div>
+  <canvas id="costsChart" height="80"></canvas>
+</div>
+
+<!-- Table -->
+<div class="card fade-up fade-up-3">
+  <div class="section-head">
+    <div><h2>Detailed Breakdown</h2></div>
   </div>
   <div class="table-wrap">
     <table>
@@ -31,4 +60,44 @@
     </table>
   </div>
 </div>
+
+<script>
+const labels = {{ models | tojson }};
+const data = {{ probe_counts | tojson }};
+const colors = '#2563eb';
+new Chart(document.getElementById('costsChart'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      data,
+      backgroundColor: colors,
+      borderRadius: 4,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        ticks: {
+          color: '#64748b',
+          font: { family: 'JetBrains Mono', size: 10 },
+          maxRotation: 45
+        },
+        grid: { color: '#e2e8f0' }
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: '#64748b',
+          font: { family: 'JetBrains Mono', size: 10 }
+        },
+        grid: { color: '#e2e8f0' }
+      }
+    }
+  }
+});
+</script>
 {% endblock %}

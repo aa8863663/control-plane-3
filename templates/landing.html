@@ -140,7 +140,7 @@ footer a{color:var(--accent2);text-decoration:none;}
     </div>
     <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:18px;">
       <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Black-box — API access only, no weights or vendor cooperation needed</span>
-      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Empirical — 181,428 real probe interactions, not simulated</span>
+      <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Empirical — {{ total_results }} real probe interactions, not simulated</span>
       <span style="font-size:0.65rem;color:var(--muted);letter-spacing:1px;">✓ Audit-ready — SHA-256 signed Release Decision Pack</span>
     </div>
   </div>
@@ -218,7 +218,7 @@ footer a{color:var(--accent2);text-decoration:none;}
   <div class="grid-3 fade-up fade-up-3">
     <div class="feature-card">
       <h3>Measure</h3>
-      <p>181,428 probe interactions across {{ total_models }} frontier models at 4 temperature settings. The largest independent constraint persistence dataset published.</p>
+      <p>{{ total_results }} probe interactions across {{ total_models }} frontier models at 4 temperature settings. The largest independent constraint persistence dataset published.</p>
       <div class="feature-meta">Boundary Integrity Score</div>
     </div>
     <div class="feature-card">
@@ -254,7 +254,7 @@ footer a{color:var(--accent2);text-decoration:none;}
         </div>
       </div>
       <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;margin-bottom:16px;">
-        The MTCP evidence layer provides comparative release assurance data across {{ total_models }} independently evaluated frontier models. 181,428 structured probe interactions at four temperature settings.
+        The MTCP evidence layer provides comparative release assurance data across {{ total_models }} independently evaluated frontier models. {{ total_results }} structured probe interactions at four temperature settings.
       </p>
       <a href="/evidence/public-findings" class="btn btn-ghost" style="width:100%;justify-content:center;">View Evidence →</a>
     </div>
