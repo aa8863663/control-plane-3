@@ -38,9 +38,7 @@ def check_password(plain, stored):
     try:
         return _bcrypt.checkpw(plain.encode(), stored.encode())
     except Exception:
-        # fallback for any legacy SHA-256 hashes still in DB
-        import hashlib
-        return hashlib.sha256(plain.encode()).hexdigest() == stored
+        return False
 
 def get_user_from_token(token):
     if not token: return None
@@ -679,6 +677,18 @@ def pricing(request: Request):
         "request": request, "active": "pricing",
         "total_models": total_models, "total_results": f"{total_results:,}",
         "total_runs": total_runs, "pass_range": f"{mn}–{mx}%"})
+
+@app.get("/terms", response_class=HTMLResponse)
+def terms_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    return templates.TemplateResponse(
+        "terms.html",
+        {
+            "request": request,
+            "user": user,
+            "active": "terms"
+        }
+    )
 
 @app.get("/request-evaluation", response_class=HTMLResponse)
 def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):
