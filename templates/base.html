@@ -263,6 +263,7 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
     <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
     <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
     <li><a href="/methodology" {% if active=='methodology' %}class="active"{% endif %}>Methodology</a></li>
+    <li><a href="/settings/api-keys" {% if active=='settings' %}class="active"{% endif %}>Settings</a></li>
     {% if user.is_admin %}
     <li><a href="/benchmark" {% if active=='benchmark' %}class="active"{% endif %}>Benchmark</a></li>
     <li><a href="/admin" {% if active=='admin' %}class="active"{% endif %}>Admin</a></li>

@@ -1314,8 +1314,20 @@ def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
 
 @app.get("/settings/api-keys", response_class=HTMLResponse)
 def api_keys_page(request: Request, session: Optional[str] = Cookie(default=None)):
-    user, redir = require_admin(session)
+    user, redir = require_login(session)
     if redir: return redir
+
+    # Load providers from providers.json
+    providers = []
+    try:
+        with open("providers.json", "r") as f:
+            providers_data = json.load(f)
+            providers = sorted(list(set(p["provider"] for p in providers_data if p.get("enabled", True))))
+    except Exception as e:
+        print(f"Error loading providers: {e}")
+        providers = ["openai", "anthropic", "groq", "mistral", "cohere", "google", "nvidia", "fireworks", "cerebras", "bedrock"]
+
+    # Get user's keys
     keys = {}
     try:
         conn = get_db(); cur = conn.cursor()
@@ -1323,8 +1335,9 @@ def api_keys_page(request: Request, session: Optional[str] = Cookie(default=None
         keys = {r["provider"]: r["key_value"] for r in cur.fetchall()}
         conn.close()
     except: pass
+
     return templates.TemplateResponse("api_keys_settings.html", {
-        "request": request, "current_user": user, "keys": keys})
+        "request": request, "user": user, "active": "settings", "keys": keys, "providers": providers})
 
 @app.post("/api/user-keys/save")
 async def save_provider_key(request: Request, session: Optional[str] = Cookie(default=None)):
