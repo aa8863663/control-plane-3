@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}Benchmark Runner — MTCP{% endblock %}
+{% block extra_styles %}
+<style>
+.radio-group{display:flex;gap:12px;flex-wrap:wrap;}
+.radio-option{position:relative;}
+.radio-option input[type="radio"]{position:absolute;opacity:0;}
+.radio-option label{display:block;padding:10px 16px;border:1px solid var(--border);border-radius:4px;background:var(--surface2);cursor:pointer;font-size:0.72rem;transition:all 0.15s;}
+.radio-option input[type="radio"]:checked + label{border-color:var(--accent);background:rgba(37,99,235,0.08);color:var(--accent);}
+.radio-option label:hover{border-color:var(--border2);}
+.run-table{margin-top:24px;}
+.run-table th{font-size:0.58rem;}
+.run-table td{font-size:0.72rem;}
+.status-badge{display:inline-block;padding:3px 8px;border-radius:3px;font-size:0.58rem;text-transform:uppercase;letter-spacing:1px;}
+.status-running{background:rgba(37,99,235,0.1);color:var(--accent);border:1px solid rgba(37,99,235,0.2);}
+.status-completed{background:rgba(22,163,74,0.1);color:#16a34a;border:1px solid rgba(22,163,74,0.2);}
+.status-failed{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.2);}
+.status-pending{background:rgba(212,168,67,0.1);color:var(--warn);border:1px solid rgba(212,168,67,0.2);}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Benchmark <span>Runner</span></h1>
+  <p>Admin-only interface to launch MTCP evaluations. Configure parameters and monitor execution.</p>
+</div>
+
+<div class="card fade-up fade-up-1" style="margin-bottom:20px;">
+  <div class="section-head">
+    <div>
+      <h2>Launch Evaluation Run</h2>
+      <p>Configure model, provider, dataset, and temperature settings.</p>
+    </div>
+  </div>
+
+  {% if error %}
+  <div class="notice error" style="margin-bottom:16px;">
+    <strong>Error:</strong> {{ error }}
+  </div>
+  {% endif %}
+
+  <form method="post" action="/benchmark">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Model Name</label>
+        <input name="model" required placeholder="e.g. gpt-4o, claude-sonnet-4" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label>Provider</label>
+        <select name="provider" required>
+          <option value="">Select provider...</option>
+          {% for p in providers %}
+          <option value="{{ p }}">{{ p }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Dataset</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" id="dataset-main" name="dataset" value="probes_500.json" checked>
+          <label for="dataset-main">Main (500 probes)</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="dataset-200" name="dataset" value="probes_200.json">
+          <label for="dataset-200">Quick (200 probes)</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="dataset-ctrl" name="dataset" value="probes_control_20.json">
+          <label for="dataset-ctrl">Control (20 probes)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Temperature</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" id="temp-0" name="temperature" value="0.0" checked>
+          <label for="temp-0">0.0</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="temp-02" name="temperature" value="0.2">
+          <label for="temp-02">0.2</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="temp-05" name="temperature" value="0.5">
+          <label for="temp-05">0.5</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" id="temp-08" name="temperature" value="0.8">
+          <label for="temp-08">0.8</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Probe Count <span style="color:var(--muted);font-size:0.7rem">(override dataset default, optional)</span></label>
+      <input type="number" name="probe_count" min="1" max="500" placeholder="Leave blank to use dataset default">
+    </div>
+
+    <div style="margin-top:20px;">
+      <button type="submit" class="btn btn-primary">Launch Benchmark Run</button>
+    </div>
+  </form>
+</div>
+
+<div class="card fade-up fade-up-2 run-table">
+  <div class="section-head">
+    <div>
+      <h2>Recent Runs</h2>
+      <p>Last 10 evaluation runs. Click run ID to view details.</p>
+    </div>
+  </div>
+
+  {% if recent_runs and recent_runs|length > 0 %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Run ID</th>
+          <th>Model</th>
+          <th>Provider</th>
+          <th>Dataset</th>
+          <th>Temp</th>
+          <th>Probes</th>
+          <th>Status</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for run in recent_runs %}
+        <tr>
+          <td style="font-family:var(--mono);font-size:0.68rem;">{{ run.id[:12] }}...</td>
+          <td style="font-family:var(--mono);">{{ run.model }}</td>
+          <td><span class="badge">{{ run.provider or run.api_provider or '—' }}</span></td>
+          <td>{{ run.dataset or '—' }}</td>
+          <td>{{ run.temperature if run.temperature is not none else '—' }}</td>
+          <td>{{ run.probe_count or '—' }}</td>
+          <td>
+            <span class="status-badge status-{{ run.status or 'pending' }}">
+              {{ run.status or 'pending' }}
+            </span>
+          </td>
+          <td>{{ run.created_at.strftime('%Y-%m-%d %H:%M') if run.created_at else '—' }}</td>
+          <td>
+            <a href="/run-status/{{ run.id }}" class="btn btn-ghost" style="padding:4px 10px;font-size:0.6rem;">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">No recent runs found.</div>
+  {% endif %}
+</div>
+
+{% endblock %}
