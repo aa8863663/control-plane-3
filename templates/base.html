@@ -20,13 +20,15 @@ body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospa
 
 /* ── NAV ──────────────────────────────────────────────────────────────── */
 nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);padding:0 28px;height:58px;
-  display:flex;align-items:center;justify-content:space-between;gap:20px;}
+  border-bottom:1px solid var(--border);}
+.nav-container{display:flex;flex-direction:column;}
+.nav-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 28px;min-height:58px;}
+.nav-row.admin-tools{background:rgba(0,0,0,0.02);border-top:1px solid var(--border);padding-top:10px;padding-bottom:10px;}
 .nav-logo{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text);text-decoration:none;white-space:nowrap;}
 .nav-logo span{color:var(--accent);}
-.nav-links{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;overflow-x:auto;}
 .nav-links a{font-size:0.65rem;color:#475569;text-decoration:none;letter-spacing:1.2px;
-  text-transform:uppercase;padding:7px 11px;border-radius:3px;transition:color 0.15s,background 0.15s,border-color 0.15s;}
+  text-transform:uppercase;padding:7px 11px;border-radius:3px;transition:color 0.15s,background 0.15s,border-color 0.15s;white-space:nowrap;}
 .nav-links a:hover{color:var(--text);background:rgba(0,0,0,0.04);}
 .nav-links a.active{color:var(--accent);background:rgba(37,99,235,0.07);}
 .nav-cta{border:1px solid rgba(37,99,235,0.35);color:var(--accent2)!important;background:rgba(37,99,235,0.06);}
@@ -170,8 +172,10 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
   .workflow-step{min-width:140px;}
 }
 @media(max-width:768px){
-  nav{padding:0 14px;height:auto;min-height:58px;align-items:flex-start;padding-top:10px;padding-bottom:10px;}
-  .nav-links{display:none;}
+  .nav-row{padding:0 14px;min-height:48px;flex-wrap:wrap;}
+  .nav-row.admin-tools{padding-top:8px;padding-bottom:8px;}
+  .nav-links{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;}
+  .nav-user{flex-wrap:wrap;}
   .page{padding:22px 14px 48px;}
   .grid-3,.model-grid,.kpi-row,.stats-grid,.form-grid,.grid-2{grid-template-columns:1fr;}
   .hero-title{font-size:1.8rem;}
@@ -255,35 +259,86 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
 <body>
 <div class="grid-bg"></div>
 <nav>
-  <a href="/" class="nav-logo">MTCP<span>.</span></a>
-  <ul class="nav-links">
-    {% if user %}
-    <li><a href="/" {% if active=='platform' or active=='home' %}class="active"{% endif %}>Platform</a></li>
-    <li><a href="/run-evaluation" {% if active=='run' %}class="active"{% endif %}>Evaluate</a></li>
-    <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
-    <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
-    <li><a href="/methodology" {% if active=='methodology' %}class="active"{% endif %}>Methodology</a></li>
-    <li><a href="/settings/api-keys" {% if active=='settings' %}class="active"{% endif %}>Settings</a></li>
-    {% if user.is_admin %}
-    <li><a href="/benchmark" {% if active=='benchmark' %}class="active"{% endif %}>Benchmark</a></li>
-    <li><a href="/admin" {% if active=='admin' %}class="active"{% endif %}>Admin</a></li>
-    {% endif %}
-    <li><a href="/request-evaluation" class="nav-cta {% if active=='request' %}active{% endif %}">Request Evaluation</a></li>
-    {% else %}
-    <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
-    <li><a href="/methodology" {% if active=='methodology' %}class="active"{% endif %}>Methodology</a></li>
-    <li><a href="/buyer-brief" {% if active=='buyer-brief' %}class="active"{% endif %}>Buyer Brief</a></li>
-    <li><a href="/request-evaluation" {% if active=='request' %}class="active"{% endif %}>Request Evaluation</a></li>
-    <li><a href="/register">Register</a></li>
-    <li><a href="/login" class="nav-cta">Login</a></li>
-    {% endif %}
-  </ul>
-  <div class="nav-user">
-    {% if user %}
-    <span class="nav-user-name">{{ user.username }}</span>
-    <a href="/logout" class="nav-logout">Sign out</a>
-    {% endif %}
+  {% if user and user.is_admin %}
+  {# ── ADMIN: Two-row navigation ────────────────────────────────────────── #}
+  <div class="nav-container">
+    {# Top row: Content pages #}
+    <div class="nav-row">
+      <a href="/" class="nav-logo">MTCP<span>.</span></a>
+      <ul class="nav-links">
+        <li><a href="/dashboard" {% if active=='dashboard' %}class="active"{% endif %}>Dashboard</a></li>
+        <li><a href="/leaderboard" {% if active=='leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
+        <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
+        <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
+        <li><a href="/evidence/dashboard" {% if active=='evidence-dashboard' %}class="active"{% endif %}>Evidence Dashboard</a></li>
+        <li><a href="/api/actuarial" {% if active=='actuarial' %}class="active"{% endif %}>Actuarial</a></li>
+        <li><a href="/api/compare" {% if active=='compare' %}class="active"{% endif %}>Compare</a></li>
+        <li><a href="/api/costs" {% if active=='costs' %}class="active"{% endif %}>Costs</a></li>
+        <li><a href="/stats" {% if active=='stats' %}class="active"{% endif %}>Stats</a></li>
+        <li><a href="/certificate" {% if active=='certificate' %}class="active"{% endif %}>Certificate</a></li>
+        <li><a href="/methodology" {% if active=='methodology' %}class="active"{% endif %}>Methodology</a></li>
+      </ul>
+      <div class="nav-user">
+        <span class="nav-user-name">{{ user.username }}</span>
+      </div>
+    </div>
+    {# Bottom row: Admin tools #}
+    <div class="nav-row admin-tools">
+      <div></div>
+      <ul class="nav-links">
+        <li><a href="/benchmark" {% if active=='benchmark' %}class="active"{% endif %}>Benchmark</a></li>
+        <li><a href="/run-evaluation" {% if active=='run' %}class="active"{% endif %}>Run Evaluation</a></li>
+        <li><a href="/ctrl-probes" {% if active=='ctrl-probes' %}class="active"{% endif %}>Ctrl Probes</a></li>
+        <li><a href="/admin" {% if active=='admin' %}class="active"{% endif %}>Admin</a></li>
+        <li><a href="/admin/evaluation-requests" {% if active=='eval-requests' %}class="active"{% endif %}>Eval Requests</a></li>
+        <li><a href="/settings/api-keys" {% if active=='settings' %}class="active"{% endif %}>Settings</a></li>
+      </ul>
+      <div class="nav-user">
+        <a href="/logout" class="nav-logout">Logout</a>
+      </div>
+    </div>
   </div>
+  {% elif user and user.is_approved %}
+  {# ── APPROVED USER: Single-row navigation ─────────────────────────────── #}
+  <div class="nav-row">
+    <a href="/" class="nav-logo">MTCP<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="/dashboard" {% if active=='dashboard' %}class="active"{% endif %}>Dashboard</a></li>
+      <li><a href="/leaderboard" {% if active=='leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
+      <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
+      <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
+      <li><a href="/api/actuarial" {% if active=='actuarial' %}class="active"{% endif %}>Actuarial</a></li>
+      <li><a href="/api/compare" {% if active=='compare' %}class="active"{% endif %}>Compare</a></li>
+      <li><a href="/stats" {% if active=='stats' %}class="active"{% endif %}>Stats</a></li>
+      <li><a href="/certificate" {% if active=='certificate' %}class="active"{% endif %}>Certificate</a></li>
+      <li><a href="/methodology" {% if active=='methodology' %}class="active"{% endif %}>Methodology</a></li>
+      <li><a href="/settings/api-keys" {% if active=='settings' %}class="active"{% endif %}>Settings</a></li>
+      <li><a href="/request-evaluation" {% if active=='request' %}class="active"{% endif %}>Request Evaluation</a></li>
+    </ul>
+    <div class="nav-user">
+      <span class="nav-user-name">{{ user.username }}</span>
+      <a href="/logout" class="nav-logout">Logout</a>
+    </div>
+  </div>
+  {% else %}
+  {# ── PUBLIC: Not logged in ────────────────────────────────────────────── #}
+  <div class="nav-row">
+    <a href="/" class="nav-logo">MTCP<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="/landing" {% if active=='landing' %}class="active"{% endif %}>Landing</a></li>
+      <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
+      <li><a href="/public-leaderboard" {% if active=='public-leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
+      <li><a href="/methodology" {% if active=='methodology' %}class="active"{% endif %}>Methodology</a></li>
+      <li><a href="/buyer-brief" {% if active=='buyer-brief' %}class="active"{% endif %}>Buyer Brief</a></li>
+      <li><a href="/pricing" {% if active=='pricing' %}class="active"{% endif %}>Pricing</a></li>
+      <li><a href="/terms" {% if active=='terms' %}class="active"{% endif %}>Terms</a></li>
+      <li><a href="/request-evaluation" {% if active=='request' %}class="active"{% endif %}>Request Evaluation</a></li>
+      <li><a href="/register" {% if active=='register' %}class="active"{% endif %}>Register</a></li>
+      <li><a href="/login" class="nav-cta {% if active=='login' %}active{% endif %}">Login</a></li>
+    </ul>
+    <div class="nav-user"></div>
+  </div>
+  {% endif %}
 </nav>
 <div class="page">{% block content %}{% endblock %}</div>
 <footer style="text-align:center;padding:32px 20px;border-top:1px solid var(--border);margin-top:48px;font-size:0.68rem;color:var(--muted);">
