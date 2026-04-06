@@ -1625,7 +1625,7 @@ def actuarial_page(request: Request, session: Optional[str] = Cookie(default=Non
     except Exception as e:
         print(f"Actuarial error: {e}"); rows=[]
     return templates.TemplateResponse("actuarial.html", {
-        "request": request, "user": user, "rows": rows})
+        "request": request, "user": user, "active": "actuarial", "rows": rows})
 
 @app.get("/api/actuarial/export-csv")
 async def export_audit_trail_csv(
