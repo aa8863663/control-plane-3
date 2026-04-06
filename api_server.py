@@ -1875,7 +1875,7 @@ async def export_executive_pdf(session: Optional[str] = Cookie(default=None)):
     # Footer
     c.setFont("Helvetica", 8)
     c.drawString(1*inch, 0.5*inch, u"\u00A9 2026 A. Abby. All Rights Reserved.")
-    c.drawString(1*inch, 0.3*inch, "MTCP Platform - https://mtcp-live.fly.dev")
+    c.drawString(1*inch, 0.3*inch, "MTCP Platform - https://mtcp.live")
 
     c.save()
     buffer.seek(0)
