@@ -1264,6 +1264,7 @@ def build_model_evidence_pack(model_name: str) -> dict:
     events = []
     run_ids = []
     dataset_versions = set()
+    temperatures_present = set()
     provider = runs[0]['provider']
 
     for run in runs:
@@ -1301,6 +1302,8 @@ def build_model_evidence_pack(model_name: str) -> dict:
         run_ids.append(run['id'])
         if run['dataset']:
             dataset_versions.add(run['dataset'])
+        if run['temperature'] is not None:
+            temperatures_present.add(float(run['temperature']))
 
     # Get control probe summary
     cur.execute("""
@@ -1343,6 +1346,24 @@ def build_model_evidence_pack(model_name: str) -> dict:
 
     conn.close()
 
+    # Completeness invariant check
+    expected_datasets = {"probes_500", "ctrl"}
+    datasets_present = list(dataset_versions)
+    datasets_missing = list(expected_datasets - dataset_versions)
+
+    expected_temps = {0.0, 0.2, 0.5, 0.8}
+    temperature_coverage = {
+        "0.0": 0.0 in temperatures_present,
+        "0.2": 0.2 in temperatures_present,
+        "0.5": 0.5 in temperatures_present,
+        "0.8": 0.8 in temperatures_present
+    }
+
+    datasets_score = f"{len(datasets_present)}/{len(expected_datasets)} datasets"
+    temps_score = f"{sum(temperature_coverage.values())}/{len(expected_temps)} temperatures"
+    completeness_score = f"{datasets_score}, {temps_score}"
+    invariant_satisfied = len(datasets_missing) == 0 and all(temperature_coverage.values())
+
     # Build pack structure
     pack = {
         "schema_version": "1.1",
@@ -1354,7 +1375,14 @@ def build_model_evidence_pack(model_name: str) -> dict:
             "run_ids": run_ids,
             "dataset_versions": sorted(list(dataset_versions)),
             "earliest_evaluation": events[-1]['created_at'] if events else None,
-            "latest_evaluation": events[0]['created_at'] if events else None
+            "latest_evaluation": events[0]['created_at'] if events else None,
+            "completeness": {
+                "datasets_present": sorted(datasets_present),
+                "datasets_missing": sorted(datasets_missing),
+                "temperature_coverage": temperature_coverage,
+                "completeness_score": completeness_score,
+                "invariant_satisfied": invariant_satisfied
+            }
         },
         "events": events,
         "ctrl_summary": ctrl_summary,
