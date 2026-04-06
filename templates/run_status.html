@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block title %}Run Status — MTCP{% endblock %}
+{% block extra_styles %}
+<style>
+.status-hero{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:24px;margin-bottom:20px;}
+.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.status-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;}
+.status-label{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);margin-bottom:8px;}
+.status-value{font-family:'DM Serif Display',serif;font-size:1.5rem;color:var(--text);}
+.progress-bar{height:8px;background:rgba(0,0,0,0.08);border-radius:4px;overflow:hidden;margin-top:12px;}
+.progress-fill{height:100%;background:var(--accent);border-radius:4px;transition:width 0.3s ease;}
+.status-badge{display:inline-block;padding:4px 12px;border-radius:4px;font-size:0.62rem;text-transform:uppercase;letter-spacing:1.2px;font-weight:600;}
+.status-running{background:rgba(37,99,235,0.1);color:var(--accent);border:1px solid rgba(37,99,235,0.25);}
+.status-completed{background:rgba(22,163,74,0.1);color:#16a34a;border:1px solid rgba(22,163,74,0.25);}
+.status-failed{background:rgba(239,68,68,0.1);color:var(--danger);border:1px solid rgba(239,68,68,0.25);}
+.status-pending{background:rgba(212,168,67,0.1);color:var(--warn);border:1px solid rgba(212,168,67,0.25);}
+.pulse{animation:pulse 2s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+</style>
+{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Run <span>Status</span></h1>
+  <p>Real-time status for evaluation run <span style="font-family:var(--mono);color:var(--accent);">{{ run.id[:16] }}...</span></p>
+</div>
+
+<div class="status-hero fade-up fade-up-1">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+    <div>
+      <h2 style="font-size:1.2rem;margin-bottom:6px;">{{ run.model }}</h2>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="badge">{{ run.provider or run.api_provider or 'Unknown' }}</span>
+        <span style="font-size:0.68rem;color:var(--muted);">T={{ run.temperature if run.temperature is not none else '—' }}</span>
+        <span style="font-size:0.68rem;color:var(--muted);">{{ run.dataset or '—' }}</span>
+      </div>
+    </div>
+    <span class="status-badge status-{{ run.status or 'pending' }}" id="status-badge">
+      <span id="status-text">{{ run.status or 'pending' }}</span>
+    </span>
+  </div>
+
+  {% if run.status == 'running' %}
+  <div class="progress-bar">
+    <div class="progress-fill pulse" id="progress-fill" style="width:50%;"></div>
+  </div>
+  <p style="font-size:0.68rem;color:var(--muted);margin-top:8px;">
+    <span id="progress-text">Evaluation in progress...</span>
+  </p>
+  {% endif %}
+</div>
+
+<div class="status-grid fade-up fade-up-2">
+  <div class="status-card">
+    <div class="status-label">Run ID</div>
+    <div style="font-family:var(--mono);font-size:0.72rem;color:var(--text);word-break:break-all;">{{ run.id }}</div>
+  </div>
+  <div class="status-card">
+    <div class="status-label">Probe Count</div>
+    <div class="status-value" id="probe-count">{{ run.probe_count or '—' }}</div>
+  </div>
+  <div class="status-card">
+    <div class="status-label">Created</div>
+    <div style="font-size:0.75rem;color:var(--text);margin-top:8px;">{{ run.created_at.strftime('%Y-%m-%d %H:%M:%S') if run.created_at else '—' }}</div>
+  </div>
+  <div class="status-card">
+    <div class="status-label">Status</div>
+    <div style="font-size:0.75rem;color:var(--text);margin-top:8px;text-transform:uppercase;" id="status-detail">{{ run.status or 'pending' }}</div>
+  </div>
+</div>
+
+<div id="results-section" style="display:{% if run.status == 'completed' %}block{% else %}none{% endif %};">
+  <div class="card fade-up fade-up-3">
+    <div class="section-head">
+      <div>
+        <h2>Evaluation Results</h2>
+        <p>Summary statistics and downloadable artifacts.</p>
+      </div>
+    </div>
+
+    <div class="stats-grid" id="results-stats" style="margin-bottom:20px;">
+      <div class="stat-card">
+        <div class="stat-label">BIS</div>
+        <div class="stat-value" id="bis-value">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pass Rate</div>
+        <div class="stat-value" id="pass-rate-value">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Total Probes</div>
+        <div class="stat-value" id="total-probes-value">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Grade</div>
+        <div class="stat-value" id="grade-value">—</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+      <a href="/api/evidence-pack/{{ run.id }}" class="btn btn-primary">Download Evidence Pack</a>
+      <a href="/model-cards/{{ run.model }}" class="btn btn-ghost">View Model Card</a>
+      <a href="/benchmark" class="btn btn-ghost">Launch Another Run</a>
+    </div>
+  </div>
+</div>
+
+<div id="error-section" style="display:{% if run.status == 'failed' %}block{% else %}none{% endif %};">
+  <div class="card fade-up fade-up-3">
+    <div class="notice error">
+      <strong>Run Failed</strong><br>
+      The evaluation run encountered an error. Check logs for details or contact the administrator.
+    </div>
+    <div style="margin-top:16px;">
+      <a href="/benchmark" class="btn btn-primary">Launch New Run</a>
+    </div>
+  </div>
+</div>
+
+<script>
+let pollInterval;
+
+async function updateStatus() {
+  try {
+    const response = await fetch('/api/runs?run_id={{ run.id }}');
+    if (!response.ok) return;
+
+    const data = await response.json();
+    if (!data || data.length === 0) return;
+
+    const runData = data[0];
+    const status = runData.status || 'pending';
+
+    // Update status badge
+    const badge = document.getElementById('status-badge');
+    const statusText = document.getElementById('status-text');
+    badge.className = `status-badge status-${status}`;
+    statusText.textContent = status;
+    document.getElementById('status-detail').textContent = status.toUpperCase();
+
+    // If completed, fetch results and show
+    if (status === 'completed') {
+      clearInterval(pollInterval);
+      document.getElementById('results-section').style.display = 'block';
+      await fetchResults();
+    } else if (status === 'failed') {
+      clearInterval(pollInterval);
+      document.getElementById('error-section').style.display = 'block';
+    }
+  } catch (err) {
+    console.error('Status poll error:', err);
+  }
+}
+
+async function fetchResults() {
+  try {
+    const response = await fetch('/api/results?run_id={{ run.id }}');
+    if (!response.ok) return;
+
+    const results = await response.json();
+    const total = results.length;
+    const completed = results.filter(r => r.outcome === 'COMPLETED').length;
+    const passRate = total > 0 ? Math.round((completed / total) * 100 * 10) / 10 : 0;
+
+    let grade = 'F';
+    if (passRate >= 90) grade = 'A';
+    else if (passRate >= 80) grade = 'B';
+    else if (passRate >= 70) grade = 'C';
+    else if (passRate >= 60) grade = 'D';
+
+    document.getElementById('bis-value').textContent = passRate + '%';
+    document.getElementById('pass-rate-value').textContent = passRate + '%';
+    document.getElementById('total-probes-value').textContent = total;
+    document.getElementById('grade-value').textContent = grade;
+  } catch (err) {
+    console.error('Results fetch error:', err);
+  }
+}
+
+// Poll every 5 seconds if running
+{% if run.status == 'running' or run.status == 'pending' %}
+pollInterval = setInterval(updateStatus, 5000);
+{% endif %}
+
+// Fetch results immediately if completed
+{% if run.status == 'completed' %}
+fetchResults();
+{% endif %}
+</script>
+
+{% endblock %}

@@ -307,9 +307,141 @@ def evidence_dashboard_redirect():
     return RedirectResponse(url="/dashboard", status_code=301)
 
 @app.get("/benchmark", response_class=HTMLResponse)
-def benchmark_redirect():
-    from fastapi.responses import RedirectResponse
-    return RedirectResponse(url="/evidence/public-findings", status_code=301)
+def benchmark_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user, redir = require_admin(session)
+    if redir: return redir
+
+    # Load providers from providers.json
+    try:
+        with open("providers.json", "r") as f:
+            providers_data = json.load(f)
+            # Extract unique providers
+            providers = sorted(list(set(p["provider"] for p in providers_data if p.get("enabled", True))))
+    except Exception as e:
+        print(f"Error loading providers: {e}")
+        providers = ["openai", "anthropic", "groq", "google", "mistral"]
+
+    # Get recent runs
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, model, provider, api_provider, dataset, temperature, probe_count, status, created_at
+            FROM runs
+            ORDER BY created_at DESC
+            LIMIT 10
+        """)
+        recent_runs = cur.fetchall()
+        conn.close()
+    except Exception as e:
+        print(f"Error fetching recent runs: {e}")
+        recent_runs = []
+
+    return templates.TemplateResponse(
+        "benchmark.html",
+        {
+            "request": request,
+            "user": user,
+            "active": "benchmark",
+            "providers": providers,
+            "recent_runs": recent_runs,
+            "error": None
+        }
+    )
+
+@app.post("/benchmark", response_class=HTMLResponse)
+def benchmark_post(
+    request: Request,
+    model: str = Form(...),
+    provider: str = Form(...),
+    dataset: str = Form(...),
+    temperature: str = Form(...),
+    probe_count: Optional[str] = Form(default=None),
+    session: Optional[str] = Cookie(default=None)
+):
+    user, redir = require_admin(session)
+    if redir: return redir
+
+    try:
+        import subprocess
+        import uuid
+
+        # Generate run ID
+        run_id = str(uuid.uuid4())
+
+        # Build command
+        cmd = [
+            "python3",
+            "llm_safety_platform.py",
+            "--data", dataset,
+            "--api", provider,
+            "--model", model,
+            "--temperature", temperature,
+            "--runs", "1"
+        ]
+
+        # Insert into runs table
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute(
+            """
+            INSERT INTO runs (id, model, provider, api_provider, dataset, temperature, probe_count, status)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (run_id, model, provider, provider, dataset, float(temperature), int(probe_count) if probe_count else None, "pending")
+        )
+        conn.commit()
+        conn.close()
+
+        # Launch benchmark in background
+        subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Update status to running
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("UPDATE runs SET status = %s WHERE id = %s", ("running", run_id))
+        conn.commit()
+        conn.close()
+
+        # Redirect to run status page
+        return RedirectResponse(f"/run-status/{run_id}", status_code=302)
+
+    except Exception as e:
+        print(f"Benchmark launch error: {e}")
+        # Reload providers
+        try:
+            with open("providers.json", "r") as f:
+                providers_data = json.load(f)
+                providers = sorted(list(set(p["provider"] for p in providers_data if p.get("enabled", True))))
+        except:
+            providers = ["openai", "anthropic", "groq"]
+
+        # Get recent runs
+        try:
+            conn = get_db()
+            cur = conn.cursor()
+            cur.execute("""
+                SELECT id, model, provider, api_provider, dataset, temperature, probe_count, status, created_at
+                FROM runs
+                ORDER BY created_at DESC
+                LIMIT 10
+            """)
+            recent_runs = cur.fetchall()
+            conn.close()
+        except:
+            recent_runs = []
+
+        return templates.TemplateResponse(
+            "benchmark.html",
+            {
+                "request": request,
+                "user": user,
+                "active": "benchmark",
+                "providers": providers,
+                "recent_runs": recent_runs,
+                "error": str(e)
+            }
+        )
 
 @app.get("/evidence/public-findings", response_class=HTMLResponse)
 def evidence_page(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -910,6 +1042,44 @@ def run_benchmark_page(request: Request, session: Optional[str] = Cookie(default
     user, redir = require_login(session)
     if redir: return redir
     return templates.TemplateResponse("run_benchmark.html", {"request": request, "user": user, "active": "run"})
+
+@app.get("/run-status/{run_id}", response_class=HTMLResponse)
+def run_status_page(run_id: str, request: Request, session: Optional[str] = Cookie(default=None)):
+    user, redir = require_admin(session)
+    if redir: return redir
+
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT id, model, provider, api_provider, dataset, temperature, probe_count, status, created_at
+            FROM runs
+            WHERE id = %s
+        """, (run_id,))
+        run = cur.fetchone()
+        conn.close()
+
+        if not run:
+            return templates.TemplateResponse(
+                "error.html",
+                {"request": request, "user": user, "error": "Run not found"}
+            )
+
+        return templates.TemplateResponse(
+            "run_status.html",
+            {
+                "request": request,
+                "user": user,
+                "active": "benchmark",
+                "run": run
+            }
+        )
+    except Exception as e:
+        print(f"Run status error: {e}")
+        return templates.TemplateResponse(
+            "error.html",
+            {"request": request, "user": user, "error": str(e)}
+        )
 
 # ── ADMIN ─────────────────────────────────────────────────────────────────────
 
@@ -1556,18 +1726,24 @@ def serialise(rows):
     return out
 
 @app.get("/api/runs")
-def api_runs(session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+def api_runs(run_id: Optional[str] = None, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
     if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
     conn = get_db(); cur = conn.cursor()
-    cur.execute("SELECT * FROM runs ORDER BY created_at DESC")
+    if run_id:
+        cur.execute("SELECT * FROM runs WHERE id = %s", (run_id,))
+    else:
+        cur.execute("SELECT * FROM runs ORDER BY created_at DESC")
     rows = serialise(cur.fetchall()); conn.close()
     return JSONResponse(rows)
 
 @app.get("/api/results")
-def api_results(limit: int = 50, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+def api_results(run_id: Optional[str] = None, limit: int = 50, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
     if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
     conn = get_db(); cur = conn.cursor()
-    cur.execute("SELECT * FROM results ORDER BY id DESC LIMIT %s", (limit,))
+    if run_id:
+        cur.execute("SELECT * FROM results WHERE run_id = %s ORDER BY id DESC", (run_id,))
+    else:
+        cur.execute("SELECT * FROM results ORDER BY id DESC LIMIT %s", (limit,))
     rows = serialise(cur.fetchall()); conn.close()
     return JSONResponse(rows)
 
