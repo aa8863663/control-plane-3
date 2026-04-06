@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Actuarial Dashboard — MTCP{% endblock %}
+
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Actuarial <span>Dashboard</span></h1>
+  <p>Enhanced analytics with drill-down, exports, and real-time monitoring</p>
+</div>
+
+<!-- Alerts Banner -->
+<div id="alerts-banner" style="display: none;"></div>
+
+<!-- Export Buttons -->
+<div style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;" class="fade-up fade-up-1">
+    <button onclick="exportCSV()"
+            style="padding: 0.75rem 1.5rem; background: var(--accent); color: #fff; border: none; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; cursor: pointer; letter-spacing: 1px; text-transform: uppercase;">
+        📥 Export CSV
+    </button>
+    <button onclick="exportPDF()"
+            style="padding: 0.75rem 1.5rem; background: #16a34a; color: #fff; border: none; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; cursor: pointer; letter-spacing: 1px; text-transform: uppercase;">
+        📄 Generate PDF Report
+    </button>
+</div>
+
+<!-- Date Range Filters -->
+<div class="card fade-up fade-up-2" style="margin-bottom: 2rem;">
+    <h3 style="margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600;">Filter by Date Range</h3>
+    <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <label style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <span style="color: var(--muted); font-size: 0.7rem;">Start Date</span>
+            <input type="date" id="start-date"
+                   style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--surface2); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">
+        </label>
+        <label style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <span style="color: var(--muted); font-size: 0.7rem;">End Date</span>
+            <input type="date" id="end-date"
+                   style="padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: var(--surface2); color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">
+        </label>
+        <button onclick="filterByDateRange()"
+                style="padding: 0.5rem 1rem; background: var(--accent); color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-top: 1.5rem; font-size: 0.7rem; font-family: 'JetBrains Mono', monospace;">
+            Apply Filter
+        </button>
+        <button onclick="clearDateFilter()"
+                style="padding: 0.5rem 1rem; background: var(--muted); color: #fff; border: none; border-radius: 4px; cursor: pointer; margin-top: 1.5rem; font-size: 0.7rem; font-family: 'JetBrains Mono', monospace;">
+            Clear
+        </button>
+    </div>
+</div>
+
+<!-- Models Table with Drill-Down -->
+<div class="card fade-up fade-up-3" style="margin-bottom: 2rem;">
+    <h2 style="margin-bottom: 1rem; font-family: 'DM Serif Display', serif;">Model Performance</h2>
+    <p style="color: var(--muted); margin-bottom: 1rem; font-size: 0.8rem;">Click any row to expand details</p>
+
+    <div class="table-wrap">
+        <table id="models-table" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--border);">
+                    <th style="text-align: left; padding: 0.75rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted);">Model</th>
+                    <th style="text-align: left; padding: 0.75rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted);">Provider</th>
+                    <th style="text-align: center; padding: 0.75rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted);">BIS</th>
+                    <th style="text-align: center; padding: 0.75rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted);">TSI</th>
+                    <th style="text-align: center; padding: 0.75rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted);">Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--muted); font-size: 0.75rem;">Loading models...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Provider Risk Matrix -->
+<div class="card fade-up fade-up-4">
+    <h2 style="margin-bottom: 1rem; font-family: 'DM Serif Display', serif;">Provider Risk Matrix</h2>
+    <p style="color: var(--muted); margin-bottom: 1rem; font-size: 0.8rem;">BIS vs TSI positioning</p>
+    <canvas id="risk-matrix-chart" style="max-height: 400px;"></canvas>
+</div>
+
+<style>
+#models-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+#models-table tbody tr:hover {
+    background: var(--surface2);
+}
+
+#models-table tbody tr.expanded {
+    background: rgba(37,99,235,0.05);
+}
+
+.detail-row {
+    border-top: 2px solid var(--accent) !important;
+}
+
+.detail-row td {
+    background: var(--surface2);
+}
+</style>
+
+<script src="/static/js/actuarial.js"></script>
+
+<script>
+// Load initial data on page load
+async function loadInitialData() {
+    // Load alerts
+    loadAlerts();
+
+    // Load models table
+    try {
+        const response = await fetch('/api/actuarial/models');
+        const data = await response.json();
+        renderModelsTable(data.models || []);
+    } catch (error) {
+        console.error('Error loading models:', error);
+    }
+
+    // Load provider risk matrix
+    renderProviderRiskMatrix();
+}
+
+function renderModelsTable(models) {
+    const tbody = document.querySelector('#models-table tbody');
+    tbody.innerHTML = '';
+
+    if (models.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--muted); font-size: 0.75rem;">No models found</td></tr>';
+        return;
+    }
+
+    models.forEach(model => {
+        const row = document.createElement('tr');
+
+        // Calculate TSI from temperature variance
+        const temps = Object.values(model.temperatures || {}).filter(t => t !== null);
+        let tsi = 'N/A';
+        if (temps.length >= 2) {
+            const max = Math.max(...temps);
+            const min = Math.min(...temps);
+            const variance = max - min;
+            tsi = Math.max(0, 100 - (variance * 2)).toFixed(1);
+        }
+
+        const gradeColors = {A:'#16a34a',B:'#2563eb',C:'#d97706',D:'#ef4444',F:'#991b1b'};
+        const gradeColor = gradeColors[model.grade] || '#64748b';
+
+        row.innerHTML = `
+            <td style="padding: 0.75rem; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;">${model.model}</td>
+            <td style="padding: 0.75rem; font-size: 0.7rem; color: var(--muted);">${model.provider}</td>
+            <td style="text-align: center; padding: 0.75rem; font-weight: 600; color: ${gradeColor};">${model.bis?.toFixed(1) || 'N/A'}%</td>
+            <td style="text-align: center; padding: 0.75rem; font-size: 0.75rem;">${tsi}${tsi !== 'N/A' ? '' : ''}</td>
+            <td style="text-align: center; padding: 0.75rem;"><span class="grade grade-${model.grade}" style="display: inline-flex; width: 28px; height: 28px; border-radius: 4px; align-items: center; justify-content: center; font-family: 'DM Serif Display', serif; font-size: 1rem; background: rgba(37,99,235,0.12); color: ${gradeColor}; border: 1px solid rgba(37,99,235,0.22);">${model.grade || 'N/A'}</span></td>
+        `;
+        row.addEventListener('click', () => toggleModelDetail(model.model, row));
+        tbody.appendChild(row);
+    });
+}
+
+function renderAuditTrail(data) {
+    // Placeholder for audit trail rendering (if needed)
+    console.log('Audit trail data:', data);
+}
+
+// Auto-refresh alerts every 30 seconds
+setInterval(loadAlerts, 30000);
+
+// Load data on page load
+loadInitialData();
+</script>
+{% endblock %}

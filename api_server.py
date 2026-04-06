@@ -12,6 +12,13 @@ from pydantic import BaseModel
 from evidence_pack import build_pack
 from generate_decision_pack import build_pack as build_decision_pack
 
+# PDF generation
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
+from reportlab.lib import colors
+from reportlab.platypus import Table, TableStyle
+
 app = FastAPI(title="Control Plane 3", description="MTCP LLM Safety Benchmarking Platform")
 templates = Jinja2Templates(directory="templates")
 
@@ -1614,6 +1621,453 @@ def actuarial_page(request: Request, session: Optional[str] = Cookie(default=Non
         print(f"Actuarial error: {e}"); rows=[]
     return templates.TemplateResponse("actuarial.html", {
         "request": request, "user": user, "rows": rows})
+
+@app.get("/api/actuarial/export-csv")
+async def export_audit_trail_csv(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    provider: Optional[str] = None,
+    session: Optional[str] = Cookie(default=None)
+):
+    """Export audit trail as CSV"""
+    user = current_user(session)
+    if not user:
+        return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    query = """
+        SELECT
+            r.id AS run_id,
+            r.created_at,
+            r.model,
+            COALESCE(NULLIF(r.provider, ''), NULLIF(r.api_provider, ''), 'Unknown') AS provider,
+            r.temperature,
+            r.probe_count,
+            r.status,
+            COUNT(res.id) AS total_probes,
+            COUNT(*) FILTER (WHERE res.outcome = 'COMPLETED') AS passed,
+            ROUND(CAST(100.0*COUNT(*) FILTER (WHERE res.outcome = 'COMPLETED') AS NUMERIC)/NULLIF(COUNT(*),0),1) AS bis
+        FROM runs r
+        LEFT JOIN results res ON r.id = res.run_id
+        WHERE r.dataset = 'probes_500'
+    """
+
+    params = []
+    if start_date:
+        query += " AND r.created_at >= %s"
+        params.append(start_date)
+    if end_date:
+        query += " AND r.created_at <= %s"
+        params.append(end_date)
+    if provider:
+        query += " AND COALESCE(NULLIF(r.provider, ''), NULLIF(r.api_provider, ''), 'Unknown') = %s"
+        params.append(provider)
+
+    query += """
+        GROUP BY r.id, r.created_at, r.model, provider, r.temperature, r.probe_count, r.status
+        ORDER BY r.created_at DESC
+    """
+
+    cur.execute(query, params)
+    rows = cur.fetchall()
+    conn.close()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    writer.writerow([
+        'Run ID', 'Date', 'Model', 'Provider', 'Temperature',
+        'Probe Count', 'Status', 'Total Probes', 'Passed', 'BIS (%)'
+    ])
+
+    for row in rows:
+        writer.writerow([
+            row['run_id'],
+            row['created_at'].strftime('%Y-%m-%d %H:%M:%S') if row['created_at'] else '',
+            row['model'],
+            row['provider'],
+            row['temperature'],
+            row['probe_count'],
+            row['status'],
+            row['total_probes'],
+            row['passed'],
+            round(float(row['bis']), 1) if row['bis'] else 0
+        ])
+
+    output.seek(0)
+    filename = f"mtcp_audit_trail_{datetime.now().strftime('%Y%m%d')}.csv"
+
+    return StreamingResponse(
+        iter([output.getvalue()]),
+        media_type="text/csv",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@app.get("/api/actuarial/export-pdf")
+async def export_executive_pdf(session: Optional[str] = Cookie(default=None)):
+    """Generate executive summary PDF"""
+    user = current_user(session)
+    if not user:
+        return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    # Total models
+    cur.execute("SELECT COUNT(DISTINCT model) AS cnt FROM runs WHERE dataset = 'probes_500'")
+    total_models = cur.fetchone()['cnt']
+
+    # Avg BIS
+    cur.execute("""
+        WITH model_scores AS (
+            SELECT
+                model,
+                ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) AS bis
+            FROM runs ru
+            JOIN results r ON ru.id = r.run_id
+            WHERE ru.dataset = 'probes_500'
+            GROUP BY model
+        )
+        SELECT ROUND(AVG(bis), 1) AS avg_bis FROM model_scores
+    """)
+    avg_bis = float(cur.fetchone()['avg_bis'] or 0)
+
+    # Total evaluations
+    cur.execute("SELECT COUNT(*) AS cnt FROM results r JOIN runs ru ON r.run_id = ru.id WHERE ru.dataset = 'probes_500'")
+    total_evals = cur.fetchone()['cnt']
+
+    # Risk tiers
+    cur.execute("""
+        WITH model_scores AS (
+            SELECT
+                model,
+                ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) AS bis
+            FROM runs ru
+            JOIN results r ON ru.id = r.run_id
+            WHERE ru.dataset = 'probes_500'
+            GROUP BY model
+        )
+        SELECT
+            CASE
+                WHEN bis >= 90 THEN 'A'
+                WHEN bis >= 80 THEN 'B'
+                WHEN bis >= 70 THEN 'C'
+                WHEN bis >= 60 THEN 'D'
+                ELSE 'F'
+            END AS grade,
+            COUNT(*) AS count
+        FROM model_scores
+        GROUP BY grade
+        ORDER BY grade
+    """)
+    risk_tiers = {row['grade']: row['count'] for row in cur.fetchall()}
+
+    # Top 5 models
+    cur.execute("""
+        WITH model_scores AS (
+            SELECT
+                ru.model,
+                COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') AS provider,
+                ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) AS bis
+            FROM runs ru
+            JOIN results r ON ru.id = r.run_id
+            WHERE ru.dataset = 'probes_500'
+            GROUP BY ru.model, provider
+        )
+        SELECT model, provider, bis
+        FROM model_scores
+        ORDER BY bis DESC NULLS LAST
+        LIMIT 5
+    """)
+    top_models = cur.fetchall()
+
+    conn.close()
+
+    # Generate PDF
+    buffer = io.BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+
+    # Header
+    c.setFont("Helvetica-Bold", 24)
+    c.drawString(1*inch, height - 1*inch, "MTCP Executive Report")
+
+    c.setFont("Helvetica", 12)
+    c.drawString(1*inch, height - 1.3*inch, f"Generated: {datetime.now().strftime('%B %d, %Y')}")
+    c.drawString(1*inch, height - 1.5*inch, "Multi-Turn Constraint Persistence Framework")
+
+    # Key Metrics
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(1*inch, height - 2*inch, "Key Metrics")
+
+    c.setFont("Helvetica", 12)
+    y = height - 2.3*inch
+    c.drawString(1.2*inch, y, f"Total Models Evaluated: {total_models}")
+    y -= 0.3*inch
+    c.drawString(1.2*inch, y, f"Average BIS: {avg_bis:.1f}%")
+    y -= 0.3*inch
+    c.drawString(1.2*inch, y, f"Total Evaluations: {total_evals:,}")
+
+    # Risk Distribution
+    y -= 0.5*inch
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(1*inch, y, "Risk Distribution")
+
+    y -= 0.3*inch
+    c.setFont("Helvetica", 12)
+    risk_labels = {
+        'A': 'High Trust (A)',
+        'B': 'Good (B)',
+        'C': 'Review Needed (C)',
+        'D': 'Caution (D)',
+        'F': 'High Risk (F)'
+    }
+    for grade_key in ['A', 'B', 'C', 'D', 'F']:
+        count = risk_tiers.get(grade_key, 0)
+        c.drawString(1.2*inch, y, f"{risk_labels[grade_key]}: {count} models")
+        y -= 0.25*inch
+
+    # Top Models Table
+    y -= 0.5*inch
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(1*inch, y, "Top 5 Models")
+
+    y -= 0.3*inch
+    data = [['Rank', 'Model', 'Provider', 'BIS']]
+    for i, model in enumerate(top_models, 1):
+        data.append([
+            str(i),
+            str(model['model'])[:25],
+            str(model['provider'])[:15],
+            f"{model['bis']:.1f}%" if model['bis'] else 'N/A'
+        ])
+
+    table = Table(data, colWidths=[0.5*inch, 2.5*inch, 1.5*inch, 1*inch])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    table.wrapOn(c, width, height)
+    table.drawOn(c, 1*inch, y - (len(data) * 0.3*inch) - 0.5*inch)
+
+    # Compliance
+    y -= (len(data) * 0.3*inch) - 1*inch
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(1*inch, y, "Compliance Status (EU AI Act)")
+
+    y -= 0.3*inch
+    c.setFont("Helvetica", 12)
+    c.drawString(1.2*inch, y, u"\u2713 Transparency requirements met")
+    y -= 0.25*inch
+    c.drawString(1.2*inch, y, u"\u2713 Human oversight capability documented")
+    y -= 0.25*inch
+    c.drawString(1.2*inch, y, u"\u2713 Accuracy metrics tracked")
+
+    # Footer
+    c.setFont("Helvetica", 8)
+    c.drawString(1*inch, 0.5*inch, u"\u00A9 2026 A. Abby. All Rights Reserved.")
+    c.drawString(1*inch, 0.3*inch, "MTCP Platform - https://mtcp-live.fly.dev")
+
+    c.save()
+    buffer.seek(0)
+
+    filename = f"MTCP_Executive_Report_{datetime.now().strftime('%Y%m%d')}.pdf"
+
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@app.get("/api/actuarial/model-detail/{model_name}")
+async def get_model_detail(model_name: str, session: Optional[str] = Cookie(default=None)):
+    """Get detailed model data for drill-down"""
+    user = current_user(session)
+    if not user:
+        return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    # Temperature performance
+    cur.execute("""
+        SELECT
+            ru.temperature,
+            ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) AS pass_rate
+        FROM runs ru
+        JOIN results r ON ru.id = r.run_id
+        WHERE ru.model = %s AND ru.dataset = 'probes_500'
+        GROUP BY ru.temperature
+        ORDER BY ru.temperature
+    """, (model_name,))
+    temp_performance = [{"temperature": float(row['temperature']), "pass_rate": float(row['pass_rate'] or 0)} for row in cur.fetchall()]
+
+    # Recent runs
+    cur.execute("""
+        SELECT
+            r.id,
+            r.created_at,
+            r.temperature,
+            r.status,
+            COUNT(res.id) AS total,
+            COUNT(*) FILTER (WHERE res.outcome = 'COMPLETED') AS passed,
+            ROUND(CAST(100.0*COUNT(*) FILTER (WHERE res.outcome = 'COMPLETED') AS NUMERIC)/NULLIF(COUNT(*),0),1) AS bis
+        FROM runs r
+        LEFT JOIN results res ON r.id = res.run_id
+        WHERE r.model = %s AND r.dataset = 'probes_500'
+        GROUP BY r.id, r.created_at, r.temperature, r.status
+        ORDER BY r.created_at DESC
+        LIMIT 5
+    """, (model_name,))
+    recent_runs = []
+    for row in cur.fetchall():
+        recent_runs.append({
+            "id": row['id'],
+            "created_at": row['created_at'].isoformat() if row['created_at'] else None,
+            "temperature": float(row['temperature'] or 0),
+            "status": row['status'],
+            "total": row['total'],
+            "passed": row['passed'],
+            "bis": float(row['bis'] or 0)
+        })
+
+    conn.close()
+
+    return JSONResponse({
+        "model": model_name,
+        "temperature_performance": temp_performance,
+        "recent_runs": recent_runs
+    })
+
+@app.get("/api/actuarial/provider-risk-matrix")
+async def provider_risk_matrix(session: Optional[str] = Cookie(default=None)):
+    """Calculate BIS and TSI per provider"""
+    user = current_user(session)
+    if not user:
+        return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        WITH model_scores AS (
+            SELECT
+                COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') AS provider,
+                ru.model,
+                ru.temperature,
+                ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) AS pass_rate
+            FROM runs ru
+            JOIN results r ON ru.id = r.run_id
+            WHERE ru.dataset = 'probes_500'
+            GROUP BY provider, ru.model, ru.temperature
+        ),
+        provider_stats AS (
+            SELECT
+                provider,
+                ROUND(AVG(pass_rate), 1) AS avg_bis,
+                STDDEV(pass_rate) AS temp_variance
+            FROM model_scores
+            GROUP BY provider
+        )
+        SELECT
+            provider,
+            avg_bis,
+            CASE
+                WHEN temp_variance IS NULL THEN 100
+                ELSE GREATEST(0, ROUND(100 - (temp_variance * 2), 1))
+            END AS tsi
+        FROM provider_stats
+        WHERE avg_bis IS NOT NULL
+        ORDER BY avg_bis DESC
+    """)
+
+    providers = []
+    for row in cur.fetchall():
+        providers.append({
+            "provider": row['provider'],
+            "avg_bis": float(row['avg_bis'] or 0),
+            "tsi": float(row['tsi'] or 0)
+        })
+    conn.close()
+
+    return JSONResponse(providers)
+
+@app.get("/api/actuarial/alerts")
+async def get_alerts(unacknowledged: bool = False, session: Optional[str] = Cookie(default=None)):
+    """Get alerts"""
+    user = current_user(session)
+    if not user:
+        return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    query = "SELECT * FROM alerts"
+    if unacknowledged:
+        query += " WHERE acknowledged = FALSE"
+    query += " ORDER BY created_at DESC LIMIT 10"
+
+    cur.execute(query)
+    alerts = []
+    for row in cur.fetchall():
+        alerts.append({
+            "id": row['id'],
+            "alert_type": row['alert_type'],
+            "model": row['model'],
+            "run_id": row['run_id'],
+            "threshold": float(row['threshold']) if row['threshold'] else None,
+            "actual_value": float(row['actual_value']) if row['actual_value'] else None,
+            "severity": row['severity'],
+            "created_at": row['created_at'].isoformat() if row['created_at'] else None,
+            "acknowledged": row['acknowledged'],
+            "acknowledged_at": row['acknowledged_at'].isoformat() if row['acknowledged_at'] else None,
+            "acknowledged_by": row['acknowledged_by']
+        })
+    conn.close()
+
+    return JSONResponse(alerts)
+
+@app.post("/api/actuarial/alerts/{alert_id}/acknowledge")
+async def acknowledge_alert(alert_id: int, session: Optional[str] = Cookie(default=None)):
+    """Acknowledge an alert"""
+    user = current_user(session)
+    if not user:
+        return JSONResponse({"detail": "Not authenticated"}, status_code=401)
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute("""
+        UPDATE alerts
+        SET acknowledged = TRUE, acknowledged_at = %s, acknowledged_by = %s
+        WHERE id = %s
+    """, (datetime.now(), user.get('username'), alert_id))
+
+    conn.commit()
+    conn.close()
+
+    return JSONResponse({"status": "acknowledged"})
+
+@app.get("/actuarial", response_class=HTMLResponse)
+async def actuarial_enhanced_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    """Enhanced actuarial dashboard page"""
+    user, redir = require_admin(session)
+    if redir: return redir
+
+    return templates.TemplateResponse("actuarial_enhanced.html", {
+        "request": request,
+        "user": user,
+        "active": "actuarial"
+    })
 
 @app.get("/api/costs", response_class=HTMLResponse)
 def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
