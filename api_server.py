@@ -1228,6 +1228,156 @@ def download_certificate(model: str, temperature: float, session: Optional[str] 
 
 # ── EVIDENCE PACK DOWNLOAD ────────────────────────────────────────────────────
 
+def build_model_evidence_pack(model_name: str) -> dict:
+    """Build model-level evidence pack aggregating all runs for a model."""
+    import hashlib
+    from datetime import timezone
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    # Get all runs for this model with their results
+    cur.execute("""
+        SELECT
+            ru.id,
+            ru.model,
+            COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') AS provider,
+            ru.dataset,
+            ru.temperature,
+            ru.probe_count,
+            ru.created_at,
+            COUNT(r.id) AS total_probes,
+            COUNT(*) FILTER (WHERE r.outcome = 'COMPLETED') AS completed
+        FROM runs ru
+        LEFT JOIN results r ON r.run_id = ru.id
+        WHERE ru.model = %s
+        GROUP BY ru.id, ru.model, ru.provider, ru.api_provider, ru.dataset, ru.temperature, ru.probe_count, ru.created_at
+        ORDER BY ru.created_at DESC
+    """, (model_name,))
+
+    runs = cur.fetchall()
+    if not runs:
+        conn.close()
+        raise ValueError(f"No runs found for model: {model_name}")
+
+    # Build events array (per-run summaries)
+    events = []
+    run_ids = []
+    dataset_versions = set()
+    provider = runs[0]['provider']
+
+    for run in runs:
+        total = run['total_probes'] or 0
+        completed = run['completed'] or 0
+        pass_rate = round((completed / total) * 100, 2) if total > 0 else 0.0
+
+        # Calculate grade
+        if pass_rate >= 95:
+            grade = "A+"
+        elif pass_rate >= 90:
+            grade = "A"
+        elif pass_rate >= 80:
+            grade = "B"
+        elif pass_rate >= 70:
+            grade = "C"
+        elif pass_rate >= 60:
+            grade = "D"
+        else:
+            grade = "F"
+
+        created_at_str = run['created_at'].isoformat() if hasattr(run['created_at'], 'isoformat') else str(run['created_at'] or '')
+
+        events.append({
+            "run_id": run['id'],
+            "dataset": run['dataset'] or '',
+            "temperature": float(run['temperature']) if run['temperature'] is not None else None,
+            "probe_count": run['probe_count'] or total,
+            "completed": completed,
+            "pass_rate": pass_rate,
+            "grade": grade,
+            "created_at": created_at_str
+        })
+
+        run_ids.append(run['id'])
+        if run['dataset']:
+            dataset_versions.add(run['dataset'])
+
+    # Get control probe summary
+    cur.execute("""
+        SELECT
+            COUNT(*) FILTER (WHERE r.outcome = 'COMPLETED') AS ctrl_passes,
+            COUNT(*) AS ctrl_total
+        FROM results r
+        JOIN runs ru ON r.run_id = ru.id
+        WHERE ru.model = %s AND ru.dataset = 'ctrl'
+    """, (model_name,))
+
+    ctrl_row = cur.fetchone()
+    ctrl_summary = None
+
+    if ctrl_row and ctrl_row['ctrl_total'] and ctrl_row['ctrl_total'] > 0:
+        ctrl_pass_rate = round((ctrl_row['ctrl_passes'] / ctrl_row['ctrl_total']) * 100, 2)
+
+        # Get main pass rate for CPD calculation
+        cur.execute("""
+            SELECT
+                COUNT(*) FILTER (WHERE r.outcome = 'COMPLETED') AS main_passes,
+                COUNT(*) AS main_total
+            FROM results r
+            JOIN runs ru ON r.run_id = ru.id
+            WHERE ru.model = %s AND ru.dataset != 'ctrl'
+        """, (model_name,))
+
+        main_row = cur.fetchone()
+        main_pass_rate = 0.0
+        if main_row and main_row['main_total'] and main_row['main_total'] > 0:
+            main_pass_rate = round((main_row['main_passes'] / main_row['main_total']) * 100, 2)
+
+        cpd = round(ctrl_pass_rate - main_pass_rate, 2)
+
+        ctrl_summary = {
+            "control_pass_rate": ctrl_pass_rate,
+            "control_probe_degradation": cpd,
+            "control_probes_evaluated": ctrl_row['ctrl_total']
+        }
+
+    conn.close()
+
+    # Build pack structure
+    pack = {
+        "schema_version": "1.1",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "manifest": {
+            "model": model_name,
+            "provider": provider,
+            "total_evaluations": len(events),
+            "run_ids": run_ids,
+            "dataset_versions": sorted(list(dataset_versions)),
+            "earliest_evaluation": events[-1]['created_at'] if events else None,
+            "latest_evaluation": events[0]['created_at'] if events else None
+        },
+        "events": events,
+        "ctrl_summary": ctrl_summary,
+        "metadata": {
+            "framework": "MTCP (Multi-Turn Constraint Persistence)",
+            "framework_version": "1.1",
+            "platform_url": "https://mtcp.dev",
+            "doi": "10.17605/OSF.IO/DXGK5",
+            "author": "A. Abby",
+            "copyright": "© 2026 A. Abby. All Rights Reserved."
+        }
+    }
+
+    # Generate SHA-256 hash of events array
+    events_json = json.dumps(events, sort_keys=True, separators=(",", ":"))
+    pack["integrity"] = {
+        "events_hash": hashlib.sha256(events_json.encode("utf-8")).hexdigest(),
+        "hash_algorithm": "SHA-256",
+        "tamper_evident": True
+    }
+
+    return pack
+
 @app.get("/api/evidence-pack/{run_id}")
 def download_evidence_pack(run_id: str, session: Optional[str] = Cookie(default=None)):
     user, redir = require_login(session)
@@ -1245,12 +1395,33 @@ def download_evidence_pack(run_id: str, session: Optional[str] = Cookie(default=
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=500)
 
+@app.get("/api/evidence-pack-model/{model_name}")
+def download_model_evidence_pack(model_name: str, session: Optional[str] = Cookie(default=None)):
+    user, redir = require_login(session)
+    if redir: return redir
+    try:
+        pack = build_model_evidence_pack(model_name)
+        filename = f"{model_name.replace('/', '_').replace(':', '_')}_evidence_pack.json"
+        return JSONResponse(
+            content=pack,
+            headers={
+                "Content-Disposition": f'attachment; filename="{filename}"',
+                "Content-Type": "application/json"
+            }
+        )
+    except Exception as e:
+        return JSONResponse({"error": str(e)}, status_code=500)
+
 @app.get("/api/decision-pack/{model_name}")
 def download_decision_pack(model_name: str, session: Optional[str] = Cookie(default=None)):
     user, redir = require_login(session)
     if redir: return redir
     try:
         pack = build_decision_pack(model_name)
+
+        # Add evidence pack URL to the response
+        pack["evidence_pack_url"] = f"https://mtcp.dev/api/evidence-pack-model/{model_name}"
+
         filename = f"{model_name.replace('/', '_').replace(':', '_')}_decision_pack.json"
         return JSONResponse(
             content=pack,
