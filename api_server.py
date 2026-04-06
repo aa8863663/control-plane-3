@@ -1361,7 +1361,7 @@ def build_model_evidence_pack(model_name: str) -> dict:
         "metadata": {
             "framework": "MTCP (Multi-Turn Constraint Persistence)",
             "framework_version": "1.1",
-            "platform_url": "https://mtcp.dev",
+            "platform_url": "https://mtcp.live",
             "doi": "10.17605/OSF.IO/DXGK5",
             "author": "A. Abby",
             "copyright": "© 2026 A. Abby. All Rights Reserved."
@@ -1420,7 +1420,7 @@ def download_decision_pack(model_name: str, session: Optional[str] = Cookie(defa
         pack = build_decision_pack(model_name)
 
         # Add evidence pack URL to the response
-        pack["evidence_pack_url"] = f"https://mtcp.dev/api/evidence-pack-model/{model_name}"
+        pack["evidence_pack_url"] = f"https://mtcp.live/api/evidence-pack-model/{model_name}"
 
         filename = f"{model_name.replace('/', '_').replace(':', '_')}_decision_pack.json"
         return JSONResponse(
