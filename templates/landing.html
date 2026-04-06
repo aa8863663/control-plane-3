@@ -132,7 +132,7 @@ footer a{color:var(--accent2);text-decoration:none;}
   <div class="hero fade-up">
     <div class="hero-kicker">AI RELEASE ASSURANCE · EU AI ACT READY · EMPIRICAL</div>
     <h1 class="hero-title">Know if your model obeys <span>before you deploy it.</span></h1>
-    <p class="hero-sub">MTCP independently tests whether AI models maintain corrected constraints across interaction. Black-box. DOI-registered. Tamper-evident. 35 frontier models evaluated.</p>
+    <p class="hero-sub">MTCP independently tests whether AI models maintain corrected constraints across interaction. Black-box. DOI-registered. Tamper-evident. {{ total_models }} frontier models evaluated.</p>
     <div class="hero-actions">
       <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
       <a href="/evidence/public-findings" class="btn btn-outline">View Evidence →</a>
@@ -217,7 +217,7 @@ footer a{color:var(--accent2);text-decoration:none;}
   <div class="grid-3 fade-up fade-up-3">
     <div class="feature-card">
       <h3>Measure</h3>
-      <p>181,428 probe interactions across 35 frontier models at 4 temperature settings. The largest independent constraint persistence dataset published.</p>
+      <p>181,428 probe interactions across {{ total_models }} frontier models at 4 temperature settings. The largest independent constraint persistence dataset published.</p>
       <div class="feature-meta">Boundary Integrity Score</div>
     </div>
     <div class="feature-card">
@@ -239,7 +239,7 @@ footer a{color:var(--accent2);text-decoration:none;}
         <div><h2>Who Uses MTCP</h2></div>
       </div>
       <ul class="list-clean">
-        <li><strong style="color:var(--text)">Procurement Teams</strong><br>Compare 35 evaluated models before vendor selection. Attach MTCP certificate to procurement documentation.</li>
+        <li><strong style="color:var(--text)">Procurement Teams</strong><br>Compare {{ total_models }} evaluated models before vendor selection. Attach MTCP certificate to procurement documentation.</li>
         <li><strong style="color:var(--text)">AI Risk Officers</strong><br>Empirical evidence for board-level risk sign-off. Quantified BIS, CPD, and TSI scores per model.</li>
         <li><strong style="color:var(--text)">Compliance Leads</strong><br>EU AI Act Article 12 ready. NIST AI RMF aligned. Audit-ready evidence packs downloadable immediately.</li>
         <li><strong style="color:var(--text)">Deployment Gatekeepers</strong><br>Set minimum BIS threshold. Block release on REJECTED verdict. Retest after model changes.</li>
@@ -253,7 +253,7 @@ footer a{color:var(--accent2);text-decoration:none;}
         </div>
       </div>
       <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;margin-bottom:16px;">
-        The MTCP evidence layer provides comparative release assurance data across 35 independently evaluated frontier models. 181,428 structured probe interactions at four temperature settings.
+        The MTCP evidence layer provides comparative release assurance data across {{ total_models }} independently evaluated frontier models. 181,428 structured probe interactions at four temperature settings.
       </p>
       <a href="/evidence/public-findings" class="btn btn-ghost" style="width:100%;justify-content:center;">View Evidence →</a>
     </div>
