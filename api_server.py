@@ -1547,7 +1547,6 @@ async def actuarial_models_api(
                        ru.temperature,
                        ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
                 FROM results r JOIN runs ru ON r.run_id=ru.id
-                WHERE ru.dataset = 'probes_500'
                 GROUP BY ru.model, provider, ru.temperature
             ),
             model_stats AS (
@@ -1626,7 +1625,6 @@ async def actuarial_providers_api(session: Optional[str] = Cookie(default=None))
                        ru.model,
                        ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
                 FROM results r JOIN runs ru ON r.run_id=ru.id
-                WHERE ru.dataset = 'probes_500'
                 GROUP BY provider, ru.model
             )
             SELECT provider,
@@ -1687,7 +1685,7 @@ async def actuarial_audit_trail_api(
                    ROUND(CAST(100.0*COUNT(*) FILTER (WHERE res.outcome = 'COMPLETED') AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
             FROM runs r
             LEFT JOIN results res ON r.id = res.run_id
-            WHERE r.dataset = 'probes_500'
+            WHERE 1=1
         """
 
         params = []
