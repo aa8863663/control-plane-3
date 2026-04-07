@@ -216,16 +216,25 @@ def grade(pct):
 # ── Leaderboard / Evidence Helpers ───────────────────────────────────────────
 
 def get_leaderboard_data():
-    print("LEADERBOARD QUERY V2 RUNNING")
+    print("LEADERBOARD QUERY V3 RUNNING - Provider clarity + complete runs only")
     conn = get_db()
     cur = conn.cursor()
 
+    # First check which model+provider combos have all 4 temperatures (using only probes_500)
     cur.execute("""
+        WITH temp_coverage AS (
+            SELECT
+                model,
+                COALESCE(NULLIF(provider, ''), NULLIF(api_provider, ''), 'Unknown') as provider_clean,
+                COUNT(DISTINCT temperature) as temps_tested
+            FROM runs
+            WHERE dataset = 'probes_500'
+            GROUP BY model, COALESCE(NULLIF(provider, ''), NULLIF(api_provider, ''), 'Unknown')
+            HAVING COUNT(DISTINCT temperature) = 4
+        )
         SELECT
             ru.model,
-            MODE() WITHIN GROUP (
-                ORDER BY COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown')
-            ) AS provider,
+            COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') AS provider,
             ROUND(
                 CAST(
                     100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END)
@@ -263,15 +272,18 @@ def get_leaderboard_data():
             ) AS t8
         FROM results r
         JOIN runs ru ON r.run_id = ru.id
+        JOIN temp_coverage tc ON ru.model = tc.model
+            AND COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') = tc.provider_clean
         WHERE ru.dataset = 'probes_500'
-        GROUP BY ru.model
-        ORDER BY pass_rate DESC, ru.model
+        GROUP BY ru.model, COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown')
+        ORDER BY pass_rate DESC, ru.model, provider
     """)
     rows = cur.fetchall()
 
     cur.execute("""
         SELECT
             ru.model,
+            COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown') AS provider,
             ROUND(
                 CAST(
                     100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END)
@@ -282,24 +294,26 @@ def get_leaderboard_data():
         FROM results r
         JOIN runs ru ON r.run_id = ru.id
         WHERE ru.dataset = 'ctrl'
-        GROUP BY ru.model
+        GROUP BY ru.model, COALESCE(NULLIF(ru.provider, ''), NULLIF(ru.api_provider, ''), 'Unknown')
     """)
     ctrl_map = {}
     for row in cur.fetchall():
-        ctrl_map[row["model"]] = float(row["ctrl_rate"] or 0)
+        key = f"{row['model']}|{row['provider']}"
+        ctrl_map[key] = float(row["ctrl_rate"] or 0)
 
     conn.close()
 
     models = []
     for row in rows:
         main_rate = float(row["pass_rate"] or 0)
-        ctrl_rate = float(ctrl_map.get(row["model"], 0))
-        # Keep NULL as None instead of coercing to 0 - missing temps should show "—" not "0.0%"
+        key = f"{row['model']}|{row['provider']}"
+        ctrl_rate = float(ctrl_map.get(key, 0))
+        # All temps should be present since we filtered for complete runs
         t0 = round(float(row["t0"]), 1) if row["t0"] is not None else None
         t2 = round(float(row["t2"]), 1) if row["t2"] is not None else None
         t5 = round(float(row["t5"]), 1) if row["t5"] is not None else None
         t8 = round(float(row["t8"]), 1) if row["t8"] is not None else None
-        # Calculate variance only from measured temperatures
+        # Calculate variance from all 4 temperatures
         measured_temps = [t for t in [t0, t2, t5, t8] if t is not None]
         variance = round(max(measured_temps) - min(measured_temps), 1) if len(measured_temps) > 1 else 0.0
         models.append({

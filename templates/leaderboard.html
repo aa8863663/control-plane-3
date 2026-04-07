@@ -14,6 +14,21 @@
 .lb-main-title{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);}
 .lb-main-sub{font-size:0.68rem;color:var(--muted);margin-top:3px;}
 
+/* Provider badge styling */
+.provider-tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  background: rgba(37,99,235,0.08);
+  border: 1px solid rgba(37,99,235,0.2);
+  border-radius: 3px;
+  font-size: 0.6rem;
+  color: var(--accent);
+  font-weight: 500;
+  text-transform: lowercase;
+  letter-spacing: 0.3px;
+}
+
 .lb-sidebar{display:flex;flex-direction:column;gap:14px;}
 .lb-side-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
 .lb-side-title{font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:14px;}
@@ -42,6 +57,21 @@
 <div class="page-header fade-up">
   <h1>Evidence <span>Rankings</span></h1>
   <p>{{ leaderboard|length }} models evaluated under MTCP · 4 temperature settings · {{ total_evals }}+ individual evaluations</p>
+</div>
+
+<!-- Info box explaining provider differences and complete runs -->
+<div class="card fade-up fade-up-1" style="background:rgba(37,99,235,0.05);border-color:rgba(37,99,235,0.15);margin-bottom:2rem;">
+  <div style="display:flex;align-items:flex-start;gap:1rem;">
+    <div style="font-size:1.5rem;line-height:1;">ℹ️</div>
+    <div style="flex:1;">
+      <h3 style="margin:0 0 0.5rem 0;font-size:0.85rem;color:var(--accent);">About This Leaderboard</h3>
+      <p style="margin:0;font-size:0.72rem;color:var(--muted);line-height:1.6;">
+        Models are tested across <strong>4 temperature settings</strong> (0.0, 0.2, 0.5, 0.8) to measure constraint persistence under variation.
+        Same model accessed via different API providers may show different scores due to wrapper overhead and implementation differences.
+        <strong>Only complete runs (all 4 temperatures tested) are shown.</strong> Provider shown as badge next to model name.
+      </p>
+    </div>
+  </div>
 </div>
 
 <!-- ── BENTO HEADER — KPI band ─────────────────────────────────────────── -->
