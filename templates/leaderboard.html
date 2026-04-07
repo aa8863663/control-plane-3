@@ -56,7 +56,8 @@
 {% block content %}
 <div class="page-header fade-up">
   <h1>Evidence <span>Rankings</span></h1>
-  <p>{{ leaderboard|length }} models evaluated under MTCP · 4 temperature settings · {{ total_evals }}+ individual evaluations</p>
+  {% set unique_models = leaderboard|map(attribute='model')|unique|list|length %}
+  <p>{{ unique_models }} models · {{ leaderboard|length }} provider configurations · 4 temperature settings · {{ total_evals }}+ evaluations</p>
 </div>
 
 <!-- Info box explaining provider differences and complete runs -->
@@ -76,6 +77,7 @@
 
 <!-- ── BENTO HEADER — KPI band ─────────────────────────────────────────── -->
 {% set total = leaderboard|length %}
+{% set unique_models_count = leaderboard|map(attribute='model')|unique|list|length %}
 {% set grade_a = leaderboard|selectattr('grade','equalto','A')|list|length %}
 {% set grade_b = leaderboard|selectattr('grade','equalto','B')|list|length %}
 {% set passing = leaderboard|selectattr('pass_rate','ge',80)|list|length %}
@@ -83,9 +85,9 @@
 
 <div class="lb-bento-header fade-up fade-up-1">
   <div class="lb-kpi">
-    <div class="lb-kpi-label">Models evaluated</div>
+    <div class="lb-kpi-label">Provider configurations</div>
     <div class="lb-kpi-value">{{ total }}</div>
-    <div class="lb-kpi-sub">across all providers</div>
+    <div class="lb-kpi-sub">{{ unique_models_count }} unique models</div>
   </div>
   <div class="lb-kpi">
     <div class="lb-kpi-label">Avg BIS</div>
@@ -93,14 +95,14 @@
     <div class="lb-kpi-sub">boundary integrity score</div>
   </div>
   <div class="lb-kpi">
-    <div class="lb-kpi-label">Grade A models</div>
+    <div class="lb-kpi-label">Grade A configs</div>
     <div class="lb-kpi-value" style="color:#16a34a">{{ grade_a }}</div>
     <div class="lb-kpi-sub">BIS ≥ 90%</div>
   </div>
   <div class="lb-kpi">
     <div class="lb-kpi-label">Passing (BIS ≥ 80%)</div>
     <div class="lb-kpi-value">{{ passing }}</div>
-    <div class="lb-kpi-sub">of {{ total }} evaluated</div>
+    <div class="lb-kpi-sub">of {{ total }} configs</div>
   </div>
 </div>
 
@@ -110,8 +112,8 @@
   <!-- Main table panel -->
   <div class="lb-main">
     <div class="lb-main-head">
-      <div class="lb-main-title">All models ranked by Boundary Integrity Score</div>
-      <div class="lb-main-sub">Ordered by avg BIS across T=0.0, 0.2, 0.5, 0.8 · Control Probe Degradation shown separately</div>
+      <div class="lb-main-title">Model + Provider configurations ranked by BIS</div>
+      <div class="lb-main-sub">Same model via different providers shown separately · Only complete runs (all 4 temps) · CPD shown separately</div>
       <div class="filter-bar" style="margin-top:12px;margin-bottom:0;">
         <button class="pill active" onclick="filterGrade('all')">All</button>
         <div class="pill-divider"></div>
