@@ -45,6 +45,13 @@
 .temp-cell-label{font-size:0.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
 .temp-cell-value{font-family:'DM Serif Display',serif;font-size:1.1rem;color:var(--text);margin-top:4px;}
 
+/* Temperature grid in table */
+.temp-grid-cell{padding:8px 12px;}
+.temp-grid-container{display:grid;grid-template-columns:repeat(2,1fr);gap:0.35rem;}
+.temp-grid-container .temp-cell{display:flex;flex-direction:column;align-items:center;gap:0.2rem;background:transparent;border:none;padding:0;}
+.temp-grid-container .temp-label{font-size:0.58rem;color:var(--muted);font-weight:600;font-family:'JetBrains Mono',monospace;}
+.temp-grid-container .temp-value{font-size:0.68rem;font-weight:600;padding:0.25rem 0.5rem;border-radius:3px;min-width:3.5rem;text-align:center;color:#fff;font-family:'JetBrains Mono',monospace;}
+
 @media(max-width:900px){
   .lb-bento-header{grid-template-columns:1fr 1fr;}
   .lb-bento-body{grid-template-columns:1fr;}
@@ -56,8 +63,7 @@
 {% block content %}
 <div class="page-header fade-up">
   <h1>Evidence <span>Rankings</span></h1>
-  {% set unique_models = leaderboard|map(attribute='model')|unique|list|length %}
-  <p>{{ unique_models }} models · {{ leaderboard|length }} provider configurations · 4 temperature settings · {{ total_evals }}+ evaluations</p>
+  <p>{{ stats.total_models }} models · {{ stats.provider_configs }} provider configurations · 4 temperature settings · {{ stats.total_evaluations_formatted }}+ evaluations</p>
 </div>
 
 <!-- Info box explaining provider differences and complete runs -->
@@ -76,33 +82,26 @@
 </div>
 
 <!-- ── BENTO HEADER — KPI band ─────────────────────────────────────────── -->
-{% set total = leaderboard|length %}
-{% set unique_models_count = leaderboard|map(attribute='model')|unique|list|length %}
-{% set grade_a = leaderboard|selectattr('grade','equalto','A')|list|length %}
-{% set grade_b = leaderboard|selectattr('grade','equalto','B')|list|length %}
-{% set passing = leaderboard|selectattr('pass_rate','ge',80)|list|length %}
-{% set avg_bis = (leaderboard|map(attribute='pass_rate')|sum / total)|round(1) if total > 0 else 0 %}
-
 <div class="lb-bento-header fade-up fade-up-1">
   <div class="lb-kpi">
     <div class="lb-kpi-label">Provider configurations</div>
-    <div class="lb-kpi-value">{{ total }}</div>
-    <div class="lb-kpi-sub">{{ unique_models_count }} unique models</div>
+    <div class="lb-kpi-value">{{ stats.provider_configs }}</div>
+    <div class="lb-kpi-sub">{{ stats.total_models }} unique models</div>
   </div>
   <div class="lb-kpi">
     <div class="lb-kpi-label">Avg BIS</div>
-    <div class="lb-kpi-value">{{ avg_bis }}%</div>
+    <div class="lb-kpi-value">{{ stats.avg_bis }}%</div>
     <div class="lb-kpi-sub">boundary integrity score</div>
   </div>
   <div class="lb-kpi">
     <div class="lb-kpi-label">Grade A configs</div>
-    <div class="lb-kpi-value" style="color:#16a34a">{{ grade_a }}</div>
+    <div class="lb-kpi-value" style="color:#16a34a">{{ stats.grade_a }}</div>
     <div class="lb-kpi-sub">BIS ≥ 90%</div>
   </div>
   <div class="lb-kpi">
     <div class="lb-kpi-label">Passing (BIS ≥ 80%)</div>
-    <div class="lb-kpi-value">{{ passing }}</div>
-    <div class="lb-kpi-sub">of {{ total }} configs</div>
+    <div class="lb-kpi-value">{{ stats.passing }}</div>
+    <div class="lb-kpi-sub">of {{ stats.provider_configs }} configs</div>
   </div>
 </div>
 
@@ -136,10 +135,7 @@
             <th>BIS</th>
             <th>Ctrl BIS</th>
             <th>CPD</th>
-            <th>T=0.0</th>
-            <th>T=0.2</th>
-            <th>T=0.5</th>
-            <th>T=0.8</th>
+            <th>Temp Performance</th>
             <th>Grade</th>
           </tr>
         </thead>
@@ -164,10 +160,34 @@
             </td>
             <td style="font-size:0.7rem;color:var(--danger)">{{ row.ctrl_rate }}%</td>
             <td style="font-size:0.7rem;color:var(--muted)">{{ row.drop }}pp</td>
-            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{% if row.t0 is not none %}{{ row.t0 }}%{% else %}—{% endif %}</td>
-            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{% if row.t2 is not none %}{{ row.t2 }}%{% else %}—{% endif %}</td>
-            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{% if row.t5 is not none %}{{ row.t5 }}%{% else %}—{% endif %}</td>
-            <td style="font-size:0.68rem;font-family:'JetBrains Mono',monospace">{% if row.t8 is not none %}{{ row.t8 }}%{% else %}—{% endif %}</td>
+            <td class="temp-grid-cell">
+              <div class="temp-grid-container">
+                <div class="temp-cell" data-temp="0.0">
+                  <span class="temp-label">0.0</span>
+                  <span class="temp-value" style="background:{% if row.t0 is not none %}{% if row.t0 >= 80 %}#16a34a{% elif row.t0 >= 70 %}#d97706{% else %}#ef4444{% endif %}{% else %}var(--surface2){% endif %}">
+                    {% if row.t0 is not none %}{{ row.t0 }}%{% else %}—{% endif %}
+                  </span>
+                </div>
+                <div class="temp-cell" data-temp="0.2">
+                  <span class="temp-label">0.2</span>
+                  <span class="temp-value" style="background:{% if row.t2 is not none %}{% if row.t2 >= 80 %}#16a34a{% elif row.t2 >= 70 %}#d97706{% else %}#ef4444{% endif %}{% else %}var(--surface2){% endif %}">
+                    {% if row.t2 is not none %}{{ row.t2 }}%{% else %}—{% endif %}
+                  </span>
+                </div>
+                <div class="temp-cell" data-temp="0.5">
+                  <span class="temp-label">0.5</span>
+                  <span class="temp-value" style="background:{% if row.t5 is not none %}{% if row.t5 >= 80 %}#16a34a{% elif row.t5 >= 70 %}#d97706{% else %}#ef4444{% endif %}{% else %}var(--surface2){% endif %}">
+                    {% if row.t5 is not none %}{{ row.t5 }}%{% else %}—{% endif %}
+                  </span>
+                </div>
+                <div class="temp-cell" data-temp="0.8">
+                  <span class="temp-label">0.8</span>
+                  <span class="temp-value" style="background:{% if row.t8 is not none %}{% if row.t8 >= 80 %}#16a34a{% elif row.t8 >= 70 %}#d97706{% else %}#ef4444{% endif %}{% else %}var(--surface2){% endif %}">
+                    {% if row.t8 is not none %}{{ row.t8 }}%{% else %}—{% endif %}
+                  </span>
+                </div>
+              </div>
+            </td>
             <td><span class="grade grade-{{ row.grade }}">{{ row.grade }}</span></td>
           </tr>
           {% endfor %}
@@ -192,7 +212,7 @@
       {% set grades = [('A','#16a34a'),('B','#475569'),('C','#d97706'),('D','#ef4444'),('F','#f87171')] %}
       {% for g, color in grades %}
       {% set cnt = leaderboard|selectattr('grade','equalto',g)|list|length %}
-      {% set pct = ((cnt / total) * 100)|round(0)|int if total > 0 else 0 %}
+      {% set pct = ((cnt / stats.provider_configs) * 100)|round(0)|int if stats.provider_configs > 0 else 0 %}
       <div class="grade-band">
         <span class="grade grade-{{ g }}">{{ g }}</span>
         <div class="grade-band-bar"><div class="grade-band-fill" style="width:{{ pct }}%;background:{{ color }};"></div></div>
@@ -206,10 +226,10 @@
     <div class="lb-side-card">
       <div class="lb-side-title">Avg BIS by temperature</div>
       <div class="temp-grid">
-        {% set t0_avg = (leaderboard|map(attribute='t0')|map('float')|sum / total)|round(1) if total > 0 else 0 %}
-        {% set t2_avg = (leaderboard|map(attribute='t2')|map('float')|sum / total)|round(1) if total > 0 else 0 %}
-        {% set t5_avg = (leaderboard|map(attribute='t5')|map('float')|sum / total)|round(1) if total > 0 else 0 %}
-        {% set t8_avg = (leaderboard|map(attribute='t8')|map('float')|sum / total)|round(1) if total > 0 else 0 %}
+        {% set t0_avg = (leaderboard|map(attribute='t0')|map('float')|sum / stats.provider_configs)|round(1) if stats.provider_configs > 0 else 0 %}
+        {% set t2_avg = (leaderboard|map(attribute='t2')|map('float')|sum / stats.provider_configs)|round(1) if stats.provider_configs > 0 else 0 %}
+        {% set t5_avg = (leaderboard|map(attribute='t5')|map('float')|sum / stats.provider_configs)|round(1) if stats.provider_configs > 0 else 0 %}
+        {% set t8_avg = (leaderboard|map(attribute='t8')|map('float')|sum / stats.provider_configs)|round(1) if stats.provider_configs > 0 else 0 %}
         <div class="temp-cell">
           <div class="temp-cell-label">T=0.0</div>
           <div class="temp-cell-value">{{ t0_avg }}%</div>

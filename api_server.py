@@ -1051,14 +1051,68 @@ def leaderboard(request: Request, session: Optional[str] = Cookie(default=None))
     try:
         lb = get_leaderboard_data()
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
-        total_evals = f"{cur.fetchone()['n'] or 0:,}"
+
+        # Calculate comprehensive stats
+        # Total unique models
+        cur.execute("SELECT COUNT(DISTINCT model) as count FROM runs WHERE dataset = 'probes_500'")
+        total_models = cur.fetchone()['count']
+
+        # Complete provider configurations (all 4 temps)
+        cur.execute("""
+            WITH temp_coverage AS (
+                SELECT
+                    model,
+                    COALESCE(NULLIF(provider, ''), NULLIF(api_provider, ''), 'Unknown') as provider_clean,
+                    COUNT(DISTINCT temperature) as temps
+                FROM runs
+                WHERE dataset = 'probes_500'
+                GROUP BY model, COALESCE(NULLIF(provider, ''), NULLIF(api_provider, ''), 'Unknown')
+                HAVING COUNT(DISTINCT temperature) = 4
+            )
+            SELECT COUNT(*) as count FROM temp_coverage
+        """)
+        provider_configs = cur.fetchone()['count']
+
+        # Total evaluations (all datasets)
+        cur.execute("SELECT COUNT(*) as count FROM results")
+        total_evaluations = cur.fetchone()['count']
+
+        # Calculate grade counts and averages from leaderboard data
+        grade_a = len([m for m in lb if m['grade'] == 'A'])
+        grade_b = len([m for m in lb if m['grade'] == 'B'])
+        passing = len([m for m in lb if m['pass_rate'] >= 80])
+        avg_bis = round(sum(m['pass_rate'] for m in lb) / len(lb), 1) if lb else 0
+
         conn.close()
+
+        stats = {
+            'total_models': total_models,
+            'provider_configs': provider_configs,
+            'total_evaluations': total_evaluations,
+            'total_evaluations_formatted': f"{total_evaluations:,}",
+            'avg_bis': avg_bis,
+            'grade_a': grade_a,
+            'grade_b': grade_b,
+            'passing': passing
+        }
+
     except Exception as e:
-        print(f"Leaderboard error: {e}"); lb = []; total_evals = "0"
+        print(f"Leaderboard error: {e}")
+        lb = []
+        stats = {
+            'total_models': 0,
+            'provider_configs': 0,
+            'total_evaluations': 0,
+            'total_evaluations_formatted': '0',
+            'avg_bis': 0,
+            'grade_a': 0,
+            'grade_b': 0,
+            'passing': 0
+        }
+
     return templates.TemplateResponse("leaderboard.html", {
         "request": request, "user": user, "active": "leaderboard",
-        "leaderboard": lb, "total_evals": total_evals})
+        "leaderboard": lb, "stats": stats, "total_evals": stats['total_evaluations_formatted']})
 
 @app.get("/stats", response_class=HTMLResponse)
 @app.get("/api/stats", response_class=HTMLResponse)
