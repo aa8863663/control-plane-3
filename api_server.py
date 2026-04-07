@@ -2208,10 +2208,28 @@ async def actuarial_enhanced_page(request: Request, session: Optional[str] = Coo
     user, redir = require_admin(session)
     if redir: return redir
 
-    return templates.TemplateResponse("actuarial_enhanced.html", {
+    try:
+        conn = get_db(); cur = conn.cursor()
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
+        total_runs = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        total_results = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP' AND run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        hard_stops = cur.fetchone()['n'] or 0
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
+        total_models = cur.fetchone()['n'] or 0
+        conn.close()
+    except Exception as e:
+        print(f"Actuarial stats error: {e}"); total_runs=0; total_results=0; hard_stops=0; total_models=0
+
+    return templates.TemplateResponse("actuarial.html", {
         "request": request,
         "user": user,
-        "active": "actuarial"
+        "active": "actuarial",
+        "total_runs": total_runs,
+        "total_results": total_results,
+        "hard_stops": hard_stops,
+        "total_models": total_models
     })
 
 @app.get("/api/costs", response_class=HTMLResponse)
