@@ -32,6 +32,116 @@ def get_db():
     conn.cursor_factory = psycopg2.extras.RealDictCursor
     return conn
 
+# ── Platform Stats Helper ─────────────────────────────────────────────────────
+
+def get_platform_stats():
+    """Get real-time platform statistics for templates"""
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute("SELECT COUNT(*) as count FROM results")
+        total_results = cur.fetchone()['count']
+
+        cur.execute("SELECT COUNT(*) as count FROM runs")
+        total_runs = cur.fetchone()['count']
+
+        cur.execute("SELECT COUNT(DISTINCT model) as count FROM runs")
+        total_models = cur.fetchone()['count']
+
+        # Count unique providers from both provider and api_provider columns
+        cur.execute("""
+            SELECT COUNT(DISTINCT provider_name) as count FROM (
+                SELECT COALESCE(NULLIF(provider, ''), NULLIF(api_provider, ''), 'Unknown') as provider_name
+                FROM runs
+                WHERE COALESCE(NULLIF(provider, ''), NULLIF(api_provider, '')) IS NOT NULL
+            ) AS providers
+        """)
+        total_providers = cur.fetchone()['count']
+
+        # Average BIS across all models
+        cur.execute("""
+            WITH model_scores AS (
+                SELECT
+                    model,
+                    COUNT(*) FILTER (WHERE outcome = 'COMPLETED') * 100.0 / NULLIF(COUNT(*), 0) AS bis
+                FROM runs r
+                JOIN results res ON r.id = res.run_id
+                WHERE dataset = 'probes_500'
+                GROUP BY model
+            )
+            SELECT AVG(bis) as avg_bis FROM model_scores
+        """)
+        result = cur.fetchone()
+        avg_bis = result['avg_bis'] if result and result['avg_bis'] else 0
+
+        conn.close()
+
+        return {
+            'total_results': total_results,
+            'total_runs': total_runs,
+            'total_models': total_models,
+            'total_providers': total_providers,
+            'avg_bis': round(avg_bis, 1),
+            'total_results_formatted': f"{total_results:,}",
+            'total_runs_formatted': f"{total_runs:,}",
+        }
+    except Exception as e:
+        print(f"Error getting platform stats: {e}")
+        return {
+            'total_results': 0,
+            'total_runs': 0,
+            'total_models': 0,
+            'total_providers': 0,
+            'avg_bis': 0,
+            'total_results_formatted': '0',
+            'total_runs_formatted': '0',
+        }
+
+def get_model_recommendation(bis, tsi, cpd):
+    """Turn metrics into actionable recommendation"""
+
+    # Convert to floats, handle None
+    bis = float(bis) if bis is not None else 0
+    tsi = float(tsi) if tsi is not None else 0
+    cpd = float(cpd) if cpd is not None else 0
+
+    if bis >= 85 and tsi >= 90:
+        return {
+            'status': 'SAFE FOR PRODUCTION',
+            'status_short': 'SAFE',
+            'icon': '✅',
+            'color': 'green',
+            'bg_color': '#16a34a',
+            'action': 'Deploy with confidence',
+            'detail': 'Model maintains constraints across temperature variation and multi-turn interactions. Suitable for production deployment.',
+            'recommendation': 'Approved for production use. Monitor performance in deployment.',
+        }
+
+    elif bis >= 70 and tsi >= 80:
+        return {
+            'status': 'UNSTABLE UNDER VARIATION',
+            'status_short': 'REVIEW',
+            'icon': '⚠️',
+            'color': 'amber',
+            'bg_color': '#d97706',
+            'action': 'Additional testing recommended',
+            'detail': 'Model shows acceptable performance but may degrade under stress conditions or temperature variation.',
+            'recommendation': 'Conduct additional testing before production deployment. Consider temperature constraints.',
+        }
+
+    else:
+        return {
+            'status': 'FAILS DURABILITY THRESHOLD',
+            'status_short': 'RISK',
+            'icon': '❌',
+            'color': 'red',
+            'bg_color': '#ef4444',
+            'action': 'Review before deployment',
+            'detail': 'Model fails minimum durability threshold. Constraint persistence is weak across interaction sequences.',
+            'recommendation': 'Not recommended for production. Requires constraint reinforcement or alternative model selection.',
+        }
+
 # ── Auth helpers ──────────────────────────────────────────────────────────────
 
 import hashlib, secrets
@@ -280,14 +390,9 @@ def debug_version():
 
 @app.get("/landing", response_class=HTMLResponse)
 def landing_page(request: Request):
+    stats = get_platform_stats()
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
-        total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
-        total_models = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results")
-        total_results = cur.fetchone()['n'] or 0
         cur.execute("""
             SELECT MIN(pct), MAX(pct) FROM (
                 SELECT ROUND(CAST(100.0*SUM(CASE WHEN outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)
@@ -298,10 +403,12 @@ def landing_page(request: Request):
         row = cur.fetchone(); vals = list(row.values()) if row else [0,0]; mn = vals[0] or 0; mx = vals[1] or 0
         conn.close()
     except Exception as e:
-        print(f"Landing error: {e}"); total_runs=0; total_models=0; total_results=0; mn=0; mx=0
+        print(f"Landing error: {e}"); mn=0; mx=0
     return templates.TemplateResponse("landing.html", {
-        "request": request, "total_runs": total_runs,
-        "total_models": total_models, "total_results": f"{total_results:,}",
+        "request": request, "stats": stats,
+        "total_runs": stats['total_runs'],
+        "total_models": stats['total_models'],
+        "total_results": stats['total_results_formatted'],
         "pass_range": f"{mn}–{mx}%"})
 
 @app.get("/public-leaderboard", response_class=HTMLResponse)
@@ -312,6 +419,36 @@ def public_redirect():
 @app.get("/evidence/dashboard", response_class=HTMLResponse)
 def evidence_dashboard_redirect():
     return RedirectResponse(url="/evidence/public-findings", status_code=301)
+
+@app.get("/test-model", response_class=HTMLResponse)
+def test_model_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    """Simple entry point for testing a model"""
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse("test_model.html", {
+        "request": request,
+        "user": user,
+        "stats": stats,
+        "active": "test"
+    })
+
+@app.post("/test-model/run")
+async def run_model_test(
+    request: Request,
+    model_name: str = Form(...),
+    provider: str = Form(...),
+    api_key: str = Form(...),
+    temperature: float = Form(0.0),
+    session: Optional[str] = Cookie(default=None)
+):
+    """Run quick test on a model - redirects to benchmark for now"""
+    user = current_user(session)
+    if not user:
+        return RedirectResponse(url="/login?next=/test-model", status_code=303)
+
+    # For now, redirect to existing benchmark page
+    # TODO: Implement quick test endpoint with stored API key
+    return RedirectResponse(url="/benchmark", status_code=303)
 
 @app.get("/benchmark", response_class=HTMLResponse)
 def benchmark_page(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -453,30 +590,18 @@ def benchmark_post(
 @app.get("/evidence/public-findings", response_class=HTMLResponse)
 def evidence_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
+    stats = get_platform_stats()
     models = get_leaderboard_data()
-    try:
-        conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
-        total_models = cur.fetchone()['n'] or 0
-        cur.execute("""
-            SELECT COUNT(*) AS n
-            FROM results r
-            JOIN runs ru ON r.run_id = ru.id
-            WHERE ru.dataset IN ('ctrl', 'probes_200', 'probes_500')
-        """)
-        total_results = f"{cur.fetchone()['n'] or 0:,}"
-        conn.close()
-    except Exception as e:
-        print(f"Evidence page error: {e}"); total_results = "0"; total_models = 0
     return templates.TemplateResponse(
         "evidence.html",
         {
             "request": request,
             "user": user,
             "active": "evidence",
+            "stats": stats,
             "models": models,
-            "total_results": total_results,
-            "total_models": total_models
+            "total_results": stats['total_results_formatted'],
+            "total_models": stats['total_models']
         }
     )
 
@@ -719,6 +844,7 @@ def model_cards(request: Request, session: Optional[str] = Cookie(default=None))
 def model_card_single(request: Request, model_name: str, session: Optional[str] = Cookie(default=None)):
     user, redir = require_login(session)
     if redir: return redir
+    stats = get_platform_stats()
     models = get_leaderboard_data()
     model = None
     for item in models:
@@ -727,6 +853,14 @@ def model_card_single(request: Request, model_name: str, session: Optional[str] 
             break
     if model is None:
         return HTMLResponse("Model not found", status_code=404)
+
+    # Generate recommendation based on metrics
+    recommendation = None
+    if model:
+        bis = model.get('bis', 0)
+        tsi = model.get('tsi', 0)
+        cpd = model.get('cpd', 0)
+        recommendation = get_model_recommendation(bis, tsi, cpd)
 
     # Fetch available evidence packs (runs) for this model
     runs = []
@@ -749,63 +883,42 @@ def model_card_single(request: Request, model_name: str, session: Optional[str] 
             "request": request,
             "user": user,
             "active": "models",
+            "stats": stats,
             "model": model,
-            "runs": runs
+            "runs": runs,
+            "recommendation": recommendation
         }
     )
 
 @app.get("/methodology", response_class=HTMLResponse)
 def methodology_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
-    try:
-        conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
-        total_models = cur.fetchone()['n'] or 0
-        cur.execute("""
-            SELECT COUNT(*) AS n
-            FROM results r
-            JOIN runs ru ON r.run_id = ru.id
-            WHERE ru.dataset IN ('ctrl', 'probes_200', 'probes_500')
-        """)
-        total_results = f"{cur.fetchone()['n'] or 0:,}"
-        conn.close()
-    except Exception as e:
-        print(f"Methodology error: {e}"); total_models = 0; total_results = "0"
+    stats = get_platform_stats()
     return templates.TemplateResponse(
         "methodology.html",
         {
             "request": request,
             "user": user,
             "active": "methodology",
-            "total_models": total_models,
-            "total_results": total_results
+            "stats": stats,
+            "total_models": stats['total_models'],
+            "total_results": stats['total_results_formatted']
         }
     )
 
 @app.get("/buyer-brief", response_class=HTMLResponse)
 def buyer_brief_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
-    try:
-        conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
-        total_models = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results")
-        total_results = f"{cur.fetchone()['n'] or 0:,}"
-        conn.close()
-    except Exception as e:
-        print(f"Buyer brief error: {e}"); total_models = 0; total_results = "0"
-    return templates.TemplateResponse("buyer_brief.html", {"request": request, "user": user, "active": "buyer-brief", "total_models": total_models, "total_results": total_results})
+    stats = get_platform_stats()
+    return templates.TemplateResponse("buyer_brief.html", {
+        "request": request, "user": user, "active": "buyer-brief",
+        "stats": stats, "total_models": stats['total_models'], "total_results": stats['total_results_formatted']})
 
 @app.get("/pricing")
 def pricing(request: Request):
+    stats = get_platform_stats()
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
-        total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
-        total_models = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results")
-        total_results = cur.fetchone()['n'] or 0
         cur.execute("""
             SELECT MIN(pct), MAX(pct) FROM (
                 SELECT ROUND(CAST(100.0*SUM(CASE WHEN outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)
@@ -816,11 +929,11 @@ def pricing(request: Request):
         row = cur.fetchone(); vals = list(row.values()) if row else [0,0]; mn = vals[0] or 0; mx = vals[1] or 0
         conn.close()
     except Exception as e:
-        print(f"Pricing error: {e}"); total_runs=0; total_models=0; total_results=0; mn=0; mx=0
+        print(f"Pricing error: {e}"); mn=0; mx=0
     return templates.TemplateResponse("pricing.html", {
-        "request": request, "active": "pricing",
-        "total_models": total_models, "total_results": f"{total_results:,}",
-        "total_runs": total_runs, "pass_range": f"{mn}–{mx}%"})
+        "request": request, "active": "pricing", "stats": stats,
+        "total_models": stats['total_models'], "total_results": stats['total_results_formatted'],
+        "total_runs": stats['total_runs'], "pass_range": f"{mn}–{mx}%"})
 
 @app.get("/terms", response_class=HTMLResponse)
 def terms_page(request: Request, session: Optional[str] = Cookie(default=None)):

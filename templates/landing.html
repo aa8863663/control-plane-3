@@ -132,10 +132,13 @@ footer a{color:var(--accent2);text-decoration:none;}
   <!-- HERO -->
   <div class="hero fade-up">
     <div class="hero-kicker">AI RELEASE ASSURANCE · EU AI ACT READY · EMPIRICAL</div>
-    <h1 class="hero-title">Know if your model obeys <span>before you deploy it.</span></h1>
-    <p class="hero-sub">MTCP independently tests whether AI models maintain corrected constraints across interaction. Black-box. DOI-registered. Tamper-evident. {{ total_models }} frontier models evaluated.</p>
+    <h1 class="hero-title">Models don't stay aligned <span>after interaction.</span></h1>
+    <h2 style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:400;margin-top:1rem;color:var(--muted);line-height:1.6;">
+      MTCP tells you if they will.
+    </h2>
+    <p class="hero-sub">Test constraint persistence in 5 minutes. Get a clear deploy/review/risk decision. {{ total_models }} models evaluated. {{ total_results }} probe interactions.</p>
     <div class="hero-actions">
-      <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
+      <a href="/test-model" class="btn btn-primary">Test Your Model (5 min)</a>
       <a href="/evidence/public-findings" class="btn btn-outline">View Evidence →</a>
     </div>
     <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:18px;">
@@ -157,6 +160,33 @@ footer a{color:var(--accent2);text-decoration:none;}
     <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">FCA</span>
     <span style="color:var(--border2)">·</span>
     <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">MAS FEAT</span>
+  </div>
+
+  <!-- VALUE PROPOSITIONS -->
+  <div class="grid-3 fade-up fade-up-2" style="margin-bottom:3rem">
+    <div class="card">
+      <h3 style="color:var(--accent);margin-bottom:1rem;font-size:1rem">For AI Engineers</h3>
+      <p style="color:var(--muted);line-height:1.7;font-size:0.8rem">
+        Test if your model maintains safety constraints across temperature settings and conversation turns.
+        Get a deploy/don't-deploy answer in 5 minutes.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3 style="color:var(--accent);margin-bottom:1rem;font-size:1rem">For Procurement Teams</h3>
+      <p style="color:var(--muted);line-height:1.7;font-size:0.8rem">
+        Compare AI providers on constraint durability.
+        See which models maintain alignment under real-world variation.
+      </p>
+    </div>
+
+    <div class="card">
+      <h3 style="color:var(--accent);margin-bottom:1rem;font-size:1rem">For Compliance Officers</h3>
+      <p style="color:var(--muted);line-height:1.7;font-size:0.8rem">
+        Audit trail proving AI models maintain safety constraints across operating conditions.
+        EU AI Act Article 12 ready.
+      </p>
+    </div>
   </div>
 
   <!-- EVALUATION WORKFLOW PANEL -->

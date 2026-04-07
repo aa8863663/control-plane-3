@@ -6,6 +6,29 @@
   <p>{{ model.provider }} · MTCP Evaluation · Boundary Integrity Score, Control Probe Degradation, and Temperature Stability profile.</p>
 </div>
 
+<!-- RECOMMENDATION CARD -->
+{% if recommendation %}
+<div class="card fade-up fade-up-1" style="background: {{ recommendation.bg_color }}; color: #fff; margin-bottom: 2rem; border: none;">
+  <div style="display: flex; align-items: flex-start; gap: 1.5rem;">
+    <div style="font-size: 3rem; line-height: 1;">{{ recommendation.icon }}</div>
+    <div style="flex: 1;">
+      <h2 style="margin: 0 0 0.5rem 0; font-size: 1.5rem; color: #fff; font-weight: 700;">
+        {{ recommendation.status }}
+      </h2>
+      <p style="font-size: 1rem; margin: 0 0 1rem 0; font-weight: 600; opacity: 0.95;">
+        {{ recommendation.action }}
+      </p>
+      <p style="margin: 0 0 1rem 0; opacity: 0.9; line-height: 1.6;">
+        {{ recommendation.detail }}
+      </p>
+      <div style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 4px; border-left: 4px solid rgba(255,255,255,0.5);">
+        <strong style="font-weight: 700;">Recommendation:</strong> {{ recommendation.recommendation }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
 <!-- PRIMARY GRADE + CORE METRICS -->
 <div class="kpi-row fade-up fade-up-1">
   <div class="kpi-card" style="border-color:{% if model.grade == 'A' %}rgba(22,163,74,0.3){% elif model.grade == 'B' %}rgba(37,99,235,0.3){% elif model.grade == 'C' %}rgba(212,168,67,0.3){% else %}rgba(239,68,68,0.3){% endif %};">

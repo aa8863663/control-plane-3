@@ -269,6 +269,7 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
       <a href="/" class="nav-logo">MTCP<span>.</span></a>
       <ul class="nav-links">
         <li><a href="/dashboard" {% if active=='dashboard' %}class="active"{% endif %}>Dashboard</a></li>
+        <li><a href="/test-model" {% if active=='test' %}class="active"{% endif %}>Test Model</a></li>
         <li><a href="/leaderboard" {% if active=='leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
         <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
         <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
@@ -307,6 +308,7 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
     <a href="/" class="nav-logo">MTCP<span>.</span></a>
     <ul class="nav-links">
       <li><a href="/dashboard" {% if active=='dashboard' %}class="active"{% endif %}>Dashboard</a></li>
+      <li><a href="/test-model" {% if active=='test' %}class="active"{% endif %}>Test Model</a></li>
       <li><a href="/leaderboard" {% if active=='leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
       <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
       <li><a href="/evidence/public-findings" {% if active=='evidence' %}class="active"{% endif %}>Evidence</a></li>
