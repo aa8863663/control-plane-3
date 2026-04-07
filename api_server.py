@@ -800,11 +800,11 @@ def dashboard(request: Request, session: Optional[str] = Cookie(default=None)):
         return redir
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        cur.execute("SELECT COUNT(*) AS n FROM results")
         total_results = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs")
         total_models = cur.fetchone()['n'] or 0
         cur.execute("""
             SELECT
@@ -1038,11 +1038,11 @@ def stats_page(request: Request, session: Optional[str] = Cookie(default=None)):
     if redir: return redir
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        cur.execute("SELECT COUNT(*) AS n FROM results")
         total_results = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP' AND run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP'")
         hard_stops = cur.fetchone()['n'] or 0
         cur.execute("""
             SELECT ru.model, ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as avg_pass_rate
@@ -1160,11 +1160,11 @@ def compare_page(request: Request, session: Optional[str] = Cookie(default=None)
         total_models = len({d["model"] for d in data})
 
         # Get stats for cards
-        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        cur.execute("SELECT COUNT(*) AS n FROM results")
         total_results = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP' AND run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP'")
         hard_stops = cur.fetchone()['n'] or 0
 
         conn.close()
@@ -1751,13 +1751,13 @@ def actuarial_page(request: Request, session: Optional[str] = Cookie(default=Non
         rows = [{"temperature": float(r["temperature"] or 0), "model": r["model"], "pass_rate": float(r["pass_rate"] or 0)} for r in cur.fetchall()]
 
         # Get stats for cards
-        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        cur.execute("SELECT COUNT(*) AS n FROM results")
         total_results = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs")
         total_models = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP' AND run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP'")
         hard_stops = cur.fetchone()['n'] or 0
 
         conn.close()
@@ -2210,13 +2210,13 @@ async def actuarial_enhanced_page(request: Request, session: Optional[str] = Coo
 
     try:
         conn = get_db(); cur = conn.cursor()
-        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs WHERE dataset = 'probes_500'")
+        cur.execute("SELECT COUNT(DISTINCT id) AS n FROM runs")
         total_runs = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        cur.execute("SELECT COUNT(*) AS n FROM results")
         total_results = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP' AND run_id IN (SELECT id FROM runs WHERE dataset = 'probes_500')")
+        cur.execute("SELECT COUNT(*) AS n FROM results WHERE outcome='SAFETY_HARD_STOP'")
         hard_stops = cur.fetchone()['n'] or 0
-        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs WHERE dataset = 'probes_500'")
+        cur.execute("SELECT COUNT(DISTINCT model) AS n FROM runs")
         total_models = cur.fetchone()['n'] or 0
         conn.close()
     except Exception as e:
