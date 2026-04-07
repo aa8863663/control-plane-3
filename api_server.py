@@ -1632,8 +1632,8 @@ async def actuarial_providers_api(session: Optional[str] = Cookie(default=None))
                    ROUND(AVG(bis), 1) as avg_bis,
                    ROUND(MAX(bis), 1) as best_bis,
                    ROUND(MIN(bis), 1) as worst_bis,
-                   MAX(model) FILTER (WHERE bis = MAX(bis)) as best_model,
-                   MIN(model) FILTER (WHERE bis = MIN(bis)) as worst_model
+                   (SELECT model FROM model_scores ms2 WHERE ms2.provider = model_scores.provider ORDER BY bis DESC LIMIT 1) as best_model,
+                   (SELECT model FROM model_scores ms2 WHERE ms2.provider = model_scores.provider ORDER BY bis ASC LIMIT 1) as worst_model
             FROM model_scores
             GROUP BY provider
             ORDER BY avg_bis DESC
