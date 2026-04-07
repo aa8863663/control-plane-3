@@ -1480,7 +1480,7 @@ async def actuarial_overview_api(session: Optional[str] = Cookie(default=None)):
                        ru.model,
                        ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
                 FROM results r JOIN runs ru ON r.run_id=ru.id
-                GROUP BY provider, ru.model
+                GROUP BY ru.provider, ru.api_provider, ru.model
             )
             SELECT provider, ROUND(AVG(bis), 1) as avg_bis, COUNT(DISTINCT model) as model_count
             FROM model_scores
@@ -1547,7 +1547,7 @@ async def actuarial_models_api(
                        ru.temperature,
                        ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as pass_rate
                 FROM results r JOIN runs ru ON r.run_id=ru.id
-                GROUP BY ru.model, provider, ru.temperature
+                GROUP BY ru.model, ru.provider, ru.api_provider, ru.temperature
             ),
             model_stats AS (
                 SELECT model, provider,
@@ -1625,7 +1625,7 @@ async def actuarial_providers_api(session: Optional[str] = Cookie(default=None))
                        ru.model,
                        ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
                 FROM results r JOIN runs ru ON r.run_id=ru.id
-                GROUP BY provider, ru.model
+                GROUP BY ru.provider, ru.api_provider, ru.model
             )
             SELECT provider,
                    COUNT(DISTINCT model) as model_count,
