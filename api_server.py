@@ -1429,7 +1429,6 @@ async def actuarial_overview_api(session: Optional[str] = Cookie(default=None)):
         cur.execute("""
             SELECT COUNT(DISTINCT ru.model) as total_models
             FROM runs ru
-            WHERE ru.dataset = 'probes_500'
         """)
         total_models = cur.fetchone()['total_models'] or 0
 
@@ -1439,7 +1438,6 @@ async def actuarial_overview_api(session: Optional[str] = Cookie(default=None)):
                 SELECT ru.model,
                        ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
                 FROM results r JOIN runs ru ON r.run_id=ru.id
-                WHERE ru.dataset = 'probes_500'
                 GROUP BY ru.model
             )
             SELECT ROUND(AVG(bis), 1) as avg_bis FROM model_bis
@@ -1450,7 +1448,6 @@ async def actuarial_overview_api(session: Optional[str] = Cookie(default=None)):
         cur.execute("""
             SELECT COUNT(*) as total_evals
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset = 'probes_500'
         """)
         total_evaluations = cur.fetchone()['total_evals'] or 0
 
@@ -1460,7 +1457,6 @@ async def actuarial_overview_api(session: Optional[str] = Cookie(default=None)):
                 SELECT ru.model,
                        ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
                 FROM results r JOIN runs ru ON r.run_id=ru.id
-                WHERE ru.dataset = 'probes_500'
                 GROUP BY ru.model
             )
             SELECT
@@ -1484,7 +1480,6 @@ async def actuarial_overview_api(session: Optional[str] = Cookie(default=None)):
                        ru.model,
                        ROUND(CAST(100.0*SUM(CASE WHEN r.outcome='COMPLETED' THEN 1 ELSE 0 END) AS NUMERIC)/NULLIF(COUNT(*),0),1) as bis
                 FROM results r JOIN runs ru ON r.run_id=ru.id
-                WHERE ru.dataset = 'probes_500'
                 GROUP BY provider, ru.model
             )
             SELECT provider, ROUND(AVG(bis), 1) as avg_bis, COUNT(DISTINCT model) as model_count
@@ -1500,7 +1495,7 @@ async def actuarial_overview_api(session: Optional[str] = Cookie(default=None)):
                    COUNT(DISTINCT ru.model) as new_models,
                    COUNT(*) as new_evaluations
             FROM runs ru
-            WHERE ru.created_at >= NOW() - INTERVAL '7 days' AND ru.dataset = 'probes_500'
+            WHERE ru.created_at >= NOW() - INTERVAL '7 days'
         """)
         activity = cur.fetchone()
         recent_activity = {
@@ -2241,7 +2236,6 @@ def costs_page(request: Request, session: Optional[str] = Cookie(default=None)):
         cur.execute("""
             SELECT model, COUNT(DISTINCT run_id) as runs, COUNT(*) as probes
             FROM results r JOIN runs ru ON r.run_id=ru.id
-            WHERE ru.dataset = 'probes_500'
             GROUP BY model ORDER BY model""")
         rows = [dict(r) for r in cur.fetchall()]
 
