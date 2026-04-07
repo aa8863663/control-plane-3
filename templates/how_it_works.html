@@ -1,0 +1,176 @@
+{% extends "base_public.html" %}
+{% block title %}How It Works — MTCP{% endblock %}
+{% block content %}
+
+<div class="page-header fade-up">
+  <h1>How It <span>Works</span></h1>
+  <p>Understanding MTCP in 2 minutes</p>
+</div>
+
+<!-- What is MTCP -->
+<div class="card fade-up fade-up-1" style="margin-bottom:2rem">
+  <div style="display:flex;align-items:flex-start;gap:1.5rem">
+    <div style="font-size:2.5rem;line-height:1">🎯</div>
+    <div style="flex:1">
+      <h2 style="margin:0 0 1rem 0;font-size:1.2rem">What is MTCP?</h2>
+      <p style="margin:0;line-height:1.8;color:var(--muted)">
+        MTCP tests if AI models <strong>stay aligned after user interaction</strong>. Most testing only checks single responses.
+        MTCP checks if models maintain safety constraints across entire conversations and temperature settings.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Why It Matters -->
+<div class="card fade-up fade-up-2" style="margin-bottom:2rem">
+  <div style="display:flex;align-items:flex-start;gap:1.5rem">
+    <div style="font-size:2.5rem;line-height:1">⚡</div>
+    <div style="flex:1">
+      <h2 style="margin:0 0 1rem 0;font-size:1.2rem">Why It Matters</h2>
+      <p style="margin:0 0 1rem 0;line-height:1.8;color:var(--muted)">
+        A model might seem safe in testing but degrade when users push boundaries across multiple turns.
+        MTCP catches this <strong>before production deployment</strong>.
+      </p>
+      <div style="background:var(--surface2);border-left:3px solid var(--accent);padding:1rem;border-radius:4px">
+        <p style="margin:0;font-size:0.85rem;line-height:1.6;color:var(--muted)">
+          <strong>Example:</strong> Model passes single-shot safety test. But across 3-turn conversation with temperature variation?
+          Constraint persistence drops 40%. <strong>MTCP finds this.</strong>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- How It Works -->
+<div class="card fade-up fade-up-3" style="margin-bottom:2rem">
+  <div style="display:flex;align-items:flex-start;gap:1.5rem">
+    <div style="font-size:2.5rem;line-height:1">🔬</div>
+    <div style="flex:1">
+      <h2 style="margin:0 0 1.5rem 0;font-size:1.2rem">How It Works (Simple)</h2>
+
+      <div style="display:grid;gap:1.5rem">
+        <div>
+          <h3 style="margin:0 0 0.5rem 0;font-size:0.9rem;color:var(--accent)">1. Multi-Turn Testing</h3>
+          <p style="margin:0;font-size:0.85rem;line-height:1.6;color:var(--muted)">
+            Test safety constraints across 3-turn conversation sequences, not just single responses.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="margin:0 0 0.5rem 0;font-size:0.9rem;color:var(--accent)">2. Temperature Variation</h3>
+          <p style="margin:0;font-size:0.85rem;line-height:1.6;color:var(--muted)">
+            Test at 4 temperature settings (0.0, 0.2, 0.5, 0.8) to measure stability under different sampling conditions.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="margin:0 0 0.5rem 0;font-size:0.9rem;color:var(--accent)">3. Control Probes</h3>
+          <p style="margin:0;font-size:0.85rem;line-height:1.6;color:var(--muted)">
+            Detect contamination and gaming through parallel control probe testing.
+          </p>
+        </div>
+
+        <div>
+          <h3 style="margin:0 0 0.5rem 0;font-size:0.9rem;color:var(--accent)">4. Clear Decision</h3>
+          <p style="margin:0;font-size:0.85rem;line-height:1.6;color:var(--muted)">
+            Get <strong>SAFE/REVIEW/RISK</strong> recommendation, not just numbers.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- What You Get -->
+<div class="card fade-up fade-up-4" style="margin-bottom:2rem">
+  <div style="display:flex;align-items:flex-start;gap:1.5rem">
+    <div style="font-size:2.5rem;line-height:1">📊</div>
+    <div style="flex:1">
+      <h2 style="margin:0 0 1.5rem 0;font-size:1.2rem">What You Get</h2>
+
+      <div class="grid-2" style="gap:1rem">
+        <div style="background:var(--surface2);padding:1rem;border-radius:6px">
+          <h3 style="margin:0 0 0.5rem 0;font-size:0.8rem;color:var(--accent);font-family:'JetBrains Mono',monospace">BIS</h3>
+          <p style="margin:0;font-size:0.75rem;line-height:1.5;color:var(--muted)">
+            <strong>Boundary Integrity Score</strong><br>
+            How well model maintains constraints across interactions
+          </p>
+        </div>
+
+        <div style="background:var(--surface2);padding:1rem;border-radius:6px">
+          <h3 style="margin:0 0 0.5rem 0;font-size:0.8rem;color:var(--accent);font-family:'JetBrains Mono',monospace">TSI</h3>
+          <p style="margin:0;font-size:0.75rem;line-height:1.5;color:var(--muted)">
+            <strong>Temperature Stability Index</strong><br>
+            How consistent behavior is across temperature settings
+          </p>
+        </div>
+
+        <div style="background:var(--surface2);padding:1rem;border-radius:6px">
+          <h3 style="margin:0 0 0.5rem 0;font-size:0.8rem;color:var(--accent);font-family:'JetBrains Mono',monospace">CPD</h3>
+          <p style="margin:0;font-size:0.75rem;line-height:1.5;color:var(--muted)">
+            <strong>Control Probe Degradation</strong><br>
+            Contamination and gaming detection score
+          </p>
+        </div>
+
+        <div style="background:var(--surface2);padding:1rem;border-radius:6px">
+          <h3 style="margin:0 0 0.5rem 0;font-size:0.8rem;color:var(--accent);font-family:'JetBrains Mono',monospace">Recommendation</h3>
+          <p style="margin:0;font-size:0.75rem;line-height:1.5;color:var(--muted)">
+            <strong>Deploy / Review / Don't Deploy</strong><br>
+            Clear action based on metrics
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Get Started -->
+<div class="card fade-up fade-up-5" style="background:rgba(37,99,235,0.05);border-color:rgba(37,99,235,0.15)">
+  <div style="display:flex;align-items:flex-start;gap:1.5rem">
+    <div style="font-size:2.5rem;line-height:1">🚀</div>
+    <div style="flex:1">
+      <h2 style="margin:0 0 1rem 0;font-size:1.2rem;color:var(--accent)">Get Started</h2>
+
+      <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem">
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;background:var(--accent);color:#fff;border-radius:50%;font-size:0.7rem;font-weight:700">1</span>
+          <span style="font-size:0.85rem">Go to Test Your Model</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;background:var(--accent);color:#fff;border-radius:50%;font-size:0.7rem;font-weight:700">2</span>
+          <span style="font-size:0.85rem">Enter model name + API key</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;background:var(--accent);color:#fff;border-radius:50%;font-size:0.7rem;font-weight:700">3</span>
+          <span style="font-size:0.85rem">Wait 5 minutes</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <span style="display:inline-flex;align-items:center;justify-content:center;width:1.5rem;height:1.5rem;background:var(--accent);color:#fff;border-radius:50%;font-size:0.7rem;font-weight:700">4</span>
+          <span style="font-size:0.85rem">Get clear deploy/review/risk decision</span>
+        </div>
+      </div>
+
+      <p style="margin:0 0 1.5rem 0;font-size:0.85rem;color:var(--muted)">
+        Or browse <strong>Leaderboard</strong> to compare {{ stats.total_models if stats else '31' }} models we've already tested.
+      </p>
+
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <a href="/test-model" class="btn btn-primary">Test Your Model (5 min) →</a>
+        <a href="/leaderboard" class="btn btn-secondary">View Leaderboard</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Learn More -->
+<div style="margin-top:3rem;padding:2rem;background:var(--surface2);border-radius:8px;text-align:center" class="fade-up fade-up-6">
+  <h3 style="margin:0 0 1rem 0;font-size:0.9rem;color:var(--muted)">Want to dig deeper?</h3>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+    <a href="/methodology" class="btn btn-ghost" style="font-size:0.75rem">Read Methodology</a>
+    <a href="/research" class="btn btn-ghost" style="font-size:0.75rem">View Research Papers</a>
+    <a href="/pricing" class="btn btn-ghost" style="font-size:0.75rem">See Pricing</a>
+  </div>
+</div>
+
+{% endblock %}

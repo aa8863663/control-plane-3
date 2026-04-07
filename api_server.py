@@ -920,6 +920,21 @@ def methodology_page(request: Request, session: Optional[str] = Cookie(default=N
         }
     )
 
+@app.get("/how-it-works", response_class=HTMLResponse)
+def how_it_works_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    """Simple explainer page for first-time visitors"""
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse(
+        "how_it_works.html",
+        {
+            "request": request,
+            "user": user,
+            "active": "how-it-works",
+            "stats": stats
+        }
+    )
+
 @app.get("/buyer-brief", response_class=HTMLResponse)
 def buyer_brief_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
