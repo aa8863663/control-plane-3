@@ -258,18 +258,7 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
   <!-- Chart.js for visualizations -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-/* ── DROPDOWN NAVIGATION ─────────────────────────────────────────────────── */
-.nav-dropdown{position:relative;}
-.nav-dropdown>a{cursor:pointer;}
-.nav-dropdown-menu{display:none;position:absolute;top:100%;left:0;background:rgba(255,255,255,0.98);
-  backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:4px;min-width:200px;
-  box-shadow:0 4px 12px rgba(0,0,0,0.1);z-index:1000;margin-top:4px;padding:8px 0;}
-.nav-dropdown:hover .nav-dropdown-menu{display:block;}
-.nav-dropdown-menu li{margin:0;list-style:none;}
-.nav-dropdown-menu a{display:block!important;padding:10px 16px!important;color:#475569!important;
-  text-decoration:none;transition:all 0.15s;white-space:nowrap;border-radius:0!important;}
-.nav-dropdown-menu a:hover{background:rgba(37,99,235,0.08)!important;color:var(--accent)!important;}
-.nav-dropdown-divider{height:1px;background:var(--border);margin:8px 0;}
+/* ── MOBILE NAVIGATION ───────────────────────────────────────────────────── */
 .mobile-nav-toggle{display:none;background:none;border:1px solid var(--border);padding:8px 12px;
   border-radius:4px;cursor:pointer;font-size:1rem;color:var(--text);}
 .mobile-nav-drawer{display:none;position:fixed;top:59px;left:0;right:0;bottom:0;background:rgba(255,255,255,0.98);
@@ -290,49 +279,24 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
 <div class="grid-bg"></div>
 <nav>
   {% if user and user.is_admin %}
-  {# ── ADMIN: Two-row navigation with dropdowns ──────────────────────────── #}
+  {# ── ADMIN: Clean separated navigation ─────────────────────────────────── #}
   <div class="nav-container">
-    {# Top row: Main navigation #}
+    {# Top row: Main pages #}
     <div class="nav-row">
       <a href="/" class="nav-logo">MTCP<span>.</span></a>
       <ul class="nav-links">
         <li><a href="/dashboard" {% if active=='dashboard' %}class="active"{% endif %}>Dashboard</a></li>
-        <li><a href="/test-model" {% if active=='test' %}class="active"{% endif %}>Test Model</a></li>
-        <li class="nav-dropdown">
-          <a>Explore ▾</a>
-          <ul class="nav-dropdown-menu">
-            <li><a href="/leaderboard">Leaderboard</a></li>
-            <li><a href="/evidence/public-findings">Evidence Rankings</a></li>
-            <li><a href="/model-cards">Model Cards</a></li>
-            <li><a href="/how-it-works">How It Works</a></li>
-            <li><a href="/methodology">Methodology</a></li>
-            <li><a href="/buyer-brief">Buyer Brief</a></li>
-            <li><a href="/pricing">Pricing</a></li>
-          </ul>
-        </li>
-        <li class="nav-dropdown">
-          <a>Analysis ▾</a>
-          <ul class="nav-dropdown-menu">
-            <li><a href="/actuarial">Actuarial</a></li>
-            <li><a href="/api/compare">Compare Models</a></li>
-            <li><a href="/stats">Stats</a></li>
-            <li><a href="/certificate">Certificate</a></li>
-            <li><a href="/api/costs">Costs</a></li>
-          </ul>
-        </li>
-        <li class="nav-dropdown">
-          <a>Account ▾</a>
-          <ul class="nav-dropdown-menu">
-            <li><a href="/settings/api-keys">API Keys</a></li>
-            <li><a href="/request-evaluation">Request Evaluation</a></li>
-            <li class="nav-dropdown-divider"></li>
-            <li><a href="/logout">Logout</a></li>
-          </ul>
-        </li>
+        <li><a href="/leaderboard" {% if active=='leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
+        <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
+        <li><a href="/actuarial" {% if active=='actuarial' %}class="active"{% endif %}>Actuarial</a></li>
+        <li><a href="/api/compare" {% if active=='compare' %}class="active"{% endif %}>Compare</a></li>
+        <li><a href="/stats" {% if active=='stats' %}class="active"{% endif %}>Stats</a></li>
+        <li><a href="/api/costs" {% if active=='costs' %}class="active"{% endif %}>Costs</a></li>
       </ul>
       <button class="mobile-nav-toggle" onclick="toggleMobileNav()">☰</button>
       <div class="nav-user">
         <span class="nav-user-name">{{ user.username }}</span>
+        <a href="/logout" class="nav-logout">Logout</a>
       </div>
     </div>
     {# Bottom row: Admin tools #}
@@ -342,52 +306,27 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
         <li><a href="/benchmark" {% if active=='benchmark' %}class="active"{% endif %}>Benchmark</a></li>
         <li><a href="/run-evaluation" {% if active=='run' %}class="active"{% endif %}>Run Evaluation</a></li>
         <li><a href="/ctrl-probes" {% if active=='ctrl-probes' %}class="active"{% endif %}>Ctrl Probes</a></li>
-        <li><a href="/admin" {% if active=='admin' %}class="active"{% endif %}>Admin Panel</a></li>
+        <li><a href="/admin" {% if active=='admin' %}class="active"{% endif %}>Admin</a></li>
         <li><a href="/admin/evaluation-requests" {% if active=='eval-requests' %}class="active"{% endif %}>Eval Requests</a></li>
+        <li><a href="/settings/api-keys" {% if active=='settings' %}class="active"{% endif %}>Settings</a></li>
         <li><a href="/health" {% if active=='health' %}class="active"{% endif %}>Health</a></li>
       </ul>
-      <div class="nav-user">
-        <a href="/logout" class="nav-logout">Logout</a>
-      </div>
+      <div class="nav-user"></div>
     </div>
   </div>
   {% elif user and user.is_approved %}
-  {# ── APPROVED USER: Single-row navigation with dropdowns ──────────────── #}
+  {# ── APPROVED USER: Simple single-row ──────────────────────────────────── #}
   <div class="nav-row">
     <a href="/" class="nav-logo">MTCP<span>.</span></a>
     <ul class="nav-links">
       <li><a href="/dashboard" {% if active=='dashboard' %}class="active"{% endif %}>Dashboard</a></li>
-      <li><a href="/test-model" {% if active=='test' %}class="active"{% endif %}>Test Model</a></li>
-      <li class="nav-dropdown">
-        <a>Explore ▾</a>
-        <ul class="nav-dropdown-menu">
-          <li><a href="/leaderboard">Leaderboard</a></li>
-          <li><a href="/evidence/public-findings">Evidence Rankings</a></li>
-          <li><a href="/model-cards">Model Cards</a></li>
-          <li><a href="/how-it-works">How It Works</a></li>
-          <li><a href="/methodology">Methodology</a></li>
-          <li><a href="/buyer-brief">Buyer Brief</a></li>
-          <li><a href="/pricing">Pricing</a></li>
-        </ul>
-      </li>
-      <li class="nav-dropdown">
-        <a>Analysis ▾</a>
-        <ul class="nav-dropdown-menu">
-          <li><a href="/actuarial">Actuarial</a></li>
-          <li><a href="/api/compare">Compare Models</a></li>
-          <li><a href="/stats">Stats</a></li>
-          <li><a href="/certificate">Certificate</a></li>
-        </ul>
-      </li>
-      <li class="nav-dropdown">
-        <a>{{ user.username }} ▾</a>
-        <ul class="nav-dropdown-menu">
-          <li><a href="/settings/api-keys">API Keys</a></li>
-          <li><a href="/request-evaluation">Request Evaluation</a></li>
-          <li class="nav-dropdown-divider"></li>
-          <li><a href="/logout">Logout</a></li>
-        </ul>
-      </li>
+      <li><a href="/leaderboard" {% if active=='leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
+      <li><a href="/model-cards" {% if active=='models' %}class="active"{% endif %}>Models</a></li>
+      <li><a href="/actuarial" {% if active=='actuarial' %}class="active"{% endif %}>Actuarial</a></li>
+      <li><a href="/api/compare" {% if active=='compare' %}class="active"{% endif %}>Compare</a></li>
+      <li><a href="/stats" {% if active=='stats' %}class="active"{% endif %}>Stats</a></li>
+      <li><a href="/certificate" {% if active=='certificate' %}class="active"{% endif %}>Certificate</a></li>
+      <li><a href="/settings/api-keys" {% if active=='settings' %}class="active"{% endif %}>Settings</a></li>
     </ul>
     <button class="mobile-nav-toggle" onclick="toggleMobileNav()">☰</button>
     <div class="nav-user">
@@ -426,61 +365,38 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
 <!-- Mobile Navigation Drawer -->
 <div id="mobile-nav-drawer" class="mobile-nav-drawer">
   {% if user and user.is_admin %}
-    <div class="mobile-nav-section">Main</div>
+    <div class="mobile-nav-section">Main Pages</div>
     <a href="/dashboard">Dashboard</a>
-    <a href="/test-model">Test Model</a>
-
-    <div class="mobile-nav-section">Explore</div>
     <a href="/leaderboard">Leaderboard</a>
-    <a href="/evidence/public-findings">Evidence Rankings</a>
-    <a href="/model-cards">Model Cards</a>
-    <a href="/how-it-works">How It Works</a>
-    <a href="/methodology">Methodology</a>
-    <a href="/buyer-brief">Buyer Brief</a>
-    <a href="/pricing">Pricing</a>
-
-    <div class="mobile-nav-section">Analysis</div>
+    <a href="/model-cards">Models</a>
     <a href="/actuarial">Actuarial</a>
-    <a href="/api/compare">Compare Models</a>
+    <a href="/api/compare">Compare</a>
     <a href="/stats">Stats</a>
-    <a href="/certificate">Certificate</a>
     <a href="/api/costs">Costs</a>
 
     <div class="mobile-nav-section">Admin Tools</div>
     <a href="/benchmark">Benchmark</a>
     <a href="/run-evaluation">Run Evaluation</a>
     <a href="/ctrl-probes">Ctrl Probes</a>
-    <a href="/admin">Admin Panel</a>
+    <a href="/admin">Admin</a>
     <a href="/admin/evaluation-requests">Eval Requests</a>
+    <a href="/settings/api-keys">Settings</a>
     <a href="/health">Health</a>
 
     <div class="mobile-nav-section">Account</div>
-    <a href="/settings/api-keys">API Keys</a>
-    <a href="/request-evaluation">Request Evaluation</a>
     <a href="/logout">Logout</a>
   {% elif user and user.is_approved %}
-    <div class="mobile-nav-section">Main</div>
+    <div class="mobile-nav-section">Main Pages</div>
     <a href="/dashboard">Dashboard</a>
-    <a href="/test-model">Test Model</a>
-
-    <div class="mobile-nav-section">Explore</div>
     <a href="/leaderboard">Leaderboard</a>
-    <a href="/evidence/public-findings">Evidence Rankings</a>
-    <a href="/model-cards">Model Cards</a>
-    <a href="/how-it-works">How It Works</a>
-    <a href="/methodology">Methodology</a>
-    <a href="/buyer-brief">Buyer Brief</a>
-    <a href="/pricing">Pricing</a>
-
-    <div class="mobile-nav-section">Analysis</div>
+    <a href="/model-cards">Models</a>
     <a href="/actuarial">Actuarial</a>
-    <a href="/api/compare">Compare Models</a>
+    <a href="/api/compare">Compare</a>
     <a href="/stats">Stats</a>
     <a href="/certificate">Certificate</a>
+    <a href="/settings/api-keys">Settings</a>
 
     <div class="mobile-nav-section">Account</div>
-    <a href="/settings/api-keys">API Keys</a>
-    <a href="/request-evaluation">Request Evaluation</a>
     <a href="/logout">Logout</a>
   {% else %}
     <div class="mobile-nav-section">Explore</div>
