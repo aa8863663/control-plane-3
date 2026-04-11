@@ -46,7 +46,7 @@ def get_platform_stats():
         cur.execute("SELECT COUNT(*) as count FROM runs")
         total_runs = cur.fetchone()['count']
 
-        cur.execute("SELECT COUNT(DISTINCT model) as count FROM runs")
+        cur.execute("SELECT COUNT(DISTINCT model) as count FROM runs WHERE status='completed'")
         total_models = cur.fetchone()['count']
 
         # Count unique providers from both provider and api_provider columns
@@ -54,7 +54,8 @@ def get_platform_stats():
             SELECT COUNT(DISTINCT provider_name) as count FROM (
                 SELECT COALESCE(NULLIF(provider, ''), NULLIF(api_provider, ''), 'Unknown') as provider_name
                 FROM runs
-                WHERE COALESCE(NULLIF(provider, ''), NULLIF(api_provider, '')) IS NOT NULL
+                WHERE status='completed'
+                AND COALESCE(NULLIF(provider, ''), NULLIF(api_provider, '')) IS NOT NULL
             ) AS providers
         """)
         total_providers = cur.fetchone()['count']
