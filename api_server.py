@@ -979,6 +979,7 @@ def terms_page(request: Request, session: Optional[str] = Cookie(default=None)):
 @app.get("/request-evaluation", response_class=HTMLResponse)
 def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
+    stats = get_platform_stats()
     return templates.TemplateResponse(
         "request_evaluation.html",
         {
@@ -987,7 +988,8 @@ def request_evaluation_get(request: Request, session: Optional[str] = Cookie(def
             "active": "request",
             "success": False,
             "contact_email": None,
-            "error": None
+            "error": None,
+            "total_models": stats['total_models']
         }
     )
 
@@ -1005,6 +1007,7 @@ def request_evaluation_post(
     session: Optional[str] = Cookie(default=None)
 ):
     user = current_user(session)
+    stats = get_platform_stats()
     try:
         conn = get_db(); cur = conn.cursor()
         cur.execute(
@@ -1028,7 +1031,8 @@ def request_evaluation_post(
                 "active": "request",
                 "success": True,
                 "contact_email": contact_email,
-                "error": None
+                "error": None,
+                "total_models": stats['total_models']
             }
         )
     except Exception as e:
@@ -1040,7 +1044,8 @@ def request_evaluation_post(
                 "active": "request",
                 "success": False,
                 "contact_email": None,
-                "error": "Submission failed: {0}".format(str(e))
+                "error": "Submission failed: {0}".format(str(e)),
+                "total_models": stats['total_models']
             }
         )
 
