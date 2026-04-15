@@ -7,6 +7,7 @@ import psycopg2
 import psycopg2.extras
 from fastapi import FastAPI, Request, Form, Cookie, Header, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, StreamingResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -24,6 +25,7 @@ from reportlab.lib import colors
 from reportlab.platypus import Table, TableStyle
 
 app = FastAPI(title="Control Plane 3", description="MTCP LLM Safety Benchmarking Platform")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # ── Rate Limiting ──────────────────────────────────────────────────────────────
