@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="{% block meta_description %}MTCP independently evaluates AI model behavioural durability — empirical release assurance for deployed language models. {{ stats.total_models if stats else '32' }} models evaluated across {{ stats.total_results_formatted if stats else '181,448' }} probe interactions.{% endblock %}">
   <title>{% block title %}MTCP — AI Assurance for Large Language Models{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; img-src 'self' data:;">
 
   <!-- Fonts: DM Serif Display (brand/headings) + JetBrains Mono (data/nav/body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -198,6 +200,7 @@ nav {
   flex-shrink: 0;
 }
 .nav-logo span { color: var(--accent); }
+.nav-logo img { height: 38px; width: auto; display: block; }
 
 /* Centre nav links */
 .nav-links {
@@ -727,7 +730,9 @@ footer {
 
 <!-- ── NAV ───────────────────────────────────────────────────────────── -->
 <nav>
-  <a href="/landing" class="nav-logo">MTCP<span>.</span>live</a>
+  <a href="/landing" class="nav-logo">
+    <img src="/static/images/mtcp-logo.svg" alt="MTCP" width="120" height="30">
+  </a>
 
   <ul class="nav-links">
     <li><a href="/how-it-works" {% if active == 'how-it-works' %}class="active"{% endif %}>How It Works</a></li>
@@ -781,7 +786,9 @@ footer {
 
       <!-- Brand column -->
       <div class="footer-brand">
-        <a href="/landing" class="footer-logo">MTCP<span>.</span>live</a>
+        <a href="/landing" class="footer-logo">
+          <img src="/static/images/mtcp-logo.svg" alt="MTCP" width="120" height="30">
+        </a>
         <p class="footer-tagline">
           MTCP independently evaluates AI model behavioural durability — empirical release assurance for deployed language models. {{ stats.total_models if stats else '32' }} models. {{ stats.total_results_formatted if stats else '181,448' }} evaluations. Black-box. Independent. Audit-ready.
         </p>

@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}MTCP{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; img-src 'self' data:;">
   <style>
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
 :root {
@@ -24,8 +26,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);backdrop
 .nav-container{display:flex;flex-direction:column;}
 .nav-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 28px;min-height:58px;}
 .nav-row.admin-tools{background:rgba(0,0,0,0.02);border-top:1px solid var(--border);padding-top:10px;padding-bottom:10px;}
-.nav-logo{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text);text-decoration:none;white-space:nowrap;}
+.nav-logo{font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text);text-decoration:none;white-space:nowrap;display:flex;align-items:center;}
 .nav-logo span{color:var(--accent);}
+.nav-logo img{height:38px;width:auto;display:block;}
 .nav-links{display:flex;align-items:center;gap:2px;list-style:none;flex-wrap:wrap;overflow-x:auto;}
 .nav-links a{font-size:0.65rem;color:#475569;text-decoration:none;letter-spacing:1.2px;
   text-transform:uppercase;padding:7px 11px;border-radius:3px;transition:color 0.15s,background 0.15s,border-color 0.15s;white-space:nowrap;}
@@ -296,7 +299,9 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
   <div class="nav-container">
     {# Top row: Core pages only #}
     <div class="nav-row">
-      <a href="/" class="nav-logo">MTCP<span>.</span></a>
+      <a href="/" class="nav-logo">
+        <img src="/static/images/mtcp-logo.svg" alt="MTCP" width="120" height="30">
+      </a>
       <ul class="nav-links">
         <li><a href="/dashboard" {% if active=='dashboard' %}class="active"{% endif %}>Dashboard</a></li>
         <li><a href="/leaderboard" {% if active=='leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
@@ -341,7 +346,9 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
   {% elif user and user.is_approved %}
   {# ── APPROVED USER: Compact single-row ─────────────────────────────────── #}
   <div class="nav-row">
-    <a href="/" class="nav-logo">MTCP<span>.</span></a>
+    <a href="/" class="nav-logo">
+      <img src="/static/images/mtcp-logo.svg" alt="MTCP" width="120" height="30">
+    </a>
     <ul class="nav-links">
       <li><a href="/dashboard" {% if active=='dashboard' %}class="active"{% endif %}>Dashboard</a></li>
       <li><a href="/leaderboard" {% if active=='leaderboard' %}class="active"{% endif %}>Leaderboard</a></li>
@@ -366,7 +373,9 @@ label,.form-label{font-size:0.6rem;color:var(--muted);letter-spacing:1px;text-tr
   {% else %}
   {# ── PUBLIC: Not logged in ────────────────────────────────────────────── #}
   <div class="nav-row">
-    <a href="/" class="nav-logo">MTCP<span>.</span></a>
+    <a href="/" class="nav-logo">
+      <img src="/static/images/mtcp-logo.svg" alt="MTCP" width="120" height="30">
+    </a>
     <ul class="nav-links">
       <li><a href="/how-it-works" {% if active=='how-it-works' %}class="active"{% endif %}>How It Works</a></li>
       <li><a href="/test-model" {% if active=='test' %}class="active"{% endif %}>Test Model</a></li>

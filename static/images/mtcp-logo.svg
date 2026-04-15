@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="45" viewBox="0 0 180 45">
+  <!-- Accent bar -->
+  <rect x="0" y="0" width="3" height="45" fill="#00e5a0" rx="1.5"/>
+  <!-- MTCP text -->
+  <text x="14" y="32" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="26" font-weight="700" fill="#00e5a0" letter-spacing="3">MTCP</text>
+  <!-- Subtle tagline -->
+  <text x="15" y="43" font-family="'JetBrains Mono', 'Courier New', monospace" font-size="7" font-weight="400" fill="#64748b" letter-spacing="2.5">MODEL TRUST CONTROL</text>
+</svg>

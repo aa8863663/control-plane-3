@@ -1,13 +1,17 @@
 import os, json, io, csv, subprocess
 from typing import Optional
 from datetime import datetime
+from html import escape
 
 import psycopg2
 import psycopg2.extras
-from fastapi import FastAPI, Request, Form, Cookie, Header
+from fastapi import FastAPI, Request, Form, Cookie, Header, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse, StreamingResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from evidence_pack import build_pack
 from generate_decision_pack import build_pack as build_decision_pack
@@ -21,6 +25,16 @@ from reportlab.platypus import Table, TableStyle
 
 app = FastAPI(title="Control Plane 3", description="MTCP LLM Safety Benchmarking Platform")
 templates = Jinja2Templates(directory="templates")
+
+# ── Rate Limiting ──────────────────────────────────────────────────────────────
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# ── HTTPS Enforcement (production only) ───────────────────────────────────────
+if os.getenv("ENVIRONMENT") == "production":
+    from starlette.middleware.httpsredirect import HTTPSRedirectMiddleware
+    app.add_middleware(HTTPSRedirectMiddleware)
 
 PROBES_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "probes_200.json")
 PROBES_CTRL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "probes_control_20.json")
@@ -404,6 +418,7 @@ def debug_version():
 
 
 @app.get("/landing", response_class=HTMLResponse)
+@limiter.limit("120/minute")
 def landing_page(request: Request):
     stats = get_platform_stats()
     try:
@@ -603,6 +618,7 @@ def benchmark_post(
         )
 
 @app.get("/evidence/public-findings", response_class=HTMLResponse)
+@limiter.limit("60/minute")
 def evidence_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     stats = get_platform_stats()
@@ -636,7 +652,7 @@ def login_post(request: Request, username: str = Form(...), password: str = Form
             cur2.execute("INSERT INTO sessions (token, user_id) VALUES (%s,%s)", (token, u["id"]))
             conn2.commit(); conn2.close()
             resp = RedirectResponse("/", status_code=302)
-            resp.set_cookie("session", token, httponly=True, samesite="lax")
+            resp.set_cookie("session", token, httponly=True, secure=os.getenv("ENVIRONMENT") == "production", samesite="lax")
             return resp
     except Exception as e:
         print(f"Login error: {e}")
@@ -906,6 +922,7 @@ def model_card_single(request: Request, model_name: str, session: Optional[str] 
     )
 
 @app.get("/methodology", response_class=HTMLResponse)
+@limiter.limit("60/minute")
 def methodology_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     stats = get_platform_stats()
@@ -937,6 +954,7 @@ def how_it_works_page(request: Request, session: Optional[str] = Cookie(default=
     )
 
 @app.get("/buyer-brief", response_class=HTMLResponse)
+@limiter.limit("60/minute")
 def buyer_brief_page(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     stats = get_platform_stats()
@@ -978,6 +996,7 @@ def terms_page(request: Request, session: Optional[str] = Cookie(default=None)):
     )
 
 @app.get("/request-evaluation", response_class=HTMLResponse)
+@limiter.limit("10/minute")
 def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):
     user = current_user(session)
     stats = get_platform_stats()
@@ -995,6 +1014,7 @@ def request_evaluation_get(request: Request, session: Optional[str] = Cookie(def
     )
 
 @app.post("/request-evaluation", response_class=HTMLResponse)
+@limiter.limit("10/minute")
 def request_evaluation_post(
     request: Request,
     name: str = Form(...),
@@ -1007,6 +1027,16 @@ def request_evaluation_post(
     notes: str = Form(""),
     session: Optional[str] = Cookie(default=None)
 ):
+    # Sanitize all user inputs
+    name = escape(name.strip())
+    organisation = escape(organisation.strip())
+    contact_email = escape(contact_email.strip())
+    model_name = escape(model_name.strip())
+    provider = escape(provider.strip())
+    endpoint_details = escape(endpoint_details.strip())
+    evaluation_objective = escape(evaluation_objective.strip())
+    notes = escape(notes.strip())
+
     user = current_user(session)
     stats = get_platform_stats()
     try:
@@ -2809,7 +2839,10 @@ def api_results(run_id: Optional[str] = None, limit: int = 50, session: Optional
 
 @app.get("/api/export-csv")
 def export_csv(session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
-    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    user = get_auth(session, x_api_key)
+    if not user: return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    if not (isinstance(user, dict) and user.get("is_admin")):
+        raise HTTPException(status_code=403, detail="Admin access required")
     conn = get_db(); cur = conn.cursor()
     cur.execute("""
         SELECT res.id, ru.model, ru.temperature, ru.created_at as run_date,
@@ -2835,3 +2868,10 @@ async def run_benchmark_api(request: Request, session: Optional[str] = Cookie(de
         ["python3", "llm_safety_platform.py", "--model", model, "--temperature", str(temperature), "--dataset", dataset],
         capture_output=True, text=True)
     return JSONResponse({"success": result.returncode==0, "stdout": result.stdout, "stderr": result.stderr})
+
+# ── Secure Error Handling ──────────────────────────────────────────────────────
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    if os.getenv("ENVIRONMENT") == "production":
+        return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+    raise exc
