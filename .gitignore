@@ -40,3 +40,13 @@ hard_stops.json
 
 # Generated evidence pack artifacts
 decision_packs/evidence_*.json
+research-estate/
+probes_*.json
+*_PRIVATE*
+*F16*
+*F17*
+*F18*
+*F19*
+*acquisition*
+*IP_Boundaries*
+*Acquisition_Brief*
