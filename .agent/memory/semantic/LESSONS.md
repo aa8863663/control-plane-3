@@ -17,6 +17,44 @@
 - Claude models: architectural IGS signature confirmed
 - DeepSeek-R1: genuine persistence, not probe familiarity
 
+## Framework Definitions (F2-F15 public, F16-F19 private)
+- F2 Ve (Veterance): formal metric for post-correction persistence failure
+- F3 CPD (Control Performance Degradation): metric for detecting benchmark contamination
+- F4 BIS (Benchmark Index Score): multi-temperature aggregate metric
+- F5 Five-Vector Taxonomy: constraint categories (content, behavior, format, role, safety)
+- F6 Temperature Taxonomy: three-pattern failure classification (invariant, sensitive, hybrid)
+- F7 Behavioral Deviation Taxonomy: 5-part classification of deviation types
+- F8 Rhetorical State Space: formal mathematical specification of model behavioral states
+- F9 Sigma-Forensics: practitioner audit methodology standard
+- F10 EU AI Act Compliance Map: article-level mapping for regulatory use
+- F11 MITRE ATLAS Reference: BCF mapped to adversarial ML threat framework
+- F12 BCF Canonical Definition: Behavioral Constraint Failure formal reference
+- F13 IGS Mechanism Note: Identity-Gate Satiation mechanism definition
+- F14 BCL Concept Note: Behavioral Credibility Leakage — new risk category
+- F15 PRP Public Design: Posture Reauthorization Protocol (mitigation approach)
+- F16-F19: PRIVATE (PRP implementation, Ve monitoring, probe methodology, acquisition)
+
+## Paper Series Coverage (Papers 05-25 drafted)
+- Paper 05: CPD metric for contamination detection
+- Paper 07: Flagship regression evidence (frontier models getting worse)
+- Paper 08: Five-vector analysis of which constraints fail most
+- Paper 09: Stochastic vs architectural failure diagnostic criteria
+- Paper 10: Ve formal metric and persistence lemma
+- Paper 11: GPT-4o anomaly (flagship scoring below mini — inverse scaling)
+- Paper 12: MITRE ATLAS mapping + cross-vendor BCF convergence (12b)
+- Paper 13: EU AI Act compliance evidence via MTCP/Sigma
+- Paper 14: RLHF short-horizon critique (structural gap argument)
+- Paper 15: Transcript-only evidence standards
+- Paper 16: BCL (Behavioral Credibility Leakage) as new risk category
+- Paper 17: DeepSeek-R1 as the genuine persistence exception
+- Paper 18: Open-source outperforms commercial on constraint persistence
+- Paper 19: IGS monitoring system design
+- Paper 20: PRP design (public specification)
+- Paper 22: Vector attractor depth across constraint categories
+- Paper 23: Inverse Imitation Game (machine recognition of human patterns)
+- Paper 24: GDPR and LLM adaptation (cross-session profiling argument)
+- Paper 25: AI co-authorship and derivative IP attribution
+
 ## Database Technical Lessons
 - psycopg2 requires %s not ? for placeholders
 - Always check fetchone() for None before indexing
