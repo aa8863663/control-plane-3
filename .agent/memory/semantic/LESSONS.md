@@ -55,6 +55,23 @@
 - Paper 24: GDPR and LLM adaptation (cross-session profiling argument)
 - Paper 25: AI co-authorship and derivative IP attribution
 
+## Database-Verified CPD Values (April 19 2026)
+- grok-3-mini: primary 92.1%, ctrl 29.4%, CPD −62.7pp (Severe)
+- GPT-4o: primary 65.1%, ctrl 54.2%, CPD −10.9pp (Moderate)
+- GPT-4o-mini: primary 84.3%, ctrl 48.3%, CPD −36.0pp (Substantial)
+- GPT-3.5-turbo: primary 83.6%, ctrl 42.5%, CPD −41.1pp (Substantial)
+- DeepSeek-R1: primary 62.5%, ctrl 58.8%, CPD −3.7pp (Minimal)
+- Claude Sonnet 4.5: primary 56.5%, ctrl 30.6%, CPD −25.9pp (Moderate)
+- Dataset mean CPD: −28.0pp
+- 32 models have control probe data (not 25 as stated in early drafts)
+- Pass criterion: outcome = 'COMPLETED' (not latency-based)
+
+## Claude Sonnet 4.5 Atypical Pattern
+- Temperature: 53.5% (T=0.0), 61.4% (T=0.2), 55.1% (T=0.5), 67.0% (T=0.8)
+- Improves with temperature (13.5pp range) — opposite of expected
+- Does not fit cleanly into architectural or stochastic classification
+- Noted in Papers 14, 18 as requiring further investigation
+
 ## Database Technical Lessons
 - psycopg2 requires %s not ? for placeholders
 - Always check fetchone() for None before indexing
@@ -62,6 +79,9 @@
 - runs table has both provider and api_provider columns
 - Bedrock requires eu. prefix on model names
 - Bedrock max 1 concurrent model to avoid throttling
+- Pass/fail is determined by outcome column: COMPLETED = pass, SAFETY_HARD_STOP = fail
+- Tables: runs, results, alerts, api_keys, evaluation_requests, sessions, users, user_provider_keys, password_reset_tokens
+- results joined to runs via run_id; datasets are 'probes_200', 'probes_500', 'ctrl'
 
 ## Platform Lessons
 - Render was watching wrong branch (fixed, now on Fly.io)

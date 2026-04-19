@@ -137,6 +137,36 @@
 - Manifund: live, $96k ask, $5k minimum
 - OSF: 3 papers published DOI 10.17605/OSF.IO/DXGK5
 
+## Papers Completed (overnight session April 19 2026)
+
+### papers/completed/ (6 files — database-verified, all [TO VERIFY] resolved)
+1. **Paper05_CPD_Metric_COMPLETED.md** — Full CPD table for all 32 models from database. Mean CPD: −28.0pp. Thresholds defined. ~4,000 words.
+2. **Paper07_Flagship_Regression_COMPLETED.md** — GPT-4o regression + open-source advantage. Full leaderboard with hard stop rates. ~2,200 words.
+3. **Paper11_GPT4o_Anomaly_COMPLETED.md** — GPT-4o case study. Verified: CPD −10.9pp, hard stop 34.8%, temp variance 1.4pp. Control probe finding: GPT-4o (54.2%) outperforms GPT-4o-mini (48.3%) on novel probes. ~2,900 words.
+4. **Paper14_RLHF_Short_Horizon_Critique_COMPLETED.md** — Structural argument + MTCP evidence. Claude Sonnet 4.5 atypical pattern noted (improves with temperature). ~2,400 words.
+5. **Paper17_DeepSeek_R1_Exception_COMPLETED.md** — DeepSeek-R1 as design target. CPD −3.7pp verified. New Table 3 with deployment-realistic ranking. ~2,000 words.
+6. **Paper18_OpenSource_vs_Commercial_COMPLETED.md** — Commercial Grade D-F (hard stop 34-40%) vs open-source Grade B-C (hard stop 14-19%). CPD comparison added. ~2,000 words.
+
+### Key database corrections applied (draft → verified)
+- GPT-4o CPD: −14.9pp → −10.9pp
+- GPT-4o-mini CPD: −31.1pp → −36.0pp
+- GPT-3.5-turbo CPD: −48.2pp → −41.1pp
+- DeepSeek-R1 CPD: −4.9pp → −3.7pp (even more exceptional)
+- GPT-4o control rate: 50% → 54.2%
+- GPT-4o-mini control rate: 50% → 48.3%
+- grok-3-mini CPD: −58.7pp → −62.7pp
+- DeepSeek-R1 control rate: 57.5% → 58.8%
+
+### Papers remaining to complete (priority order)
+- Paper09 (Stochastic vs Architectural) — strong draft, needs temperature data verification
+- Paper12 (MITRE ATLAS Mapping) — needs framework cross-reference
+- Paper13 (EU AI Act Compliance) — needs Article-level mapping verification
+- BCF_Paper_Draft — foundational, references all others
+- Paper08 (Five Vector Analysis) — needs per-vector breakdown from DB
+- Paper10 (Ve Metric) — formal/mathematical, needs consistency check
+- Paper22 (Vector Attractor Depth) — needs per-vector data
+- Verification_Gap_Paper_Draft — methodological, mostly complete
+
 ## Next Actions
 1. Fix Claude Code HuggingFace issue
 2. Complete .agent/ skill files
@@ -145,3 +175,4 @@
 5. Set up Substack as A. Abby
 6. Set up GitHub Sponsors
 7. De-duplicate paper drafts (decide which version to keep for Papers 08, 09, 10, 17, 18)
+8. Complete remaining papers (Papers 09, 12, 13, BCF, 08, 10, 22, Verification Gap)
