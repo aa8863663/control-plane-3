@@ -1,0 +1,1 @@
+{"timestamp":"2026-04-19T12:00:00","skill":"setup","action":"Created .agent/ infrastructure","result":"success","pain_score":2,"importance":8,"reflection":"HuggingFace retry loop in Claude Code caused by user_api_keys.py import. Fixed with .claudeignore. Use python3 directly for database operations."}

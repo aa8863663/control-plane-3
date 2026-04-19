@@ -1,0 +1,7 @@
+{"name":"audit-runner","version":"2026-04-19","triggers":["audit","check numbers","verify","what is the status","how many"],"tools":["bash","database"],"constraints":["use verified numbers only"]}
+{"name":"evaluation-runner","version":"2026-04-19","triggers":["run evaluations","run probes","evaluate models","benchmark","run overnight"],"tools":["bash","database"],"constraints":["verify all writes","SHA-256 sign evidence packs","never contact openai"]}
+{"name":"paper-writer","version":"2026-04-19","triggers":["write paper","draft paper","paper on","extend paper","finish paper"],"tools":["bash","database"],"constraints":["A. Abby pseudonym only","never disclose proprietary IP","use verified numbers"]}
+{"name":"grant-tracker","version":"2026-04-19","triggers":["grant","application","follow up","funding status","deadline"],"tools":["bash"],"constraints":["never submit without approval","never contact openai"]}
+{"name":"outreach-manager","version":"2026-04-19","triggers":["contact","outreach","email","message","who have I contacted"],"tools":["bash"],"constraints":["never send without approval","never contact openai"]}
+{"name":"content-publisher","version":"2026-04-19","triggers":["post","linkedin","substack","article","write about","comment"],"tools":["bash"],"constraints":["never post without approval","A. Abby pseudonym only"]}
+{"name":"leaderboard-updater","version":"2026-04-19","triggers":["update leaderboard","refresh platform","check leaderboard","leaderboard"],"tools":["bash","database"],"constraints":["verify all writes"]}
