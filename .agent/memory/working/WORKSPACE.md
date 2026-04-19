@@ -179,6 +179,20 @@
 
 ### ALL 22 PAPERS COMPLETED — 0 [TO VERIFY] tags remaining across entire completed set
 
+## Framework Audit Status (April 19 2026)
+- F2-F15 (public): ALL CLEAN — 0 [TO VERIFY] tags remaining
+- F16-F19 (private): ALL CLEAN — 0 [TO VERIFY] tags remaining  
+- Grading Scale Framework: CLEAN — 0 [TO VERIFY] tags remaining
+- Autonomous Production Prompt: 2 intentional instruction lines remain (by design)
+
+## Template Audit (April 19 2026)
+- No outdated model/provider counts found (templates use dynamic {{ stats }} variables)
+- No old URLs (control-plane-3.onrender.com already replaced with mtcp.live)
+- base_public.html: uses fallback "32" and "181,448" — correct
+- how_it_works.html: uses dynamic {{ stats.total_models }} — correct
+- methodology.html: references "20 concealed probes" — correct
+- No hardcoded -14.9pp, -5pp, or "25 models" found anywhere in templates
+
 ## Next Actions
 1. Fix Claude Code HuggingFace issue
 2. Complete .agent/ skill files
@@ -186,5 +200,4 @@
 4. Chase Foresight before April 30
 5. Set up Substack as A. Abby
 6. Set up GitHub Sponsors
-7. De-duplicate paper drafts (decide which version to keep for Papers 08, 09, 10, 17, 18)
-8. Complete remaining papers (Papers 09, 12, 13, BCF, 08, 10, 22, Verification Gap)
+7. De-duplicate paper drafts (delete older versions of completed papers)
