@@ -157,15 +157,17 @@
 - grok-3-mini CPD: −58.7pp → −62.7pp
 - DeepSeek-R1 control rate: 57.5% → 58.8%
 
-### Papers remaining to complete (priority order)
-- Paper09 (Stochastic vs Architectural) — strong draft, needs temperature data verification
-- Paper12 (MITRE ATLAS Mapping) — needs framework cross-reference
-- Paper13 (EU AI Act Compliance) — needs Article-level mapping verification
-- BCF_Paper_Draft — foundational, references all others
-- Paper08 (Five Vector Analysis) — needs per-vector breakdown from DB
-- Paper10 (Ve Metric) — formal/mathematical, needs consistency check
-- Paper22 (Vector Attractor Depth) — needs per-vector data
-- Verification_Gap_Paper_Draft — methodological, mostly complete
+### Second session: 8 more papers completed (April 19 2026)
+7. **Paper09_Stochastic_vs_Architectural_COMPLETED.md** — Full 32-model temperature classification table. 14 architectural, 12 mixed, 2 stochastic, 2 atypical. Claude Sonnet 4.5 data discrepancy resolved (12.0pp = atypical, NOT architectural).
+8. **Paper12_MITRE_ATLAS_Mapping_COMPLETED.md** — BCF→ATLAS technique mapping. Proposed new entry: Post-Correction Constraint Bypass. Attack chain narrative. SIEM integration guidance.
+9. **Paper13_EU_AI_Act_Compliance_COMPLETED.md** — Article-level mapping (Arts 9, 13, 17, 61, 72, Annex IX). NIST AI RMF + ISO 42001 extensions.
+10. **BCF_Paper_COMPLETED.md** — Foundational BCF definition paper. Distinguishes from hallucination, jailbreak, specification gaming. Ve metric introduction.
+11. **Paper08_Five_Vector_Analysis_COMPLETED.md** — Database-verified vector hierarchy: CG 99.7% > NC 79.1% > LA 65.9% > ID 50.5% > SF 42.3%. Per-model top/worst performers per vector.
+12. **Paper10_Ve_Formal_Paper_COMPLETED.md** — Ve metric formal definition. Persistence Lemma grounded in 34.8% mean hard stop rate.
+13. **Paper22_Vector_Attractor_Depth_COMPLETED.md** — Attractor depth confirmed from hard stop rates: SF 57.7% > ID 49.5% > LA 34.1% > NC 20.9% > CG 0.3%.
+14. **Verification_Gap_COMPLETED.md** — Methodological argument for multi-turn evaluation as missing safety standard.
+
+### All papers completed — 0 [TO VERIFY] tags remaining
 
 ## Next Actions
 1. Fix Claude Code HuggingFace issue
