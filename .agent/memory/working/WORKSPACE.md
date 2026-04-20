@@ -1,5 +1,37 @@
 # Current Workspace
 
+## Active Contacts (April 20 2026)
+- John M. Willis: follow-up sent, awaiting response
+- Timothy Cook: ADR received, short OSF note to draft
+- Mohamed Rihan: dataset downloaded, Ve integration active, call to schedule
+- Betania Allo: call Monday April 27, brief ready
+- Nathan Freestone: conversation developing, push arXiv ask
+- Johnny Malik: follow-up sent, call proposed
+
+## Validation Status (48-hour event April 19-20)
+- 6 practitioners validated in 48 hours
+- First formal ADR citation received (Timothy Cook, Axius SDC)
+- First sovereign AI integration confirmed (Mohamed Rihan, R-AGAM)
+- Definitive commercial framing confirmed by CAIO (Johnny Malik, 4Micro)
+- Cross-session BCF failure class identified (Timothy Cook)
+- Temperature intervention insight validated (Nathan Freestone / Elora)
+
+## Pending Actions
+- Reply to Timothy: short OSF empirical note proposal
+- Schedule Mohamed call this week
+- Prepare Betania call brief (DONE: research-estate/governance/Betania_Allo_Call_Brief.md)
+- Push Nathan on arXiv endorsement
+- Reply to Johnny proposing call
+- Find out who Eliza Cudmore is and what ADR-0007 refers to
+- Update Manifund project description with Johnny Malik quote
+- Update LTFF application with validation evidence
+
+## Upcoming Deadlines
+- Anthropic Fellows: submitted April 19, closes April 26
+- Foresight Institute: April 30 URGENT
+- Manifund: May 11
+- Schmidt Sciences: May 17 (needs fiscal sponsor first)
+
 ## Active Tasks
 - Building .agent/ infrastructure for autonomous research pipeline
 - Schmidt Sciences proposal due May 17 2026

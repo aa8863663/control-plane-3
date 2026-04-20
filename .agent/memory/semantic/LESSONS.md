@@ -1,5 +1,26 @@
 # Verified Research Findings
 
+## External Validation Events (April 19-20 2026)
+
+Six independent practitioners validated MTCP within 48 hours:
+
+DEFINITIVE COMMERCIAL FRAMING (Johnny Malik, CAIO 4Micro):
+"Which models can be governed at runtime and which will bleed through no matter how much control-plane engineering you throw at them."
+Use this framing for all enterprise-facing communications.
+
+SOVEREIGN AI INTEGRATION (Mohamed Rihan, KFUPM):
+Ve above threshold means admissibility is no longer reliably resolvable. This is his refinement. It is correct and stronger than original framing. Use this in all Ve descriptions going forward.
+
+FIRST FORMAL CITATION (Timothy Cook, Axius SDC ADR-0003):
+MTCP formally cited in company Architecture Decision Record. ADR date: April 19 2026.
+Note: ADR contains incorrect figures (181,428 and 35 models). Correct figures: 181,448 evaluations, 32 models, 13 providers.
+
+CROSS-SESSION BCF (Timothy Cook):
+New failure class identified: autonomous memory poisoning. BCF propagates through persistence layer, becomes permanent. More severe than within-session BCF measured by MTCP. Short empirical note to OSF planned (not full paper).
+
+TEMPERATURE INTERVENTION INSIGHT (Nathan Freestone / Elora):
+Temperature adjustment ineffective for architectural failure class (Pattern 1, 14 models). Only effective for stochastic class (Pattern 2, 12 models). Applying temperature correction to architectural failure gives false safe zone signal.
+
 ## Core MTCP Findings (verified against 181,448 evaluations)
 - No model achieves Grade A (90%+ threshold)
 - Best performer: grok-3-mini at 88.7% (Grade B)
@@ -9,7 +30,7 @@
 - Temperature variance in safety-tuned models: under 1pp (T=0.0 to T=0.8)
 - Control probe degradation: all models collapse to 10-57.5% band
 - DeepSeek-R1 exception: 5pp CPD (contamination-resistant)
-- Ve>=2 threshold: recovery without session reset becomes empirically unlikely
+- Ve>=2 threshold: admissibility is no longer reliably resolvable under current conditions (Mohamed Rihan refinement, April 20 2026)
 
 ## Four-Pattern Breakdown (database verified, externally validated April 20 2026)
 External validation: Mohamed Rihan (R-AGAM) independently queried HuggingFace dataset and confirmed pattern distribution.
