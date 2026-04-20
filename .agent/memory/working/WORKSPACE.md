@@ -179,6 +179,15 @@
 
 ### ALL 22 PAPERS COMPLETED — 0 [TO VERIFY] tags remaining across entire completed set
 
+## Joint Paper: Cross-Session BCF Propagation (April 20 2026)
+- Co-author: Timothy Cook (Axius SDC)
+- Status: DRAFT complete at research-estate/papers/drafts/Paper_CrossSession_BCF_DRAFT.md
+- Awaiting: Timothy Cook ADR writeup at admin@mtcp.live
+- Do NOT publish without ADR and agreement on terms
+- BCF Definition paper (completed) updated with Section 9 covering cross-session BCF
+- Concept: hallucination enters persistence layer, becomes permanent ground truth
+- Evidence: 4 models tested (Gemma 4B passed, Qwen/Granite/Gemma 26B failed)
+
 ## External Validation (April 20 2026)
 - Mohamed Rihan (R-AGAM) independently queried HuggingFace dataset aa8899/mtcp-boundary-500
 - Confirmed four-pattern breakdown: Pattern 1 (14), Pattern 2 (12), Pattern 3 (2), Pattern 4 (2)

@@ -62,6 +62,19 @@ External validation: Mohamed Rihan (R-AGAM) independently queried HuggingFace da
 - Paper 24: GDPR and LLM adaptation (cross-session profiling argument)
 - Paper 25: AI co-authorship and derivative IP attribution
 
+## Cross-Session BCF Propagation (Timothy Cook, Axius SDC, April 20 2026)
+- New failure class: BCF that exits session boundary and enters persistence layer
+- Poisoned state becomes permanent ground truth, pre-loaded before correction can operate
+- Qualitatively more severe than within-session BCF measured by MTCP
+- Evidence: 4 models tested with persistence layer architecture
+  - Gemma 4B: PASSED (admitted uncertainty, asked for clarification)
+  - Qwen 2.5 7B: FAILED (hallucinated, saved to memory)
+  - Granite 4 IBM: FAILED (fabricated entire crypto wallet infrastructure)
+  - Gemma 26B: FAILED (fabricated Web3 platform with DIDs/ZKPs/TEEs)
+- Key finding: hallucination discipline does not scale with parameter count (Gemma 4B passed, Gemma 26B failed)
+- MTCP Ve metric does not apply (failure is pre-session, not in-session)
+- Joint paper with Timothy Cook in preparation (awaiting ADR writeup)
+
 ## Database-Verified CPD Values (April 19 2026)
 - grok-3-mini: primary 92.1%, ctrl 29.4%, CPD −62.7pp (Severe)
 - GPT-4o: primary 65.1%, ctrl 54.2%, CPD −10.9pp (Moderate)
