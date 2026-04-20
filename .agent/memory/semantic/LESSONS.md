@@ -21,6 +21,13 @@ New failure class identified: autonomous memory poisoning. BCF propagates throug
 TEMPERATURE INTERVENTION INSIGHT (Nathan Freestone / Elora):
 Temperature adjustment ineffective for architectural failure class (Pattern 1, 14 models). Only effective for stochastic class (Pattern 2, 12 models). Applying temperature correction to architectural failure gives false safe zone signal.
 
+## Resolution Stability Regimes (MTCP empirical analysis, April 2026)
+- Regime 1 Architectural Stability: 14 models, under 1pp variance, consistent but limited constraint space, stable prior for governance, fixed ceiling 66-68%, training-level remediation only.
+- Regime 2 Stochastic Variability: 12 models, 2-5pp variance, variability enters resolution path, temperature is valid intervention, inference-time parameters matter.
+- Regime 3 Capability-Reliability Divergence: GPT-4o class, capability and constraint reliability diverge structurally, most dangerous for execution governance, capability masks constraint unreliability. GPT-4o 16.2pp below GPT-4o-mini despite higher capability.
+- Meta-framing: admissibility is a context-sensitive resolution process not a uniform decision function.
+- Framework F20 documents this in full. No external attribution.
+
 ## Core MTCP Findings (verified against 181,448 evaluations)
 - No model achieves Grade A (90%+ threshold)
 - Best performer: grok-3-mini at 88.7% (Grade B)

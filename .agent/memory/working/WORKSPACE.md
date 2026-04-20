@@ -225,6 +225,12 @@
 - Confirmed four-pattern breakdown: Pattern 1 (14), Pattern 2 (12), Pattern 3 (2), Pattern 4 (2)
 - Pattern distribution added to: Paper 09, Paper 05, Paper 17, Paper 18, Framework F6, LESSONS.md
 
+## Framework F20 Created (April 2026)
+- Framework F20: Resolution Stability Regimes in Governed AI Execution
+- Total frameworks: 20 (F2-F20, with F1 reserved)
+- Three regimes: Architectural Stability (14 models), Stochastic Variability (12 models), Capability-Reliability Divergence (GPT-4o class)
+- Integrated into: Papers 09, 10, 11, BCF; Frameworks F2, F6; ADR-0009
+
 ## Framework Audit Status (April 19 2026)
 - F2-F15 (public): ALL CLEAN — 0 [TO VERIFY] tags remaining
 - F16-F19 (private): ALL CLEAN — 0 [TO VERIFY] tags remaining  
