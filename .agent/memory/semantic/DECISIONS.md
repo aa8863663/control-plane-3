@@ -1,6 +1,16 @@
 # Major Research Decisions
 
-## Architecture Decision Records (ADRs 0007-0015, April 2026)
+## Architecture Decision Records (ADRs 0001-0015, April 2026)
+
+### Foundational (ADRs 0001-0006)
+- ADR-0001: Black-Box Methodology — all evaluation via public API, no model internals required
+- ADR-0002: Probe Confidentiality — probe content permanently confidential, core IP
+- ADR-0003: CPD Control Probe — control probe set measures contamination effect, CPD as standard metric
+- ADR-0004: Temperature Classifier — variance as diagnostic for architectural vs stochastic failure
+- ADR-0005: Grading Scale — Grade A 90%+, Grade F below 60%, no model achieves A
+- ADR-0006: IP Boundary — Tier 1 public, Tier 2 conditional (NDA), Tier 3 always private
+
+### Validation and Extension (ADRs 0007-0015)
 - ADR-0007: External Validation Record — 6 practitioners validated in 48 hours (April 19-20 2026)
 - ADR-0008: Ve as Reliability Signal Not Execution Rule — admissibility no longer reliably resolvable (Rihan)
 - ADR-0009: Four Pattern Classification — P1 architectural (14), P2 stochastic (12), P3 genuine (2), P4 atypical (2)
@@ -10,7 +20,8 @@
 - ADR-0013: Commercial Framing — "governed at runtime vs bleed through" (Johnny Malik, 4Micro)
 - ADR-0014: Fiscal Sponsorship Required — Schmidt Sciences deadline May 17, individuals ineligible
 - ADR-0015: Substack Strategy — permanent public home, automated multi-platform pipeline
-Files: research-estate/private/ADRs/ADR-00XX_*.md
+
+Files: research-estate/private/ADRs/ADR-00XX_*.md (15 files on disk, gitignored)
 
 ## 2026-04-19: Public model count
 Decision: Use 32 models, 13 providers publicly
