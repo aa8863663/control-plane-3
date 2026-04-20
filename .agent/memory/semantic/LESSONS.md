@@ -11,10 +11,17 @@
 - DeepSeek-R1 exception: 5pp CPD (contamination-resistant)
 - Ve>=2 threshold: recovery without session reset becomes empirically unlikely
 
+## Four-Pattern Breakdown (database verified, externally validated April 20 2026)
+External validation: Mohamed Rihan (R-AGAM) independently queried HuggingFace dataset and confirmed pattern distribution.
+- Pattern 1 - Architectural failure: 14 models (44%). Under 2pp temp variance. Claude family, GPT-4o (1.4pp). Training intervention required.
+- Pattern 2 - Stochastic failure: 12 models (38%). 2-5pp temp variance. LLaMA family, grok-3-mini, GPT-4o-mini. Operational controls partially effective.
+- Pattern 3 - Genuine persistence: 2 models (6%). Temp-invariant AND low CPD. DeepSeek-R1 (2.2pp, CPD -3.7pp). No remediation required.
+- Pattern 4 - Atypical: 2 models (6%). Claude Sonnet 4.5 (12.0pp inverse), qwen3-8b (54.2pp artefact). Individual analysis required.
+
 ## IGS Theory Findings
 - Temperature invariance = architectural failure (not stochastic)
 - Temperature sensitivity = stochastic failure (LLaMA family pattern)
-- Claude models: architectural IGS signature confirmed
+- Claude Sonnet 4.5: atypical inverse pattern (12.0pp, improves with temperature) - NOT architectural as previously described
 - DeepSeek-R1: genuine persistence, not probe familiarity
 
 ## Framework Definitions (F2-F15 public, F16-F19 private)
