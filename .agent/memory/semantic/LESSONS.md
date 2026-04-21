@@ -1,6 +1,6 @@
 # Verified Research Findings
 
-## External Validation Events (April 19-20 2026)
+## External Validation Events (April 19-21 2026)
 
 Six independent practitioners validated MTCP within 48 hours:
 
@@ -11,12 +11,16 @@ Use this framing for all enterprise-facing communications.
 SOVEREIGN AI INTEGRATION (Mohamed Rihan, KFUPM):
 Ve above threshold means admissibility is no longer reliably resolvable. This is his refinement. It is correct and stronger than original framing. Use this in all Ve descriptions going forward.
 
+FORMAL TECHNICAL EMBEDDING (Mohamed Rihan, KFUPM, April 20 2026):
+Mohamed sent formal interface spec V1.0 naming MTCP as Empirical Constraint-State Measurement Authority in R-AGAM sovereign governance. SHALL clauses throughout. Versioned binding specification. R-AGAM confirmed commercial. Resolution stability regimes (R1, R2, R3) adopted as core admissibility decision logic. Decision model: D = {COMMIT, REJECT, DEFER, ESCALATE, REVOKE}. Evidence receipts must include MTCP hash, Ve values, regime classification. This is the most significant validation event to date because it is a versioned binding specification, not a conversation. First formal technical embedding of MTCP as infrastructure by external party. Predates commercial agreement. Establishes prior art. KFUPM affiliation pathway opening. ADR-0016 records this event.
+
 FIRST FORMAL CITATION (Timothy Cook, Axius SDC ADR-0003):
 MTCP formally cited in company Architecture Decision Record. ADR date: April 19 2026.
 Note: ADR contains incorrect figures (181,428 and 35 models). Correct figures: 181,448 evaluations, 32 models, 13 providers.
 
 CROSS-SESSION BCF (Timothy Cook):
 New failure class identified: autonomous memory poisoning. BCF propagates through persistence layer, becomes permanent. More severe than within-session BCF measured by MTCP. Short empirical note to OSF planned (not full paper).
+Timothy Cook Section 2 received April 20: memory persistence failure surface findings, four-model test results, cross-session propagation mechanism documented in detail.
 
 TEMPERATURE INTERVENTION INSIGHT (Nathan Freestone / Elora):
 Temperature adjustment ineffective for architectural failure class (Pattern 1, 14 models). Only effective for stochastic class (Pattern 2, 12 models). Applying temperature correction to architectural failure gives false safe zone signal.
@@ -46,6 +50,15 @@ External validation: Mohamed Rihan (R-AGAM) independently queried HuggingFace da
 - Pattern 3 - Genuine persistence: 2 models (6%). Temp-invariant AND low CPD. DeepSeek-R1 (2.2pp, CPD -3.7pp). No remediation required.
 - Pattern 4 - Atypical: 2 models (6%). Claude Sonnet 4.5 (12.0pp inverse), qwen3-8b (54.2pp artefact). Individual analysis required.
 
+## Pipeline Constraint Degradation (PCD) — New Proposed Metric (April 21 2026)
+PCD extends CPD from model-level evaluation to pipeline-level evaluation. Measures how much a model's constraint persistence degrades when wrapped in a full pipeline. Stage 1: score model in isolation using standard MTCP protocol (output: CPD value). Stage 2: score same model operating within an agentic pipeline with memory, tools, and external integrations. PCD = delta between pipeline CPD and isolated CPD. Large positive PCD means pipeline amplifies constraint failure. Near-zero PCD means pipeline is neutral. Negative PCD means pipeline compensates (uncommon). Proposed in Paper B (Three-Layer Constraint Failure) and Paper C (Agent Repo Attack Surface). Implementation requires standardised session sequence, pipeline harness, and baseline measurement. Three concrete tests: memory poisoning test, hook interception test, URL fabrication test.
+
+## Paper B: Three-Layer Constraint Failure (completed April 21 2026)
+Three layers of constraint failure in AI execution stack: model (MTCP evidence), pipeline (autonomous memory poisoning), protocol (MCP STDIO weakness). Evidence: 181,448 evaluations, four-model memory poisoning test, OX Security MCP disclosure (150M+ downloads, 200K instances). Proposes PCD metric. Key argument: layers compound, single-layer evaluation provides false assurance. ~4,170 words.
+
+## Paper C: Agent Repositories as Unevaluated Attack Surface (completed April 21 2026)
+Agent repositories are the new attack surface. Three evaluation gaps: constraint persistence not tested in repository context, malicious behaviour installed silently (hooks, unpinned fetches, telemetry), protocol weakness (MCP STDIO). Defines "scalping" through repository layer: extraction of value through apparently legitimate repositories with persistent extraction mechanisms. Token-optimizer-mcp as worked example. Vercel breach as precedent. Proposes PCD framework. ~3,930 words.
+
 ## IGS Theory Findings
 - Temperature invariance = architectural failure (not stochastic)
 - Temperature sensitivity = stochastic failure (LLaMA family pattern)
@@ -69,7 +82,7 @@ External validation: Mohamed Rihan (R-AGAM) independently queried HuggingFace da
 - F15 PRP Public Design: Posture Reauthorization Protocol (mitigation approach)
 - F16-F19: PRIVATE (PRP implementation, Ve monitoring, probe methodology, acquisition)
 
-## Paper Series Coverage (Papers 05-25 drafted)
+## Paper Series Coverage (Papers 05-25 + Papers B and C)
 - Paper 05: CPD metric for contamination detection
 - Paper 07: Flagship regression evidence (frontier models getting worse)
 - Paper 08: Five-vector analysis of which constraints fail most
@@ -89,6 +102,8 @@ External validation: Mohamed Rihan (R-AGAM) independently queried HuggingFace da
 - Paper 23: Inverse Imitation Game (machine recognition of human patterns)
 - Paper 24: GDPR and LLM adaptation (cross-session profiling argument)
 - Paper 25: AI co-authorship and derivative IP attribution
+- Paper B: Three-layer constraint failure (model, pipeline, protocol)
+- Paper C: Agent repositories as unevaluated attack surface
 
 ## Cross-Session BCF Propagation (Timothy Cook, Axius SDC, April 20 2026)
 - New failure class: BCF that exits session boundary and enters persistence layer
@@ -101,7 +116,7 @@ External validation: Mohamed Rihan (R-AGAM) independently queried HuggingFace da
   - Gemma 26B: FAILED (fabricated Web3 platform with DIDs/ZKPs/TEEs)
 - Key finding: hallucination discipline does not scale with parameter count (Gemma 4B passed, Gemma 26B failed)
 - MTCP Ve metric does not apply (failure is pre-session, not in-session)
-- Joint paper with Timothy Cook in preparation (awaiting ADR writeup)
+- Joint paper with Timothy Cook in preparation (Section 2 received April 20, Section 1 drafted April 21)
 
 ## Database-Verified CPD Values (April 19 2026)
 - grok-3-mini: primary 92.1%, ctrl 29.4%, CPD −62.7pp (Severe)

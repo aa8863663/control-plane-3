@@ -1,9 +1,9 @@
 # Current Workspace
 
-## Active Contacts (April 20 2026)
+## Active Contacts (April 21 2026)
 - John M. Willis: follow-up sent, awaiting response
-- Timothy Cook: ADR received, short OSF note to draft
-- Mohamed Rihan: dataset downloaded, Ve integration active, call to schedule
+- Timothy Cook: ADR received, Section 2 received April 20, short OSF note to draft
+- Mohamed Rihan: spec V1.0 received April 20, R-AGAM confirmed commercial, KFUPM affiliation pathway opening, call to schedule
 - Betania Allo: call Monday April 27, brief ready
 - Nathan Freestone: conversation developing, push arXiv ask
 - Johnny Malik: follow-up sent, call proposed
@@ -12,8 +12,11 @@
 - 6 practitioners validated in 48 hours
 - First formal ADR citation received (Timothy Cook, Axius SDC)
 - First sovereign AI integration confirmed (Mohamed Rihan, R-AGAM)
+- First formal technical embedding: Mohamed Rihan spec V1.0 names MTCP as Empirical Constraint-State Measurement Authority (April 20)
+- R-AGAM confirmed commercial, KFUPM affiliation pathway opening
 - Definitive commercial framing confirmed by CAIO (Johnny Malik, 4Micro)
 - Cross-session BCF failure class identified (Timothy Cook)
+- Timothy Cook Section 2 (memory persistence findings) received April 20
 - Temperature intervention insight validated (Nathan Freestone / Elora)
 
 ## Pending Actions
@@ -27,10 +30,11 @@
 - Update LTFF application with validation evidence
 
 ## Upcoming Deadlines
+- Betania Allo call: Monday April 27
 - Anthropic Fellows: submitted April 19, closes April 26
 - Foresight Institute: April 30 URGENT
 - Manifund: May 11
-- Schmidt Sciences: May 17 (needs fiscal sponsor first)
+- Schmidt Sciences: May 17 KFUPM pathway opening via Mohamed
 
 ## Active Tasks
 - Building .agent/ infrastructure for autonomous research pipeline
@@ -167,7 +171,7 @@
 - mtcp.live: live on Fly.io Frankfurt
 - HuggingFace: 181,448 rows uploaded
 - Manifund: live, $96k ask, $5k minimum
-- OSF: 3 papers published DOI 10.17605/OSF.IO/DXGK5
+- OSF: 3 papers published DOI 10.17605/OSF.IO/DXGK5, 5 papers OSF-ready for upload today
 
 ## Papers Completed (overnight session April 19 2026)
 
@@ -209,7 +213,23 @@
 21. **Paper24_GDPR_LLM_Adaptation_COMPLETED.md** — Cross-session responsiveness as GDPR profiling. Article 4(4) and 22 analysis. Legal review required before regulatory use. ~1,700 words.
 22. **Paper25_AI_Coauthorship_IP_COMPLETED.md** — Derivative attribution framework for prompt-shaped outputs. UK/EU/US copyright analysis. ~1,500 words.
 
-### ALL 22 PAPERS COMPLETED — 0 [TO VERIFY] tags remaining across entire completed set
+### Fourth session: Papers B and C completed (April 21 2026)
+23. **Paper_ThreeLayer_Constraint_Failure_COMPLETED.md** — Three-layer constraint failure (model, pipeline, protocol). Proposes Pipeline Constraint Degradation (PCD) metric. MCP STDIO weakness. ~4,170 words.
+24. **Paper_AgentRepo_Attack_Surface_COMPLETED.md** — Agent repositories as unevaluated attack surface. Scalping definition. PCD framework. Repository trust model critique. ~3,930 words.
+
+### ALL 24 PAPERS COMPLETED — 0 [TO VERIFY] tags remaining across entire completed set
+
+### OSF-Ready Papers (5 docx files)
+1. BCF_Behavioral_Constraint_Failure.docx
+2. Paper05_CPD_Metric.docx
+3. Paper09_Stochastic_vs_Architectural.docx
+4. Paper_ThreeLayer_Constraint_Failure.docx
+5. Paper_AgentRepo_Attack_Surface.docx
+
+### Joint Paper Drafts
+- Joint_Paper_Timothy_Section2_RECEIVED.md — Timothy Cook Section 2 (memory persistence findings), received April 20
+- Joint_Paper_Ahmad_Section1_DRAFT.md — Ahmad Section 1 (constraint persistence at model layer), ~1,260 words
+- Section 3 (Convergence) to co-write
 
 ## Joint Paper: Cross-Session BCF Propagation (April 20 2026)
 - Co-author: Timothy Cook (Axius SDC)
@@ -220,10 +240,14 @@
 - Concept: hallucination enters persistence layer, becomes permanent ground truth
 - Evidence: 4 models tested (Gemma 4B passed, Qwen/Granite/Gemma 26B failed)
 
-## External Validation (April 20 2026)
+## External Validation (April 20-21 2026)
 - Mohamed Rihan (R-AGAM) independently queried HuggingFace dataset aa8899/mtcp-boundary-500
 - Confirmed four-pattern breakdown: Pattern 1 (14), Pattern 2 (12), Pattern 3 (2), Pattern 4 (2)
 - Pattern distribution added to: Paper 09, Paper 05, Paper 17, Paper 18, Framework F6, LESSONS.md
+- Mohamed Rihan sent formal interface spec V1.0 (April 20): MTCP named as Empirical Constraint-State Measurement Authority
+- SHALL clauses throughout spec, versioned document, R-AGAM confirmed commercial
+- ADR-0016 created to record this validation event
+- KFUPM affiliation pathway opening via Mohamed, aligns with Schmidt Sciences May 17 deadline
 
 ## Framework F20 Created (April 2026)
 - Framework F20: Resolution Stability Regimes in Governed AI Execution
