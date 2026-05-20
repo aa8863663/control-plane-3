@@ -92,6 +92,13 @@ def get_platform_stats():
         result = cur.fetchone()
         avg_bis = result['avg_bis'] if result and result['avg_bis'] else 0
 
+        # Count languages evaluated
+        cur.execute("""
+            SELECT COUNT(DISTINCT dataset) as count FROM runs
+            WHERE dataset LIKE 'LANG_%'
+        """)
+        total_languages = cur.fetchone()['count']
+
         conn.close()
 
         return {
@@ -99,6 +106,7 @@ def get_platform_stats():
             'total_runs': total_runs,
             'total_models': total_models,
             'total_providers': total_providers,
+            'total_languages': total_languages,
             'avg_bis': round(avg_bis, 1),
             'total_results_formatted': f"{total_results:,}",
             'total_runs_formatted': f"{total_runs:,}",
@@ -110,6 +118,7 @@ def get_platform_stats():
             'total_runs': 0,
             'total_models': 0,
             'total_providers': 0,
+            'total_languages': 0,
             'avg_bis': 0,
             'total_results_formatted': '0',
             'total_runs_formatted': '0',
@@ -2870,6 +2879,91 @@ async def run_benchmark_api(request: Request, session: Optional[str] = Cookie(de
         ["python3", "llm_safety_platform.py", "--model", model, "--temperature", str(temperature), "--dataset", dataset],
         capture_output=True, text=True)
     return JSONResponse({"success": result.returncode==0, "stdout": result.stdout, "stderr": result.stderr})
+
+# ── CSAS API Endpoints ─────────────────────────────────────────────────────────
+
+@app.get("/api/csas/evaluations")
+def csas_list_evaluations(session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT e.id, e.system_name, e.created_at, e.notes,
+               s.csas, s.grade, s.bpr, s.cve, s.cir, s.caf,
+               b.upstream_model, b.downstream_model
+        FROM csas_evaluations e
+        LEFT JOIN csas_scores s ON s.evaluation_id = e.id
+        LEFT JOIN csas_boundaries b ON s.boundary_id = b.id
+        ORDER BY e.created_at DESC
+    """)
+    rows = cur.fetchall()
+    conn.close()
+    return JSONResponse([dict(r) for r in rows])
+
+@app.get("/api/csas/evaluation/{eval_id}")
+def csas_get_evaluation(eval_id: int, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM csas_evaluations WHERE id = %s", (eval_id,))
+    evaluation = cur.fetchone()
+    if not evaluation:
+        conn.close()
+        return JSONResponse({"error": "Not found"}, status_code=404)
+    cur.execute("""
+        SELECT b.*, s.bpr, s.cve, s.cir, s.caf, s.csas, s.grade
+        FROM csas_boundaries b
+        LEFT JOIN csas_scores s ON s.boundary_id = b.id
+        WHERE b.evaluation_id = %s
+    """, (eval_id,))
+    boundaries = [dict(r) for r in cur.fetchall()]
+    cur.execute("""
+        SELECT cr.* FROM csas_results cr
+        JOIN csas_boundaries b ON cr.boundary_id = b.id
+        WHERE b.evaluation_id = %s ORDER BY cr.id
+    """, (eval_id,))
+    results = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return JSONResponse({"evaluation": dict(evaluation), "boundaries": boundaries, "results": results}, default=str)
+
+@app.get("/api/csas/grade/{upstream_model}/{downstream_model}")
+def csas_get_grade(upstream_model: str, downstream_model: str):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT s.csas, s.grade, s.bpr, s.cve, s.cir, s.caf, e.created_at
+        FROM csas_scores s
+        JOIN csas_boundaries b ON s.boundary_id = b.id
+        JOIN csas_evaluations e ON s.evaluation_id = e.id
+        WHERE b.upstream_model = %s AND b.downstream_model = %s
+        ORDER BY e.created_at DESC LIMIT 1
+    """, (upstream_model, downstream_model))
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        return JSONResponse({"error": "No CSAS evaluation found for this pair"}, status_code=404)
+    return JSONResponse(dict(row), default=str)
+
+# ── Multilingual Results Endpoint ──────────────────────────────────────────────
+
+@app.get("/api/multilingual")
+def multilingual_results():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT ru.model, ru.dataset, ru.temperature,
+               COUNT(*) as total,
+               SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END) as passed,
+               ROUND(100.0 * SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0), 1) as pass_rate
+        FROM runs ru
+        JOIN results r ON ru.id = r.run_id
+        WHERE ru.dataset LIKE 'LANG_%'
+        GROUP BY ru.model, ru.dataset, ru.temperature
+        ORDER BY ru.dataset, ru.model, ru.temperature
+    """)
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return JSONResponse(rows)
 
 # ── Secure Error Handling ──────────────────────────────────────────────────────
 @app.exception_handler(Exception)

@@ -136,7 +136,7 @@ footer a{color:var(--accent2);text-decoration:none;}
     <h2 style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:400;margin-top:1rem;color:var(--muted);line-height:1.6;">
       MTCP tells you if they will.
     </h2>
-    <p class="hero-sub">Test constraint persistence in 5 minutes. Get a clear deploy/review/risk decision. {{ total_models }} models evaluated. {{ total_results }} probe interactions.</p>
+    <p class="hero-sub">Multi-model, multi-language constraint persistence evaluation. {{ total_models }} models across {{ stats.total_languages }} languages. {{ total_results }} probe interactions.</p>
     <div class="hero-actions">
       <a href="/test-model" class="btn btn-primary">Test Your Model (5 min)</a>
       <a href="/evidence/public-findings" class="btn btn-outline">View Evidence →</a>
@@ -242,8 +242,8 @@ footer a{color:var(--accent2);text-decoration:none;}
       <div class="kpi-value">{{ total_results }}</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Evaluation runs</div>
-      <div class="kpi-value">{{ total_runs }}</div>
+      <div class="kpi-label">Languages tested</div>
+      <div class="kpi-value">{{ stats.total_languages }}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">BIS range</div>
@@ -255,7 +255,7 @@ footer a{color:var(--accent2);text-decoration:none;}
   <div class="grid-3 fade-up fade-up-3">
     <div class="feature-card">
       <h3>Measure</h3>
-      <p>{{ total_results }} probe interactions across {{ total_models }} frontier models at 4 temperature settings. The largest independent constraint persistence dataset published.</p>
+      <p>{{ total_results }} probe interactions across {{ total_models }} frontier models in {{ stats.total_languages }} languages at 4 temperature settings. The largest independent constraint persistence dataset published.</p>
       <div class="feature-meta">Boundary Integrity Score</div>
     </div>
     <div class="feature-card">
