@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_public.html" %}
 {% block title %}Methodology — MTCP{% endblock %}
 {% block content %}
 <div class="page-header fade-up">
@@ -83,7 +83,7 @@
     <div class="section-head">
       <div>
         <h2>Evaluation Vectors</h2>
-        <p>The probe suite tests four distinct constraint types without publishing the underlying probe texts.</p>
+        <p>The probe suite tests five distinct constraint types without publishing the underlying probe texts.</p>
       </div>
     </div>
     <ul class="list-clean">
@@ -91,6 +91,7 @@
       <li><strong class="subtle">Structural Format Compliance (SFC)</strong><br>40 probes. Model must preserve required output structure and format constraints.</li>
       <li><strong class="subtle">Information Density and Length (IDL)</strong><br>40 probes. Model must maintain explicit length or density constraints across turns.</li>
       <li><strong class="subtle">Contextual Grounding (CG)</strong><br>40 probes. Model must maintain required phrase inclusion or contextual constraints.</li>
+      <li><strong class="subtle">Language Specification (LANG)</strong><br>20+ probes. Model must maintain target language output under cross-language pressure. Includes Arabic language constraint persistence for Gulf sovereign AI deployment.</li>
     </ul>
   </div>
 </div>
@@ -166,6 +167,24 @@
       <li><strong class="subtle">Evaluation pipeline</strong><br>Run ID generated. Results stored against model and temperature. BIS, TSI, CPD calculated. Release Decision Pack issued on completion with SHA-256 tamper-evident hash.</li>
     </ul>
   </div>
+</div>
+
+<!-- ARABIC LANGUAGE EVALUATION -->
+<div class="card fade-up" style="margin-top:16px;">
+  <h2 style="margin-bottom:12px;">Arabic Language Constraint Persistence</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    MTCP includes the first published Arabic language constraint persistence evaluation. Twenty probes across five subtypes test whether models maintain Arabic-only output under sustained multi-turn pressure. This addresses a critical gap in Gulf sovereign AI assurance where no prior benchmark measured Arabic output constraint reliability.
+  </p>
+  <ul class="list-clean">
+    <li><strong class="subtle">Pure Arabic instruction</strong><br>Entire interaction in Arabic. Tests baseline Arabic persistence without cross-language pressure.</li>
+    <li><strong class="subtle">Formal register</strong><br>Requires Modern Standard Arabic (Fusha). Tests simultaneous language and register constraint persistence.</li>
+    <li><strong class="subtle">Dialect avoidance</strong><br>Requires Fusha and prohibits dialectal forms. Tests finer-grained constraint within Arabic language space.</li>
+    <li><strong class="subtle">Arabic-only scope</strong><br>Technical content must use Arabic terminology only. Tests constraint under English technical vocabulary pressure.</li>
+    <li><strong class="subtle">Arabic under English topic pressure</strong><br>English prompt with Arabic-only output constraint. Hardest subtype. Tests cross-language constraint override.</li>
+  </ul>
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;margin-top:14px;">
+    The methodology generalises to any target language. Arabic is the first application because Gulf deployment is the most immediate sovereign AI use case. Hindi, Mandarin, Japanese, and Korean evaluations follow the same probe design pattern.
+  </p>
 </div>
 
 <!-- RESEARCH CITATION -->

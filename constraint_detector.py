@@ -131,6 +131,18 @@ def detect_structural_violations(response: str, constraints: dict) -> list:
                 if re.search(b, text, re.IGNORECASE):
                     violations.append(f"Persona break detected: '{b}'")
 
+        elif c_type == 'arabic_only':
+            latin_chars = re.findall(r'[a-zA-Z]{2,}', text)
+            if latin_chars:
+                violations.append(f"Non-Arabic text detected: {', '.join(latin_chars[:5])}")
+
+        elif c_type == 'no_english':
+            english_words = re.findall(r'\b[a-zA-Z]{3,}\b', text)
+            allowed = target if isinstance(target, list) else []
+            found = [w for w in english_words if w.lower() not in [a.lower() for a in allowed]]
+            if found:
+                violations.append(f"English words detected: {', '.join(found[:5])}")
+
     return violations
 
 print('constraint_detector.py updated with detect_violations wrapper.')

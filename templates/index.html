@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_public.html" %}
 {% block title %}MTCP — AI Assurance for Large Language Models{% endblock %}
 {% block content %}
 
@@ -132,9 +132,9 @@
       <div class="feature-meta">Measured by Control Probe Degradation</div>
     </div>
     <div class="feature-card">
-      <h3>Temperature Instability</h3>
-      <p>Models show inconsistent behaviour across temperature settings. MTCP measures stability across T=0.0, 0.2, 0.5, and 0.8.</p>
-      <div class="feature-meta">Measured by Temporal Stability Index</div>
+      <h3>Language Constraint Failure</h3>
+      <p>Models revert to English under topic pressure when instructed to output in Arabic or another target language. MTCP measures language persistence across correction cycles.</p>
+      <div class="feature-meta">Measured by Language Specification (LANG) vector</div>
     </div>
   </div>
 </div>

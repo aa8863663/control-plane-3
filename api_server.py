@@ -2944,6 +2944,112 @@ def csas_get_grade(upstream_model: str, downstream_model: str):
         return JSONResponse({"error": "No CSAS evaluation found for this pair"}, status_code=404)
     return JSONResponse(dict(row), default=str)
 
+# ── JRS API Endpoints ─────────────────────────────────────────────────────────
+
+class JRSRegistryCreate(BaseModel):
+    boundary_name: str
+    upstream_model: str
+    downstream_model: str
+    governing_system: str
+    constraint_set: str
+    assignment_type: str
+    assigned_by: Optional[str] = None
+    expires_at: Optional[str] = None
+    notes: Optional[str] = None
+
+@app.get("/api/jrs/registry")
+def jrs_list_registry(session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT * FROM jrs_registry ORDER BY assigned_at DESC
+    """)
+    rows = cur.fetchall()
+    conn.close()
+    return JSONResponse([dict(r) for r in rows], default=str)
+
+@app.post("/api/jrs/registry")
+def jrs_create_registry(body: JRSRegistryCreate, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    if body.assignment_type not in ('explicit', 'documented', 'assumed', 'inherited'):
+        return JSONResponse({"error": "assignment_type must be one of: explicit, documented, assumed, inherited"}, status_code=400)
+    conn = get_db()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            INSERT INTO jrs_registry
+                (boundary_name, upstream_model, downstream_model, governing_system,
+                 constraint_set, assignment_type, assigned_by, assigned_at, expires_at, notes)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), %s, %s)
+            RETURNING id
+        """, (body.boundary_name, body.upstream_model, body.downstream_model,
+              body.governing_system, body.constraint_set, body.assignment_type,
+              body.assigned_by, body.expires_at, body.notes))
+        new_id = cur.fetchone()['id']
+        conn.commit()
+        conn.close()
+        return JSONResponse({"id": new_id, "status": "created"}, status_code=201)
+    except Exception as e:
+        conn.rollback()
+        conn.close()
+        return JSONResponse({"error": str(e)}, status_code=500)
+
+@app.get("/api/jrs/evaluate/{upstream_model}/{downstream_model}")
+def jrs_evaluate_pair(upstream_model: str, downstream_model: str, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db()
+    cur = conn.cursor()
+    # Get latest JRS evaluation for this pair
+    cur.execute("""
+        SELECT je.jrs_score, je.assignment_clarity, je.re_resolution_status, je.created_at,
+               js.jrs, js.csas, js.combined_governance_score, js.grade, js.jurisdiction_valid,
+               jr.governing_system, jr.constraint_set, jr.assignment_type, jr.assigned_by
+        FROM jrs_evaluations je
+        JOIN jrs_registry jr ON je.registry_id = jr.id
+        LEFT JOIN jrs_scores js ON js.evaluation_id = je.id
+        WHERE jr.upstream_model = %s AND jr.downstream_model = %s
+        ORDER BY je.created_at DESC LIMIT 1
+    """, (upstream_model, downstream_model))
+    row = cur.fetchone()
+    if not row:
+        conn.close()
+        return JSONResponse({"error": "No JRS evaluation found for this pair"}, status_code=404)
+    # Also get latest CSAS for context
+    cur.execute("""
+        SELECT s.csas, s.grade as csas_grade, s.bpr, s.cve, s.cir, s.caf, e.created_at as csas_evaluated_at
+        FROM csas_scores s
+        JOIN csas_boundaries b ON s.boundary_id = b.id
+        JOIN csas_evaluations e ON s.evaluation_id = e.id
+        WHERE b.upstream_model = %s AND b.downstream_model = %s
+        ORDER BY e.created_at DESC LIMIT 1
+    """, (upstream_model, downstream_model))
+    csas_row = cur.fetchone()
+    conn.close()
+    result = dict(row)
+    if csas_row:
+        result['csas_detail'] = dict(csas_row)
+    return JSONResponse(result, default=str)
+
+@app.get("/api/jrs/reresolution-log/{registry_id}")
+def jrs_reresolution_log(registry_id: int, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db()
+    cur = conn.cursor()
+    # Verify registry entry exists
+    cur.execute("SELECT id FROM jrs_registry WHERE id = %s", (registry_id,))
+    if not cur.fetchone():
+        conn.close()
+        return JSONResponse({"error": "Registry entry not found"}, status_code=404)
+    cur.execute("""
+        SELECT * FROM jrs_reresolution_log
+        WHERE registry_id = %s
+        ORDER BY resolved_at DESC
+    """, (registry_id,))
+    rows = cur.fetchall()
+    conn.close()
+    return JSONResponse([dict(r) for r in rows], default=str)
+
 # ── Multilingual Results Endpoint ──────────────────────────────────────────────
 
 @app.get("/api/multilingual")
@@ -2964,6 +3070,193 @@ def multilingual_results():
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return JSONResponse(rows)
+
+# ── TDS (Temporal Drift Score) API Endpoints ─────────────────────────────────
+
+class TDSBaselineCreate(BaseModel):
+    model: str
+    provider: str
+
+@app.get("/api/tds/compare/{model}")
+def tds_compare_model(model: str, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("""
+        SELECT tc.*, tb.bis as baseline_bis, tb.grade as baseline_grade, tb.evaluated_at as baseline_date
+        FROM tds_comparisons tc
+        JOIN tds_baselines tb ON tc.baseline_id = tb.id
+        WHERE tc.model = %s
+        ORDER BY tc.evaluated_at DESC
+        LIMIT 1
+    """, (model,))
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        return JSONResponse({"error": "No TDS comparison found for this model"}, status_code=404)
+    return JSONResponse(dict(row), default=str)
+
+@app.get("/api/tds/schedule")
+def tds_list_schedules(session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("SELECT * FROM tds_schedules ORDER BY next_evaluation ASC")
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return JSONResponse(rows, default=str)
+
+@app.post("/api/tds/baseline")
+def tds_create_baseline(body: TDSBaselineCreate, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db(); cur = conn.cursor()
+    # Compute current BIS for this model
+    cur.execute("""
+        SELECT COUNT(*) as total,
+               SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END) as passed
+        FROM runs ru
+        JOIN results r ON ru.id = r.run_id
+        WHERE ru.model = %s AND ru.dataset = 'probes_500' AND ru.status = 'completed'
+    """, (body.model,))
+    row = cur.fetchone()
+    if not row or not row['total'] or row['total'] == 0:
+        conn.close()
+        return JSONResponse({"error": "No probes_500 results found for this model"}, status_code=404)
+    bis = round(100.0 * row['passed'] / row['total'], 1)
+    g = "A" if bis >= 90 else "B" if bis >= 80 else "C" if bis >= 70 else "D" if bis >= 60 else "F"
+    cur.execute("""
+        INSERT INTO tds_baselines (model, provider, dataset, bis, grade, evaluated_at, valid_until)
+        VALUES (%s, %s, 'probes_500', %s, %s, NOW(), NOW() + interval '90 days')
+        RETURNING id, model, provider, bis, grade, evaluated_at, valid_until
+    """, (body.model, body.provider, bis, g))
+    baseline = dict(cur.fetchone())
+    conn.commit(); conn.close()
+    return JSONResponse(baseline, default=str)
+
+# ── CCS (Constraint Conflict Score) API Endpoints ─────────────────────────────
+
+@app.get("/api/ccs/evaluate/{model}")
+def ccs_evaluate_model(model: str, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("""
+        SELECT ce.*, cs.ccs, cs.grade, cs.dominant_rate, cs.stochastic_rate, cs.failure_rate
+        FROM ccs_evaluations ce
+        JOIN ccs_scores cs ON cs.evaluation_id = ce.id
+        WHERE ce.model = %s
+        ORDER BY ce.created_at DESC
+        LIMIT 1
+    """, (model,))
+    row = cur.fetchone()
+    if not row:
+        conn.close()
+        return JSONResponse({"error": "No CCS evaluation found for this model"}, status_code=404)
+    eval_data = dict(row)
+    # Fetch conflicts for this evaluation
+    cur.execute("""
+        SELECT probe_id, constraint_a, constraint_b, conflict_severity, winner, consistency_score
+        FROM ccs_conflicts
+        WHERE evaluation_id = %s
+        ORDER BY probe_id
+    """, (eval_data['id'],))
+    eval_data['conflicts'] = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return JSONResponse(eval_data, default=str)
+
+@app.get("/api/ccs/patterns")
+def ccs_list_patterns(session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("""
+        SELECT cp.*, ce.model, ce.provider
+        FROM ccs_patterns cp
+        JOIN ccs_evaluations ce ON cp.evaluation_id = ce.id
+        ORDER BY cp.created_at DESC
+    """)
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return JSONResponse(rows, default=str)
+
+# ── RES (Remediation Effectiveness Score) API Endpoints ──────────────────────
+
+@app.get("/api/res/evaluate/{model}")
+def res_evaluate_model(model: str, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("""
+        SELECT ri.id as intervention_id, ri.model, ri.provider, ri.intervention_type,
+               ri.description, ri.baseline_bis, ri.baseline_grade, ri.created_at as intervention_created,
+               rr.id as result_id, rr.post_bis, rr.post_grade, rr.res_score,
+               rr.absolute_improvement, rr.temperature, rr.probe_count, rr.dataset, rr.evaluated_at
+        FROM res_interventions ri
+        JOIN res_results rr ON rr.intervention_id = ri.id
+        WHERE ri.model = %s
+        ORDER BY rr.evaluated_at DESC
+    """, (model,))
+    rows = [dict(r) for r in cur.fetchall()]
+    if not rows:
+        conn.close()
+        return JSONResponse({"error": "No RES evaluations found for this model"}, status_code=404)
+    # Also fetch ceiling if available
+    cur.execute("""
+        SELECT ceiling_bis, ceiling_grade, best_intervention, failure_pattern
+        FROM res_ceilings
+        WHERE model = %s
+        ORDER BY created_at DESC
+        LIMIT 1
+    """, (model,))
+    ceiling = cur.fetchone()
+    conn.close()
+    return JSONResponse({
+        "model": model,
+        "evaluations": rows,
+        "ceiling": dict(ceiling) if ceiling else None,
+    }, default=str)
+
+@app.get("/api/res/recommend/{model}")
+def res_recommend_model(model: str, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("""
+        SELECT * FROM res_recommendations
+        WHERE model = %s
+        ORDER BY created_at DESC
+    """, (model,))
+    rows = [dict(r) for r in cur.fetchall()]
+    if not rows:
+        # Auto-generate recommendations based on existing RES data
+        cur.execute("""
+            SELECT ri.intervention_type, AVG(rr.res_score) as avg_res, COUNT(*) as count
+            FROM res_interventions ri
+            JOIN res_results rr ON rr.intervention_id = ri.id
+            WHERE rr.res_score > 0
+            GROUP BY ri.intervention_type
+            ORDER BY avg_res DESC
+        """)
+        available = [dict(r) for r in cur.fetchall()]
+        # Get model's current grade
+        cur.execute("""
+            SELECT ri.baseline_grade, ri.baseline_bis
+            FROM res_interventions ri
+            WHERE ri.model = %s
+            ORDER BY ri.created_at DESC
+            LIMIT 1
+        """, (model,))
+        current = cur.fetchone()
+        conn.close()
+        if not current:
+            return JSONResponse({"error": "No RES data found for this model. Run res_runner.py first."}, status_code=404)
+        recommendations = []
+        for a in available:
+            recommendations.append({
+                "model": model,
+                "current_grade": current['baseline_grade'],
+                "recommended_intervention": a['intervention_type'],
+                "expected_res": round(float(a['avg_res']), 4),
+                "confidence": "high" if a['count'] >= 10 else "medium" if a['count'] >= 5 else "low",
+                "based_on_n": a['count'],
+            })
+        return JSONResponse({"model": model, "recommendations": recommendations}, default=str)
+    conn.close()
+    return JSONResponse({"model": model, "recommendations": rows}, default=str)
 
 # ── Secure Error Handling ──────────────────────────────────────────────────────
 @app.exception_handler(Exception)
