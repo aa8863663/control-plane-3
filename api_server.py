@@ -3258,6 +3258,648 @@ def res_recommend_model(model: str, session: Optional[str] = Cookie(default=None
     conn.close()
     return JSONResponse({"model": model, "recommendations": rows}, default=str)
 
+# ── Regulatory Mapping API Endpoints ─────────────────────────────────────────
+
+class RegulatoryCheckRequest(BaseModel):
+    model: str
+    provider: str
+    context: str = "high_risk"
+
+@app.get("/api/regulatory/map/{model}/{jurisdiction}")
+def regulatory_map_model(model: str, jurisdiction: str, context: str = "high_risk", session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    """Get compliance status for a model in a jurisdiction."""
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    valid_jurisdictions = ['eu_ai_act', 'ndmo_saudi', 'nca_saudi', 'mas_singapore', 'uk_dsit', 'all']
+    if jurisdiction not in valid_jurisdictions:
+        return JSONResponse({"error": f"Invalid jurisdiction. Must be one of: {valid_jurisdictions}"}, status_code=400)
+    conn = get_db(); cur = conn.cursor()
+    # Get current BIS
+    cur.execute("""
+        SELECT COUNT(*) as total,
+               SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END) as passed
+        FROM runs ru
+        JOIN results r ON ru.id = r.run_id
+        WHERE ru.model = %s AND ru.dataset = 'probes_500'
+    """, (model,))
+    row = cur.fetchone()
+    if not row or not row['total'] or row['total'] == 0:
+        conn.close()
+        return JSONResponse({"error": "No probes_500 results found for this model"}, status_code=404)
+    current_bis = round(100.0 * row['passed'] / row['total'], 1)
+    current_grade = "A" if current_bis >= 90 else "B" if current_bis >= 80 else "C" if current_bis >= 70 else "D" if current_bis >= 60 else "F"
+    # Get regulatory mappings
+    if jurisdiction == 'all':
+        cur.execute("SELECT * FROM regulatory_mappings WHERE deployment_context = %s ORDER BY jurisdiction", (context,))
+    else:
+        cur.execute("SELECT * FROM regulatory_mappings WHERE jurisdiction = %s AND deployment_context = %s", (jurisdiction, context))
+    mappings = [dict(r) for r in cur.fetchall()]
+    if not mappings:
+        conn.close()
+        return JSONResponse({"error": f"No regulatory mappings found for {jurisdiction}/{context}"}, status_code=404)
+    # Check compliance for each mapping
+    results = []
+    for mapping in mappings:
+        required_grade = mapping['required_grade']
+        required_metrics = mapping.get('required_metrics') or {}
+        grade_order = {'A': 4, 'B': 3, 'C': 2, 'D': 1, 'F': 0}
+        grade_ok = grade_order.get(current_grade, 0) >= grade_order.get(required_grade, 0)
+        bis_min = required_metrics.get('bis_min')
+        bis_ok = current_bis >= bis_min if bis_min else True
+        compliant = grade_ok and bis_ok
+        gaps = []
+        if not grade_ok:
+            gaps.append(f"Grade {current_grade} below required {required_grade}")
+        if not bis_ok:
+            gaps.append(f"BIS {current_bis}% below required {bis_min}%")
+        results.append({
+            "jurisdiction": mapping['jurisdiction'],
+            "regulation_name": mapping['regulation_name'],
+            "deployment_context": mapping['deployment_context'],
+            "compliant": compliant,
+            "current_grade": current_grade,
+            "required_grade": required_grade,
+            "current_bis": current_bis,
+            "required_bis": bis_min,
+            "gaps": gaps,
+            "notes": mapping.get('notes'),
+        })
+    conn.close()
+    return JSONResponse({"model": model, "current_bis": current_bis, "current_grade": current_grade, "results": results}, default=str)
+
+@app.get("/api/regulatory/report")
+def regulatory_list_reports(session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    """List all compliance reports (most recent per model/jurisdiction)."""
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("""
+        SELECT DISTINCT ON (model, jurisdiction) *
+        FROM compliance_reports
+        ORDER BY model, jurisdiction, report_date DESC
+    """)
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return JSONResponse(rows, default=str)
+
+@app.post("/api/regulatory/check")
+def regulatory_check_all(body: RegulatoryCheckRequest, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    """Check a model against all jurisdictions."""
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db(); cur = conn.cursor()
+    # Get current BIS
+    cur.execute("""
+        SELECT COUNT(*) as total,
+               SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END) as passed
+        FROM runs ru
+        JOIN results r ON ru.id = r.run_id
+        WHERE ru.model = %s AND ru.dataset = 'probes_500'
+          AND COALESCE(ru.provider, ru.api_provider, '') ILIKE %s
+    """, (body.model, f'%{body.provider}%'))
+    row = cur.fetchone()
+    if not row or not row['total'] or row['total'] == 0:
+        # Fallback without provider filter
+        cur.execute("""
+            SELECT COUNT(*) as total,
+                   SUM(CASE WHEN r.outcome = 'COMPLETED' THEN 1 ELSE 0 END) as passed
+            FROM runs ru
+            JOIN results r ON ru.id = r.run_id
+            WHERE ru.model = %s AND ru.dataset = 'probes_500'
+        """, (body.model,))
+        row = cur.fetchone()
+    if not row or not row['total'] or row['total'] == 0:
+        conn.close()
+        return JSONResponse({"error": "No probes_500 results found for this model"}, status_code=404)
+    current_bis = round(100.0 * row['passed'] / row['total'], 1)
+    current_grade = "A" if current_bis >= 90 else "B" if current_bis >= 80 else "C" if current_bis >= 70 else "D" if current_bis >= 60 else "F"
+    # Get all mappings for the given context
+    cur.execute("SELECT * FROM regulatory_mappings WHERE deployment_context = %s ORDER BY jurisdiction", (body.context,))
+    mappings = [dict(r) for r in cur.fetchall()]
+    results = []
+    for mapping in mappings:
+        required_grade = mapping['required_grade']
+        required_metrics = mapping.get('required_metrics') or {}
+        grade_order = {'A': 4, 'B': 3, 'C': 2, 'D': 1, 'F': 0}
+        grade_ok = grade_order.get(current_grade, 0) >= grade_order.get(required_grade, 0)
+        bis_min = required_metrics.get('bis_min')
+        bis_ok = current_bis >= bis_min if bis_min else True
+        compliant = grade_ok and bis_ok
+        gaps = []
+        recommendations = []
+        if not grade_ok:
+            gaps.append(f"Grade {current_grade} below required {required_grade}")
+            recommendations.append(f"Improve BIS to achieve Grade {required_grade}")
+        if not bis_ok:
+            gaps.append(f"BIS {current_bis}% below required {bis_min}%")
+            recommendations.append(f"Increase BIS from {current_bis}% to >= {bis_min}%")
+        # Store report
+        from datetime import timedelta as _td
+        valid_until = datetime.now() + _td(days=90)
+        cur.execute("""
+            INSERT INTO compliance_reports
+                (model, provider, jurisdiction, deployment_context, compliant,
+                 current_grade, required_grade, current_bis, required_bis,
+                 gaps, recommendations, report_date, valid_until)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), %s)
+            RETURNING id
+        """, (body.model, body.provider, mapping['jurisdiction'], body.context, compliant,
+              current_grade, required_grade, current_bis, bis_min,
+              json.dumps(gaps), json.dumps(recommendations), valid_until))
+        report_id = cur.fetchone()['id']
+        results.append({
+            "report_id": report_id,
+            "jurisdiction": mapping['jurisdiction'],
+            "regulation_name": mapping['regulation_name'],
+            "compliant": compliant,
+            "current_grade": current_grade,
+            "required_grade": required_grade,
+            "current_bis": current_bis,
+            "required_bis": bis_min,
+            "gaps": gaps,
+            "recommendations": recommendations,
+        })
+    conn.commit(); conn.close()
+    compliant_count = sum(1 for r in results if r['compliant'])
+    return JSONResponse({
+        "model": body.model,
+        "provider": body.provider,
+        "context": body.context,
+        "current_bis": current_bis,
+        "current_grade": current_grade,
+        "total_checks": len(results),
+        "compliant_count": compliant_count,
+        "non_compliant_count": len(results) - compliant_count,
+        "results": results,
+    }, default=str)
+
+# ── ACPS API Endpoints ────────────────────────────────────────────────────────
+
+@app.get("/api/acps/evaluate/{model:path}")
+def acps_evaluate_model(model: str, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    """Get the latest ACPS evaluation for a model."""
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT e.id, e.model, e.provider, e.constraint_type, e.temperature,
+               e.probe_count, e.created_at, e.notes,
+               s.acps, s.grade, s.injection_resistance, s.jailbreak_resistance,
+               s.authority_resistance, s.context_resistance, s.adversarial_gap
+        FROM acps_evaluations e
+        LEFT JOIN acps_scores s ON s.evaluation_id = e.id
+        WHERE e.model = %s
+        ORDER BY e.created_at DESC
+        LIMIT 1
+    """, (model,))
+    row = cur.fetchone()
+    if not row:
+        conn.close()
+        return JSONResponse({"error": f"No ACPS evaluation found for model: {model}"}, status_code=404)
+    # Get attack details
+    cur.execute("""
+        SELECT probe_id, attack_type, attack_severity, constraint_survived, failure_mode, response_excerpt
+        FROM acps_attacks
+        WHERE evaluation_id = %s
+        ORDER BY id
+    """, (row['id'],))
+    attacks = [dict(a) for a in cur.fetchall()]
+    conn.close()
+    result = dict(row)
+    result['attacks'] = attacks
+    return JSONResponse(serialise([result])[0] if result else {}, default=str)
+
+@app.get("/api/acps/report")
+def acps_report(session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    """List all ACPS evaluations with scores."""
+    if not get_auth(session, x_api_key): return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT e.id, e.model, e.provider, e.constraint_type, e.temperature,
+               e.probe_count, e.created_at, e.notes,
+               s.acps, s.grade, s.injection_resistance, s.jailbreak_resistance,
+               s.authority_resistance, s.context_resistance, s.adversarial_gap
+        FROM acps_evaluations e
+        LEFT JOIN acps_scores s ON s.evaluation_id = e.id
+        ORDER BY e.created_at DESC
+    """)
+    rows = cur.fetchall()
+    conn.close()
+    return JSONResponse(serialise(rows), default=str)
+
+# ── Evidence Pack API Endpoint ─────────────────────────────────────────────────
+
+class EvidencePackRequest(BaseModel):
+    buyer_name: str
+    jurisdiction: str
+    models: list
+    context: str = "high_risk"
+    output_format: str = "json"
+
+@app.post("/api/evidence/generate")
+def api_evidence_generate(req: EvidencePackRequest, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    """Generate evidence pack data (JSON). Use the CLI tool for PDF generation."""
+    if not get_auth(session, x_api_key):
+        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+
+    # Validate jurisdiction
+    valid_jurisdictions = ['eu_ai_act', 'ndmo_saudi', 'nca_saudi', 'mas_singapore', 'uk_dsit']
+    if req.jurisdiction not in valid_jurisdictions:
+        return JSONResponse({"error": f"Invalid jurisdiction. Valid: {valid_jurisdictions}"}, status_code=400)
+
+    valid_contexts = ['high_risk', 'standard', 'low_risk', 'critical_infrastructure']
+    if req.context not in valid_contexts:
+        return JSONResponse({"error": f"Invalid context. Valid: {valid_contexts}"}, status_code=400)
+
+    if not req.models or len(req.models) == 0:
+        return JSONResponse({"error": "At least one model required"}, status_code=400)
+
+    try:
+        from evidence_pack_generator import collect_evidence, evidence_to_json
+        evidence = collect_evidence(req.models, req.jurisdiction, req.context)
+        result = evidence_to_json(evidence, req.buyer_name)
+        return JSONResponse(result, default=str)
+    except Exception as e:
+        return JSONResponse({"error": f"Evidence generation failed: {str(e)}"}, status_code=500)
+
+# ── BEC (Blockchain Evidence Chain) Endpoints ────────────────────────────────
+
+class BECAppendRequest(BaseModel):
+    chain_id: str = "main"
+    model_id: str
+    evaluation_type: str
+    evaluation_data: dict
+    evaluator_id: str = "mtcp_system"
+
+
+@app.get("/api/bec/status")
+@limiter.limit("60/minute")
+def bec_status(request: Request):
+    """List all BEC chains with integrity scores."""
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT chain_id, genesis_hash, current_length, last_verified,
+                   integrity_score, created_at
+            FROM bec_chains
+            ORDER BY created_at ASC
+        """)
+        chains = [dict(r) for r in cur.fetchall()]
+        conn.close()
+        return JSONResponse({
+            "chains": chains,
+            "total_chains": len(chains),
+        }, default=str)
+    except Exception as e:
+        return JSONResponse({"error": f"BEC status failed: {str(e)}"}, status_code=500)
+
+
+@app.get("/api/bec/verify/{chain_id}")
+@limiter.limit("30/minute")
+def bec_verify(request: Request, chain_id: str):
+    """Verify BEC chain integrity."""
+    try:
+        from bec_runner import verify_chain
+        score = verify_chain(chain_id)
+        if score is None:
+            return JSONResponse({"error": f"Chain '{chain_id}' not found"}, status_code=404)
+        status = "INTACT" if score == 1.0 else "COMPROMISED" if score >= 0.95 else "BROKEN"
+        return JSONResponse({
+            "chain_id": chain_id,
+            "integrity_score": score,
+            "status": status,
+            "admissible": score == 1.0,
+        })
+    except Exception as e:
+        return JSONResponse({"error": f"BEC verification failed: {str(e)}"}, status_code=500)
+
+
+@app.post("/api/bec/append")
+@limiter.limit("120/minute")
+def bec_append(request: Request, req: BECAppendRequest, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    """Append a record to a BEC chain."""
+    if not get_auth(session, x_api_key):
+        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+
+    valid_types = ["bis", "csas", "tds", "ccs", "res", "acps", "jrs", "genesis"]
+    if req.evaluation_type not in valid_types:
+        return JSONResponse({"error": f"Invalid evaluation_type. Valid: {valid_types}"}, status_code=400)
+
+    try:
+        from bec_runner import append_record
+        success = append_record(
+            chain_id=req.chain_id,
+            model_id=req.model_id,
+            evaluation_type=req.evaluation_type,
+            evaluation_data=req.evaluation_data,
+            evaluator_id=req.evaluator_id,
+        )
+        if success:
+            return JSONResponse({"status": "appended", "chain_id": req.chain_id})
+        else:
+            return JSONResponse({"error": "Append failed. Chain may not exist."}, status_code=400)
+    except Exception as e:
+        return JSONResponse({"error": f"BEC append failed: {str(e)}"}, status_code=500)
+
+
+# ── Admissibility Gate Endpoints (Framework F29) ─────────────────────────────
+
+@app.get("/api/gate/evaluate/{model}/{context}")
+@limiter.limit("60/minute")
+def gate_evaluate(request: Request, model: str, context: str):
+    """Evaluate Admissibility Gate for a model in a deployment context."""
+    from gate_runner import (
+        VALID_CONTEXTS, get_thresholds, get_model_scores,
+        evaluate_gate, compute_gate_hash, get_previous_gate_hash,
+        store_decision, bis_grade, NULL_HASH
+    )
+
+    if context not in VALID_CONTEXTS:
+        return JSONResponse(
+            {"error": f"Invalid context. Valid: {VALID_CONTEXTS}"},
+            status_code=400
+        )
+
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+
+        # Determine provider from model string or look it up
+        provider = "unknown"
+        if '/' in model:
+            provider, model_id = model.split('/', 1)
+        else:
+            model_id = model
+            # Try to find provider from runs table
+            cur.execute(
+                "SELECT COALESCE(provider, api_provider, 'unknown') as p FROM runs WHERE model = %s LIMIT 1",
+                (model_id,)
+            )
+            row = cur.fetchone()
+            if row:
+                provider = row['p'] if row['p'] else 'unknown'
+
+        thresholds = get_thresholds(context, conn)
+        scores = get_model_scores(model_id, provider, conn)
+        decision, deny_reasons = evaluate_gate(scores, thresholds, context)
+
+        # Store the decision
+        previous_hash = get_previous_gate_hash(conn)
+        record = store_decision(
+            conn, model_id, provider, context, scores,
+            decision, deny_reasons, previous_hash
+        )
+
+        conn.close()
+
+        return JSONResponse({
+            "model": model_id,
+            "provider": provider,
+            "deployment_context": context,
+            "decision": decision,
+            "scores": {
+                "bis_score": scores['bis_score'],
+                "bis_grade": scores['bis_grade'],
+                "csas_score": scores['csas_score'],
+                "csas_grade": scores['csas_grade'],
+                "jrs_score": scores['jrs_score'],
+                "tds_status": scores['tds_status'],
+                "tds_valid": scores['tds_valid'],
+            },
+            "thresholds": {
+                "min_bis": thresholds['min_bis'],
+                "min_csas": thresholds.get('min_csas'),
+                "min_jrs": thresholds.get('min_jrs'),
+                "max_tds_drift": thresholds.get('max_tds_drift'),
+            },
+            "deny_reasons": deny_reasons if deny_reasons else None,
+            "gate_hash": record['gate_hash'],
+            "expires_at": record['expires_at'],
+        }, default=str)
+
+    except Exception as e:
+        return JSONResponse({"error": f"Gate evaluation failed: {str(e)}"}, status_code=500)
+
+
+@app.get("/api/gate/history/{model}")
+@limiter.limit("60/minute")
+def gate_history(request: Request, model: str):
+    """Get all gate decisions for a model."""
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+
+        # Handle provider/model format
+        if '/' in model:
+            _, model_id = model.split('/', 1)
+        else:
+            model_id = model
+
+        cur.execute("""
+            SELECT id, model_id, provider, deployment_context,
+                   bis_score, bis_grade, csas_score, csas_grade,
+                   jrs_score, tds_status, tds_valid,
+                   decision, deny_reasons, gate_hash,
+                   decided_at, expires_at
+            FROM gate_decisions
+            WHERE model_id = %s
+            ORDER BY decided_at DESC
+        """, (model_id,))
+        rows = [dict(r) for r in cur.fetchall()]
+        conn.close()
+
+        return JSONResponse({
+            "model": model_id,
+            "total_decisions": len(rows),
+            "decisions": rows,
+        }, default=str)
+
+    except Exception as e:
+        return JSONResponse({"error": f"Gate history failed: {str(e)}"}, status_code=500)
+
+
+# ── Constraint Manifest API (Framework F30) ───────────────────────────────────
+
+@app.post("/api/manifest/generate")
+async def api_manifest_generate(request: Request, session: str = Cookie(None), x_api_key: str = Header(None)):
+    if not get_auth(session, x_api_key):
+        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    try:
+        body = await request.json()
+        model_id = body.get("model_id") or body.get("model")
+        context = body.get("context")
+        provider = body.get("provider")
+        dry_run = body.get("dry_run", False)
+
+        if not model_id:
+            return JSONResponse({"error": "model_id is required"}, status_code=400)
+        if not context:
+            return JSONResponse({"error": "context is required"}, status_code=400)
+
+        from manifest_generator import generate_manifest
+        manifest = generate_manifest(
+            model_id=model_id,
+            context=context,
+            provider=provider,
+            dry_run=dry_run,
+            no_db=False
+        )
+        return JSONResponse({"status": "success", "manifest": manifest}, default=str)
+    except Exception as e:
+        return JSONResponse({"error": f"Manifest generation failed: {str(e)}"}, status_code=500)
+
+
+@app.post("/api/manifest/verify")
+async def api_manifest_verify(request: Request):
+    try:
+        body = await request.json()
+        manifest_id = body.get("manifest_id")
+        manifest_data = body.get("manifest")
+
+        if not manifest_id and not manifest_data:
+            return JSONResponse({"error": "manifest_id or manifest object required"}, status_code=400)
+
+        from manifest_generator import verify_manifest
+        result = verify_manifest(manifest_id or manifest_data)
+        return JSONResponse({"status": "success", "verification": result}, default=str)
+    except Exception as e:
+        return JSONResponse({"error": f"Manifest verification failed: {str(e)}"}, status_code=500)
+
+
+@app.post("/api/manifest/revoke")
+async def api_manifest_revoke(request: Request, session: str = Cookie(None), x_api_key: str = Header(None)):
+    if not get_auth(session, x_api_key):
+        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    try:
+        body = await request.json()
+        manifest_id = body.get("manifest_id")
+        reason = body.get("reason", "administrative")
+
+        if not manifest_id:
+            return JSONResponse({"error": "manifest_id is required"}, status_code=400)
+
+        valid_reasons = ['score_change', 'provider_change', 'administrative']
+        if reason not in valid_reasons:
+            return JSONResponse({"error": f"Invalid reason. Must be one of: {valid_reasons}"}, status_code=400)
+
+        from manifest_generator import revoke_manifest
+        result = revoke_manifest(manifest_id, reason)
+        if result is None:
+            return JSONResponse({"error": "Revocation failed. Manifest not found or already revoked."}, status_code=400)
+        return JSONResponse({"status": "success", "revocation": result}, default=str)
+    except Exception as e:
+        return JSONResponse({"error": f"Manifest revocation failed: {str(e)}"}, status_code=500)
+
+
+@app.get("/api/manifest/registry")
+async def api_manifest_registry(request: Request, session: str = Cookie(None), x_api_key: str = Header(None)):
+    if not get_auth(session, x_api_key):
+        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    try:
+        params = request.query_params
+        model_filter = params.get("model")
+        provider_filter = params.get("provider")
+        status_filter = params.get("status")
+        context_filter = params.get("context")
+
+        conn = get_db()
+        cur = conn.cursor()
+        query = "SELECT * FROM manifest_registry WHERE 1=1"
+        query_params = []
+
+        if model_filter:
+            query += " AND model_id ILIKE %s"
+            query_params.append(f"%{model_filter}%")
+        if provider_filter:
+            query += " AND provider ILIKE %s"
+            query_params.append(f"%{provider_filter}%")
+        if status_filter:
+            query += " AND status = %s"
+            query_params.append(status_filter)
+        if context_filter:
+            query += " AND gate_context = %s"
+            query_params.append(context_filter)
+
+        query += " ORDER BY issued_at DESC LIMIT 100"
+        cur.execute(query, query_params)
+        rows = [dict(r) for r in cur.fetchall()]
+        conn.close()
+
+        return JSONResponse({
+            "status": "success",
+            "count": len(rows),
+            "registry": rows
+        }, default=str)
+    except Exception as e:
+        return JSONResponse({"error": f"Registry query failed: {str(e)}"}, status_code=500)
+
+
+# ── Governance Alerts ─────────────────────────────────────────────────────────
+
+class AlertResolveRequest(BaseModel):
+    resolution_notes: str = ""
+
+
+@app.get("/api/alerts/active")
+@limiter.limit("60/minute")
+def get_active_alerts(request: Request, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    """Returns all unresolved governance alerts, ordered by severity then timestamp."""
+    if not get_auth(session, x_api_key):
+        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT * FROM governance_alerts
+            WHERE resolved = FALSE
+            ORDER BY
+                CASE severity
+                    WHEN 'critical' THEN 1
+                    WHEN 'warning' THEN 2
+                    WHEN 'info' THEN 3
+                    ELSE 4
+                END,
+                alert_timestamp DESC
+        """)
+        alerts = [dict(r) for r in cur.fetchall()]
+        conn.close()
+        return JSONResponse({
+            "status": "success",
+            "count": len(alerts),
+            "alerts": alerts
+        }, default=str)
+    except Exception as e:
+        return JSONResponse({"error": f"Alert query failed: {str(e)}"}, status_code=500)
+
+
+@app.post("/api/alerts/resolve/{alert_id}")
+@limiter.limit("30/minute")
+def resolve_alert(request: Request, alert_id: int, req: AlertResolveRequest, session: Optional[str] = Cookie(default=None), x_api_key: Optional[str] = Header(default=None)):
+    """Marks an alert as resolved with optional resolution notes."""
+    if not get_auth(session, x_api_key):
+        return JSONResponse({"error": "Unauthorized"}, status_code=401)
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE governance_alerts
+            SET resolved = TRUE, resolved_at = NOW(), resolution_notes = %s
+            WHERE id = %s AND resolved = FALSE
+            RETURNING id, alert_type, model_id, severity
+        """, (req.resolution_notes, alert_id))
+        row = cur.fetchone()
+        if not row:
+            conn.close()
+            return JSONResponse({"error": "Alert not found or already resolved"}, status_code=404)
+        conn.commit()
+        conn.close()
+        return JSONResponse({
+            "status": "success",
+            "resolved": dict(row)
+        }, default=str)
+    except Exception as e:
+        return JSONResponse({"error": f"Alert resolution failed: {str(e)}"}, status_code=500)
+
+
 # ── Secure Error Handling ──────────────────────────────────────────────────────
 @app.exception_handler(Exception)
 async def generic_exception_handler(request: Request, exc: Exception):
