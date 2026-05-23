@@ -133,7 +133,7 @@ def build_public():
 
     # 4. Formal Framework
     add_heading(doc, "4. Formal Framework")
-    add_para(doc, "The Constraint Manifest is defined as a tuple M = (S, H, Sig) where S is the schema (evaluation data), H is the SHA-256 hash computed over S, and Sig is the HMAC-SHA256 signature computed over H using the issuer secret key.")
+    add_para(doc, "The Constraint Manifest is defined as a tuple M = (S, H, Sig). S is the schema containing evaluation data. H is the SHA-256 hash computed over S. Sig is the HMAC-SHA256 signature computed over H using the issuer secret key.")
     add_para(doc, "The manifest is valid when three conditions hold simultaneously. First, recomputing H from S produces the same hash. Second, recomputing Sig from H produces the same signature. Third, the current date does not exceed the TDS validity window encoded in S.")
     add_para(doc, "The Portability Lemma constrains manifest validity to the model-provider pair. If either component changes, the manifest is invalid. This reflects the reality that model behaviour depends on provider infrastructure.")
     add_para(doc, "Manifest revocation provides an additional invalidation mechanism beyond expiry. The issuer can revoke any manifest at any time. Revocation is permanent and irreversible. A revoked manifest fails verification regardless of hash and signature validity.")

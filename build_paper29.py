@@ -134,7 +134,7 @@ def build_introduction(doc, is_full):
     add_paragraph_justified(
         doc,
         "The MTCP research programme has evaluated 181,504 interactions across "
-        "35 models from 14 providers. "
+        "32 models from 14 providers. "
         "These evaluations measure constraint persistence within single models. "
         "Paper 28 extended MTCP to multi-system coordination through CSAS. "
         "CSAS measures whether constraints survive coordination boundaries."
@@ -237,8 +237,8 @@ def build_formal_framework(doc, is_full):
         doc,
         "The Constraint Jurisdiction Registry is a formal mapping from coordination "
         "boundaries to governing constraint sets. "
-        "For a coordinated system S with boundary set B, CJR maps each boundary to "
-        "the constraint set that governs it, the authority that made the assignment, "
+        "For a coordinated system S with boundary set B, CJR maps each boundary to three elements. "
+        "These are the governing constraint set, the assigning authority, "
         "and the timestamp of assignment."
     )
     add_paragraph_justified(
@@ -253,8 +253,8 @@ def build_formal_framework(doc, is_full):
     add_paragraph_justified(
         doc,
         "JRS is the mean jurisdiction resolution status across all boundaries in a system. "
-        "For a coordinated system S with boundary set B, JRS equals the sum of J scores "
-        "for all boundaries divided by the number of boundaries."
+        "For a coordinated system S with boundary set B, JRS is computed as follows. "
+        "JRS equals the sum of J scores for all boundaries divided by the boundary count."
     )
     add_paragraph_justified(
         doc,
@@ -328,8 +328,7 @@ def build_jurisdiction_precedence_lemma(doc, is_full):
     add_paragraph_justified(
         doc,
         "The Jurisdiction Precedence Lemma extends this. "
-        "CSAS scores at a boundary are only valid under governance when the J score "
-        "for that boundary is at or above 0.75. "
+        "CSAS scores at a boundary are only valid under governance when J is at or above 0.75. "
         "A system may satisfy C1, C2, and C3 while having unresolved jurisdiction. "
         "Such a system is operationally functional but not fully governed."
     )
@@ -352,9 +351,9 @@ def build_jurisdiction_precedence_lemma(doc, is_full):
         doc,
         "The relationship to the Persistence Lemma is structural. "
         "The Persistence Lemma states that Ve at or above 2 means admissibility is "
-        "no longer reliably resolvable within the conversational window. "
-        "The Jurisdiction Precedence Lemma states that CSAS without jurisdiction means "
-        "admissibility is no longer reliably governed across system boundaries. "
+        "no longer reliably resolvable. This applies within the conversational window. "
+        "The Jurisdiction Precedence Lemma states that CSAS without jurisdiction is insufficient. "
+        "Admissibility is no longer reliably governed across system boundaries. "
         "Both identify conditions where observed compliance does not guarantee structural reliability."
     )
 

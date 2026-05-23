@@ -82,8 +82,8 @@ ABSTRACT_PUBLIC = (
     "It does not contain results. "
     "It documents the evaluation design for an independent constraint persistence assessment "
     "of an Arabic-first large language model. "
-    "The target model has 34 billion parameters trained on 4 trillion English tokens and "
-    "1.2 trillion Arabic tokens using a decoder-only architecture. "
+    "The target model has 34 billion parameters. "
+    "It was trained on 4 trillion English tokens and 1.2 trillion Arabic tokens using a decoder-only architecture. "
     "No Arabic-first model has been independently evaluated for constraint persistence. "
     "Existing MTCP evaluations tested generic multilingual models on Arabic probes. "
     "This evaluation targets a model specifically designed for Arabic as its primary language. "
@@ -262,8 +262,8 @@ HYPOTHESES = [
 
     "Hypothesis 2: The Arabic-first model will show lower first-turn failure rate "
     "than Nova models. "
-    "Paper 26 showed Nova Micro and Nova Haiku pass 100 percent but require correction "
-    "on 50 to 60 percent of probes. "
+    "Paper 26 showed Nova Micro and Nova Haiku pass 100 percent. "
+    "However, they require correction on 50 to 60 percent of probes. "
     "An Arabic-first model should process Arabic constraints correctly on first attempt. "
     "Rationale: Native Arabic processing should not require correction prompting.",
 
@@ -449,7 +449,7 @@ CONCLUSION_PUBLIC = [
     "Results will be published as a companion paper regardless of outcome. "
     "Pre-registration ensures the scientific integrity of those results.",
 
-    "MTCP has evaluated 35 models across 14 providers. "
+    "MTCP has evaluated 32 models across 14 providers. "
     "No Arabic-first model has been independently assessed. "
     "This gap will be closed. "
     "The methodology is ready. "
@@ -471,7 +471,7 @@ CONCLUSION_FULL = [
     "Results will be published as a companion paper regardless of outcome. "
     "Pre-registration ensures the scientific integrity of those results.",
 
-    "MTCP has evaluated 35 models across 14 providers. "
+    "MTCP has evaluated 32 models across 14 providers. "
     "No Arabic-first model has been independently assessed. "
     "ALLaM will be the first. "
     "The methodology is ready. "

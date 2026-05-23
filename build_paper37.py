@@ -92,9 +92,9 @@ ABSTRACT = [
     "It makes modification detectable. "
     "This distinction is critical for correct interpretation.",
 
-    "The Integrity Lemma establishes that MTCP evaluation scores are "
-    "admissible as compliance evidence only when BEC integrity score "
-    "equals 1.0 for the relevant chain segment. "
+    "The Integrity Lemma establishes the admissibility condition for MTCP scores. "
+    "Scores are admissible as compliance evidence only when BEC integrity equals 1.0. "
+    "This applies to the relevant chain segment. "
     "A broken chain invalidates all scores in the affected segment.",
 
     "BEC integrates with the existing Sigma-Forensics framework by "
@@ -212,9 +212,8 @@ FORMAL_FRAMEWORK = [
 ]
 
 INTEGRITY_LEMMA = [
-    "The Integrity Lemma: MTCP evaluation scores are admissible as "
-    "compliance evidence only when the BEC integrity score for the "
-    "relevant chain segment equals 1.0. "
+    "The Integrity Lemma defines admissibility for MTCP evaluation scores. "
+    "Scores are admissible as compliance evidence only when BEC integrity equals 1.0. "
     "A broken chain invalidates all scores in the affected segment "
     "regardless of their individual validity.",
 
@@ -354,9 +353,8 @@ RELATIONSHIP_EXISTING = [
     "BEC ensures historical records remain trustworthy for drift comparison.",
 
     "CSAS cross-system evaluations reference multiple provider chains. "
-    "BEC provider isolation ensures that a compromise in one chain "
-    "does not invalidate cross-system evaluations that reference "
-    "intact chains from other providers.",
+    "BEC provider isolation ensures that a compromise in one chain is contained. "
+    "Cross-system evaluations referencing intact chains from other providers remain valid.",
 ]
 
 IMPLICATIONS = [
@@ -375,9 +373,9 @@ IMPLICATIONS = [
     "the original unmodified evaluation results. "
     "This protects both buyer and provider.",
 
-    "Legal defensibility: in disputes over model performance "
-    "BEC-verified records provide cryptographic evidence of "
-    "what was recorded at the time of evaluation. "
+    "Legal defensibility: in disputes over model performance, "
+    "BEC-verified records provide cryptographic evidence. "
+    "They prove what was recorded at the time of evaluation. "
     "This is stronger evidence than unverified database records.",
 
     "Provider accountability: providers cannot claim their model "
@@ -422,9 +420,8 @@ CONCLUSION = [
     "into a chain structure that detects any modification to "
     "any historical record.",
 
-    "The Integrity Lemma establishes the compliance standard: "
-    "chain integrity score must equal 1.0 for records to be "
-    "admissible as compliance evidence. "
+    "The Integrity Lemma establishes the compliance standard. "
+    "Chain integrity score must equal 1.0 for records to be admissible. "
     "This is strict and binary by design.",
 
     "BEC is a specification. "
@@ -490,7 +487,6 @@ def build_public():
     add_paragraph_justified(doc, "DOI: 10.17605/OSF.IO/DXGK5")
     add_paragraph_justified(doc, "Date: May 2026")
     add_paragraph_justified(doc, "Version: 1.0")
-    add_paragraph_justified(doc, "Status: NOT for OSF")
     add_paragraph_justified(doc, "")
     add_paragraph_justified(
         doc,

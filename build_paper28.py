@@ -127,7 +127,7 @@ def build_paper(full_version=True):
     add_para(
         'MTCP evaluates constraint persistence within a single model. '
         'Production deployments increasingly coordinate multiple models in sequence or parallel. '
-        'No existing framework evaluates whether the interaction between two independently admissible systems preserves admissibility at the coordination boundary. '
+        'No existing framework evaluates whether two independently admissible systems preserve admissibility at their coordination boundary. '
         'We introduce the Cross-System Admissibility Score (CSAS). '
         'CSAS measures whether constraint persistence holds when System A passes output to System B. '
         'The metric is transcript-computable. '
@@ -136,7 +136,7 @@ def build_paper(full_version=True):
         'We define the Coordination Admissibility Lemma. '
         'We present a measurement protocol using existing MTCP infrastructure. '
         'We define a failure taxonomy for coordination-specific constraint failures. '
-        'Total evaluations in the broader MTCP dataset: 181,504 across 35 models.'
+        'Total evaluations in the broader MTCP dataset: 181,504 across 32 models.'
     )
 
     kw_p = doc.add_paragraph()
@@ -208,9 +208,8 @@ def build_paper(full_version=True):
 
     add_para('Definition 1 (Cross-System Admissibility Score).', bold=True)
     add_para(
-        'For a coordinated system S operating under constraint set C, '
-        'with n evaluation probes applied at each coordination boundary, '
-        'CSAS is defined as:'
+        'For a coordinated system S operating under constraint set C, CSAS is defined as follows. '
+        'N evaluation probes are applied at each coordination boundary.'
     )
     add_para(
         'CSAS(S, C) = (1/|B|) * sum over all boundaries B(i,j) of PR(B(i,j), C)',
@@ -218,7 +217,8 @@ def build_paper(full_version=True):
     )
     add_para(
         'Where PR(B(i,j), C) is the pass rate of constraint C across boundary B(i,j). '
-        'A probe passes at a boundary if the receiving model M_j maintains constraint C given the output of M_i as input.'
+        'A probe passes at a boundary if M_j maintains constraint C. '
+        'The pass condition requires C to hold given M_i output as input.'
     )
     add_para(
         'CSAS ranges from 0 (total constraint loss at all boundaries) to 1 (perfect constraint preservation at all boundaries). '
@@ -232,8 +232,8 @@ def build_paper(full_version=True):
 
     add_para('Component 1: Boundary Pass Rate (BPR).', bold=True)
     add_para(
-        'BPR(B(i,j), C) measures the proportion of probes where M_j maintains constraint C '
-        'when receiving output from M_i that was itself compliant. '
+        'BPR(B(i,j), C) measures the proportion of probes where M_j maintains constraint C. '
+        'Only probes where M_i output was itself compliant are included. '
         'BPR isolates the boundary effect. '
         'It answers: given a compliant input, does the receiving model stay compliant?'
     )
@@ -287,8 +287,8 @@ def build_paper(full_version=True):
 
     add_para('Lemma 2 (Coordination Admissibility Lemma).', bold=True)
     add_para(
-        'Let M_i and M_j be two models in a coordinated system S, '
-        'each independently evaluated under MTCP with BIS(M_i) and BIS(M_j) above the admissibility threshold. '
+        'Let M_i and M_j be two models in a coordinated system S. '
+        'Each is independently evaluated under MTCP with BIS above the admissibility threshold. '
         'Let B(i,j) be the coordination boundary between them. '
         'The following conditions are jointly necessary for coordination admissibility:'
     )
@@ -312,11 +312,13 @@ def build_paper(full_version=True):
     add_heading('4.2 Relationship to the Persistence Lemma', level=2)
 
     add_para(
-        'The Persistence Lemma (Abby, 2026i) states that Ve above threshold means admissibility is no longer reliably resolvable within the conversational window. '
+        'The Persistence Lemma (Abby, 2026i) states that Ve above threshold means admissibility is no longer reliably resolvable. '
+        'This applies within the bounded conversational window. '
         'The Coordination Admissibility Lemma extends this principle to system boundaries.'
     )
     add_para(
-        'Where the Persistence Lemma addresses temporal persistence (across turns), the Coordination Admissibility Lemma addresses spatial persistence (across system boundaries). '
+        'The Persistence Lemma addresses temporal persistence (across turns). '
+        'The Coordination Admissibility Lemma addresses spatial persistence (across system boundaries). '
         'Both share the core property: admissibility is not self-maintaining. '
         'It must be actively verified at every point where constraint state could change.'
     )
@@ -584,7 +586,7 @@ def build_paper(full_version=True):
 
     add_heading('8.5 PCD and CSAS', level=2)
     add_para(
-        'Pipeline Constraint Degradation (Abby, 2026g) introduced the concept of measuring how constraint persistence degrades when a model operates inside a pipeline. '
+        'Pipeline Constraint Degradation (Abby, 2026g) measures how constraint persistence degrades inside a pipeline. '
         'PCD compares isolated model performance against pipeline-context performance. '
         'CSAS formalises and extends this concept. '
         'PCD measures the magnitude of degradation. '
@@ -608,7 +610,7 @@ def build_paper(full_version=True):
 
     add_heading('9.1 Why Individual Evaluation Is Insufficient', level=2)
     add_para(
-        'The MTCP dataset demonstrates that 35 models produce variable constraint persistence. '
+        'The MTCP dataset demonstrates that 32 models produce variable constraint persistence. '
         'No model achieves Grade A on the full evaluation. '
         'When two imperfect systems coordinate, their imperfections can compound. '
         'The probability of constraint preservation at a boundary is not the product of individual pass rates. '

@@ -343,6 +343,41 @@ class MTCPEvaluator:
                             (run_id, r['probe_id'], r['outcome'], r['recovery_latency']))
                     db.commit()
                     print(f'DB: imported {len(all_results)} results (run_id={run_id})')
+
+                    # Wire BEC: append evaluation to hash chain
+                    try:
+                        from bec_runner import append_record
+                        import json as _json
+                        eval_summary = {
+                            "run_id": run_id,
+                            "model": stored_model,
+                            "temperature": temperature,
+                            "pass_rate": pass_rate,
+                            "hard_stops": hard_stops,
+                            "probe_count": len(all_results),
+                        }
+                        append_record(
+                            chain_id="main",
+                            model_id=stored_model,
+                            evaluation_type="bis",
+                            evaluation_data=eval_summary,
+                            evaluator_id="mtcp_system",
+                        )
+                        print(f'BEC: appended to chain (run_id={run_id})')
+                    except Exception as bec_err:
+                        print(f'BEC append skipped: {bec_err}')
+
+                    # Wire Gate: auto-generate gate decisions for all contexts
+                    try:
+                        from gate_runner import run_gate
+                        contexts = ["critical_infrastructure", "financial_services",
+                                    "healthcare", "government_services", "general_enterprise"]
+                        for ctx in contexts:
+                            run_gate(stored_model, ctx)
+                        print(f'Gate: decisions generated for {stored_model} x 5 contexts')
+                    except Exception as gate_err:
+                        print(f'Gate auto-eval skipped: {gate_err}')
+
                 else:
                     print('DB: already exists, skipped')
                 db.close()

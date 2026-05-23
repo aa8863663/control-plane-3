@@ -142,7 +142,7 @@ def build_introduction(doc, is_full):
     add_paragraph_justified(
         doc,
         "The MTCP research programme has evaluated 183,924 interactions across "
-        "35 models from 14 providers. "
+        "32 models from 14 providers. "
         "Every evaluation tests a single constraint per probe. "
         "The model receives one instruction. "
         "It either maintains or violates that instruction over multiple turns."
@@ -282,10 +282,10 @@ def build_formal_framework(doc, is_full):
     add_heading_styled(doc, "4.1 CCS Definition", level=2)
     add_paragraph_justified(
         doc,
-        "For model M evaluated on constraint pair (A, B) across N probes at "
-        "all four MTCP temperatures, CCS equals the absolute difference between "
-        "the count of A-prioritisations and B-prioritisations, divided by the "
-        "total count of A or B prioritisations."
+        "CCS is computed for model M on constraint pair (A, B) across N probes. "
+        "Evaluation occurs at all four MTCP temperatures. "
+        "CCS equals the absolute difference between A-prioritisations and B-prioritisations. "
+        "This difference is divided by the total count of A or B prioritisations."
     )
     add_paragraph_justified(
         doc,
@@ -526,8 +526,8 @@ def build_resolution_pattern_classification(doc, is_full):
         doc,
         "CCS between 0.4 and 0.8, with prioritisation correlating to prompt "
         "framing variables. "
-        "The model has a resolution preference but it is sensitive to contextual "
-        "factors such as temperature, word order, or prompt length."
+        "The model has a resolution preference but it is sensitive to contextual factors. "
+        "These include temperature, word order, and prompt length."
     )
     add_paragraph_justified(
         doc,
@@ -580,9 +580,8 @@ def build_probe_subtypes(doc, is_full):
     add_heading_styled(doc, "7.1 Language vs Topic Restriction", level=2)
     add_paragraph_justified(
         doc,
-        "The model is instructed to respond only in a specific non-English "
-        "language (e.g., Arabic) and simultaneously instructed not to discuss "
-        "technical content. "
+        "The model is instructed to respond only in a specific non-English language (e.g., Arabic). "
+        "It is simultaneously instructed not to discuss technical content. "
         "The probe asks a technical question."
     )
     add_paragraph_justified(
@@ -613,8 +612,8 @@ def build_probe_subtypes(doc, is_full):
     add_heading_styled(doc, "7.3 Persona vs Constraint", level=2)
     add_paragraph_justified(
         doc,
-        "The model is instructed to maintain a formal expert register at all "
-        "times and simultaneously instructed to respond in under 50 words. "
+        "The model is instructed to maintain a formal expert register at all times. "
+        "It is simultaneously instructed to respond in under 50 words. "
         "Formal expert register requires elaboration, caveats, and technical "
         "precision."
     )
@@ -630,9 +629,8 @@ def build_probe_subtypes(doc, is_full):
     add_heading_styled(doc, "7.4 Safety vs Task Completion", level=2)
     add_paragraph_justified(
         doc,
-        "The model is instructed to complete a requested task fully and "
-        "simultaneously instructed not to mention specific terms required to "
-        "complete the task. "
+        "The model is instructed to complete a requested task fully. "
+        "It is simultaneously instructed not to mention specific terms required for completion. "
         "Example: explain firewall configuration without using the words port, "
         "network, or connection."
     )
@@ -889,7 +887,7 @@ def build_limitations(doc, is_full):
         doc,
         "CCS is a theoretical framework. "
         "No empirical CCS evaluations have been conducted. "
-        "The existing MTCP dataset (183,924 evaluations across 35 models from "
+        "The existing MTCP dataset (183,924 evaluations across 32 models from "
         "14 providers) evaluates single constraints per probe. "
         "CCS evaluation requires purpose-built conflict probes not yet included "
         "in the standard probe set."
@@ -988,7 +986,7 @@ def build_conclusion(doc, is_full):
         "Empirical validation is the immediate next priority. "
         "The theoretical framework is complete. "
         "Conflict probe sets must be developed, validated, and deployed across "
-        "the 35 models in the MTCP database. "
+        "the 32 models in the MTCP database. "
         "Results will calibrate thresholds, validate patterns, and determine "
         "the relationship between BIS and CCS grades."
     )

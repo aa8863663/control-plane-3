@@ -101,7 +101,7 @@ INTRODUCTION = [
     "The standard protocol is non-adversarial. "
     "When a model deviates from a constraint, the evaluator provides friendly correction. "
     "BIS measures the mean pass rate under this regime. "
-    "This approach has produced 183,924 evaluations across 35 models and 14 providers.",
+    "This approach has produced 183,924 evaluations across 32 models and 14 providers.",
 
     "Correction pressure is the minimum evaluation condition. "
     "It asks whether the model can maintain a constraint when reminded. "
@@ -431,7 +431,7 @@ LIMITATIONS = [
 
     "ACPS is theoretical with limited validation. "
     "One validation run has been conducted (Nova Micro). "
-    "Full adversarial evaluation across all 35 models is planned but not yet executed. "
+    "Full adversarial evaluation across all 32 models is planned but not yet executed. "
     "The theoretical framework is sound but empirical validation is incomplete.",
 
     "Attack scripts may become obsolete. "
@@ -514,7 +514,7 @@ CONCLUSION_FULL = [
 
     "ACPS is theoretical with limited validation. "
     "One validation run has been conducted (Nova Micro). "
-    "Full adversarial evaluation across all 35 models is the next step. "
+    "Full adversarial evaluation across all 32 models is the next step. "
     "The framework is ready. "
     "The evaluation infrastructure is planned.",
 
@@ -576,7 +576,6 @@ def build_public():
     add_paragraph_justified(doc, "DOI: 10.17605/OSF.IO/DXGK5")
     add_paragraph_justified(doc, "Date: May 2026")
     add_paragraph_justified(doc, "Version: 1.0")
-    add_paragraph_justified(doc, "Status: PUBLIC -- Not for OSF yet")
     add_paragraph_justified(doc, "")
     add_paragraph_justified(
         doc,

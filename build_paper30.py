@@ -122,9 +122,8 @@ def build_abstract(doc, is_full):
         "We present the Temporal Stability Lemma. "
         "MTCP grades are valid only within a defined validity window. "
         "Grades expire. Re-evaluation is required at defined intervals. "
-        "Just as Ve above threshold means admissibility is no longer resolvable "
-        "within a session, TDS above threshold means the grade is no longer "
-        "valid across time."
+        "Ve above threshold means admissibility is no longer resolvable within a session. "
+        "TDS above threshold means the grade is no longer valid across time."
     )
     add_paragraph_justified(
         doc,
@@ -143,7 +142,7 @@ def build_introduction(doc, is_full):
     add_paragraph_justified(
         doc,
         "The MTCP research programme has evaluated 183,924 interactions across "
-        "35 models from 14 providers. "
+        "32 models from 14 providers. "
         "These evaluations measure constraint persistence at a fixed point in time. "
         "Each model receives a BIS score. "
         "That score maps to a grade. "
@@ -263,8 +262,8 @@ def build_formal_framework(doc, is_full):
     add_heading_styled(doc, "4.1 Temporal Drift Score (TDS)", level=2)
     add_paragraph_justified(
         doc,
-        "For model M evaluated at times T1 and T2 using probe set P, "
-        "the Temporal Drift Score is defined as the BIS at T2 minus the BIS at T1. "
+        "For model M evaluated at times T1 and T2 using probe set P, TDS is defined as follows. "
+        "TDS equals BIS at T2 minus BIS at T1. "
         "TDS is expressed in percentage points. "
         "Positive TDS indicates improvement. "
         "Negative TDS indicates degradation."
@@ -289,8 +288,9 @@ def build_formal_framework(doc, is_full):
     add_paragraph_justified(
         doc,
         "DV enables comparison across evaluation pairs with different intervals. "
-        "A TDS of negative 6 over 30 days (DV = negative 0.20) is more concerning "
-        "than TDS of negative 6 over 180 days (DV = negative 0.033). "
+        "TDS of negative 6 over 30 days gives DV of negative 0.20. "
+        "TDS of negative 6 over 180 days gives DV of negative 0.033. "
+        "The first is far more concerning. "
         "High DV magnitude indicates rapid drift requiring immediate attention. "
         "Low DV magnitude indicates slow drift that monitoring can track over time."
     )
@@ -405,8 +405,8 @@ def build_temporal_stability_lemma(doc, is_full):
         doc,
         "Let M be a model with grade G assigned at time T1 based on BIS(M, T1). "
         "The grade G is valid only within the Grade Validity Window. "
-        "After the window expires, continued validity requires that the absolute "
-        "TDS between T1 and T2 remains below the threshold for grade G."
+        "After the window expires, continued validity requires re-evaluation. "
+        "Absolute TDS between T1 and T2 must remain below the threshold for grade G."
     )
     add_paragraph_justified(
         doc,
@@ -830,9 +830,8 @@ def build_conclusion(doc, is_full):
         doc,
         "Empirical validation is the immediate next priority. "
         "The theoretical framework is complete. "
-        "Longitudinal evaluation of models in the MTCP database will provide "
-        "the data needed for threshold calibration, interval optimisation, "
-        "and classification validation."
+        "Longitudinal evaluation will provide data for threshold calibration. "
+        "It will also enable interval optimisation and classification validation."
     )
 
 

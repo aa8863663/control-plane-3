@@ -1006,6 +1006,40 @@ def terms_page(request: Request, session: Optional[str] = Cookie(default=None)):
         }
     )
 
+@app.get("/sovereign-ai", response_class=HTMLResponse)
+@limiter.limit("60/minute")
+def sovereign_ai_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse(
+        "sovereign_ai.html",
+        {
+            "request": request,
+            "user": user,
+            "active": "sovereign-ai",
+            "stats": stats,
+            "total_models": stats['total_models'],
+            "total_results": stats['total_results_formatted']
+        }
+    )
+
+@app.get("/constraint-manifest", response_class=HTMLResponse)
+@limiter.limit("60/minute")
+def constraint_manifest_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse(
+        "constraint_manifest.html",
+        {
+            "request": request,
+            "user": user,
+            "active": "constraint-manifest",
+            "stats": stats,
+            "total_models": stats['total_models'],
+            "total_results": stats['total_results_formatted']
+        }
+    )
+
 @app.get("/request-evaluation", response_class=HTMLResponse)
 @limiter.limit("10/minute")
 def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):
@@ -3898,6 +3932,305 @@ def resolve_alert(request: Request, alert_id: int, req: AlertResolveRequest, ses
         }, default=str)
     except Exception as e:
         return JSONResponse({"error": f"Alert resolution failed: {str(e)}"}, status_code=500)
+
+
+# ── COS (Constraint Object Specification) ─────────────────────────────────────
+
+@app.get("/api/cos/{constraint_id}")
+async def get_constraint_object(constraint_id: str):
+    """Return the full constraint object for a given constraint_id."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM cos_objects WHERE constraint_id = %s", (constraint_id,))
+    result = cur.fetchone()
+    conn.close()
+    if not result:
+        return JSONResponse(status_code=404, content={"detail": "Constraint not found"})
+    return dict(result)
+
+
+@app.post("/api/cos/register")
+async def register_constraint_object(request: Request):
+    """Register a new constraint object."""
+    import hashlib as _hl
+    data = await request.json()
+    name = data.get("name")
+    scope = data.get("scope", {})
+    if not name:
+        return JSONResponse(status_code=400, content={"detail": "name required"})
+    payload = f"{name}|{json.dumps(scope, sort_keys=True)}"
+    constraint_id = f"cos_{_hl.sha256(payload.encode()).hexdigest()[:16]}"
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT constraint_id FROM cos_objects WHERE constraint_id = %s", (constraint_id,))
+    if cur.fetchone():
+        conn.close()
+        return {"constraint_id": constraint_id, "status": "already_registered"}
+    cur.execute("""
+        INSERT INTO cos_objects (constraint_id, name, description, provenance, scope,
+                                 validity_conditions, inheritance_rules, expiry)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    """, (
+        constraint_id, name, data.get("description", ""),
+        json.dumps(data.get("provenance", {})),
+        json.dumps(scope),
+        json.dumps(data.get("validity_conditions", {})),
+        json.dumps(data.get("inheritance_rules", {"inheritable": True})),
+        data.get("expiry"),
+    ))
+    conn.commit()
+    conn.close()
+    return {"constraint_id": constraint_id, "status": "registered"}
+
+
+@app.get("/api/cos/compare/{id_a}/{id_b}")
+async def compare_constraint_objects(id_a: str, id_b: str):
+    """Compare two constraint objects for governance comparability."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM cos_objects WHERE constraint_id IN (%s, %s)", (id_a, id_b))
+    results = cur.fetchall()
+    conn.close()
+    if len(results) < 2:
+        return {"comparable": False, "reason": "One or both not found"}
+    objs = {r["constraint_id"]: r for r in results}
+    if id_a == id_b:
+        return {"comparable": True, "reason": "Same constraint object"}
+    scope_match = objs[id_a]["scope"] == objs[id_b]["scope"]
+    validity_match = objs[id_a]["validity_conditions"] == objs[id_b]["validity_conditions"]
+    if scope_match and validity_match:
+        return {"comparable": True, "reason": "Equivalent scope and validity"}
+    reasons = []
+    if not scope_match:
+        reasons.append("Scope differs")
+    if not validity_match:
+        reasons.append("Validity conditions differ")
+    return {"comparable": False, "reason": ". ".join(reasons)}
+
+
+# ── DRA Summary ───────────────────────────────────────────────────────────────
+
+@app.get("/api/dra/summary")
+async def get_dra_summary():
+    """Return DRA scores for all models across all deployment contexts."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT model_id, dra_score, dra_grade, deployment_context
+        FROM dra_scores
+        ORDER BY model_id, deployment_context
+    """)
+    results = cur.fetchall()
+    conn.close()
+    return {"count": len(results), "scores": [dict(r) for r in results]}
+
+
+# ── Runtime Monitoring (PRP Wrapper) ──────────────────────────────────────────
+
+@app.post("/api/runtime/session/start")
+async def start_runtime_session(request: Request):
+    """Start a new monitored session."""
+    from prp_wrapper import PRPWrapper
+    data = await request.json()
+    model_id = data.get("model_id")
+    constraint_id = data.get("constraint_id")
+    context = data.get("deployment_context", "general_enterprise")
+    if not model_id:
+        return JSONResponse(status_code=400, content={"detail": "model_id required"})
+    wrapper = PRPWrapper()
+    result = wrapper.start_session(model_id, constraint_id, context)
+    if result["status"] == "rejected":
+        return JSONResponse(status_code=403, content=result)
+    return result
+
+
+@app.get("/api/runtime/session/{session_id}/status")
+async def get_runtime_session_status(session_id: str):
+    """Get current rolling BIS, drift delta, and compliance for a live session."""
+    from prp_wrapper import PRPWrapper
+    wrapper = PRPWrapper()
+    result = wrapper.get_session_status(session_id)
+    if "error" in result:
+        return JSONResponse(status_code=404, content=result)
+    return result
+
+
+@app.post("/api/runtime/session/{session_id}/end")
+async def end_runtime_session(session_id: str):
+    """Close session and generate session coherence record."""
+    from prp_wrapper import PRPWrapper
+    wrapper = PRPWrapper()
+    result = wrapper.end_session(session_id)
+    if "error" in result:
+        return JSONResponse(status_code=404, content=result)
+    return result
+
+
+@app.get("/api/runtime/model/{model_id}/live")
+async def get_runtime_model_live(model_id: str):
+    """Get production compliance status across all active sessions for a model."""
+    from prp_wrapper import PRPWrapper
+    wrapper = PRPWrapper()
+    return wrapper.get_model_live_status(model_id)
+
+
+# ── Quantum-Safe (Cryptographic Validity) ─────────────────────────────────────
+
+@app.get("/api/crypto/status/{record_id}")
+async def get_crypto_status(record_id: str, record_type: str = "bec"):
+    """Return cryptographic standard and validity window for a record."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT * FROM crypto_standard_records
+        WHERE record_type = %s AND record_id = %s
+        ORDER BY implementation_date DESC LIMIT 1
+    """, (record_type, record_id))
+    result = cur.fetchone()
+    conn.close()
+    if not result:
+        return {"record_id": record_id, "algorithm": "SHA-256", "is_quantum_safe": False, "needs_migration": True}
+    return dict(result)
+
+
+@app.get("/api/crypto/manifest_validity/{manifest_id}")
+async def get_manifest_crypto_validity(manifest_id: str):
+    """Return whether manifest cryptography is currently quantum-safe."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT * FROM crypto_standard_records
+        WHERE record_type = 'manifest' AND record_id = %s
+        ORDER BY implementation_date DESC LIMIT 1
+    """, (manifest_id,))
+    result = cur.fetchone()
+    conn.close()
+    if not result:
+        return {"manifest_id": manifest_id, "is_quantum_safe": False, "algorithm": "HMAC-SHA256", "needs_migration": True}
+    is_safe = result["algorithm"] in ("BLAKE3", "SHA3-256", "blake3", "sha3_256")
+    return {"manifest_id": manifest_id, "is_quantum_safe": is_safe, "algorithm": result["algorithm"]}
+
+
+# ── DRA (Deployment Readiness Attestation) ────────────────────────────────────
+
+@app.get("/api/dra/{model_id}/{context}")
+async def get_dra_score(model_id: str, context: str):
+    """Return DRA score and grade for a model in a deployment context."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT * FROM dra_scores
+        WHERE model_id = %s AND deployment_context = %s
+        ORDER BY computed_at DESC LIMIT 1
+    """, (model_id, context))
+    result = cur.fetchone()
+    conn.close()
+    if not result:
+        return JSONResponse(status_code=404, content={"detail": "No DRA score found. Run dra_calculator first."})
+    return dict(result)
+
+
+@app.get("/api/dra/attest/{model_id}")
+async def get_dra_attestation(model_id: str, context: str = "general_enterprise"):
+    """Return or generate a DRA attestation for a model."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("""
+        SELECT * FROM dra_attestations
+        WHERE model_id = %s AND deployment_context = %s AND status = 'active'
+        ORDER BY attested_at DESC LIMIT 1
+    """, (model_id, context))
+    result = cur.fetchone()
+    conn.close()
+    if not result:
+        return JSONResponse(status_code=404, content={"detail": "No attestation found. Run dra_calculator --attest first."})
+    return dict(result)
+
+
+# ── GRC (Governance Reference Conditions) ─────────────────────────────────────
+
+@app.get("/api/grc/compare/{model_a}/{model_b}")
+async def compare_grc(model_a: str, model_b: str):
+    """Return GRC compatibility score for a model pair."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM grc_conditions WHERE model_id = %s ORDER BY recorded_at DESC LIMIT 1", (model_a,))
+    cond_a = cur.fetchone()
+    cur.execute("SELECT * FROM grc_conditions WHERE model_id = %s ORDER BY recorded_at DESC LIMIT 1", (model_b,))
+    cond_b = cur.fetchone()
+    conn.close()
+    if not cond_a or not cond_b:
+        return {"compatible": False, "compatibility_score": 0.0, "reason": "Missing GRC conditions"}
+    grc1 = cond_a.get("constraint_id") == cond_b.get("constraint_id") and cond_a.get("constraint_id") is not None
+    grc2 = (cond_a.get("lrp_score") or 0) >= 1.0 and (cond_b.get("lrp_score") or 0) >= 1.0
+    grc3 = cond_a.get("temperature_config") == cond_b.get("temperature_config")
+    grc4 = (cond_a.get("jrs_score") or 0) >= 0.75 and (cond_b.get("jrs_score") or 0) >= 0.75
+    grc5 = (cond_a.get("bec_integrity") or 0) >= 1.0 and (cond_b.get("bec_integrity") or 0) >= 1.0
+    compatible = all([grc1, grc2, grc3, grc4, grc5])
+    return {"model_a": model_a, "model_b": model_b, "compatible": compatible, "compatibility_score": 1.0 if compatible else 0.0}
+
+
+@app.get("/api/grc/classify/{csas_id}")
+async def classify_csas_degradation(csas_id: str, model_a: str = "", model_b: str = ""):
+    """Classify CSAS degradation as governance failure or structural divergence."""
+    if not model_a or not model_b:
+        return JSONResponse(status_code=400, content={"detail": "model_a and model_b query params required"})
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM grc_compatibility_log WHERE model_a = %s AND model_b = %s ORDER BY compared_at DESC LIMIT 1", (model_a, model_b))
+    compat = cur.fetchone()
+    conn.close()
+    if compat and compat["compatible"]:
+        return {"csas_id": csas_id, "classification": "governance_failure", "grc_compatible": True}
+    return {"csas_id": csas_id, "classification": "structural_divergence", "grc_compatible": False}
+
+
+@app.get("/api/grc/conditions/{evaluation_id}")
+async def get_grc_conditions(evaluation_id: str):
+    """Return full GRC record for an evaluation."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM grc_conditions WHERE evaluation_id = %s", (evaluation_id,))
+    result = cur.fetchone()
+    conn.close()
+    if not result:
+        return JSONResponse(status_code=404, content={"detail": "GRC conditions not found"})
+    return dict(result)
+
+
+# ── LRP (Legitimacy Resolution Protocol) ──────────────────────────────────────
+
+@app.get("/api/lrp/{evaluation_id}")
+async def get_lrp_score(evaluation_id: str):
+    """Return legitimacy score for an LRP evaluation."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT * FROM lrp_evaluations WHERE evaluation_id = %s", (evaluation_id,))
+    result = cur.fetchone()
+    conn.close()
+    if not result:
+        return JSONResponse(status_code=404, content={"detail": "Evaluation not found"})
+    return dict(result)
+
+
+@app.get("/api/lrp/compare/{claim_a}/{claim_b}")
+async def compare_lrp_claims(claim_a: str, claim_b: str):
+    """Return cross-regime comparability status for two authority claims."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute(
+        "SELECT * FROM lrp_authority_claims WHERE claim_id IN (%s, %s)",
+        (claim_a, claim_b)
+    )
+    claims = cur.fetchall()
+    conn.close()
+    if len(claims) < 2:
+        return {"comparable": False, "reason": "One or both claims not found"}
+    claims_map = {c["claim_id"]: c for c in claims}
+    same_constraint = claims_map[claim_a]["constraint_id"] == claims_map[claim_b]["constraint_id"]
+    if not same_constraint:
+        return {"comparable": False, "reason": "Different constraint objects"}
+    return {"comparable": True, "reason": "Same constraint, both registered"}
 
 
 # ── Secure Error Handling ──────────────────────────────────────────────────────

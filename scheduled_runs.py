@@ -148,6 +148,64 @@ def weekly_benchmark_job():
     )
 
 
+# ── Governance scheduled jobs ─────────────────────────────────────────────────
+
+def hourly_governance_alerts():
+    """Run alert_runner --check-all every hour."""
+    log.info("Running hourly governance alert check...")
+    try:
+        result = subprocess.run(
+            ["python3", os.path.join(os.path.dirname(__file__), "alert_runner.py"), "--check-all"],
+            capture_output=True, text=True, timeout=120
+        )
+        if result.returncode == 0:
+            log.info(f"Alert check complete: {result.stdout.strip()[-100:]}")
+        else:
+            log.warning(f"Alert check failed: {result.stderr.strip()[-200:]}")
+    except Exception as e:
+        log.error(f"Alert check error: {e}")
+
+
+def daily_bec_verification():
+    """Run bec_runner --verify --chain-id main daily at 03:00 UTC."""
+    log.info("Running daily BEC chain verification...")
+    try:
+        result = subprocess.run(
+            ["python3", os.path.join(os.path.dirname(__file__), "bec_runner.py"), "--verify", "--chain-id", "main"],
+            capture_output=True, text=True, timeout=120
+        )
+        if result.returncode == 0:
+            log.info(f"BEC verify complete: {result.stdout.strip()[-100:]}")
+        else:
+            log.warning(f"BEC verify failed: {result.stderr.strip()[-200:]}")
+    except Exception as e:
+        log.error(f"BEC verify error: {e}")
+
+
+def weekly_tds_check():
+    """Run TDS check for all models with baselines, weekly on Tuesday."""
+    log.info("Running weekly TDS drift check...")
+    try:
+        from tds_runner import run_tds_check
+        import psycopg2
+        from psycopg2.extras import RealDictCursor
+        db_url = os.environ.get("DATABASE_URL", "")
+        conn = psycopg2.connect(db_url)
+        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur.execute("SELECT DISTINCT model FROM tds_baselines")
+        models = [r["model"] for r in cur.fetchall()]
+        conn.close()
+        for model in models:
+            try:
+                run_tds_check(model, provider=None, dry_run=False, no_db=False)
+                log.info(f"  TDS check complete: {model}")
+            except Exception as e:
+                log.warning(f"  TDS check failed for {model}: {e}")
+        log.info(f"Weekly TDS check complete for {len(models)} models")
+    except Exception as e:
+        log.error(f"TDS check error: {e}")
+
+
 # ── Scheduler setup ───────────────────────────────────────────────────────────
 
 _scheduler = None
@@ -171,10 +229,34 @@ def start_scheduler():
         id="weekly_benchmarks",
         name="Weekly MTCP benchmark run",
         replace_existing=True,
-        misfire_grace_time=3600,   # Allow up to 1hr late start if server was down
+        misfire_grace_time=3600,
+    )
+    _scheduler.add_job(
+        hourly_governance_alerts,
+        trigger=CronTrigger(minute=0),
+        id="hourly_alerts",
+        name="Hourly governance alert check",
+        replace_existing=True,
+        misfire_grace_time=300,
+    )
+    _scheduler.add_job(
+        daily_bec_verification,
+        trigger=CronTrigger(hour=3, minute=0),
+        id="daily_bec_verify",
+        name="Daily BEC chain verification",
+        replace_existing=True,
+        misfire_grace_time=1800,
+    )
+    _scheduler.add_job(
+        weekly_tds_check,
+        trigger=CronTrigger(day_of_week="tue", hour=2, minute=0),
+        id="weekly_tds",
+        name="Weekly TDS drift check",
+        replace_existing=True,
+        misfire_grace_time=3600,
     )
     _scheduler.start()
-    log.info("Scheduler started — weekly benchmarks scheduled for Monday 02:00 UTC")
+    log.info("Scheduler started — benchmarks Mon 02:00, alerts hourly, BEC daily 03:00, TDS Tue 02:00")
 
 
 def stop_scheduler():

@@ -219,7 +219,7 @@ INTRODUCTION_PUBLIC = [
     "Each jurisdiction receives its own mapping detail. "
     "Minimum grades are defined per deployment context.",
 
-    "The methodology draws on 183,924 evaluations across 35 models "
+    "The methodology draws on 183,924 evaluations across 32 models "
     "and 14 providers. "
     "Arabic evaluation evidence from Papers 26 and 27 informs "
     "jurisdiction-specific language requirements. "
@@ -249,7 +249,7 @@ INTRODUCTION_FULL = [
     "Five jurisdictions receive detailed mapping. "
     "Minimum grades are defined per deployment context.",
 
-    "The methodology draws on 183,924 evaluations across 35 models "
+    "The methodology draws on 183,924 evaluations across 32 models "
     "and 14 providers. "
     "Arabic evaluation evidence from Papers 26 and 27 informs "
     "NDMO and NCA requirements. "
@@ -483,8 +483,8 @@ EVIDENCE_REQUIREMENTS = [
     "The evidence must be traceable to specific evaluation events. "
     "Sigma-Forensics hash chains provide the traceability mechanism.",
 
-    "EU evidence requirements include the full Sigma-Forensics report, "
-    "BIS scores across all four temperatures, CPD assessment results, "
+    "EU evidence requirements include the full Sigma-Forensics report. "
+    "Required scores include BIS across all four temperatures, CPD assessment, "
     "TDS monitoring logs, and Ve event records. "
     "All evidence must be available for regulatory inspection.",
 
@@ -504,8 +504,8 @@ EVIDENCE_REQUIREMENTS_FULL = [
     "The evidence must be traceable to specific evaluation events. "
     "Sigma-Forensics hash chains provide the traceability mechanism.",
 
-    "EU evidence requirements include the full Sigma-Forensics report, "
-    "BIS scores across all four temperatures, CPD assessment results, "
+    "EU evidence requirements include the full Sigma-Forensics report. "
+    "Required scores include BIS across all four temperatures, CPD assessment, "
     "TDS monitoring logs, and Ve event records. "
     "All evidence must be available for regulatory inspection.",
 
@@ -548,8 +548,8 @@ IMPLICATIONS = [
     "These requirements are measurable and verifiable.",
 
     "Certification becomes possible through MTCP evidence. "
-    "A model with Grade B BIS, CPD below 30pp, and Sigma-Forensics audit "
-    "has documented evidence for EU Articles 9, 10, and 13. "
+    "A model with Grade B BIS, CPD below 30pp, and Sigma-Forensics audit meets the documentation bar. "
+    "This evidence covers EU Articles 9, 10, and 13. "
     "The evidence does not guarantee certification. "
     "But it provides the structured documentation that certification requires.",
 
@@ -573,8 +573,8 @@ IMPLICATIONS_FULL = [
     "These requirements are measurable and verifiable.",
 
     "Certification becomes possible through MTCP evidence. "
-    "A model with Grade B BIS, CPD below 30pp, and Sigma-Forensics audit "
-    "has documented evidence for EU Articles 9, 10, and 13. "
+    "A model with Grade B BIS, CPD below 30pp, and Sigma-Forensics audit meets the documentation bar. "
+    "This evidence covers EU Articles 9, 10, and 13. "
     "A model with CSAS Grade A and ACPS Grade A has documented evidence "
     "for NCA critical infrastructure requirements. "
     "The evidence does not guarantee certification. "
@@ -628,9 +628,8 @@ LIMITATIONS = [
 
     "Legal review is required before reliance. "
     "No deployment decision should rely solely on this mapping. "
-    "Legal counsel in each target jurisdiction must review "
-    "the specific regulatory requirements and MTCP evidence "
-    "before any compliance claim is made.",
+    "Legal counsel in each target jurisdiction must review the specific regulatory requirements. "
+    "MTCP evidence must be validated before any compliance claim is made.",
 ]
 
 CONCLUSION_PUBLIC = [
@@ -760,7 +759,6 @@ def build_public():
     add_paragraph_justified(doc, "DOI: 10.17605/OSF.IO/DXGK5")
     add_paragraph_justified(doc, "Date: May 2026")
     add_paragraph_justified(doc, "Version: 1.0")
-    add_paragraph_justified(doc, "Status: PUBLIC -- Not for OSF (pending legal review)")
     add_paragraph_justified(doc, "")
     add_paragraph_justified(
         doc,

@@ -250,8 +250,8 @@ ADMISSIBILITY_LEMMA = [
     "Partial compliance is not admissibility.",
 
     "Meeting 3 of 4 thresholds is DENY not PERMIT. "
-    "A model with BIS Grade A and CSAS Grade A and JRS 0.95 "
-    "but TDS Critical is DENIED for all contexts. "
+    "A model with BIS Grade A, CSAS Grade A, and JRS 0.95 but TDS Critical is DENIED. "
+    "This applies across all deployment contexts. "
     "One failure is sufficient for denial.",
 
     "There is no weighted average mechanism. "
@@ -303,8 +303,8 @@ GATE_EXPIRY = [
     "When the window closes the TDS input is no longer current. "
     "The gate decision expires automatically.",
 
-    "Score drift expiry: if any input score changes by more than "
-    "the drift tolerance for the context then the decision expires. "
+    "Score drift expiry: if any input score exceeds the drift tolerance, "
+    "the decision expires. "
     "Critical infrastructure has 2 percentage point tolerance. "
     "General enterprise has 10 percentage point tolerance.",
 
@@ -533,7 +533,6 @@ def build_public():
     add_paragraph_justified(doc, "DOI: 10.17605/OSF.IO/DXGK5")
     add_paragraph_justified(doc, "Date: May 2026")
     add_paragraph_justified(doc, "Version: 1.0")
-    add_paragraph_justified(doc, "Status: NOT for OSF")
     add_paragraph_justified(doc, "")
     add_paragraph_justified(
         doc,

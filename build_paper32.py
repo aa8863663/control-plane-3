@@ -78,7 +78,7 @@ def add_header(doc, header_text):
 # ============================================================
 
 ABSTRACT = (
-    "MTCP identifies constraint persistence failures across 35 models and 14 providers. "
+    "MTCP identifies constraint persistence failures across 32 models and 14 providers. "
     "Identification alone is insufficient for deployers. "
     "This paper introduces the Remediation Effectiveness Score (RES). "
     "RES measures percentage point improvement in BIS achieved by a specific intervention. "
@@ -114,7 +114,7 @@ FORMAL_FRAMEWORK = [
     "RES(M, I) = (B_after -- B_before) / (100 -- B_before).",
     "The denominator normalises by the remaining improvement space. A model at BIS 60 has 40 percentage points of possible improvement. A model at BIS 80 has 20 percentage points. RES measures what fraction of available improvement was captured.",
     "RES = 1.0 means full remediation. The failure is completely resolved. RES = 0.0 means no improvement. The intervention had no effect. Negative RES means the intervention made performance worse.",
-    "This normalisation is deliberate. A 10 percentage point improvement from 60 to 70 represents greater relative effectiveness than a 10 point improvement from 80 to 90. The first captures 25 percent of available space. The second captures 50 percent. RES reflects this difference.",
+    "This normalisation is deliberate. A 10 point improvement from 60 to 70 represents greater relative effectiveness. A 10 point improvement from 80 to 90 captures more available space. The first captures 25 percent. The second captures 50 percent. RES reflects this difference.",
     "The remediation ceiling C(M) is defined as the maximum BIS achievable through any operational intervention. When C(M) falls below the Grade B threshold of 80 percent, no operational intervention achieves deployment readiness. Provider-level training change is required.",
 ]
 
@@ -147,7 +147,7 @@ CEILING_IDENTIFICATION = [
 COMMERCIAL_FRAMEWORK = [
     "RES enables grade-specific remediation guidance. Each BIS grade below B has a defined minimum RES required to reach deployment readiness.",
     "For Grade D models (BIS 60 to 69 percent), the minimum RES to reach Grade B is 0.52 to 0.63. This means more than half the failure gap must be closed. The recommended sequence begins with temperature reduction as a diagnostic. If effective, the failure is stochastic and the combination of temperature reduction with system prompt injection is likely sufficient.",
-    "For Grade F models (BIS below 60 percent), the minimum RES to reach Grade B is 0.50 to 1.00 depending on baseline. For a model at BIS 40 percent, RES must exceed 0.67 to reach Grade B. This is achievable for stochastic failures but not for architectural ones.",
+    "For Grade F models (BIS below 60 percent), the minimum RES to reach Grade B is 0.50 to 1.00. The exact requirement depends on baseline. For a model at BIS 40 percent, RES must exceed 0.67. This is achievable for stochastic failures but not for architectural ones.",
     "Procurement contracts should incorporate RES requirements. Baseline BIS evaluation before deployment. Documented RES evaluation if grade is below B. Vendor acknowledgment of architectural limitation if RES grade is F. Timeline commitment for provider-level intervention.",
     "Vendor SLAs can reference RES directly. A provider commits to achieving RES greater than 0.5 within 60 days of Grade D notification. If RES remains below 0.2 after operational intervention, the provider acknowledges architectural failure and commits to training-level remediation.",
 ]
@@ -164,13 +164,13 @@ IMPLICATIONS = [
     "RES has direct implications for AI procurement. Buyers can require RES documentation alongside BIS grades. A model with Grade D BIS and Grade A RES is remediable. A model with Grade D BIS and Grade F RES is not. Procurement decisions should weight both.",
     "Vendor SLAs gain objective remediation targets. Rather than vague commitments to improvement, providers can commit to specific RES thresholds within defined timeframes. Failure to meet RES targets triggers escalation to provider-level intervention.",
     "PRP (Paper 20) is reframed as an intervention with measurable effectiveness. Its expected RES of 0.2 to 0.5 on architectural models gives deployers a quantitative expectation. If PRP achieves less than expected, the architectural failure may be more severe than initially classified.",
-    "The remediation ceiling concept changes how deployers think about model selection. A model with lower baseline BIS but higher ceiling may be preferable to a model with higher baseline BIS but lower ceiling. The ceiling determines long-term viability.",
-    "Regulatory frameworks can incorporate RES. If a jurisdiction requires minimum BIS for deployment, RES provides the formal mechanism for demonstrating that sub-threshold models can be remediated to compliance. Without RES, the only compliant response to a failed evaluation is model replacement.",
+    "The remediation ceiling concept changes how deployers think about model selection. A model with lower baseline but higher ceiling may be preferable to one with higher baseline but lower ceiling. The ceiling determines long-term viability.",
+    "Regulatory frameworks can incorporate RES. If a jurisdiction requires minimum BIS for deployment, RES demonstrates that sub-threshold models can be remediated. Without RES, the only compliant response to a failed evaluation is model replacement.",
 ]
 
 LIMITATIONS = [
     "RES is theoretical. This is the primary limitation. No systematic remediation experiments have been conducted. Expected RES values are derived from MTCP temperature sensitivity analysis and PRP design principles. They are not from controlled intervention trials.",
-    "The expected RES ranges stated in this paper are estimates. Actual RES values may differ significantly when empirical measurement is conducted. The ranges are informed by temperature sensitivity patterns observed across 183,924 evaluations but they are not direct measurements of intervention effectiveness.",
+    "The expected RES ranges stated in this paper are estimates. Actual RES values may differ when empirical measurement is conducted. The ranges are informed by temperature sensitivity patterns across 183,924 evaluations. They are not direct measurements of intervention effectiveness.",
     "RES assumes BIS measurement is stable. If BIS itself has high variance (measured by TDS), then RES computation inherits that variance. Small RES values may be indistinguishable from measurement noise.",
     "The intervention taxonomy is not exhaustive. Other intervention types exist. Few-shot examples in system prompts. Chain-of-thought prompting. Output format constraints. These are not currently classified within RES. Future versions may expand the taxonomy.",
     "Interaction effects between interventions are not modelled. Combining temperature reduction with system prompt injection may produce RES different from either alone. The current framework evaluates interventions independently. Combination effects require separate empirical study.",
@@ -182,7 +182,7 @@ CONCLUSION = [
     "The key findings are structural. Temperature reduction is diagnostic. System prompt injection is the most effective single operational intervention. PRP is the only intervention designed for architectural failures. The ceiling exists and cannot be exceeded through operational means alone.",
     "For deployers, RES provides actionable guidance. Test temperature reduction first. If effective, the failure is stochastic and remediable. If ineffective, the failure is architectural and requires PRP or provider-level intervention.",
     "For providers, RES creates accountability. Remediation claims require per-model evidence. General statements about improvement are insufficient. The RES metric makes intervention effectiveness falsifiable.",
-    "Empirical validation is the immediate next step. Controlled intervention experiments across the MTCP model set will calibrate expected RES ranges, identify actual remediation ceilings, and test the Remediation Lemma across model families.",
+    "Empirical validation is the immediate next step. Controlled intervention experiments will calibrate expected RES ranges. They will identify actual remediation ceilings and test the Remediation Lemma across model families.",
 ]
 
 REFERENCES = [
