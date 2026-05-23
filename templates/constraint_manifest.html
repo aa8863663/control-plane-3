@@ -1,0 +1,134 @@
+{% extends "base_public.html" %}
+{% block title %}Constraint Manifest — MTCP{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Constraint <span>Manifest</span></h1>
+  <p>
+    A portable, signed evaluation document that travels with each evaluated model. Independently verifiable by any receiving system without requiring access to the MTCP platform.
+  </p>
+</div>
+
+<!-- WHAT IS A CONSTRAINT MANIFEST -->
+<div class="card fade-up fade-up-1" style="background:rgba(37,99,235,0.03);border-color:rgba(37,99,235,0.15);margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">What is a Constraint Manifest?</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    A Constraint Manifest is a portable signed document issued after MTCP evaluation. It contains the model's constraint persistence grades, validity windows, and regulatory compliance status. The manifest travels with the model deployment — any receiving system can verify independently that the model has been evaluated and what its current status is.
+  </p>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;">
+    The manifest eliminates the need for repeated evaluation at each deployment stage. Once issued, it serves as cryptographically verifiable proof of evaluation status until its validity window expires.
+  </p>
+</div>
+
+<!-- WHAT IT CONTAINS -->
+<div class="card fade-up fade-up-2" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:16px;">What It Contains</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    Each Constraint Manifest contains 29 fields. The following are the key fields:
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Field</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Model ID</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Unique identifier for the evaluated model version</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Evaluation Date</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Date of most recent MTCP evaluation</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">BIS Grade</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Boundary Integrity Score with temperature breakdown</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">CSAS Score</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Cross-System Admissibility Score for coordination pairs</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">JRS Score</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Jurisdiction Resolution Score for governance boundaries</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">TDS Validity</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Temporal Drift Score with validity window (typically 90 days)</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Regulatory Compliance</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Compliance status per jurisdiction (EU AI Act, NIST, NDMO, NCA, MAS)</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">BEC Integrity</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Blockchain Evidence Chain integrity hash for verification</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Issuer Signature</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Cryptographic signature from MTCP evaluation authority</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">constraint_object_id</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Unique identifier of the registered constraint object this manifest attests to. Links to the Constraint Object Registry.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">constraint_provenance</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Source of the constraint object including issuing authority, registration date, and authority chain.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">grc_hash</td>
+          <td style="font-size:0.7rem;color:var(--muted);">SHA-256 hash of the Governance Reference Conditions record at time of issuance. Proves GRC conditions were captured.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">dra_score</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Deployment Readiness Attestation score (0.0 to 1.0). Composite of BIS, TDS, BEC integrity, and Gate status.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">dra_grade</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Grade A through F corresponding to DRA score. A is 0.9+. B is 0.8+. C is 0.7+. D is 0.6+. F is below 0.6.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">runtime_monitor_enabled</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Boolean. Whether this deployment is actively monitored by the PRP runtime wrapper.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">last_session_coherence_hash</td>
+          <td style="font-size:0.7rem;color:var(--muted);">SHA-256 hash of the most recent session coherence record. Proves last monitored session is complete and untampered.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">crypto_standard</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Cryptographic algorithm used to sign this manifest. Current standard: BLAKE3.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">crypto_valid_until</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Date until which the cryptographic standard is considered quantum-safe for governance evidence.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- HOW TO REQUEST -->
+<div class="card fade-up fade-up-3" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">How to Request</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    Constraint Manifests are issued automatically upon completion of a full MTCP evaluation. To request an evaluation and receive a Constraint Manifest:
+  </p>
+  <ul class="list-clean">
+    <li><strong style="color:var(--text)">Use the evaluation request form</strong><br>Submit your model for evaluation via the <a href="/request-evaluation" style="color:var(--accent);text-decoration:none;">Request Evaluation</a> page. Specify your deployment context and regulatory requirements.</li>
+    <li><strong style="color:var(--text)">Contact directly</strong><br>Email <a href="mailto:admin@mtcp.live" style="color:var(--accent);text-decoration:none;">admin@mtcp.live</a> for enterprise evaluations, volume pricing, or sovereign deployment requirements.</li>
+    <li><strong style="color:var(--text)">Manifest delivery</strong><br>Manifests are delivered as signed JSON documents alongside the Release Decision Pack and formal evaluation report.</li>
+  </ul>
+</div>
+
+<!-- CTA -->
+<div class="card fade-up" style="text-align:center;padding:36px;">
+  <h2 style="font-family:'DM Serif Display',serif;font-size:1.6rem;color:var(--text);margin-bottom:10px;">Get a Constraint Manifest</h2>
+  <p style="font-size:0.74rem;color:var(--muted);margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.8;">
+    Submit your model for MTCP evaluation. Receive grades, evidence pack, and a portable Constraint Manifest for deployment.
+  </p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+    <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
+    <a href="/sovereign-ai" class="btn btn-ghost">Sovereign AI</a>
+    <a href="/methodology" class="btn btn-ghost">Methodology</a>
+  </div>
+</div>
+{% endblock %}

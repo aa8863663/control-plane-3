@@ -3597,12 +3597,18 @@ def bec_status(request: Request):
             FROM bec_chains
             ORDER BY created_at ASC
         """)
-        chains = [dict(r) for r in cur.fetchall()]
+        chains = []
+        for r in cur.fetchall():
+            row = dict(r)
+            for k, v in row.items():
+                if hasattr(v, 'isoformat'):
+                    row[k] = v.isoformat()
+            chains.append(row)
         conn.close()
         return JSONResponse({
             "chains": chains,
             "total_chains": len(chains),
-        }, default=str)
+        })
     except Exception as e:
         return JSONResponse({"error": f"BEC status failed: {str(e)}"}, status_code=500)
 
