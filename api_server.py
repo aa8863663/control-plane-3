@@ -1040,6 +1040,26 @@ def constraint_manifest_page(request: Request, session: Optional[str] = Cookie(d
         }
     )
 
+@app.get("/deployment-readiness", response_class=HTMLResponse)
+@limiter.limit("60/minute")
+def deployment_readiness_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse(
+        "deployment_readiness.html",
+        {"request": request, "user": user, "active": "dra", "stats": stats}
+    )
+
+@app.get("/runtime-monitoring", response_class=HTMLResponse)
+@limiter.limit("60/minute")
+def runtime_monitoring_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse(
+        "runtime_monitoring.html",
+        {"request": request, "user": user, "active": "runtime", "stats": stats}
+    )
+
 @app.get("/request-evaluation", response_class=HTMLResponse)
 @limiter.limit("10/minute")
 def request_evaluation_get(request: Request, session: Optional[str] = Cookie(default=None)):

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Runtime Behavioural Monitoring — MTCP{% endblock %}
+{% block content %}
+<div class="page">
+  <h1 style="font-family:'DM Serif Display',serif;font-size:2rem;margin-bottom:1rem;">Runtime Behavioural Monitoring</h1>
+  <p style="font-size:0.82rem;color:var(--muted);line-height:1.8;max-width:720px;margin-bottom:2rem;">
+    Application-layer monitoring without a model-layer baseline is governance theatre. MTCP provides both.
+  </p>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:28px;">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:14px;">The Problem</h2>
+    <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:10px;">
+      Any system can log API responses and sign them cryptographically. That proves a record was kept. It does not prove the model was constrained.
+    </p>
+    <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:10px;">
+      The distinction: recording what the model said vs knowing whether the model was behaving within its governance boundaries when it said it.
+    </p>
+    <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;">
+      Without a pre-deployment evaluation baseline, runtime signals are noise. A model producing 85% compliance means nothing unless you know whether 85% is above or below its evaluated capability.
+    </p>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:28px;">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:14px;">How It Works</h2>
+    <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+      The PRP runtime wrapper monitors every inference call in a deployment session.
+    </p>
+    <table>
+      <thead>
+        <tr><th>Stage</th><th>What happens</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Before call</td><td>Checks Gate status. Blocks if DENY. Logs request with timestamp.</td></tr>
+        <tr><td>After call</td><td>Checks response against registered constraint. Computes compliance signal.</td></tr>
+        <tr><td>Per turn</td><td>Updates rolling BIS. Compares against baseline. Fires alerts on drift.</td></tr>
+        <tr><td>Session end</td><td>Generates Session Coherence Record (SHA-256 hash of all response hashes).</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:28px;">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:14px;">Key Constructs</h2>
+    <table>
+      <thead>
+        <tr><th>Construct</th><th>Definition</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Rolling BIS</strong></td><td>Percentage of compliant turns in the current session. Computed continuously.</td></tr>
+        <tr><td><strong>Drift Delta</strong></td><td>Rolling BIS minus Baseline BIS. Negative means production is degrading.</td></tr>
+        <tr><td><strong>Session Coherence Record</strong></td><td>SHA-256 hash of all response hashes in sequence. Proves session integrity.</td></tr>
+        <tr><td><strong>Runtime Admissibility</strong></td><td>Session is admissible only when rolling BIS stays within drift tolerance.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:28px;">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:14px;">Drift Tolerances</h2>
+    <table>
+      <thead>
+        <tr><th>Context</th><th>Tolerance</th><th>Alert on exceed</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Critical Infrastructure</td><td>2 percentage points</td><td>Immediate review</td></tr>
+        <tr><td>Financial Services</td><td>5 percentage points</td><td>Stakeholder notification</td></tr>
+        <tr><td>Healthcare</td><td>5 percentage points</td><td>Stakeholder notification</td></tr>
+        <tr><td>Government Services</td><td>5 percentage points</td><td>Stakeholder notification</td></tr>
+        <tr><td>General Enterprise</td><td>10 percentage points</td><td>Monitoring escalation</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:28px;">
+    <h2 style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:14px;">The Runtime Monitoring Lemma</h2>
+    <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:10px;">
+      Session coherence records without baseline comparison cannot establish governance compliance. They establish record integrity only.
+    </p>
+    <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:10px;">
+      Governance compliance requires both: record integrity (coherence record) AND baseline comparison (drift delta within tolerance).
+    </p>
+    <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;">
+      MTCP provides both. 183,924 evaluations provide the baseline. The PRP wrapper provides the runtime signal. Together they constitute governance. Separately they constitute logging.
+    </p>
+  </div>
+
+  <div style="text-align:center;margin-top:2rem;">
+    <a href="/request-evaluation" class="btn btn-primary">Request Evaluation</a>
+    <a href="/landing" class="btn btn-ghost">Back to Overview</a>
+  </div>
+</div>
+{% endblock %}

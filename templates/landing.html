@@ -121,6 +121,10 @@ footer a{color:var(--accent2);text-decoration:none;}
     <li><a href="/evidence/public-findings">Evidence</a></li>
     <li><a href="/methodology">Methodology</a></li>
     <li><a href="/buyer-brief">Buyer Brief</a></li>
+    <li><a href="/sovereign-ai">Sovereign AI</a></li>
+    <li><a href="/constraint-manifest">Constraint Manifest</a></li>
+    <li><a href="/deployment-readiness">DRA</a></li>
+    <li><a href="/runtime-monitoring">Runtime</a></li>
     <li><a href="/request-evaluation" class="nav-cta">Request Evaluation</a></li>
     <li><a href="/register">Register</a></li>
     <li><a href="/login">Login</a></li>
@@ -136,7 +140,7 @@ footer a{color:var(--accent2);text-decoration:none;}
     <h2 style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:400;margin-top:1rem;color:var(--muted);line-height:1.6;">
       MTCP tells you if they will.
     </h2>
-    <p class="hero-sub">Multi-model, multi-language constraint persistence evaluation. {{ total_models }} models across {{ stats.total_languages }} languages. {{ total_results }} probe interactions.</p>
+    <p class="hero-sub">Multi-model, multi-language constraint persistence evaluation. 32 models across 12 languages. {{ total_results }} probe interactions.</p>
     <div class="hero-actions">
       <a href="/test-model" class="btn btn-primary">Test Your Model (5 min)</a>
       <a href="/evidence/public-findings" class="btn btn-outline">View Evidence →</a>
@@ -160,6 +164,10 @@ footer a{color:var(--accent2);text-decoration:none;}
     <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">FCA</span>
     <span style="color:var(--border2)">·</span>
     <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">MAS FEAT</span>
+    <span style="color:var(--border2)">·</span>
+    <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">NDMO</span>
+    <span style="color:var(--border2)">·</span>
+    <span style="font-size:0.65rem;color:var(--text);font-weight:600;letter-spacing:0.5px;">NCA</span>
   </div>
 
   <!-- CORE VALUE PROPOSITION -->
@@ -235,19 +243,41 @@ footer a{color:var(--accent2);text-decoration:none;}
   <div class="kpi-row fade-up fade-up-2">
     <div class="kpi-card">
       <div class="kpi-label">Models evaluated</div>
-      <div class="kpi-value">{{ total_models }}</div>
+      <div class="kpi-value">32</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Total evaluations</div>
-      <div class="kpi-value">{{ total_results }}</div>
+      <div class="kpi-value">183,924</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">Languages tested</div>
-      <div class="kpi-value">{{ stats.total_languages }}</div>
+      <div class="kpi-label">Research papers</div>
+      <div class="kpi-value">46</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-label">BIS range</div>
-      <div class="kpi-value">{{ pass_range }}</div>
+      <div class="kpi-label">Governance layers</div>
+      <div class="kpi-value">15</div>
+    </div>
+  </div>
+
+  <!-- METRIC STACK -->
+  <div class="fade-up fade-up-2" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:22px 28px;margin-bottom:28px;">
+    <div style="font-size:0.58rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:16px;">MTCP Governance Stack — 15 Layers</div>
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px 24px;">
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">BIS</strong> — Single-model constraint persistence</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">CSAS</strong> — Cross-system coordination admissibility</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">JRS</strong> — Jurisdiction resolution at boundaries</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">TDS</strong> — Temporal drift detection over time</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">CCS</strong> — Constraint conflict resolution</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">RES</strong> — Remediation effectiveness measurement</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">ACPS</strong> — Adversarial persistence resistance</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">BEC</strong> — Blockchain evidence chain integrity</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">COS</strong> — Constraint object specification</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">LRP</strong> — Legitimacy resolution protocol</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">GRC</strong> — Governance reference conditions</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">DRA</strong> — <a href="/deployment-readiness" style="color:var(--accent2);text-decoration:none;">Deployment readiness attestation</a></div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">Gate</strong> — Admissibility enforcement (PERMIT/DENY)</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">Quantum</strong> — Post-quantum cryptographic validity</div>
+      <div style="font-size:0.72rem;color:var(--muted);line-height:1.8;"><strong style="color:var(--text);">PRP</strong> — <a href="/runtime-monitoring" style="color:var(--accent2);text-decoration:none;">Runtime behavioural monitoring</a></div>
     </div>
   </div>
 
@@ -255,7 +285,7 @@ footer a{color:var(--accent2);text-decoration:none;}
   <div class="grid-3 fade-up fade-up-3">
     <div class="feature-card">
       <h3>Measure</h3>
-      <p>{{ total_results }} probe interactions across {{ total_models }} frontier models in {{ stats.total_languages }} languages at 4 temperature settings. The largest independent constraint persistence dataset published.</p>
+      <p>{{ total_results }} probe interactions across 32 frontier models in 12 languages at 4 temperature settings. The largest independent constraint persistence dataset published.</p>
       <div class="feature-meta">Boundary Integrity Score</div>
     </div>
     <div class="feature-card">
@@ -270,6 +300,40 @@ footer a{color:var(--accent2);text-decoration:none;}
     </div>
   </div>
 
+  <!-- BEYOND SINGLE-MODEL EVALUATION -->
+  <div class="card fade-up fade-up-3" style="margin-bottom:28px;">
+    <div class="section-head">
+      <div><h2>Beyond Single-Model Evaluation</h2></div>
+    </div>
+    <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+      MTCP evaluates constraint persistence at three levels. Each level produces empirical evidence, a grading scale, and audit-ready documentation.
+    </p>
+    <ul class="list-clean">
+      <li><strong style="color:var(--text)">Single Model</strong><br>Does the model hold constraints across multi-turn interaction? Measured by BIS.</li>
+      <li><strong style="color:var(--text)">Cross-System</strong><br>Do constraints survive handoff between coordinated AI systems? Measured by CSAS.</li>
+      <li><strong style="color:var(--text)">Jurisdiction</strong><br>Was the authority governing a coordination boundary explicitly established? Measured by JRS.</li>
+    </ul>
+  </div>
+
+  <!-- MULTI-LANGUAGE EVALUATION -->
+  <div class="card fade-up fade-up-4" style="margin-bottom:28px;">
+    <div class="section-head">
+      <div><h2>Multi-Language Evaluation</h2></div>
+    </div>
+    <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+      The first multi-language, multi-script constraint persistence evaluation. 12 languages across 4 script families.
+    </p>
+    <ul class="list-clean">
+      <li><strong style="color:var(--text)">Latin script</strong><br>100% constraint persistence universally across evaluated models.</li>
+      <li><strong style="color:var(--text)">CJK</strong><br>Highest failure rates observed. Script distance from English predicts degradation.</li>
+      <li><strong style="color:var(--text)">Arabic-script</strong><br>Intermediate performance. Critical for Gulf sovereign AI deployment.</li>
+      <li><strong style="color:var(--text)">Tamil</strong><br>Script distance from English is the strongest predictor of constraint failure rate.</li>
+    </ul>
+    <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;margin-top:14px;">
+      Non-Latin deployment requires language-specific evaluation. Standard English-only benchmarks cannot predict multilingual constraint reliability.
+    </p>
+  </div>
+
   <!-- WHO USES MTCP + EVIDENCE LINK -->
   <div class="grid-2 fade-up fade-up-4">
     <div class="card">
@@ -277,10 +341,11 @@ footer a{color:var(--accent2);text-decoration:none;}
         <div><h2>Who Uses MTCP</h2></div>
       </div>
       <ul class="list-clean">
-        <li><strong style="color:var(--text)">Procurement Teams</strong><br>Compare {{ total_models }} evaluated models before vendor selection. Attach MTCP certificate to procurement documentation.</li>
+        <li><strong style="color:var(--text)">Procurement Teams</strong><br>Compare 32 evaluated models before vendor selection. Attach MTCP certificate to procurement documentation.</li>
         <li><strong style="color:var(--text)">AI Risk Officers</strong><br>Empirical evidence for board-level risk sign-off. Quantified BIS, CPD, and TSI scores per model.</li>
         <li><strong style="color:var(--text)">Compliance Leads</strong><br>EU AI Act Article 12 ready. NIST AI RMF aligned. Audit-ready evidence packs downloadable immediately.</li>
         <li><strong style="color:var(--text)">Deployment Gatekeepers</strong><br>Set minimum BIS threshold. Block release on REJECTED verdict. Retest after model changes.</li>
+        <li><strong style="color:var(--text)">Sovereign AI Programmes</strong><br>Independent evaluation of model stacks across Arabic and multilingual contexts. NDMO and NCA alignment evidence. Board-ready compliance documentation for Gulf sovereign AI infrastructure.</li>
       </ul>
     </div>
     <div class="card">
@@ -291,7 +356,7 @@ footer a{color:var(--accent2);text-decoration:none;}
         </div>
       </div>
       <p style="font-size:0.72rem;color:var(--muted);line-height:1.8;margin-bottom:16px;">
-        The MTCP evidence layer provides comparative release assurance data across {{ total_models }} independently evaluated frontier models. {{ total_results }} structured probe interactions at four temperature settings.
+        The MTCP evidence layer provides comparative release assurance data across 32 independently evaluated frontier models. {{ total_results }} structured probe interactions at four temperature settings.
       </p>
       <a href="/evidence/public-findings" class="btn btn-ghost" style="width:100%;justify-content:center;">View Evidence →</a>
     </div>
@@ -313,4 +378,5 @@ footer a{color:var(--accent2);text-decoration:none;}
 
 <footer>
   <p>MTCP · AI Assurance for Large Language Models &nbsp;·&nbsp; <a href="/methodology">Methodology</a> &nbsp;·&nbsp; <a href="/evidence/public-findings">Evidence</a> &nbsp;·&nbsp; <a href="/request-evaluation">Request Evaluation</a></p>
+  <p style="margin-top:8px;">Aligned to: EU AI Act · NIST AI RMF · ISO/IEC 42001 · MAS FEAT · NDMO · NCA</p>
   <p style="margin-top:8px;">© 2026 A. Abby · DOI: <a href="https://doi.org/10.17605/OSF.IO/DXGK5">10.17605/OSF.IO/DXGK5</a></p>
