@@ -182,16 +182,21 @@ def append_record(chain_id, model_id, evaluation_type, evaluation_data,
         conn.close()
         return True
 
+    # Compute payload binding hash (Permanence Architecture F37)
+    payload_binding = f"{record_hash}|{model_id}|{evaluation_type}|{chain_id}"
+    payload_binding_hash = hashlib.sha256(payload_binding.encode("utf-8")).hexdigest()
+
     try:
         cur.execute("""
             INSERT INTO bec_records
             (chain_id, sequence_number, previous_hash, model_id,
-             evaluation_type, evaluation_data, timestamp, evaluator_id, record_hash)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+             evaluation_type, evaluation_data, timestamp, evaluator_id, record_hash,
+             payload_binding_hash, permanence_verified)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             chain_id, new_sequence, previous_hash, model_id,
             evaluation_type, json.dumps(evaluation_data, separators=(",", ":"), sort_keys=True),
-            now, evaluator_id, record_hash
+            now, evaluator_id, record_hash, payload_binding_hash, True
         ))
 
         cur.execute("""

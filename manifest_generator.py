@@ -317,6 +317,7 @@ def generate_manifest(model_id, context, provider=None, dry_run=False, no_db=Fal
         "bec_chain_id": scores['bec_chain_id'],
         "runtime_monitor_enabled": scores.get('runtime_monitor_enabled', False),
         "last_session_coherence_hash": scores.get('last_session_coherence_hash'),
+        "permanence_architecture_version": "1.0",
     }
 
     # Compute hash and signature

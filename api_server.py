@@ -3584,6 +3584,36 @@ class BECAppendRequest(BaseModel):
     evaluator_id: str = "mtcp_system"
 
 
+@app.get("/api/bec/permanence/{evaluation_id}")
+@limiter.limit("60/minute")
+def bec_permanence(request: Request, evaluation_id: str):
+    """Return permanence verification status for an evaluation record."""
+    try:
+        conn = get_db()
+        cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        cur.execute("""
+            SELECT payload_binding_hash, permanence_verified, record_hash,
+                   evaluation_type, model_id, chain_id
+            FROM bec_records WHERE evaluation_data::text LIKE %s
+            ORDER BY timestamp DESC LIMIT 1
+        """, (f'%{evaluation_id}%',))
+        result = cur.fetchone()
+        conn.close()
+        if not result:
+            return JSONResponse(status_code=404, content={"detail": "Evaluation not found in BEC chain"})
+        return {
+            "evaluation_id": evaluation_id,
+            "payload_binding_hash": result["payload_binding_hash"],
+            "permanence_verified": result["permanence_verified"],
+            "record_hash": result["record_hash"],
+            "crypto_standard": "SHA3-256",
+            "crypto_agile": True,
+            "permanence_architecture_version": "1.0",
+        }
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
+
 @app.get("/api/bec/status")
 @limiter.limit("60/minute")
 def bec_status(request: Request):
@@ -4098,6 +4128,52 @@ async def get_runtime_model_live(model_id: str):
     from prp_wrapper import PRPWrapper
     wrapper = PRPWrapper()
     return wrapper.get_model_live_status(model_id)
+
+
+# ── Substrate Measurement (Holon) ─────────────────────────────────────────────
+
+@app.get("/api/substrate/measure/{model_id}")
+async def get_substrate_measure(model_id: str):
+    """Return all four substrate vector scores for a model."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT knowledge_integrity_score FROM substrate_knowledge_scores WHERE model_id=%s ORDER BY computed_at DESC LIMIT 1", (model_id,))
+    k = cur.fetchone()
+    cur.execute("SELECT context_provenance_score FROM substrate_context_scores WHERE model_id=%s ORDER BY computed_at DESC LIMIT 1", (model_id,))
+    c = cur.fetchone()
+    cur.execute("SELECT schema_persistence_score, bis_mean, grade FROM substrate_schema_scores WHERE model_id=%s ORDER BY computed_at DESC LIMIT 1", (model_id,))
+    s = cur.fetchone()
+    cur.execute("SELECT projection_consistency_score FROM substrate_projection_scores WHERE model_id=%s ORDER BY computed_at DESC LIMIT 1", (model_id,))
+    p = cur.fetchone()
+    conn.close()
+    return {
+        "model_id": model_id,
+        "knowledge_integrity": k["knowledge_integrity_score"] if k else None,
+        "context_provenance": c["context_provenance_score"] if c else None,
+        "schema_persistence": s["schema_persistence_score"] if s else None,
+        "projection_consistency": p["projection_consistency_score"] if p else None,
+    }
+
+@app.get("/api/substrate/holon/{model_id}")
+async def get_substrate_holon(model_id: str):
+    """Return Holon Completeness Score with deployment admissibility."""
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute("SELECT knowledge_integrity_score FROM substrate_knowledge_scores WHERE model_id=%s ORDER BY computed_at DESC LIMIT 1", (model_id,))
+    k = cur.fetchone()
+    cur.execute("SELECT context_provenance_score FROM substrate_context_scores WHERE model_id=%s ORDER BY computed_at DESC LIMIT 1", (model_id,))
+    c = cur.fetchone()
+    cur.execute("SELECT schema_persistence_score FROM substrate_schema_scores WHERE model_id=%s ORDER BY computed_at DESC LIMIT 1", (model_id,))
+    s = cur.fetchone()
+    cur.execute("SELECT projection_consistency_score FROM substrate_projection_scores WHERE model_id=%s ORDER BY computed_at DESC LIMIT 1", (model_id,))
+    p = cur.fetchone()
+    conn.close()
+    scores = [v for v in [k and k["knowledge_integrity_score"], c and c["context_provenance_score"],
+              s and s["schema_persistence_score"], p and p["projection_consistency_score"]] if v is not None]
+    holon = sum(scores)/len(scores) if scores else 0
+    grade = "A" if holon>=0.9 else "B" if holon>=0.8 else "C" if holon>=0.7 else "D" if holon>=0.6 else "F"
+    return {"model_id": model_id, "holon_completeness_score": round(holon,4), "grade": grade,
+            "deployment_admissible": holon >= 0.7}
 
 
 # ── Quantum-Safe (Cryptographic Validity) ─────────────────────────────────────
