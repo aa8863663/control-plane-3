@@ -1,0 +1,48 @@
+{% extends "base_public.html" %}
+{% block title %}Standards Contribution — MTCP{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Standards <span>Contribution</span></h1>
+  <p>
+    MTCP proposes constraint persistence measurement as a foundational element for AI governance standards.
+  </p>
+</div>
+
+<div class="card fade-up fade-up-1" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">Empirical Foundation for AI Governance</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    AI governance frameworks specify requirements for system behaviour. They do not define empirical protocols for verifying constraint persistence across multi-turn interactions. Single-turn benchmarks miss constraint drift, temperature-invariant architectural failures, and cross-system coordination failures. MTCP addresses this measurement gap with independently reproducible metrics and grading criteria.
+  </p>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;">
+    Four measurement constructs are proposed as standards contributions. BIS as a per-decision constraint persistence metric. AAFI as an architectural failure classification metric. Correction Ceiling as a deployment readiness threshold. Temperature Invariance Classification as an architectural versus stochastic failure distinction.
+  </p>
+</div>
+
+<div class="card fade-up fade-up-2" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">Target Standards Bodies</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    MTCP constraint persistence measurement is being submitted to three standards bodies.
+  </p>
+  <ul class="list-clean">
+    <li><strong class="subtle">BSI AI Standards Committee</strong><br>
+      UK national standards body. AI safety and governance measurement standards.
+    </li>
+    <li><strong class="subtle">EU AI Office</strong><br>
+      European Union AI governance body. Empirical measurement infrastructure for EU AI Act compliance verification.
+    </li>
+    <li><strong class="subtle">CENELEC JTC 21</strong><br>
+      European standards body for AI. Via Matteo Prandi at Icaro Lab. Review of MTCP metric definitions against emerging measurement standards.
+    </li>
+  </ul>
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;margin-top:14px;">
+    The standards submission document is available on request. Contact admin@mtcp.live.
+  </p>
+</div>
+
+<div class="card fade-up fade-up-3" style="background:rgba(37,99,235,0.03);border-color:rgba(37,99,235,0.15);">
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;">
+    <strong>DOI:</strong> <a href="https://doi.org/10.17605/OSF.IO/DXGK5" style="color:var(--accent);">10.17605/OSF.IO/DXGK5</a><br>
+    Contact: admin@mtcp.live
+  </p>
+</div>
+{% endblock %}

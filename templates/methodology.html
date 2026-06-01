@@ -4,7 +4,7 @@
 <div class="page-header fade-up">
   <h1>MTCP <span>Methodology</span></h1>
   <p>
-    MTCP is a black-box AI release assurance framework for evaluating whether large language models maintain corrected constraints during interaction. DOI-registered methodology. {{ total_models }} models evaluated. {{ total_results }} probe interactions.
+    MTCP is a black-box AI release assurance framework for evaluating whether large language models maintain corrected constraints during interaction. DOI-registered methodology. 32 models evaluated. {{ total_results }} probe interactions.
   </p>
 </div>
 
@@ -42,7 +42,7 @@
   </p>
   <ul class="list-clean">
     <li><strong class="subtle">Layer 1: Measurement</strong><br>
-      The public evidence layer. {{ total_models }} models evaluated across {{ total_results }} canonical test cases.
+      The public evidence layer. 32 models evaluated across {{ total_results }} canonical test cases.
       Public leaderboard shows Boundary Integrity Score, Control Probe Degradation, and temperature stability.
       This layer provides transparent comparative evaluation.
     </li>
@@ -169,6 +169,60 @@
   </div>
 </div>
 
+<!-- EVALUATION LAYERS -->
+<div class="card fade-up" style="margin-top:16px;">
+  <h2 style="margin-bottom:12px;">Evaluation Layers</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    MTCP evaluates constraint persistence across five distinct layers. Each layer addresses a different failure mode in production AI deployment.
+  </p>
+  <ul class="list-clean">
+    <li><strong class="subtle">Layer 1: Single Model (BIS)</strong><br>
+      Multi-turn constraint persistence under correction pressure. Does the model maintain corrected behaviour across subsequent conversation turns? This is the foundation layer — if a model cannot hold constraints in isolation, no amount of orchestration engineering will compensate.
+    </li>
+    <li><strong class="subtle">Layer 2: Cross-System (CSAS)</strong><br>
+      Constraint preservation across coordination boundaries. When one AI system passes output to another, do the constraints established in the first system survive the handoff? CSAS evaluates the gap between systems where constraints are most likely to be lost.
+    </li>
+    <li><strong class="subtle">Layer 3: Jurisdiction (JRS)</strong><br>
+      Governance assignment before coordination. Before two systems coordinate, was the governing authority for that boundary explicitly established? JRS ensures that coordination does not occur in a governance vacuum.
+    </li>
+    <li><strong class="subtle">Layer 4: Temporal (TDS)</strong><br>
+      Grade stability over time. Does a model's constraint persistence grade remain consistent across evaluation periods? TDS detects silent degradation that occurs between evaluation windows, establishing a temporal baseline with 90-day validity.
+    </li>
+    <li><strong class="subtle">Layer 5: Adversarial (ACPS)</strong><br>
+      Resistance to deliberate constraint bypass. Does constraint persistence hold when the model is subjected to intentional pressure to abandon its constraints? ACPS distinguishes robust from fragile constraint adherence.
+    </li>
+  </ul>
+</div>
+
+<!-- BEHAVIOURAL EVIDENCE CHAIN -->
+<div class="card fade-up" style="margin-top:16px;">
+  <h2 style="margin-bottom:12px;">Behavioural Evidence Chain</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    All MTCP evaluations produce SHA-256 hash-chained records. Each evaluation stage is immutable once recorded. The full chain is verifiable by third parties without requiring access to the evaluation infrastructure.
+  </p>
+  <ul class="list-clean">
+    <li><strong class="subtle">Immutable records</strong><br>Each evaluation interaction is recorded and hash-chained. No post-hoc modification is possible without breaking the chain.</li>
+    <li><strong class="subtle">Third-party verification</strong><br>Any receiving party can independently verify the integrity of an evidence chain using the published hash.</li>
+    <li><strong class="subtle">BECIS measurement</strong><br>The Blockchain Evidence Chain Integrity Score quantifies the integrity of the full evidence chain for each evaluation.</li>
+  </ul>
+</div>
+
+<!-- CONSTRAINT MANIFEST -->
+<div class="card fade-up" style="margin-top:16px;">
+  <h2 style="margin-bottom:12px;">Constraint Manifest</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    A Constraint Manifest is a portable signed document issued for each evaluated model. It travels with the deployment and can be verified independently by any receiving system.
+  </p>
+  <ul class="list-clean">
+    <li><strong class="subtle">Contents</strong><br>Model grades, evaluation dates, validity windows, compliance status, and evidence chain integrity hash.</li>
+    <li><strong class="subtle">Portability</strong><br>The manifest travels with the model deployment. Any system receiving the model can verify its evaluation status.</li>
+    <li><strong class="subtle">Independent verification</strong><br>Receiving systems verify the manifest against the MTCP evidence chain without requiring direct access to the evaluation platform.</li>
+  </ul>
+  <div style="margin-top:14px;">
+    <a href="/constraint-manifest" class="btn btn-ghost">Learn more about Constraint Manifests →</a>
+  </div>
+</div>
+
 <!-- ARABIC LANGUAGE EVALUATION -->
 <div class="card fade-up" style="margin-top:16px;">
   <h2 style="margin-bottom:12px;">Arabic Language Constraint Persistence</h2>
@@ -185,6 +239,22 @@
   <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;margin-top:14px;">
     The methodology generalises to any target language. Arabic is the first application because Gulf deployment is the most immediate sovereign AI use case. Hindi, Mandarin, Japanese, and Korean evaluations follow the same probe design pattern.
   </p>
+</div>
+
+<!-- REGULATORY ALIGNMENT -->
+<div class="card fade-up" style="margin-top:16px;">
+  <h2 style="margin-bottom:12px;">Regulatory Compliance Matrix</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    MTCP evaluation outputs are aligned to the following regulatory frameworks. The Regulatory Compliance Matrix maps each MTCP metric to specific regulatory requirements.
+  </p>
+  <ul class="list-clean">
+    <li><strong class="subtle">EU AI Act</strong><br>Article 12 logging and monitoring. Article 15 accuracy requirements. High-risk system documentation.</li>
+    <li><strong class="subtle">NIST AI RMF</strong><br>Govern, Map, Measure, Manage functions. Risk identification and measurement.</li>
+    <li><strong class="subtle">ISO/IEC 42001</strong><br>AI management system requirements. Conformity assessment.</li>
+    <li><strong class="subtle">MAS FEAT</strong><br>Fairness, Ethics, Accountability, Transparency principles for financial services AI.</li>
+    <li><strong class="subtle">NDMO</strong><br>Saudi National Data Management Office governance requirements. Arabic language constraint evaluation for sovereign AI deployment.</li>
+    <li><strong class="subtle">NCA</strong><br>Saudi National Cybersecurity Authority requirements. Critical infrastructure AI assurance.</li>
+  </ul>
 </div>
 
 <!-- RESEARCH CITATION -->

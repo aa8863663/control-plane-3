@@ -1,0 +1,80 @@
+{% extends "base_public.html" %}
+{% block title %}Independent Verification — MTCP{% endblock %}
+{% block content %}
+<div class="page-header fade-up">
+  <h1>Independent <span>Verification</span></h1>
+  <p>
+    The MTCP Reproducibility Protocol enables any external party to independently verify constraint persistence findings. No access to proprietary probe content is required.
+  </p>
+</div>
+
+<!-- WHAT MTCP MEASURES -->
+<div class="card fade-up fade-up-1" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">What MTCP Measures</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    MTCP evaluates whether AI models maintain declared constraints during multi-turn interaction under correction pressure.
+  </p>
+  <ul class="list-clean">
+    <li><strong class="subtle">BIS (Boundary Integrity Score)</strong><br>
+      Proportion of interactions where the model maintains the constraint across all turns.
+    </li>
+    <li><strong class="subtle">Ve (Vulnerability Endurance)</strong><br>
+      Number of corrective turns sustained before constraint failure.
+    </li>
+    <li><strong class="subtle">CSAS (Cross-System Admissibility)</strong><br>
+      Constraint survival rate at coordination boundaries between two systems.
+    </li>
+    <li><strong class="subtle">ACPS (Adversarial Constraint Persistence)</strong><br>
+      Constraint adherence under adversarial prompt injection and authority spoofing.
+    </li>
+    <li><strong class="subtle">AAFI (Architectural Failure Identification)</strong><br>
+      Proportion of failures that are temperature-invariant and correction-resistant.
+    </li>
+  </ul>
+</div>
+
+<!-- HOW EXTERNAL PARTIES VERIFY -->
+<div class="card fade-up fade-up-2" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">How External Parties Verify</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    The Reproducibility Protocol defines minimum requirements for independent replication.
+  </p>
+  <ul class="list-clean">
+    <li>API access to the target model (black-box, no weight inspection).</li>
+    <li>Multi-turn protocol with minimum three turns per evaluation.</li>
+    <li>Correction pressure applied at turn two.</li>
+    <li>Temperature variants at T=0.0 and T=0.8 minimum.</li>
+    <li>Grading methodology consistent with published BIS definition.</li>
+    <li>Tamper-evident record of all evaluation outcomes.</li>
+  </ul>
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;margin-top:14px;">
+    External parties construct their own probe content following the published structure. Specific probe wording is not required for valid replication.
+  </p>
+</div>
+
+<!-- INDEPENDENT CORROBORATION -->
+<div class="card fade-up fade-up-3" style="margin-bottom:20px;">
+  <h2 style="margin-bottom:12px;">Independent Corroboration</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:14px;">
+    Three independent sources corroborate MTCP findings without prior coordination.
+  </p>
+  <ul class="list-clean">
+    <li><strong class="subtle">SpectralQuant (Dynamis Labs)</strong><br>
+      NeurIPS 2026 submission. Geometric prediction of temperature invariance and correction ceilings from eigenvalue concentration in attention matrices.
+    </li>
+    <li><strong class="subtle">DTRM Programme (Rowland Agidee)</strong><br>
+      Independent derivation of external evaluator independence requirement from NHS governance assessment context.
+    </li>
+    <li><strong class="subtle">DecisionAssure (Akhilesh Warik)</strong><br>
+      Infrastructure layer proof of authority continuity gap. Live AWS trace confirms the gap MTCP identifies at the model layer.
+    </li>
+  </ul>
+</div>
+
+<div class="card fade-up fade-up-4" style="background:rgba(37,99,235,0.03);border-color:rgba(37,99,235,0.15);">
+  <p style="font-size:0.72rem;color:var(--muted);line-height:1.9;">
+    <strong>DOI:</strong> <a href="https://doi.org/10.17605/OSF.IO/DXGK5" style="color:var(--accent);">10.17605/OSF.IO/DXGK5</a><br>
+    Full Reproducibility Protocol available on request: admin@mtcp.live
+  </p>
+</div>
+{% endblock %}

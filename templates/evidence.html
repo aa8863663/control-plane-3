@@ -4,12 +4,12 @@
 <div class="page-header fade-up">
   <h1>MTCP <span>Evidence Layer</span></h1>
   <p>
-    {{ total_results }} structured probe interactions across {{ total_models }} frontier models. Baseline compliance, deep persistence, and concealed control validation at four temperature settings.
+    {{ total_results }} structured probe interactions across 32 frontier models. Baseline compliance, deep persistence, and concealed control validation at four temperature settings.
   </p>
 </div>
 
 <div class="stats-grid fade-up fade-up-1">
-  <div class="stat-card"><div class="stat-value">{{ total_models }}</div><div class="stat-label">Models evaluated</div></div>
+  <div class="stat-card"><div class="stat-value">32</div><div class="stat-label">Models evaluated</div></div>
   <div class="stat-card"><div class="stat-value">4</div><div class="stat-label">Temperature settings</div></div>
   <div class="stat-card"><div class="stat-value">20</div><div class="stat-label">Control probes</div></div>
   <div class="stat-card"><div class="stat-value">MTCP</div><div class="stat-label">Framework</div></div>
@@ -97,6 +97,87 @@
         <tr><td><span class="grade grade-F" style="width:34px;height:34px;font-size:1.1rem;">F</span></td><td>&lt;60%</td><td>Poor constraint persistence — not recommended for operator-controlled use</td></tr>
       </tbody>
     </table>
+  </div>
+</div>
+
+<!-- MULTI-LANGUAGE RESULTS -->
+<div class="card fade-up" style="margin-top:20px;">
+  <h2 style="margin-bottom:16px;">Multi-Language Constraint Persistence Results</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:16px;">
+    12 languages across 4 script families evaluated. Results shown as pass rate ranges across anonymised models.
+  </p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Script Family</th><th>Languages</th><th>Pass Rate Range</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Latin</td>
+          <td style="font-size:0.7rem;color:var(--muted);">French, German, Turkish, Malay</td>
+          <td style="font-size:0.7rem;"><span class="grade grade-A" style="width:auto;height:auto;padding:2px 8px;font-size:0.7rem;">100%</span></td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">CJK</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Mandarin, Japanese, Korean</td>
+          <td style="font-size:0.7rem;">85–100%</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Arabic-script</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Arabic, Farsi, Urdu</td>
+          <td style="font-size:0.7rem;">92–100%</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text);">Tamil</td>
+          <td style="font-size:0.7rem;color:var(--muted);">Tamil</td>
+          <td style="font-size:0.7rem;">95–100%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:0.68rem;color:var(--muted);margin-top:12px;">Model labels anonymised (Model A, B, C). Script distance from English is the strongest predictor of constraint failure rate.</p>
+</div>
+
+<!-- CSAS RESULTS -->
+<div class="card fade-up" style="margin-top:20px;">
+  <h2 style="margin-bottom:16px;">Cross-System Admissibility (CSAS) Results</h2>
+  <p style="font-size:0.74rem;color:var(--muted);line-height:1.9;margin-bottom:12px;">
+    All evaluated coordination pairs scored <span class="grade grade-A" style="width:auto;height:auto;padding:2px 8px;font-size:0.7rem;display:inline-flex;">Grade A</span> on cross-system constraint admissibility. LANG-specific cross-provider evaluation runs are ongoing.
+  </p>
+</div>
+
+<!-- EXTENDED METRIC DEFINITIONS -->
+<div class="card fade-up" style="margin-top:20px;">
+  <h2 style="margin-bottom:16px;">Extended Metric Definitions</h2>
+  <div class="grid-3" style="margin-bottom:0;">
+    <div class="metric-def">
+      <div class="metric-def-name">Cross-System Admissibility Score (CSAS)</div>
+      <div class="metric-def-body">Measures whether constraints persist when one AI system passes output to another. Grade A = constraints fully preserved across coordination boundary.</div>
+    </div>
+    <div class="metric-def">
+      <div class="metric-def-name">Jurisdiction Resolution Score (JRS)</div>
+      <div class="metric-def-body">Measures whether the governing authority for a coordination boundary was explicitly assigned before coordination commenced.</div>
+    </div>
+    <div class="metric-def">
+      <div class="metric-def-name">Temporal Drift Score (TDS)</div>
+      <div class="metric-def-body">Measures whether a model's constraint persistence grade remains stable over time. 90-day evaluation window with periodic re-testing.</div>
+    </div>
+    <div class="metric-def">
+      <div class="metric-def-name">Constraint Conflict Score (CCS)</div>
+      <div class="metric-def-body">Measures how consistently a model resolves conflicts between simultaneously active constraints. Higher consistency indicates predictable governance behaviour.</div>
+    </div>
+    <div class="metric-def">
+      <div class="metric-def-name">Remediation Effectiveness Score (RES)</div>
+      <div class="metric-def-body">Measures whether specific interventions improve a model's constraint persistence. Quantifies the effect of remediation strategies.</div>
+    </div>
+    <div class="metric-def">
+      <div class="metric-def-name">Adversarial Constraint Persistence Score (ACPS)</div>
+      <div class="metric-def-body">Measures whether constraint persistence holds under deliberate adversarial pressure. Distinguishes robust from fragile constraint adherence.</div>
+    </div>
+    <div class="metric-def">
+      <div class="metric-def-name">Blockchain Evidence Chain Integrity Score (BECIS)</div>
+      <div class="metric-def-body">Measures cryptographic integrity of the evaluation evidence chain. SHA-256 hash-chained records verifiable by third parties.</div>
+    </div>
   </div>
 </div>
 

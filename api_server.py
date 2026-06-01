@@ -1023,6 +1023,38 @@ def sovereign_ai_page(request: Request, session: Optional[str] = Cookie(default=
         }
     )
 
+@app.get("/reproducibility", response_class=HTMLResponse)
+@limiter.limit("60/minute")
+def reproducibility_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse("reproducibility.html", {
+        "request": request, "user": user, "active": "reproducibility", "stats": stats})
+
+@app.get("/standards", response_class=HTMLResponse)
+@limiter.limit("60/minute")
+def standards_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse("standards.html", {
+        "request": request, "user": user, "active": "standards", "stats": stats})
+
+@app.get("/corroboration", response_class=HTMLResponse)
+@limiter.limit("60/minute")
+def corroboration_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse("corroboration.html", {
+        "request": request, "user": user, "active": "corroboration", "stats": stats})
+
+@app.get("/advisory", response_class=HTMLResponse)
+@limiter.limit("60/minute")
+def advisory_page(request: Request, session: Optional[str] = Cookie(default=None)):
+    user = current_user(session)
+    stats = get_platform_stats()
+    return templates.TemplateResponse("advisory.html", {
+        "request": request, "user": user, "active": "advisory", "stats": stats})
+
 @app.get("/constraint-manifest", response_class=HTMLResponse)
 @limiter.limit("60/minute")
 def constraint_manifest_page(request: Request, session: Optional[str] = Cookie(default=None)):
