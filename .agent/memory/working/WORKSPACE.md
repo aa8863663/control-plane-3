@@ -3,7 +3,7 @@
 ## Active Contacts (April 21 2026)
 - John M. Willis: follow-up sent, awaiting response
 - Timothy Cook: ADR received, Section 2 received April 20, short OSF note to draft
-- Mohamed Rihan: spec V1.0 received April 20, R-AGAM confirmed commercial, KFUPM affiliation pathway opening, call to schedule
+- Mohamed Rihan: NDA signed May 9 2026. spec V1.0 received April 20, R-AGAM confirmed commercial, KFUPM affiliation pathway opening
 - Betania Allo: call Monday April 27, brief ready
 - Nathan Freestone: conversation developing, push arXiv ask
 - Johnny Malik: follow-up sent, call proposed
@@ -133,7 +133,7 @@
 - MTCP Email Brief.docx — Email brief for outreach
 - MTCP Introduction Document.docx — Introduction document
 - MTCP Overview.docx — Overview document
-- CV Ahmad Abby MTCP.docx — CV for MTCP
+- CV A. Abby MTCP.docx — CV for MTCP
 
 ### papers-2/operational/ (6 files)
 - 05 Benchmark Snapshot Page.pdf — Benchmark snapshot (8 pages)
@@ -268,6 +268,46 @@
 - how_it_works.html: uses dynamic {{ stats.total_models }} — correct
 - methodology.html: references "20 concealed probes" — correct
 - No hardcoded -14.9pp, -5pp, or "25 models" found anywhere in templates
+
+## SDC Integration (May 8 2026)
+
+Timothy Cook SDC technical integration guide received May 8 2026 sdcgovernance version 4.0.1. MTCP integration point is evaluate_decision tool with Evidence Pack as extra_context JSON. DMN decision table maps regime classification and Ve scores to PERMIT DENY INDETERMINATE decisions. Receipt hash chain SHA-256 covers decision reasoning status_code instance_id instance_version timestamp previous_hash dimensions_checked errors. Three MTCP MCP server tools built: get_mtcp_score get_evidence_pack get_regime_classification. Sovereign runtime Docker Compose built against SDCStudio Sovereign pattern. Intent Airlock states PENDING SUSPENDED VERIFIED REJECTED. Hash mismatch logged as HASH_MISMATCH with no Evidence Pack generated.
+
+### Deliverables Created
+- research-estate/integrations/SDC_EvidencePack_Schema_V1.json
+- research-estate/integrations/SDC_EvidencePack_Component_Mapping.md
+- research-estate/integrations/MTCP_MCP_Server/server.py
+- research-estate/integrations/MTCP_MCP_Server/README.md
+- research-estate/integrations/MTCP_Sovereign_Runtime/docker-compose.yml
+- research-estate/integrations/MTCP_Sovereign_Runtime/README.md
+- research-estate/integrations/MTCP_SDC_Schema_Mapping_Timothy_V1.md
+
+### Schema Mapping Draft (May 9 2026)
+Schema mapping draft completed May 9 2026. Sent to Timothy Cook. Document at research-estate/integrations/MTCP_SDC_Schema_Mapping_Timothy_V1.md. GPT-4o worked example included showing R3 DENY receipt flow. Uses live data from mtcp-mcp-server.fly.dev. sdcgovernance 4.0.2 format — instance_path omitted.
+
+### sdcgovernance 4.0.3 Update (May 9 2026)
+sdcgovernance 4.0.3 live May 9 2026. Three format fixes applied to all MTCP deliverables. V2 schema mapping built and ready to send Timothy at research-estate/integrations/MTCP_SDC_Schema_Mapping_Timothy_V2.md. MCP server updated and redeployed to mtcp-mcp-server.fly.dev. Changes: array-style conditions in table_json, deployment context inside extra_context, Receipt with XACML status_code URNs and receipt_hash.
+
+### Paper 26 Arabic Constraint Assurance (May 9 2026)
+Paper 26 Arabic Constraint Assurance finalised and OSF-ready. PDF at research-estate/papers/ready/Paper26_Arabic_Constraint_Assurance_V1.pdf. Evaluation date May 9 2026. First Arabic language constraint persistence evaluation ever published. Three models evaluated via Bedrock. Results: Model C 0.85 (pass), Model B 0.7143 (threshold), Model A 0.6471 (fail).
+
+### sdcgovernance 4.0.4 Schema Mapping V3 (May 10 2026)
+Schema mapping V3 completed May 10 2026 against sdcgovernance 4.0.4. RFC 8785 hash notation aligned. Null chain genesis. context_hash binding added. verify_evidence_pack as checklist item 8. R2 grade A INDETERMINATE confirmed intentional. Ready to send Timothy for fixtures publication. Document at research-estate/integrations/MTCP_SDC_Schema_Mapping_Timothy_V3.md.
+
+### MCP Server 4.0.4 Update (May 10 2026)
+MCP server updated to sdcgovernance 4.0.4 May 10 2026. context_hash added to evaluate_decision. verify_evidence_pack tool added. Wire-format breaking change — 4.0.3 receipt hashes will not validate under 4.0.4. Joint paper references 4.0.4 throughout. Nine test fixtures received from Timothy covering all integration scenarios. Live at mtcp-mcp-server.fly.dev. Health check confirmed ok with database_connected true.
+
+### Joint Paper V1 (May 10 2026)
+Joint paper draft V1 completed May 10 2026. At research-estate/papers/drafts/Joint_Paper_MTCP_SDC_Integration_V1.md. 3092 words. Six sections plus conclusion. GPT-4o worked example with reproducible receipt_hash b1d9d54a. Ready for Timothy review.
+
+### Joint Paper arXiv-Ready (May 10 2026)
+Joint paper arXiv-ready version completed May 10 2026. At research-estate/papers/ready/Joint_Paper_MTCP_SDC_Integration_V1_arXiv.md. Contact corrected to twcook@axius-sdc.com. Constraint categories corrected to CONT FORM DOM SCOPE LANG. Keywords added. Affiliation block added. All bold removed from body prose. 3118 words.
+
+### Joint Paper V2 (May 12 2026)
+Joint paper V2 completed May 12 2026. All nine review items from Timothy Cook fixed. Pinned timestamp 2026-05-10T15:00:00Z added to worked example. receipt_hash reproducibility claim corrected. Fixture attribution corrected to repo path commit b7f29d7. Eight precision and clarity fixes applied. At research-estate/papers/drafts/Joint_Paper_MTCP_SDC_Integration_V2.md. PDF on Desktop.
+
+### Joint Paper V3 (May 13 2026)
+Joint paper V3 completed May 13 2026. Section 5.1 Arabic LANG reference anchored to Paper 26 Model A DOI. Regression test test_receipt_hash_pinned_timestamp written and passed. Hash b1d9d54abcc3b0a2a929b627807442d55dd1093445a9219667ca26bb7dcc6b66 confirmed reproducible. At research-estate/papers/drafts/Joint_Paper_MTCP_SDC_Integration_V3.md.
 
 ## Next Actions
 1. Fix Claude Code HuggingFace issue
